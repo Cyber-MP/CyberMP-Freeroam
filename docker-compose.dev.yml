@@ -10,6 +10,7 @@ services:
     volumes:
       - ./server.toml:/cybermp/server.toml
       - ./resources:/cybermp/resources
+      - ./crashdumps:/cybermp/crashdumps
     ports:
       - 2077:2077/tcp
       - 2077:2077/udp
