@@ -1,0 +1,38 @@
+{
+  "name": "browser",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@tailwindcss/postcss": "^4.1.18",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.18",
+    "react": "19.2.3",
+    "react-dom": "19.2.3"
+  },
+  "devDependencies": {
+    "@csstools/postcss-cascade-layers": "^6.0.0",
+    "@csstools/postcss-color-mix-function": "^4.0.0",
+    "@csstools/postcss-oklab-function": "^5.0.0",
+    "@svgr/plugin-svgo": "^8.1.0",
+    "@types/react": "^19.2.5",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react-swc": "^4.2.2",
+    "autoprefixer": "^10.4.23",
+    "globals": "^16.5.0",
+    "postcss-media-minmax": "^5.0.0",
+    "postcss-nesting": "^14.0.0",
+    "postcss-value-parser": "^4.2.0",
+    "terser": "^5.46.0",
+    "typescript": "~5.9.3",
+    "vite": "^7.2.4",
+    "vite-plugin-svgr": "^4.5.0",
+    "vite-tsconfig-paths": "^6.0.4"
+  }
+}

@@ -1,1 +1,1 @@
-console.log('Hello world from server');
+console.log('Hello world from server', process.version);

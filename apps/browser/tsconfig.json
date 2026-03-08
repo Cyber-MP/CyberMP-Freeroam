@@ -2,14 +2,9 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "types": [
-      "node",
-      "vite/client",
-      "@cybermp/server-types"
+      "vite/client"
     ],
-    "lib": [
-      "ES2023"
-    ],
-    "target": "ES2023"
+    "jsx": "react-jsx",
   },
   "include": [
     "src"
