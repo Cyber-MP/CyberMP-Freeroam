@@ -16,10 +16,11 @@ importers:
         version: 5.9.3
 
   apps/client:
-    devDependencies:
+    dependencies:
       '@cybermp/client-types':
-        specifier: ^1.7.0
-        version: 1.7.0
+        specifier: ^1.8.1
+        version: 1.8.1
+    devDependencies:
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -107,8 +108,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@cybermp/client-types@1.7.0':
-    resolution: {integrity: sha512-xwTF/SN0vdEphJDzWD+rBNjjPfqdePm04EKsgUPWS74W/h5Ag7cKRuFDjGO2nKrdnemmX1+LtVeBVprzvcreaQ==}
+  '@cybermp/client-types@1.8.1':
+    resolution: {integrity: sha512-vJCOlCmmHHqOy7frRTIbS9TSM6OyhkDxEFSpFbrshk8536lSDqjc0NtmpvKT09EMfXmdIODmbRM/9wHUTyr6/A==}
 
   '@cybermp/server-types@2.1.0':
     resolution: {integrity: sha512-hvT+yNd9jZrYP1TszO28WyRLcZtUmvXVoq+cVwwbfX8AmdJZF3G3nTLdQVNmSyFZeFyKlpdWLIYIrCXaevcKhA==}
@@ -575,7 +576,7 @@ snapshots:
   '@biomejs/cli-win32-x64@2.4.6':
     optional: true
 
-  '@cybermp/client-types@1.7.0': {}
+  '@cybermp/client-types@1.8.1': {}
 
   '@cybermp/server-types@2.1.0': {}
 
