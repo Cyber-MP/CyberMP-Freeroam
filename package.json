@@ -5,7 +5,13 @@
   "main": "index.js",
   "scripts": {
     "dev:build": "pnpm run -r --parallel --filter ./apps/** dev",
-    "dev:docker": "docker compose -f ./docker-compose.dev.yml up"
+    "build": "pnpm run -r --parallel --filter ./apps/** build",
+    "dev:docker": "docker compose -f ./docker-compose.dev.yml up",
+    "docker": "docker compose up -d",
+    "dev:win": "cross-env NODE_ENV=development ./mp/win/CyberMP-Server.exe -run -rdir=./resources",
+    "win": "cross-env NODE_ENV=production ./mp/win/CyberMP-Server.exe -run -rdir=./resources",
+    "dev:linux": "cross-env NODE_ENV=development ./mp/linux/cybermp-server -run -rdir=./resources",
+    "linux": "cross-env NODE_ENV=production ./mp/linux/cybermp-server -run -rdir=./resources"
   },
   "keywords": [],
   "author": "terminaate",

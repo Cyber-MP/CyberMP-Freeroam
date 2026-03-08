@@ -1,0 +1,11 @@
+# CHANGE THIS TO PROD
+
+services:
+  server:
+    container_name: cybermp-freeroam
+    image: ghcr.io/cyber-mp/server:latest
+    stdin_open: true
+    tty: true
+    environment:
+      NODE_ENV: production
+      IS_DOCKER: "true"
