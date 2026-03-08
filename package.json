@@ -1,0 +1,18 @@
+{
+  "name": "cybermp-freeroam",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev:build": "pnpm run -r --parallel --filter ./apps/** dev",
+    "dev:docker": "docker compose -f ./docker-compose.dev.yml up"
+  },
+  "keywords": [],
+  "author": "terminaate",
+  "license": "MIT",
+  "packageManager": "pnpm@10.28.2",
+  "devDependencies": {
+    "@biomejs/biome": "2.4.6",
+    "typescript": "^5.9.3"
+  }
+}
