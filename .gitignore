@@ -24,9 +24,13 @@ dist-ssr
 
 *storybook.log
 
+apps/**/types
+
 mp/win/*
 mp/linux/*
 !mp/win/.gitkeep
 !mp/linux/.gitkeep
 crashdumps
 cache
+
+**/tsconfig.tsbuildinfo

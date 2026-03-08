@@ -1,6 +1,8 @@
+import dts from 'unplugin-dts/vite';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
+  plugins: [dts({ outDirs: './types' })],
   build: {
     minify: false,
     sourcemap: false,

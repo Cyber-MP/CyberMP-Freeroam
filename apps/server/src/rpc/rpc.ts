@@ -1,0 +1,6 @@
+import { RpcServer } from '@cybermp/rpc-server';
+
+export const rpc = new RpcServer({
+  prefix: 'freeroam',
+  throwUnknownMethods: false,
+});

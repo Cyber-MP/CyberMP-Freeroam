@@ -9,7 +9,7 @@
     "lib": [
       "ES2023"
     ],
-    "target": "ES2023"
+    "target": "ES2023",
   },
   "include": [
     "src"
