@@ -3,8 +3,7 @@
   "compilerOptions": {
     "types": [
       "node",
-      "vite/client",
-      "@cybermp/server-types"
+      "vite/client"
     ],
     "lib": [
       "ES2023"

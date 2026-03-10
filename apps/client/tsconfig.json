@@ -2,8 +2,7 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "types": [
-      "vite/client",
-      "@cybermp/client-types"
+      "vite/client"
     ],
   },
   "include": [

@@ -11,8 +11,8 @@
   "license": "MIT",
   "description": "",
   "dependencies": {
-    "@cybermp/rpc-router": "workspace:../../libs/rpc/packages/router",
-    "@cybermp/rpc-server": "workspace:../../libs/rpc/packages/server",
+    "@cybermp/rpc-router": "workspace:*",
+    "@cybermp/rpc-server": "workspace:*",
     "zod": "^4.3.6"
   },
   "exports": {

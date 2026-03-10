@@ -91,10 +91,10 @@ importers:
   apps/client:
     dependencies:
       '@cybermp/rpc-client':
-        specifier: workspace:../../libs/rpc/packages/client
+        specifier: workspace:*
         version: link:../../libs/rpc/packages/client
       '@cybermp/rpc-router':
-        specifier: workspace:../../libs/rpc/packages/router
+        specifier: workspace:*
         version: link:../../libs/rpc/packages/router
       zod:
         specifier: ^4.3.6
@@ -119,10 +119,10 @@ importers:
   apps/server:
     dependencies:
       '@cybermp/rpc-router':
-        specifier: workspace:../../libs/rpc/packages/router
+        specifier: workspace:*
         version: link:../../libs/rpc/packages/router
       '@cybermp/rpc-server':
-        specifier: workspace:../../libs/rpc/packages/server
+        specifier: workspace:*
         version: link:../../libs/rpc/packages/server
       zod:
         specifier: ^4.3.6
@@ -152,18 +152,9 @@ importers:
       '@biomejs/biome':
         specifier: 2.4.4
         version: 2.4.4
-      '@cybermp/server-types':
-        specifier: ^2.0.2
-        version: 2.1.0
-      '@types/node':
-        specifier: ^24.2.1
-        version: 24.12.0
       jsdom:
         specifier: ^28.1.0
         version: 28.1.0
-      prettier:
-        specifier: ^3.6.2
-        version: 3.8.1
       type-fest:
         specifier: ^5.4.1
         version: 5.4.4
@@ -175,7 +166,97 @@ importers:
         version: 3.6.1(typescript@5.9.3)
       vitest:
         specifier: ^4.0.10
-        version: 4.0.18(@types/node@24.12.0)(jiti@2.6.1)(jsdom@28.1.0)(lightningcss@1.31.1)(terser@5.46.0)
+        version: 4.0.18(@types/node@25.3.5)(jiti@2.6.1)(jsdom@28.1.0)(lightningcss@1.31.1)(terser@5.46.0)
+
+  libs/rpc/packages/browser:
+    dependencies:
+      '@cybermp/browser-types':
+        specifier: ^1.0.0
+        version: 1.1.0
+      '@cybermp/rpc-core':
+        specifier: workspace:*
+        version: link:../core
+    devDependencies:
+      '@types/node':
+        specifier: ^24.2.1
+        version: 24.12.0
+
+  libs/rpc/packages/client:
+    dependencies:
+      '@cybermp/client-types':
+        specifier: ^1.6.11
+        version: 1.8.1
+      '@cybermp/rpc-core':
+        specifier: workspace:*
+        version: link:../core
+    devDependencies:
+      '@types/node':
+        specifier: ^24.2.1
+        version: 24.12.0
+
+  libs/rpc/packages/core: {}
+
+  libs/rpc/packages/react:
+    dependencies:
+      '@cybermp/rpc-browser':
+        specifier: workspace:*
+        version: link:../browser
+      react:
+        specifier: '>=18.0.0'
+        version: 19.2.3
+    devDependencies:
+      '@types/react':
+        specifier: ^19.2.7
+        version: 19.2.14
+
+  libs/rpc/packages/router:
+    dependencies:
+      '@cybermp/rpc-core':
+        specifier: workspace:*
+        version: link:../core
+      radash:
+        specifier: ^12.1.1
+        version: 12.1.1
+    devDependencies:
+      '@standard-schema/spec':
+        specifier: ^1.1.0
+        version: 1.1.0
+
+  libs/rpc/packages/router-react:
+    dependencies:
+      '@cybermp/rpc-browser':
+        specifier: workspace:*
+        version: link:../browser
+      '@cybermp/rpc-router':
+        specifier: workspace:*
+        version: link:../router
+      react:
+        specifier: '>=18.0.0'
+        version: 19.2.3
+    devDependencies:
+      '@types/react':
+        specifier: ^19.2.7
+        version: 19.2.14
+
+  libs/rpc/packages/router-tanstack-query: {}
+
+  libs/rpc/packages/server:
+    dependencies:
+      '@cybermp/rpc-core':
+        specifier: workspace:*
+        version: link:../core
+      '@cybermp/server-types':
+        specifier: ^2.0.2
+        version: 2.1.0
+
+  libs/rpc/packages/superjson:
+    dependencies:
+      '@cybermp/rpc-core':
+        specifier: workspace:*
+        version: link:../core
+      superjson:
+        specifier: ^2.2.6
+        version: 2.2.6
 
 packages:
 
@@ -453,6 +534,9 @@ packages:
     engines: {node: '>=20.19.0'}
     peerDependencies:
       postcss: ^8.4
+
+  '@cybermp/browser-types@1.1.0':
+    resolution: {integrity: sha512-CLQT9dRq3pJyDO0lMO2eiXUyQugfn2CpUnwvAddCCEX1yIkmzb1U85CV8D8KxDkXSqkMzemIPObfgNwfdJnxGw==}
 
   '@cybermp/client-types@1.8.1':
     resolution: {integrity: sha512-vJCOlCmmHHqOy7frRTIbS9TSM6OyhkDxEFSpFbrshk8536lSDqjc0NtmpvKT09EMfXmdIODmbRM/9wHUTyr6/A==}
@@ -1515,6 +1599,10 @@ packages:
   convert-source-map@2.0.0:
     resolution: {integrity: sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==}
 
+  copy-anything@4.0.5:
+    resolution: {integrity: sha512-7Vv6asjS4gMOuILabD3l739tsaxFQmC+a7pLZm02zyvs8p977bL3zEgq3yDk5rn9B0PbYgIv++jmHcuUab4RhA==}
+    engines: {node: '>=18'}
+
   cosmiconfig@8.3.6:
     resolution: {integrity: sha512-kcZ6+W5QzcJ3P1Mt+83OUv/oHFqZHIx8DuxG6eZ5RGMERoLqp4BuGjhHLYGK+Kf5XVkQvqBSmAy/nGWN3qDgEA==}
     engines: {node: '>=14'}
@@ -1758,6 +1846,10 @@ packages:
 
   is-reference@1.2.1:
     resolution: {integrity: sha512-U82MsXXiFIrjCK4otLT+o2NA2Cd2g5MLoOVXUZjIOhLurrRxpEXzI8O0KZHr3IjLvlAH1kTPYSuqer5T9ZVBKQ==}
+
+  is-what@5.5.0:
+    resolution: {integrity: sha512-oG7cgbmg5kLYae2N5IVd3jm2s+vldjxJzK1pcu9LfpGuQ93MQSzo0okvRna+7y5ifrD+20FE8FvjusyGaz14fw==}
+    engines: {node: '>=18'}
 
   isexe@2.0.0:
     resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==}
@@ -2194,11 +2286,6 @@ packages:
     resolution: {integrity: sha512-OW/rX8O/jXnm82Ey1k44pObPtdblfiuWnrd8X7GJ7emImCOstunGbXUpp7HdBrFQX6rJzn3sPT397Wp5aCwCHg==}
     engines: {node: ^10 || ^12 || >=14}
 
-  prettier@3.8.1:
-    resolution: {integrity: sha512-UOnG6LftzbdaHZcKoPFtOcCKztrQ57WkHDeRD9t/PTQtmT0NHSeWWepj6pS0z/N7+08BHFDQVUrfmfMRcZwbMg==}
-    engines: {node: '>=14'}
-    hasBin: true
-
   pretty-bytes@7.1.0:
     resolution: {integrity: sha512-nODzvTiYVRGRqAOvE84Vk5JDPyyxsVk0/fbA/bq7RqlnhksGpset09XTxbpvLTIjoaF7K8Z8DG8yHtKGTPSYRw==}
     engines: {node: '>=20'}
@@ -2209,6 +2296,10 @@ packages:
 
   quansync@0.2.11:
     resolution: {integrity: sha512-AifT7QEbW9Nri4tAwR5M/uzpBuqfZf+zwaEM/QkzEjj7NBuFD2rBuy0K3dE+8wltbezDV7JMA0WfnCPYRSYbXA==}
+
+  radash@12.1.1:
+    resolution: {integrity: sha512-h36JMxKRqrAxVD8201FrCpyeNuUY9Y5zZwujr20fFO77tpUtGa6EZzfKw/3WaiBX95fq7+MpsuMLNdSnORAwSA==}
+    engines: {node: '>=14.18.0'}
 
   react-dom@19.2.3:
     resolution: {integrity: sha512-yELu4WmLPw5Mr/lmeEpox5rw3RETacE++JgHqQzd2dg+YbJuat3jH4ingc+WPZhxaoFzdv9y33G+F7Nl5O0GBg==}
@@ -2348,6 +2439,10 @@ packages:
     engines: {node: ^18.12.0 || ^20.9.0 || >=22.0}
     peerDependencies:
       postcss: ^8.4.32
+
+  superjson@2.2.6:
+    resolution: {integrity: sha512-H+ue8Zo4vJmV2nRjpx86P35lzwDT3nItnIsocgumgr0hHMQ+ZGq5vrERg9kJBo5AWGmxZDhzDo+WVIJqkB0cGA==}
+    engines: {node: '>=16'}
 
   supports-preserve-symlinks-flag@1.0.0:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
@@ -2895,6 +2990,8 @@ snapshots:
   '@csstools/utilities@3.0.0(postcss@8.5.8)':
     dependencies:
       postcss: 8.5.8
+
+  '@cybermp/browser-types@1.1.0': {}
 
   '@cybermp/client-types@1.8.1': {}
 
@@ -3527,13 +3624,13 @@ snapshots:
       chai: 6.2.2
       tinyrainbow: 3.0.3
 
-  '@vitest/mocker@4.0.18(vite@7.3.1(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.31.1)(terser@5.46.0))':
+  '@vitest/mocker@4.0.18(vite@7.3.1(@types/node@25.3.5)(jiti@2.6.1)(lightningcss@1.31.1)(terser@5.46.0))':
     dependencies:
       '@vitest/spy': 4.0.18
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      vite: 7.3.1(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.31.1)(terser@5.46.0)
+      vite: 7.3.1(@types/node@25.3.5)(jiti@2.6.1)(lightningcss@1.31.1)(terser@5.46.0)
 
   '@vitest/pretty-format@4.0.18':
     dependencies:
@@ -3642,6 +3739,10 @@ snapshots:
   consola@3.4.2: {}
 
   convert-source-map@2.0.0: {}
+
+  copy-anything@4.0.5:
+    dependencies:
+      is-what: 5.5.0
 
   cosmiconfig@8.3.6(typescript@5.9.3):
     dependencies:
@@ -3948,6 +4049,8 @@ snapshots:
   is-reference@1.2.1:
     dependencies:
       '@types/estree': 1.0.8
+
+  is-what@5.5.0: {}
 
   isexe@2.0.0: {}
 
@@ -4342,13 +4445,13 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
-  prettier@3.8.1: {}
-
   pretty-bytes@7.1.0: {}
 
   punycode@2.3.1: {}
 
   quansync@0.2.11: {}
+
+  radash@12.1.1: {}
 
   react-dom@19.2.3(react@19.2.3):
     dependencies:
@@ -4486,6 +4589,10 @@ snapshots:
       browserslist: 4.28.1
       postcss: 8.5.8
       postcss-selector-parser: 7.1.1
+
+  superjson@2.2.6:
+    dependencies:
+      copy-anything: 4.0.5
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
@@ -4667,7 +4774,7 @@ snapshots:
       - supports-color
       - typescript
 
-  vite@7.3.1(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.31.1)(terser@5.46.0):
+  vite@7.3.1(@types/node@25.3.5)(jiti@2.6.1)(lightningcss@1.31.1)(terser@5.46.0):
     dependencies:
       esbuild: 0.27.3
       fdir: 6.5.0(picomatch@4.0.3)
@@ -4676,16 +4783,16 @@ snapshots:
       rollup: 4.59.0
       tinyglobby: 0.2.15
     optionalDependencies:
-      '@types/node': 24.12.0
+      '@types/node': 25.3.5
       fsevents: 2.3.3
       jiti: 2.6.1
       lightningcss: 1.31.1
       terser: 5.46.0
 
-  vitest@4.0.18(@types/node@24.12.0)(jiti@2.6.1)(jsdom@28.1.0)(lightningcss@1.31.1)(terser@5.46.0):
+  vitest@4.0.18(@types/node@25.3.5)(jiti@2.6.1)(jsdom@28.1.0)(lightningcss@1.31.1)(terser@5.46.0):
     dependencies:
       '@vitest/expect': 4.0.18
-      '@vitest/mocker': 4.0.18(vite@7.3.1(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.31.1)(terser@5.46.0))
+      '@vitest/mocker': 4.0.18(vite@7.3.1(@types/node@25.3.5)(jiti@2.6.1)(lightningcss@1.31.1)(terser@5.46.0))
       '@vitest/pretty-format': 4.0.18
       '@vitest/runner': 4.0.18
       '@vitest/snapshot': 4.0.18
@@ -4702,10 +4809,10 @@ snapshots:
       tinyexec: 1.0.2
       tinyglobby: 0.2.15
       tinyrainbow: 3.0.3
-      vite: 7.3.1(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.31.1)(terser@5.46.0)
+      vite: 7.3.1(@types/node@25.3.5)(jiti@2.6.1)(lightningcss@1.31.1)(terser@5.46.0)
       why-is-node-running: 2.3.0
     optionalDependencies:
-      '@types/node': 24.12.0
+      '@types/node': 25.3.5
       jsdom: 28.1.0
     transitivePeerDependencies:
       - jiti

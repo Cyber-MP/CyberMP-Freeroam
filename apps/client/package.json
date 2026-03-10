@@ -17,8 +17,8 @@
     "vite": "npm:rolldown-vite@7.3.1"
   },
   "dependencies": {
-    "@cybermp/rpc-client": "workspace:../../libs/rpc/packages/client",
-    "@cybermp/rpc-router": "workspace:../../libs/rpc/packages/router",
+    "@cybermp/rpc-client": "workspace:*",
+    "@cybermp/rpc-router": "workspace:*",
     "zod": "^4.3.6"
   }
 }
