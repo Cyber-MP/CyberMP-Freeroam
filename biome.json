@@ -26,6 +26,16 @@
       "suspicious": {
         "noExplicitAny": "off",
         "noConstEnum": "off"
+      },
+      "style": {
+        "noRestrictedGlobals": {
+          "level": "error",
+          "options": {
+            "deniedGlobals": {
+              "mp": ""
+            }
+          }
+        }
       }
     }
   },

@@ -2,13 +2,13 @@ export class StatusEffectsController {
   private effectsSystem!: gameStatusEffectSystem;
 
   constructor() {
-    mp.game.onGameLoaded(() => {
-      this.effectsSystem = mp.game.ScriptGameInstance.GetStatusEffectSystem();
+    mpClient.game.onGameLoaded(() => {
+      this.effectsSystem = mpClient.game.ScriptGameInstance.GetStatusEffectSystem();
     });
   }
 
   addStatusEffect(effect: string) {
-    const player = mp.game.GetPlayer();
+    const player = mpClient.game.GetPlayer();
 
     this.effectsSystem.ApplyStatusEffect(
       player.GetEntityID(),
@@ -19,16 +19,16 @@ export class StatusEffectsController {
   }
 
   hasStatusEffect(effect: string) {
-    const player = mp.game.GetPlayer();
+    const player = mpClient.game.GetPlayer();
 
     return this.effectsSystem.HasStatusEffect(player.GetEntityID(), effect);
   }
 
   removeStatusEffect(effect: string) {
-    const player = mp.game.GetPlayerObject();
+    const player = mpClient.game.GetPlayerObject();
 
     if (this.hasStatusEffect(effect)) {
-      mp.game.StatusEffectHelper.RemoveStatusEffect(player, effect, undefined);
+      mpClient.game.StatusEffectHelper.RemoveStatusEffect(player, effect, undefined);
     }
   }
 }

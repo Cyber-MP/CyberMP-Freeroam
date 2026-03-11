@@ -4,16 +4,16 @@ export class MenusController {
   private SettingsMainGameController: SettingsMainGameController | null = null;
 
   constructor() {
-    mp.game.onGameLoaded(() => {
-      mp.game.observe('SettingsMainGameController', 'OnMenuChanged', (self) => {
+    mpClient.game.onGameLoaded(() => {
+      mpClient.game.observe('SettingsMainGameController', 'OnMenuChanged', (self) => {
         this.SettingsMainGameController = self;
       });
 
-      mp.game.observe('SettingsMainGameController', 'RequestClose', () => {
+      mpClient.game.observe('SettingsMainGameController', 'RequestClose', () => {
         this.SettingsMainGameController = null;
       });
 
-      mp.game.observe(
+      mpClient.game.observe(
         'MenuScenario_PauseMenu',
         'OnSwitchToSettings',
         (self) => {
@@ -21,16 +21,16 @@ export class MenusController {
         },
       );
 
-      mp.game.observe('MenuScenario_PauseMenu', 'OnEnterScenario', (self) => {
+      mpClient.game.observe('MenuScenario_PauseMenu', 'OnEnterScenario', (self) => {
         this.MenuScenario_PauseMenu = self;
       });
     });
   }
 
   closeAllMenus() {
-    const player = mp.game.GetPlayer();
+    const player = mpClient.game.GetPlayer();
 
-    player.QueueEvent(new mp.game.ForceCloseHubMenuEvent());
+    player.QueueEvent(new mpClient.game.ForceCloseHubMenuEvent());
 
     this.MenuScenario_PauseMenu?.OnClosePauseMenu();
     this.SettingsMainGameController?.RequestClose();

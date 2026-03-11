@@ -1,5 +1,11 @@
+import './mp';
+import { router } from './router';
+import { r } from './rpc';
+
 const bootstrap = () => {
-  console.log('Hello world from client');
+  r.apply(router);
+
+  console.log('Client initialized');
 };
 
 void bootstrap();

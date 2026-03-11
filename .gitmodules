@@ -1,3 +1,0 @@
-[submodule "libs/rpc"]
-	path = libs/rpc
-	url = https://github.com/cyber-mp/cybermp-rpc

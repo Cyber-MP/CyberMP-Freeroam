@@ -11,11 +11,11 @@ export class LoadingScreenController {
   private system!: LoadingScreenSystem;
 
   constructor() {
-    mp.game.onInit(() => {
-      this.system = mp.game.ScriptGameInstance.GetLoadingScreenSystem();
+    mpClient.game.onInit(() => {
+      this.system = mpClient.game.ScriptGameInstance.GetLoadingScreenSystem();
     });
 
-    mp.game.observe(
+    mpClient.game.observe(
       'LoadingScreenSystem',
       'OnLoadingScreenStateChange',
       (self, newState) => {

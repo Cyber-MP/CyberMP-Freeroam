@@ -6,7 +6,7 @@ export class KeyboardController {
   private binds = new Map<CyberEnums.EInputKey, Set<BindCallback>>();
 
   constructor() {
-    mp.game.onInputKeyEvent(this.onInputKeyEvent.bind(this));
+    mpClient.game.onInputKeyEvent(this.onInputKeyEvent.bind(this));
   }
 
   private onInputKeyEvent(

@@ -10,16 +10,21 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@cybermp/rpc-browser": "0.1.0-rc.2",
+    "@cybermp/rpc-router": "0.1.0-rc.2",
+    "@cybermp/rpc-router-react": "0.1.0-rc.2",
     "@tailwindcss/postcss": "^4.1.18",
     "postcss": "^8.5.6",
     "react": "19.2.3",
     "react-dom": "19.2.3",
-    "tailwindcss": "^4.1.18"
+    "tailwindcss": "^4.1.18",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@csstools/postcss-cascade-layers": "^6.0.0",
     "@csstools/postcss-color-mix-function": "^4.0.0",
     "@csstools/postcss-oklab-function": "^5.0.0",
+    "@cybermp/browser-types": "^1.1.0",
     "@svgr/plugin-svgo": "^8.1.0",
     "@types/react": "^19.2.5",
     "@types/react-dom": "^19.2.3",

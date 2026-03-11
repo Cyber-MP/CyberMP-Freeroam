@@ -12,9 +12,9 @@ export class LocalPlayerController {
     menusController.closeAllMenus();
 
     const teleportFacility =
-      mp.game.ScriptGameInstance.GetTeleportationFacility();
+      mpClient.game.ScriptGameInstance.GetTeleportationFacility();
 
-    const playerObj = mp.game.GetPlayerObject();
+    const playerObj = mpClient.game.GetPlayerObject();
 
     teleportFacility.Teleport(
       playerObj,
