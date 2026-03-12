@@ -107,7 +107,7 @@ importers:
     dependencies:
       '@cybermp/rpc-client':
         specifier: 0.1.0-rc.2
-        version: 0.1.0-rc.2(@cybermp/client-types@1.8.1)
+        version: 0.1.0-rc.2(@cybermp/client-types@2.0.0)
       '@cybermp/rpc-router':
         specifier: 0.1.0-rc.2
         version: 0.1.0-rc.2
@@ -116,8 +116,8 @@ importers:
         version: 4.3.6
     devDependencies:
       '@cybermp/client-types':
-        specifier: ^1.8.1
-        version: 1.8.1
+        specifier: ^2.0.0
+        version: 2.0.0
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -127,6 +127,9 @@ importers:
       vite:
         specifier: npm:rolldown-vite@7.3.1
         version: rolldown-vite@7.3.1(@types/node@25.3.5)(esbuild@0.27.3)(jiti@2.6.1)(terser@5.46.0)
+      vite-tsconfig-paths:
+        specifier: ^6.1.1
+        version: 6.1.1(rolldown-vite@7.3.1(@types/node@25.3.5)(esbuild@0.27.3)(jiti@2.6.1)(terser@5.46.0))(typescript@5.9.3)
 
   apps/server:
     dependencies:
@@ -135,14 +138,14 @@ importers:
         version: 0.1.0-rc.2
       '@cybermp/rpc-server':
         specifier: 0.1.0-rc.2
-        version: 0.1.0-rc.2(@cybermp/server-types@2.1.0)
+        version: 0.1.0-rc.2(@cybermp/server-types@3.0.0)
       zod:
         specifier: ^4.3.6
         version: 4.3.6
     devDependencies:
       '@cybermp/server-types':
-        specifier: ^2.1.0
-        version: 2.1.0
+        specifier: ^3.0.0
+        version: 3.0.0
       '@types/node':
         specifier: ^25.3.5
         version: 25.3.5
@@ -155,6 +158,9 @@ importers:
       vite:
         specifier: npm:rolldown-vite@7.3.1
         version: rolldown-vite@7.3.1(@types/node@25.3.5)(esbuild@0.27.3)(jiti@2.6.1)(terser@5.46.0)
+      vite-tsconfig-paths:
+        specifier: ^6.1.1
+        version: 6.1.1(rolldown-vite@7.3.1(@types/node@25.3.5)(esbuild@0.27.3)(jiti@2.6.1)(terser@5.46.0))(typescript@5.9.3)
 
 packages:
 
@@ -359,8 +365,8 @@ packages:
   '@cybermp/browser-types@1.1.0':
     resolution: {integrity: sha512-CLQT9dRq3pJyDO0lMO2eiXUyQugfn2CpUnwvAddCCEX1yIkmzb1U85CV8D8KxDkXSqkMzemIPObfgNwfdJnxGw==}
 
-  '@cybermp/client-types@1.8.1':
-    resolution: {integrity: sha512-vJCOlCmmHHqOy7frRTIbS9TSM6OyhkDxEFSpFbrshk8536lSDqjc0NtmpvKT09EMfXmdIODmbRM/9wHUTyr6/A==}
+  '@cybermp/client-types@2.0.0':
+    resolution: {integrity: sha512-YBMrR8NNUTfP1jLQaTgFkyIiObo/ClCHCY/dCIHDZU/9aym5g3P05OgGKtSDUY6LHUMLZ7UeMSFFNzVIl1G3wQ==}
 
   '@cybermp/rpc-browser@0.1.0-rc.2':
     resolution: {integrity: sha512-LMoM65jJhr/SDSe1GzClj7ovsOwTvCdKAq0ct3Qrzr5ILQ2y3Vd74HLndXgGzZPBzO+z+WP1IOenamVtZcWPBQ==}
@@ -391,8 +397,8 @@ packages:
     peerDependencies:
       '@cybermp/server-types': ^2.0.2
 
-  '@cybermp/server-types@2.1.0':
-    resolution: {integrity: sha512-hvT+yNd9jZrYP1TszO28WyRLcZtUmvXVoq+cVwwbfX8AmdJZF3G3nTLdQVNmSyFZeFyKlpdWLIYIrCXaevcKhA==}
+  '@cybermp/server-types@3.0.0':
+    resolution: {integrity: sha512-T/cEeI5AgbIVSDNpy7R3BMKIPlZRY65JDeVlGBeTgyVlKH5gRquFZfJbcvJMhpj7DqAl54s/u53ztHSt+UV6qQ==}
 
   '@emnapi/core@1.8.1':
     resolution: {integrity: sha512-AvT9QFpxK0Zd8J0jopedNm+w/2fIzvtPKPjqyw9jwvBaReTTqPBk9Hixaz7KbjimP+QNz605/XnjFcDAL2pqBg==}
@@ -1932,16 +1938,16 @@ snapshots:
 
   '@cybermp/browser-types@1.1.0': {}
 
-  '@cybermp/client-types@1.8.1': {}
+  '@cybermp/client-types@2.0.0': {}
 
   '@cybermp/rpc-browser@0.1.0-rc.2(@cybermp/browser-types@1.1.0)':
     dependencies:
       '@cybermp/browser-types': 1.1.0
       '@cybermp/rpc-core': 0.1.0-rc.2
 
-  '@cybermp/rpc-client@0.1.0-rc.2(@cybermp/client-types@1.8.1)':
+  '@cybermp/rpc-client@0.1.0-rc.2(@cybermp/client-types@2.0.0)':
     dependencies:
-      '@cybermp/client-types': 1.8.1
+      '@cybermp/client-types': 2.0.0
       '@cybermp/rpc-core': 0.1.0-rc.2
 
   '@cybermp/rpc-core@0.1.0-rc.2': {}
@@ -1958,12 +1964,12 @@ snapshots:
       '@cybermp/rpc-core': 0.1.0-rc.2
       radash: 12.1.1
 
-  '@cybermp/rpc-server@0.1.0-rc.2(@cybermp/server-types@2.1.0)':
+  '@cybermp/rpc-server@0.1.0-rc.2(@cybermp/server-types@3.0.0)':
     dependencies:
       '@cybermp/rpc-core': 0.1.0-rc.2
-      '@cybermp/server-types': 2.1.0
+      '@cybermp/server-types': 3.0.0
 
-  '@cybermp/server-types@2.1.0': {}
+  '@cybermp/server-types@3.0.0': {}
 
   '@emnapi/core@1.8.1':
     dependencies:

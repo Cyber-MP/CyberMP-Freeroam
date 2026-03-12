@@ -1,14 +1,17 @@
+import { mp } from '@client/mp';
+import type { gameStatusEffectSystem } from '@cybermp/client-types/game';
+
 export class StatusEffectsController {
   private effectsSystem!: gameStatusEffectSystem;
 
   constructor() {
-    mpClient.game.onGameLoaded(() => {
-      this.effectsSystem = mpClient.game.ScriptGameInstance.GetStatusEffectSystem();
+    mp.game.onGameLoaded(() => {
+      this.effectsSystem = mp.game.ScriptGameInstance.GetStatusEffectSystem();
     });
   }
 
   addStatusEffect(effect: string) {
-    const player = mpClient.game.GetPlayer();
+    const player = mp.game.GetPlayer();
 
     this.effectsSystem.ApplyStatusEffect(
       player.GetEntityID(),
@@ -19,16 +22,16 @@ export class StatusEffectsController {
   }
 
   hasStatusEffect(effect: string) {
-    const player = mpClient.game.GetPlayer();
+    const player = mp.game.GetPlayer();
 
     return this.effectsSystem.HasStatusEffect(player.GetEntityID(), effect);
   }
 
   removeStatusEffect(effect: string) {
-    const player = mpClient.game.GetPlayerObject();
+    const player = mp.game.GetPlayerObject();
 
     if (this.hasStatusEffect(effect)) {
-      mpClient.game.StatusEffectHelper.RemoveStatusEffect(player, effect, undefined);
+      mp.game.StatusEffectHelper.RemoveStatusEffect(player, effect, undefined);
     }
   }
 }

@@ -1,3 +1,4 @@
+import { mp } from '@client/mp';
 import type * as CyberEnums from '@cybermp/client-types/enums';
 
 export type BindCallback = (action: CyberEnums.EInputAction) => void;
@@ -6,7 +7,7 @@ export class KeyboardController {
   private binds = new Map<CyberEnums.EInputKey, Set<BindCallback>>();
 
   constructor() {
-    mpClient.game.onInputKeyEvent(this.onInputKeyEvent.bind(this));
+    mp.game.onInputKeyEvent(this.onInputKeyEvent.bind(this));
   }
 
   private onInputKeyEvent(

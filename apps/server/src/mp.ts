@@ -1,2 +1,3 @@
-// biome-ignore lint/style/noRestrictedGlobals: used to inject mpServer
-(global as any).mpServer = mp;
+import type { MpServer } from '@cybermp/server-types';
+
+export const mp: MpServer = (globalThis as any).mp;

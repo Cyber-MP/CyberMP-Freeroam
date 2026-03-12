@@ -1,4 +1,3 @@
-import './mp';
 import { router } from './router';
 import { r } from './rpc';
 

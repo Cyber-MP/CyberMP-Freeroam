@@ -1,3 +1,4 @@
+import { mp } from '@client/mp';
 import { createEulerAngles, createVector4 } from '../../lib/vectors';
 import { loadingScreenController } from '../loading-screen';
 import { menusController } from '../menus';
@@ -12,9 +13,9 @@ export class LocalPlayerController {
     menusController.closeAllMenus();
 
     const teleportFacility =
-      mpClient.game.ScriptGameInstance.GetTeleportationFacility();
+      mp.game.ScriptGameInstance.GetTeleportationFacility();
 
-    const playerObj = mpClient.game.GetPlayerObject();
+    const playerObj = mp.game.GetPlayerObject();
 
     teleportFacility.Teleport(
       playerObj,

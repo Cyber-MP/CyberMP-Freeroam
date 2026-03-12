@@ -1,4 +1,6 @@
+import { mp } from '@client/mp';
 import * as CyberEnums from '@cybermp/client-types/enums';
+import type { vehicleBaseObject } from '@cybermp/client-types/game';
 import { procedure } from '@cybermp/rpc-router/server';
 
 type RequestSitInVehicleOptions = {
@@ -18,68 +20,64 @@ export class VehiclesController {
         return;
       }
 
-      const entityID = new mpClient.game.entEntityID();
+      const entityID = new mp.game.entEntityID();
       entityID.hash = hash;
-      const entity = mpClient.game.ScriptGameInstance.FindEntityByID(entityID);
+      const entity = mp.game.ScriptGameInstance.FindEntityByID(entityID);
       if (!entity) {
         return;
       }
 
-      const data = new mpClient.game.gameMountEventData();
+      const data = new mp.game.gameMountEventData();
       data.isInstant = instant;
       data.slotName = slot;
       data.mountParentEntityId = entity.GetEntityID();
       data.entryAnimName = 'forcedTransition';
 
-      const slotID = new mpClient.game.gamemountingMountingSlotId();
+      const slotID = new mp.game.gamemountingMountingSlotId();
       slotID.id = slot;
 
-      const mountingInfo = new mpClient.game.gamemountingMountingInfo();
-      mountingInfo.childId = mpClient.game.GetPlayer().GetEntityID();
+      const mountingInfo = new mp.game.gamemountingMountingInfo();
+      mountingInfo.childId = mp.game.GetPlayer().GetEntityID();
       mountingInfo.parentId = entity.GetEntityID();
       mountingInfo.slotId = slotID;
 
-      const mountEvent = new mpClient.game.gamemountingMountingRequest();
+      const mountEvent = new mp.game.gamemountingMountingRequest();
       mountEvent.lowLevelMountingInfo = mountingInfo;
       mountEvent.mountData = data;
-      mpClient.game.ScriptGameInstance.GetMountingFacility().Mount(mountEvent);
+      mp.game.ScriptGameInstance.GetMountingFacility().Mount(mountEvent);
 
-      mpClient.events.off('onVehicleStreamIn', onVehicleStreamIn);
+      mp.events.off('onVehicleStreamIn', onVehicleStreamIn);
     };
 
-    mpClient.events.on('onVehicleStreamIn', onVehicleStreamIn);
+    mp.events.on('onVehicleStreamIn', onVehicleStreamIn);
   }
 
   requestLeaveVehicle() {
-    const vehicle = mpClient.game.GetMountedVehicle(
-      mpClient.game.GetPlayerObject(),
-    );
+    const vehicle = mp.game.GetMountedVehicle(mp.game.GetPlayerObject());
     if (!vehicle) {
       return;
     }
 
-    const slot = vehicle.GetSlotIdForMountedObject(
-      mpClient.game.GetPlayerObject(),
-    );
+    const slot = vehicle.GetSlotIdForMountedObject(mp.game.GetPlayerObject());
 
-    const data = new mpClient.game.gameMountEventData();
+    const data = new mp.game.gameMountEventData();
     data.isInstant = true;
     data.slotName = slot;
     data.mountParentEntityId = vehicle.GetEntityID();
     data.entryAnimName = 'forcedTransition';
 
-    const slotID = new mpClient.game.gamemountingMountingSlotId();
+    const slotID = new mp.game.gamemountingMountingSlotId();
     slotID.id = slot;
 
-    const mountingInfo = new mpClient.game.gamemountingMountingInfo();
-    mountingInfo.childId = mpClient.game.GetPlayer().GetEntityID();
+    const mountingInfo = new mp.game.gamemountingMountingInfo();
+    mountingInfo.childId = mp.game.GetPlayer().GetEntityID();
     mountingInfo.parentId = vehicle.GetEntityID();
     mountingInfo.slotId = slotID;
 
-    const mountEvent = new mpClient.game.gamemountingUnmountingRequest();
+    const mountEvent = new mp.game.gamemountingUnmountingRequest();
     mountEvent.lowLevelMountingInfo = mountingInfo;
     mountEvent.mountData = data;
-    mpClient.game.ScriptGameInstance.GetMountingFacility().Unmount(mountEvent);
+    mp.game.ScriptGameInstance.GetMountingFacility().Unmount(mountEvent);
   }
 
   private fixVehicle(vehicle: vehicleBaseObject) {
@@ -108,7 +106,7 @@ export class VehiclesController {
       ];
 
       for (const part of parts) {
-        mpClient.game.entAnimationControllerComponent.SetInputFloat(
+        mp.game.entAnimationControllerComponent.SetInputFloat(
           vehicle,
           part,
           0.0,
@@ -136,9 +134,7 @@ export class VehiclesController {
   }
 
   fixCurrentVehicle() {
-    const vehicle = mpClient.game.GetMountedVehicle(
-      mpClient.game.GetPlayerObject(),
-    );
+    const vehicle = mp.game.GetMountedVehicle(mp.game.GetPlayerObject());
 
     this.fixVehicle(vehicle);
   }

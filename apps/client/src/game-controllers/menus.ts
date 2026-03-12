@@ -1,19 +1,25 @@
+import type {
+  MenuScenario_PauseMenu,
+  SettingsMainGameController,
+} from '@cybermp/client-types/game';
+import { mp } from '../mp';
+
 export class MenusController {
   private MenuScenario_PauseMenu: MenuScenario_PauseMenu | null = null;
 
   private SettingsMainGameController: SettingsMainGameController | null = null;
 
   constructor() {
-    mpClient.game.onGameLoaded(() => {
-      mpClient.game.observe('SettingsMainGameController', 'OnMenuChanged', (self) => {
+    mp.game.onGameLoaded(() => {
+      mp.game.observe('SettingsMainGameController', 'OnMenuChanged', (self) => {
         this.SettingsMainGameController = self;
       });
 
-      mpClient.game.observe('SettingsMainGameController', 'RequestClose', () => {
+      mp.game.observe('SettingsMainGameController', 'RequestClose', () => {
         this.SettingsMainGameController = null;
       });
 
-      mpClient.game.observe(
+      mp.game.observe(
         'MenuScenario_PauseMenu',
         'OnSwitchToSettings',
         (self) => {
@@ -21,16 +27,16 @@ export class MenusController {
         },
       );
 
-      mpClient.game.observe('MenuScenario_PauseMenu', 'OnEnterScenario', (self) => {
+      mp.game.observe('MenuScenario_PauseMenu', 'OnEnterScenario', (self) => {
         this.MenuScenario_PauseMenu = self;
       });
     });
   }
 
   closeAllMenus() {
-    const player = mpClient.game.GetPlayer();
+    const player = mp.game.GetPlayer();
 
-    player.QueueEvent(new mpClient.game.ForceCloseHubMenuEvent());
+    player.QueueEvent(new mp.game.ForceCloseHubMenuEvent());
 
     this.MenuScenario_PauseMenu?.OnClosePauseMenu();
     this.SettingsMainGameController?.RequestClose();

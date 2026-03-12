@@ -1,4 +1,7 @@
+import { mp } from '@client/mp';
+import type { ELoadingScreenState } from '@cybermp/client-types/enums';
 import * as CyberEnums from '@cybermp/client-types/enums';
+import type { LoadingScreenSystem } from '@cybermp/client-types/game';
 import { Observer } from '../lib/observer';
 
 type LoadingScreenStateSubscriber = (
@@ -11,15 +14,15 @@ export class LoadingScreenController {
   private system!: LoadingScreenSystem;
 
   constructor() {
-    mpClient.game.onInit(() => {
-      this.system = mpClient.game.ScriptGameInstance.GetLoadingScreenSystem();
+    mp.game.onInit(() => {
+      this.system = mp.game.ScriptGameInstance.GetLoadingScreenSystem();
     });
 
-    mpClient.game.observe(
+    mp.game.observe(
       'LoadingScreenSystem',
       'OnLoadingScreenStateChange',
       (self, newState) => {
-        this.observer.notify(newState);
+        this.observer.notify(newState as ELoadingScreenState);
       },
     );
   }

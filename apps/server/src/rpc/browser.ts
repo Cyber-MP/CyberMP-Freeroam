@@ -1,6 +1,7 @@
 import type { BrowserRouter } from '@browser/router';
 import { createRouterClient } from '@cybermp/rpc-router/client';
 import { MpEnv } from '@cybermp/rpc-server';
+import type { MpPlayer } from '@cybermp/server-types';
 import { rpc } from './rpc';
 
 export const browser = createRouterClient<
