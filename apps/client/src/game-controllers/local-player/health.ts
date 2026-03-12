@@ -3,7 +3,7 @@ import * as CyberEnums from '@cybermp/client-types/enums';
 import type { gameStatsObjectID } from '@cybermp/client-types/game';
 
 export class HealthController {
-  setHealth(value: number) {
+  setCurrent(value: number) {
     const player = mp.game.GetPlayer();
     const playerGameId = player.GetEntityID() as unknown as gameStatsObjectID;
 
@@ -18,7 +18,7 @@ export class HealthController {
     );
   }
 
-  setMaxHealth(value: number) {
+  setMax(value: number) {
     const player = mp.game.GetPlayer();
     const playerGameId = player.GetEntityID() as unknown as gameStatsObjectID;
 
@@ -49,7 +49,12 @@ export class HealthController {
     );
   }
 
-  getHealth() {
+  set(value: number) {
+    this.setMax(value);
+    this.setCurrent(value);
+  }
+
+  get() {
     const player = mp.game.GetPlayer();
     const playerGameId = player.GetEntityID() as unknown as gameStatsObjectID;
 
