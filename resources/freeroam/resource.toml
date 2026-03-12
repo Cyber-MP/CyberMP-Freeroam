@@ -1,8 +1,8 @@
 #:schema https://schemas.cyber.mp/resource/schema.json
 
-server_script = "./server.js"
-client_script = "./client.js"
-file = ['../../assets/*']
+server_script = ["./server.js"]
+client_script = ["./client.js"]
+# file = ['../../assets/*']
 
 use_game_natives = "true"
 

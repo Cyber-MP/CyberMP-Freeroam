@@ -7,4 +7,4 @@ max_players = 20
 
 disable_VoIP_server = false
 
-resources = ['hotreload', 'freeroam']
+resources = ['core', 'hotreload', 'freeroam']

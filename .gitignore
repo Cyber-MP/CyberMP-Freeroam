@@ -32,5 +32,6 @@ mp/linux/*
 !mp/linux/.gitkeep
 crashdumps
 cache
+./resources/core
 
 **/tsconfig.tsbuildinfo
