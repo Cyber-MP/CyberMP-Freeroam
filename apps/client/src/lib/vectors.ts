@@ -1,5 +1,5 @@
-import { mp } from '@client/mp';
 import type { EulerAngles, Vector3, Vector4 } from '@cybermp/client-types/game';
+import { mp } from '../mp';
 
 export const createVector3 = (x: number, y: number, z: number) => {
   return Object.assign(new mp.game.Vector3(), {

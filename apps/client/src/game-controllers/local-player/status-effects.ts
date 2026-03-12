@@ -1,4 +1,4 @@
-import { mp } from '@client/mp';
+import { mp } from '../../mp';
 import type { gameStatusEffectSystem } from '@cybermp/client-types/game';
 
 export class StatusEffectsController {

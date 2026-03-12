@@ -1,6 +1,6 @@
 import { MpEnv } from '@cybermp/rpc-browser';
 import { createRouterClient } from '@cybermp/rpc-router/client';
-import type { ServerRouter } from '@server/router';
+import type { ServerRouter } from '../../../server/src/router';
 import { rpc } from './rpc';
 
 export const server = createRouterClient<

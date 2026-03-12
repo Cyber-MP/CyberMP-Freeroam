@@ -1,17 +1,5 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@server/*": [
-        "./apps/server/src/*"
-      ],
-      "@client/*": [
-        "./apps/client/src/*"
-      ],
-      "@browser/*": [
-        "./apps/browser/src/*"
-      ],
-    },
     "experimentalDecorators": true,
     "target": "ES2022",
     "useDefineForClassFields": true,

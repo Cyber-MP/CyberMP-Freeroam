@@ -1,4 +1,4 @@
-import { mp } from '@client/mp';
+import { mp } from '../mp';
 import type { ELoadingScreenState } from '@cybermp/client-types/enums';
 import * as CyberEnums from '@cybermp/client-types/enums';
 import type { LoadingScreenSystem } from '@cybermp/client-types/game';

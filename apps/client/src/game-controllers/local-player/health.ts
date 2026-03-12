@@ -1,4 +1,4 @@
-import { mp } from '@client/mp';
+import { mp } from '../../mp';
 import * as CyberEnums from '@cybermp/client-types/enums';
 import type { gameStatsObjectID } from '@cybermp/client-types/game';
 

@@ -1,5 +1,5 @@
-import { mp } from '@server/mp';
 import z from 'zod';
+import { mp } from './mp';
 import { r } from './rpc/router';
 
 export const router = {

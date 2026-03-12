@@ -1,4 +1,4 @@
-import { mp } from '@client/mp';
+import { mp } from '../../mp';
 import { createEulerAngles, createVector4 } from '../../lib/vectors';
 import { loadingScreenController } from '../loading-screen';
 import { menusController } from '../menus';

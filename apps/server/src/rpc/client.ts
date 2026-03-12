@@ -1,7 +1,7 @@
-import type { ClientRouter } from '@client/router';
 import { createRouterClient } from '@cybermp/rpc-router/client';
 import { MpEnv } from '@cybermp/rpc-server';
 import type { MpPlayer } from '@cybermp/server-types';
+import type { ClientRouter } from '../../../client/src/router';
 import { rpc } from './rpc';
 
 export const client = createRouterClient<

@@ -4,6 +4,12 @@
     "types": [
       "vite/client"
     ],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    },
     "jsx": "react-jsx",
   },
   "include": [
