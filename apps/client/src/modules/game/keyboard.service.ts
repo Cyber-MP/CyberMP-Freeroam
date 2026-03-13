@@ -1,12 +1,17 @@
 import type * as CyberEnums from '@cybermp/client-types/enums';
+import { eager } from '@freeroam/inversify';
+import { injectable, postConstruct } from 'inversify';
 import { mp } from '../../mp';
 
-export type BindCallback = (action: CyberEnums.EInputAction) => void;
+type BindCallback = (action: CyberEnums.EInputAction) => void;
 
-export class KeyboardController {
+@eager()
+@injectable()
+export class GKeyboardService {
   private binds = new Map<CyberEnums.EInputKey, Set<BindCallback>>();
 
-  constructor() {
+  @postConstruct()
+  private init() {
     mp.game.onInputKeyEvent(this.onInputKeyEvent.bind(this));
   }
 
@@ -38,5 +43,3 @@ export class KeyboardController {
     callbacks.delete(callback);
   }
 }
-
-export const keyboardController = new KeyboardController();

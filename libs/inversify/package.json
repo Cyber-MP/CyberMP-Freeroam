@@ -1,0 +1,13 @@
+{
+  "name": "@freeroam/inversify",
+  "version": "1.0.0",
+  "keywords": [],
+  "author": "Terminaate",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "peerDependencies": {
+    "inversify": "^7.11.0"
+  },
+  "packageManager": "pnpm@10.28.2"
+}

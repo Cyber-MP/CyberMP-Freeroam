@@ -1,19 +1,23 @@
-import type { ELoadingScreenState } from '@cybermp/client-types/enums';
 import * as CyberEnums from '@cybermp/client-types/enums';
 import type { LoadingScreenSystem } from '@cybermp/client-types/game';
+import { eager } from '@freeroam/inversify';
+import { injectable, postConstruct } from 'inversify';
+import { Observer } from '../../lib/observer';
 import { mp } from '../../mp';
-import { Observer } from '../observer';
 
 type LoadingScreenStateSubscriber = (
   newState: CyberEnums.ELoadingScreenState,
 ) => void;
 
-export class LoadingScreenController {
+@eager()
+@injectable()
+export class GLoadingScreenService {
   private observer = new Observer<LoadingScreenStateSubscriber>();
 
   private system!: LoadingScreenSystem;
 
-  constructor() {
+  @postConstruct()
+  private init() {
     mp.game.onInit(() => {
       this.system = mp.game.ScriptGameInstance.GetLoadingScreenSystem();
     });
@@ -22,7 +26,9 @@ export class LoadingScreenController {
       'LoadingScreenSystem',
       'OnLoadingScreenStateChange',
       (self, newState) => {
-        this.observer.notify(+String(newState) as ELoadingScreenState);
+        this.observer.notify(
+          +String(newState) as CyberEnums.ELoadingScreenState,
+        );
       },
     );
   }
@@ -74,5 +80,3 @@ export class LoadingScreenController {
     });
   }
 }
-
-export const loadingScreenController = new LoadingScreenController();

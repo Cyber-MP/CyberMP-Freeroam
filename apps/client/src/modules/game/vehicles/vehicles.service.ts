@@ -1,23 +1,18 @@
 import * as CyberEnums from '@cybermp/client-types/enums';
 import type { vehicleBaseObject } from '@cybermp/client-types/game';
-import { procedure } from '@cybermp/rpc-router/server';
-import { mp } from '../../mp';
+import { injectable } from 'inversify';
+import { mp } from '../../../mp';
 
 type RequestSitInVehicleOptions = {
-  instant: boolean;
-  slot: string;
+  instant?: boolean;
+  slot?: string;
 };
 
-export class VehiclesController {
-  contract = {
-    fixCurrentVehicle: procedure.handler(() => {
-      this.fixCurrentVehicle();
-    }),
-  };
-
+@injectable()
+export class GVehiclesService {
   requestSitInVehicle(
     vehicleNetId: number,
-    options?: Partial<RequestSitInVehicleOptions>,
+    options?: RequestSitInVehicleOptions,
   ) {
     const { instant = true, slot = 'seat_front_left' } = options ?? {};
 
@@ -145,5 +140,3 @@ export class VehiclesController {
     this.fixVehicle(vehicle);
   }
 }
-
-export const vehiclesController = new VehiclesController();

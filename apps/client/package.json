@@ -19,6 +19,9 @@
   "dependencies": {
     "@cybermp/rpc-client": "0.1.0-rc.2",
     "@cybermp/rpc-router": "0.1.0-rc.2",
+    "inversify": "^7.11.0",
+    "@freeroam/inversify": "workspace:*",
+    "reflect-metadata": "^0.2.2",
     "zod": "^4.3.6"
   }
 }

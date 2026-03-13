@@ -1,8 +1,10 @@
 import * as CyberEnums from '@cybermp/client-types/enums';
 import type { gameStatsObjectID } from '@cybermp/client-types/game';
+import { injectable } from 'inversify';
 import { mp } from '../../../mp';
 
-export class HealthController {
+@injectable()
+export class GHealthService {
   setCurrent(value: number) {
     const player = mp.game.GetPlayer();
     const playerGameId = player.GetEntityID() as unknown as gameStatsObjectID;

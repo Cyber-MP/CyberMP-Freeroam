@@ -1,16 +1,21 @@
 import type { gameStatusEffectSystem } from '@cybermp/client-types/game';
+import { eager } from '@freeroam/inversify';
+import { injectable, postConstruct } from 'inversify';
 import { mp } from '../../../mp';
 
-export class StatusEffectsController {
+@eager()
+@injectable()
+export class GStatusEffectsService {
   private effectsSystem!: gameStatusEffectSystem;
 
-  constructor() {
+  @postConstruct()
+  private init() {
     mp.game.onGameLoaded(() => {
       this.effectsSystem = mp.game.ScriptGameInstance.GetStatusEffectSystem();
     });
   }
 
-  addStatusEffect(effect: string) {
+  add(effect: string) {
     const player = mp.game.GetPlayer();
 
     this.effectsSystem.ApplyStatusEffect(
@@ -21,16 +26,16 @@ export class StatusEffectsController {
     );
   }
 
-  hasStatusEffect(effect: string) {
+  has(effect: string) {
     const player = mp.game.GetPlayer();
 
     return this.effectsSystem.HasStatusEffect(player.GetEntityID(), effect);
   }
 
-  removeStatusEffect(effect: string) {
+  remove(effect: string) {
     const player = mp.game.GetPlayerObject();
 
-    if (this.hasStatusEffect(effect)) {
+    if (this.has(effect)) {
       mp.game.StatusEffectHelper.RemoveStatusEffect(player, effect, undefined);
     }
   }
