@@ -2,7 +2,7 @@ import type {
   MenuScenario_PauseMenu,
   SettingsMainGameController,
 } from '@cybermp/client-types/game';
-import { mp } from '../mp';
+import { mp } from '../../mp';
 
 export class MenusController {
   private MenuScenario_PauseMenu: MenuScenario_PauseMenu | null = null;

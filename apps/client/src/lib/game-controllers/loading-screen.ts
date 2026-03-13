@@ -1,8 +1,8 @@
-import { mp } from '../mp';
 import type { ELoadingScreenState } from '@cybermp/client-types/enums';
 import * as CyberEnums from '@cybermp/client-types/enums';
 import type { LoadingScreenSystem } from '@cybermp/client-types/game';
-import { Observer } from '../lib/observer';
+import { mp } from '../../mp';
+import { Observer } from '../observer';
 
 type LoadingScreenStateSubscriber = (
   newState: CyberEnums.ELoadingScreenState,
@@ -22,7 +22,7 @@ export class LoadingScreenController {
       'LoadingScreenSystem',
       'OnLoadingScreenStateChange',
       (self, newState) => {
-        this.observer.notify(newState as ELoadingScreenState);
+        this.observer.notify(+String(newState) as ELoadingScreenState);
       },
     );
   }

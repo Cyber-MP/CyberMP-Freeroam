@@ -1,5 +1,5 @@
-import { mp } from '../../mp';
 import type { gameStatusEffectSystem } from '@cybermp/client-types/game';
+import { mp } from '../../../mp';
 
 export class StatusEffectsController {
   private effectsSystem!: gameStatusEffectSystem;

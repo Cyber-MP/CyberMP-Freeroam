@@ -1,5 +1,5 @@
-import { mp } from '../../mp';
-import { createEulerAngles, createVector4 } from '../../lib/vectors';
+import { mp } from '../../../mp';
+import { createEulerAngles, createVector4 } from '../../vectors';
 import { loadingScreenController } from '../loading-screen';
 import { menusController } from '../menus';
 import { HealthController } from './health';

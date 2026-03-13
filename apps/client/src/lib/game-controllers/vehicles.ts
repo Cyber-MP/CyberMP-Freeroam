@@ -1,7 +1,7 @@
-import { mp } from '../mp';
 import * as CyberEnums from '@cybermp/client-types/enums';
 import type { vehicleBaseObject } from '@cybermp/client-types/game';
 import { procedure } from '@cybermp/rpc-router/server';
+import { mp } from '../../mp';
 
 type RequestSitInVehicleOptions = {
   instant: boolean;
@@ -9,6 +9,12 @@ type RequestSitInVehicleOptions = {
 };
 
 export class VehiclesController {
+  contract = {
+    fixCurrentVehicle: procedure.handler(() => {
+      this.fixCurrentVehicle();
+    }),
+  };
+
   requestSitInVehicle(
     vehicleNetId: number,
     options?: Partial<RequestSitInVehicleOptions>,
@@ -141,9 +147,3 @@ export class VehiclesController {
 }
 
 export const vehiclesController = new VehiclesController();
-
-export const vehiclesContract = {
-  fixCurrentVehicle: procedure.handler(() => {
-    vehiclesController.fixCurrentVehicle();
-  }),
-};

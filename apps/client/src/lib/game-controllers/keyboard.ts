@@ -1,5 +1,5 @@
-import { mp } from '../mp';
 import type * as CyberEnums from '@cybermp/client-types/enums';
+import { mp } from '../../mp';
 
 export type BindCallback = (action: CyberEnums.EInputAction) => void;
 

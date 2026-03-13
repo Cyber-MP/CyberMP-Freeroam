@@ -1,4 +1,5 @@
 import './styles/index.css';
+import { RpcRouterProvider } from '@cybermp/rpc-router-react';
 import { createRoot } from 'react-dom/client';
 import { App } from './App';
 import { router } from './router';
@@ -12,7 +13,11 @@ const bootstrap = () => {
 
   r.apply(router);
 
-  createRoot(root).render(<App />);
+  createRoot(root).render(
+    <RpcRouterProvider router={r}>
+      <App />
+    </RpcRouterProvider>,
+  );
 
   console.log('Browser initialized');
 };

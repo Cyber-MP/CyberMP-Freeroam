@@ -1,6 +1,6 @@
-import { mp } from '../../mp';
 import * as CyberEnums from '@cybermp/client-types/enums';
 import type { gameStatsObjectID } from '@cybermp/client-types/game';
+import { mp } from '../../../mp';
 
 export class HealthController {
   setCurrent(value: number) {

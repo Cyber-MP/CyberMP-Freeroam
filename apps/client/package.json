@@ -10,7 +10,7 @@
   "license": "MIT",
   "description": "",
   "devDependencies": {
-    "@cybermp/client-types": "^2.0.1",
+    "@cybermp/client-types": "^2.0.2",
     "cross-env": "^7.0.3",
     "typescript": "^5.8.3",
     "vite": "npm:rolldown-vite@7.3.1",
