@@ -1,5 +1,19 @@
-import type { RpcBrowserContext } from '@cybermp/rpc-browser';
-import { RpcRouter } from '@cybermp/rpc-router/server';
-import { rpc } from './rpc';
+import z from 'zod';
+import { keysContract } from '../keys';
+import type { FileRoutesByFullPath } from '../routeTree.gen';
+import { r } from '.';
+import { tanstackRouter } from '../tanstack-router';
 
-export const r = new RpcRouter<RpcBrowserContext>(rpc);
+export const rpcRouter = {
+  pingBrowser: r.procedure.input(z.string()).handler(() => {
+    console.log('test handler invoked');
+  }),
+  keys: keysContract,
+  navigate: r.procedure
+    .input(z.string<keyof FileRoutesByFullPath>())
+    .handler((c) => {
+      tanstackRouter.navigate({ to: c.data });
+    }),
+};
+
+export type BrowserRouter = typeof rpcRouter;

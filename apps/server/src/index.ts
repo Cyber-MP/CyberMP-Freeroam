@@ -1,5 +1,5 @@
 import { mp } from './mp';
-import { router } from './router';
+import { router } from './rpc/router';
 import { client, r } from './rpc';
 
 const bootstrap = () => {

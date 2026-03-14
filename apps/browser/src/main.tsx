@@ -3,7 +3,7 @@ import { RpcRouterProvider } from '@cybermp/rpc-router-react';
 import { RouterProvider } from '@tanstack/react-router';
 import { createRoot } from 'react-dom/client';
 import { r } from './rpc';
-import { rpcRouter } from './rpc-router';
+import { rpcRouter } from './rpc/router';
 import { tanstackRouter } from './tanstack-router';
 
 const bootstrap = () => {

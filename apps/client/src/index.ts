@@ -10,7 +10,7 @@ import { LoggerModule } from './modules/logger/logger.module';
 import { LoggerService } from './modules/logger/logger.service';
 import { SessionModule } from './modules/session/session.module';
 import { mp } from './mp';
-import { router } from './router';
+import { router } from './rpc/router';
 import { r } from './rpc';
 
 const bootstrap = async () => {

@@ -1,5 +1,17 @@
-import type { RpcClientContext } from '@cybermp/rpc-client';
-import { RpcRouter } from '@cybermp/rpc-router/server';
-import { rpc } from './rpc';
+import { cefContract } from '../modules/cef/cef.controller';
+import { healthContract } from '../modules/game/health/health.controller';
+import { statusEffectsContract } from '../modules/game/status-effects/status-effects.controller';
+import { teleportContract } from '../modules/game/teleport/teleport.controller';
+import { vehiclesContract } from '../modules/game/vehicles/vehicles.controller';
 
-export const r = new RpcRouter<RpcClientContext>(rpc);
+export const router = {
+  game: {
+    vehicles: vehiclesContract,
+    health: healthContract,
+    statusEffects: statusEffectsContract,
+    teleport: teleportContract,
+  },
+  cef: cefContract,
+};
+
+export type ClientRouter = typeof router;
