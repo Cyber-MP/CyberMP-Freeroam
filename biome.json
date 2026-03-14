@@ -21,6 +21,7 @@
           "fix": "safe",
           "level": "error"
         },
+        "noUnusedPrivateClassMembers": "off",
         "useExhaustiveDependencies": "off"
       },
       "suspicious": {

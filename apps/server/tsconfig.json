@@ -6,6 +6,7 @@
       "vite/client"
     ],
     "lib": [
+      "DOM",
       "ES2023"
     ],
     "target": "ES2023"
