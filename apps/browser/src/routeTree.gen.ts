@@ -10,52 +10,48 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoadingRouteImport } from './routes/loading'
-import { Route as AboutusRouteImport } from './routes/aboutus'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as HudRouteImport } from './routes/_hud'
+import { Route as HudIndexRouteImport } from './routes/_hud.index'
 
 const LoadingRoute = LoadingRouteImport.update({
   id: '/loading',
   path: '/loading',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AboutusRoute = AboutusRouteImport.update({
-  id: '/aboutus',
-  path: '/aboutus',
+const HudRoute = HudRouteImport.update({
+  id: '/_hud',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
+const HudIndexRoute = HudIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => HudRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/aboutus': typeof AboutusRoute
+  '/': typeof HudIndexRoute
   '/loading': typeof LoadingRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/aboutus': typeof AboutusRoute
   '/loading': typeof LoadingRoute
+  '/': typeof HudIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/aboutus': typeof AboutusRoute
+  '/_hud': typeof HudRouteWithChildren
   '/loading': typeof LoadingRoute
+  '/_hud/': typeof HudIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/aboutus' | '/loading'
+  fullPaths: '/' | '/loading'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/aboutus' | '/loading'
-  id: '__root__' | '/' | '/aboutus' | '/loading'
+  to: '/loading' | '/'
+  id: '__root__' | '/_hud' | '/loading' | '/_hud/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  AboutusRoute: typeof AboutusRoute
+  HudRoute: typeof HudRouteWithChildren
   LoadingRoute: typeof LoadingRoute
 }
 
@@ -68,26 +64,35 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoadingRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/aboutus': {
-      id: '/aboutus'
-      path: '/aboutus'
-      fullPath: '/aboutus'
-      preLoaderRoute: typeof AboutusRouteImport
+    '/_hud': {
+      id: '/_hud'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof HudRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
+    '/_hud/': {
+      id: '/_hud/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof HudIndexRouteImport
+      parentRoute: typeof HudRoute
     }
   }
 }
 
+interface HudRouteChildren {
+  HudIndexRoute: typeof HudIndexRoute
+}
+
+const HudRouteChildren: HudRouteChildren = {
+  HudIndexRoute: HudIndexRoute,
+}
+
+const HudRouteWithChildren = HudRoute._addFileChildren(HudRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  AboutusRoute: AboutusRoute,
+  HudRoute: HudRouteWithChildren,
   LoadingRoute: LoadingRoute,
 }
 export const routeTree = rootRouteImport

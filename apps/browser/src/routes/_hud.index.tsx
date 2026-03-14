@@ -1,9 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router';
 
-export const Route = createFileRoute('/aboutus')({
+export const Route = createFileRoute('/_hud/')({
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  return <div>Hello "/aboutus"!</div>;
+  return <div className="bg-background text-background">Hello "/"!</div>;
 }

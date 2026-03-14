@@ -13,8 +13,10 @@ import type { MpClient } from '@cybermp/client-types';
 
 //       // Create a new proxy for the property if it doesn't exist
 //       if (!(prop in target)) {
+//         // @ts-expect-error
 //         target[prop] = createCallableProxy();
 //       }
+//       // @ts-expect-error
 //       return target[prop];
 //     },
 
