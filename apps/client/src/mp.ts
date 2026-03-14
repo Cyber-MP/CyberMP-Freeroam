@@ -32,3 +32,11 @@ import type { MpClient } from '@cybermp/client-types';
 // (globalThis as any).mp = createCallableProxy();
 
 export const mp: MpClient = (globalThis as any).mp;
+
+// declare module '@cybermp/client-types/game' {
+//   export interface exEntitySpawner {}
+
+//   export interface MpGame {
+//     exEntitySpawner: typeof exEntitySpawner;
+//   }
+// }

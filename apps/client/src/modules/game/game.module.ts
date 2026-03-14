@@ -1,6 +1,7 @@
 import { ContainerModule } from 'inversify';
 import { GHealthController } from './health/health.controller';
 import { GHealthService } from './health/health.service';
+import { GHudService } from './hud.service';
 import { GKeyboardService } from './keyboard.service';
 import { GLoadingScreenService } from './loading-screen.service';
 import { GMenusService } from './menus.service';
@@ -15,6 +16,7 @@ export const GameModule = new ContainerModule(({ bind }) => {
   bind(GLoadingScreenService).toSelf().inSingletonScope();
   bind(GMenusService).toSelf().inSingletonScope();
   bind(GKeyboardService).toSelf().inSingletonScope();
+  bind(GHudService).toSelf().inSingletonScope();
 
   bind(GVehiclesService).toSelf().inSingletonScope();
   bind(GVehiclesController).toSelf().inSingletonScope();

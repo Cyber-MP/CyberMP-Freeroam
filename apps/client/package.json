@@ -23,6 +23,7 @@
     "@freeroam/inversify": "workspace:*",
     "consola": "^3.4.2",
     "inversify": "^7.11.0",
+    "radash": "^12.1.1",
     "reflect-metadata": "^0.2.2",
     "zod": "^4.3.6"
   }

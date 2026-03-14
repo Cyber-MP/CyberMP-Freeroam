@@ -3,6 +3,7 @@ import { healthContract } from '../modules/game/health/health.controller';
 import { statusEffectsContract } from '../modules/game/status-effects/status-effects.controller';
 import { teleportContract } from '../modules/game/teleport/teleport.controller';
 import { vehiclesContract } from '../modules/game/vehicles/vehicles.controller';
+import { sessionContract } from '../modules/session/session.controller';
 
 export const router = {
   game: {
@@ -11,6 +12,7 @@ export const router = {
     statusEffects: statusEffectsContract,
     teleport: teleportContract,
   },
+  session: sessionContract,
   cef: cefContract,
 };
 

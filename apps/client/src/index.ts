@@ -4,19 +4,24 @@ import { eagerRegistry } from '@freeroam/inversify';
 import { container } from './container';
 import { CefModule } from './modules/cef/cef.module';
 import { GameModule } from './modules/game/game.module';
-import { GHealthService } from './modules/game/health/health.service';
-import { GTeleportService } from './modules/game/teleport/teleport.service';
 import { LoggerModule } from './modules/logger/logger.module';
 import { LoggerService } from './modules/logger/logger.service';
 import { SessionModule } from './modules/session/session.module';
+import { SpawnModule } from './modules/spawn/spawn.module';
 import { mp } from './mp';
-import { router } from './rpc/router';
 import { r } from './rpc';
+import { router } from './rpc/router';
 
 const bootstrap = async () => {
   r.apply(router);
 
-  await container.load(SessionModule, LoggerModule, GameModule, CefModule);
+  await container.load(
+    SessionModule,
+    SpawnModule,
+    LoggerModule,
+    GameModule,
+    CefModule,
+  );
 
   const loggerService = container.get(LoggerService);
 
@@ -30,24 +35,31 @@ const bootstrap = async () => {
     loggerService.ready(classId, `- ${Date.now() - start}ms`);
   }
 
-  const healthService = container.get(GHealthService);
-
-  const teleportService = container.get(GTeleportService);
-
-  mp.game.onGameLoaded(() => {
-    healthService.set(300);
-
+  mp.events.addCommand('pos', () => {
+    // mp.game.ScriptGameInstance.GetDyn
     const { x, y, z } = mp.game.GetPlayer().GetWorldPosition();
 
-    mp.setSpawnDataLocalPlayer(x, y, z, 0);
-    mp.spawnLocalPlayer();
-    console.log('spawned');
+    console.log(x, y, z);
   });
 
-  mp.events.addCommand('apartment', () => {
-    console.log(123);
-    teleportService.teleport(-1392.637329, 1271.536865, 123.082397, 1);
-  });
+  // const healthService = container.get(GHealthService);
+
+  // const teleportService = container.get(GTeleportService);
+
+  // mp.game.onGameLoaded(() => {
+  //   healthService.set(300);
+
+  //   const { x, y, z } = mp.game.GetPlayer().GetWorldPosition();
+
+  //   mp.setSpawnDataLocalPlayer(x, y, z, 0);
+  //   mp.spawnLocalPlayer();
+  //   console.log('spawned');
+  // });
+
+  // mp.events.addCommand('apartment', () => {
+  //   console.log(123);
+  //   teleportService.teleport(-1392.637329, 1271.536865, 123.082397, 1);
+  // });
 
   loggerService.success('Client initialized');
 };

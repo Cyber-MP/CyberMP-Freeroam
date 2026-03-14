@@ -125,7 +125,6 @@
         @apply bg-transparent text-foreground text-base;
     }
 
-
     html {
         @apply font-mono;
     }

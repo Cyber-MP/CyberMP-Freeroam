@@ -24,12 +24,10 @@
         "noUnusedPrivateClassMembers": "off",
         "useExhaustiveDependencies": "off"
       },
+      "a11y": "off",
       "suspicious": {
         "noExplicitAny": "off",
         "noConstEnum": "off"
-      },
-      "nursery": {
-        "useSortedClasses": "on"
       },
       "style": {
         "noRestrictedGlobals": {

@@ -2,7 +2,7 @@ import { createMemoryHistory, createRouter } from '@tanstack/react-router';
 import { routeTree } from './routeTree.gen';
 
 const memoryHistory = createMemoryHistory({
-  initialEntries: ['/'],
+  initialEntries: import.meta.env.DEV ? ['/entry'] : ['/loading'],
 });
 
 export const tanstackRouter = createRouter({

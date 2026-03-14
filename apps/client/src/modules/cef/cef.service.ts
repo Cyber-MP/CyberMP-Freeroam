@@ -23,7 +23,7 @@ export class CefService {
 
     this.loadingService.subscribeOnStateChange((state) => {
       if (state === ELoadingScreenState.Started) {
-        mp.cef.setFocus(false, false);
+        // mp.cef.setFocus(false, false);
 
         browser.navigate.trigger('/loading');
       } else if (state === ELoadingScreenState.Hidden) {

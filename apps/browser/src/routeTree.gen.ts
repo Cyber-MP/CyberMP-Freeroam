@@ -10,12 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoadingRouteImport } from './routes/loading'
+import { Route as EntryRouteImport } from './routes/entry'
 import { Route as HudRouteImport } from './routes/_hud'
 import { Route as HudIndexRouteImport } from './routes/_hud.index'
 
 const LoadingRoute = LoadingRouteImport.update({
   id: '/loading',
   path: '/loading',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EntryRoute = EntryRouteImport.update({
+  id: '/entry',
+  path: '/entry',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HudRoute = HudRouteImport.update({
@@ -30,28 +36,32 @@ const HudIndexRoute = HudIndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof HudIndexRoute
+  '/entry': typeof EntryRoute
   '/loading': typeof LoadingRoute
 }
 export interface FileRoutesByTo {
+  '/entry': typeof EntryRoute
   '/loading': typeof LoadingRoute
   '/': typeof HudIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_hud': typeof HudRouteWithChildren
+  '/entry': typeof EntryRoute
   '/loading': typeof LoadingRoute
   '/_hud/': typeof HudIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/loading'
+  fullPaths: '/' | '/entry' | '/loading'
   fileRoutesByTo: FileRoutesByTo
-  to: '/loading' | '/'
-  id: '__root__' | '/_hud' | '/loading' | '/_hud/'
+  to: '/entry' | '/loading' | '/'
+  id: '__root__' | '/_hud' | '/entry' | '/loading' | '/_hud/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   HudRoute: typeof HudRouteWithChildren
+  EntryRoute: typeof EntryRoute
   LoadingRoute: typeof LoadingRoute
 }
 
@@ -62,6 +72,13 @@ declare module '@tanstack/react-router' {
       path: '/loading'
       fullPath: '/loading'
       preLoaderRoute: typeof LoadingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/entry': {
+      id: '/entry'
+      path: '/entry'
+      fullPath: '/entry'
+      preLoaderRoute: typeof EntryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_hud': {
@@ -93,6 +110,7 @@ const HudRouteWithChildren = HudRoute._addFileChildren(HudRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   HudRoute: HudRouteWithChildren,
+  EntryRoute: EntryRoute,
   LoadingRoute: LoadingRoute,
 }
 export const routeTree = rootRouteImport
