@@ -172,6 +172,9 @@ importers:
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
+      terser:
+        specifier: ^5.46.0
+        version: 5.46.0
       typescript:
         specifier: ^5.8.3
         version: 5.9.3

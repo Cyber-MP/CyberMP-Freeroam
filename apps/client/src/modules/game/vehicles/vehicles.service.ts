@@ -29,7 +29,9 @@ export class GVehiclesService {
       }
 
       const data = new mp.game.gameMountEventData();
-      data.isInstant = instant;
+      // TODO: when we fix instant seating uncomment this code
+      // data.isInstant = instant;
+      data.isInstant = false;
       data.slotName = slot;
       data.mountParentEntityId = entity.GetEntityID();
       data.entryAnimName = 'forcedTransition';

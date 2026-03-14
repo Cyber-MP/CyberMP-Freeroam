@@ -1,15 +1,17 @@
+import { ELoadingScreenState } from '@cybermp/client-types/enums';
 import { eager } from '@freeroam/inversify';
-import { injectable, postConstruct } from 'inversify';
+import { inject, injectable, postConstruct } from 'inversify';
 import { mp } from '../../mp';
 import { browser } from '../../rpc/browser';
+import { GLoadingScreenService } from '../game/loading-screen.service';
 
 @eager()
 @injectable()
 export class CefService {
-  // constructor(
-  //   @inject(LoadingScreenService)
-  //   private loadingScreenServiec: LoadingScreenService,
-  // ) {}
+  constructor(
+    @inject(GLoadingScreenService)
+    private loadingService: GLoadingScreenService,
+  ) {}
 
   @postConstruct()
   private init() {
@@ -19,13 +21,15 @@ export class CefService {
       mp.cef.setUrl('file://browser/index.html');
     }
 
-    // this.loadingScreenServiec.subscribeOnStateChange((state) => {
-    //   if (state === ELoadingScreenState.Started) {
-    //     browser.loading.toggle.trigger(true);
-    //   } else if (state === ELoadingScreenState.Hidden) {
-    //     browser.loading.toggle.trigger(false);
-    //   }
-    // });
+    this.loadingService.subscribeOnStateChange((state) => {
+      if (state === ELoadingScreenState.Started) {
+        mp.cef.setFocus(false, false);
+
+        browser.navigate.trigger('/loading');
+      } else if (state === ELoadingScreenState.Hidden) {
+        browser.navigate.trigger('/');
+      }
+    });
 
     mp.game.onInputKeyEvent((action, key) => {
       if (mp.cef.isInFocus()) {

@@ -4,8 +4,11 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 export default defineConfig({
   plugins: [tsconfigPaths()],
   build: {
-    minify: false,
-    sourcemap: false,
+    minify: 'terser',
+    terserOptions: {
+      compress: true,
+      keep_classnames: true,
+    },
 
     lib: {
       name: 'client',

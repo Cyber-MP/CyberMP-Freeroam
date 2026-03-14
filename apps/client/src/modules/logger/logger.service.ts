@@ -1,4 +1,5 @@
 import {
+  type ConsolaInstance,
   createConsola,
   type InputLogObject,
   type LogObject,
@@ -11,10 +12,10 @@ class Reporter {
 
     const tag = logObj.tag || '';
 
-    const badge = `[${[tag, type].filter(Boolean).join(':').toUpperCase()}]`;
+    const badge = [tag, type.toUpperCase()].filter(Boolean).join(':');
 
     if (typeof logObj.args[0] === 'string') {
-      console.log(`${badge} ${logObj.args[0]}`, ...logObj.args.slice(1));
+      console.log(`[${badge}] ${logObj.args[0]}`, ...logObj.args.slice(1));
     } else {
       console.log(badge, ...logObj.args);
     }
@@ -35,9 +36,26 @@ class Reporter {
 
 @injectable()
 export class LoggerService {
-  private instance = createConsola({
-    reporters: [new Reporter()],
-  });
+  private instance: ConsolaInstance;
+
+  constructor() {
+    this.instance = createConsola({
+      reporters: [new Reporter()],
+    });
+  }
+
+  setContext(context: string) {
+    this.instance = createConsola({
+      reporters: [new Reporter()],
+      defaults: {
+        tag: context,
+      },
+    });
+  }
+
+  withContext(context: string) {
+    return this.instance.withTag(context);
+  }
 
   log(message: InputLogObject | any, ...args: any[]) {
     this.instance.log(message, ...args);
@@ -69,5 +87,9 @@ export class LoggerService {
 
   success(message: InputLogObject | any, ...args: any[]) {
     this.instance.success(message, ...args);
+  }
+
+  info(message: InputLogObject | any, ...args: any[]) {
+    this.instance.info(message, ...args);
   }
 }
