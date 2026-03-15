@@ -13,6 +13,7 @@ import { Route as LoadingRouteImport } from './routes/loading'
 import { Route as HudRouteImport } from './routes/hud'
 import { Route as EntryRouteImport } from './routes/entry'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as HudMenuRouteImport } from './routes/hud.menu'
 
 const LoadingRoute = LoadingRouteImport.update({
   id: '/loading',
@@ -34,38 +35,46 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const HudMenuRoute = HudMenuRouteImport.update({
+  id: '/menu',
+  path: '/menu',
+  getParentRoute: () => HudRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/entry': typeof EntryRoute
-  '/hud': typeof HudRoute
+  '/hud': typeof HudRouteWithChildren
   '/loading': typeof LoadingRoute
+  '/hud/menu': typeof HudMenuRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/entry': typeof EntryRoute
-  '/hud': typeof HudRoute
+  '/hud': typeof HudRouteWithChildren
   '/loading': typeof LoadingRoute
+  '/hud/menu': typeof HudMenuRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/entry': typeof EntryRoute
-  '/hud': typeof HudRoute
+  '/hud': typeof HudRouteWithChildren
   '/loading': typeof LoadingRoute
+  '/hud/menu': typeof HudMenuRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/entry' | '/hud' | '/loading'
+  fullPaths: '/' | '/entry' | '/hud' | '/loading' | '/hud/menu'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/entry' | '/hud' | '/loading'
-  id: '__root__' | '/' | '/entry' | '/hud' | '/loading'
+  to: '/' | '/entry' | '/hud' | '/loading' | '/hud/menu'
+  id: '__root__' | '/' | '/entry' | '/hud' | '/loading' | '/hud/menu'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   EntryRoute: typeof EntryRoute
-  HudRoute: typeof HudRoute
+  HudRoute: typeof HudRouteWithChildren
   LoadingRoute: typeof LoadingRoute
 }
 
@@ -99,13 +108,30 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/hud/menu': {
+      id: '/hud/menu'
+      path: '/menu'
+      fullPath: '/hud/menu'
+      preLoaderRoute: typeof HudMenuRouteImport
+      parentRoute: typeof HudRoute
+    }
   }
 }
+
+interface HudRouteChildren {
+  HudMenuRoute: typeof HudMenuRoute
+}
+
+const HudRouteChildren: HudRouteChildren = {
+  HudMenuRoute: HudMenuRoute,
+}
+
+const HudRouteWithChildren = HudRoute._addFileChildren(HudRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   EntryRoute: EntryRoute,
-  HudRoute: HudRoute,
+  HudRoute: HudRouteWithChildren,
   LoadingRoute: LoadingRoute,
 }
 export const routeTree = rootRouteImport

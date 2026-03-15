@@ -7,7 +7,7 @@ export const Route = createFileRoute('/hud')({
 function RouteComponent() {
   return (
     <div>
-      HUD COMPONENT
+      
       <Outlet />
     </div>
   );

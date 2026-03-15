@@ -1,4 +1,9 @@
-import type { EulerAngles, Vector3, Vector4 } from '@cybermp/client-types/game';
+import type {
+  EulerAngles,
+  Quaternion,
+  Vector3,
+  Vector4,
+} from '@cybermp/client-types/game';
 import { mp } from '../mp';
 
 export const createVector3 = (x: number, y: number, z: number) => {
@@ -9,12 +14,12 @@ export const createVector3 = (x: number, y: number, z: number) => {
   } satisfies Vector3);
 };
 
-export const createVector4 = (x: number, y: number, z: number, w: number) => {
+export const createVector4 = (x: number, y: number, z: number, w?: number) => {
   return Object.assign(new mp.game.Vector4(), {
     x,
     y,
     z,
-    w,
+    w: w ?? 1,
   } satisfies Vector4);
 };
 
@@ -24,4 +29,18 @@ export const createEulerAngles = (roll: number, pitch: number, yaw: number) => {
     pitch,
     yaw,
   } satisfies EulerAngles);
+};
+
+export const createQuaternion = (
+  i: number,
+  j: number,
+  k: number,
+  r: number,
+) => {
+  return Object.assign(new mp.game.Quaternion(), {
+    i,
+    j,
+    k,
+    r,
+  } satisfies Quaternion);
 };

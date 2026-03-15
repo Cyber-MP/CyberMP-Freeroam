@@ -61,7 +61,7 @@ export class GLoadingScreenService {
     timeout = 3000,
   ): Promise<void> {
     return new Promise((resolve) => {
-      let timeoutId: number | null = setTimeout(() => {
+      let timeoutId: ReturnType<typeof setTimeout> | null = setTimeout(() => {
         if (this.isState(CyberEnums.ELoadingScreenState.Hidden)) {
           resolve();
         }

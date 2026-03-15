@@ -5,6 +5,7 @@ import type { ContainerModule } from 'inversify';
 import { container } from './container';
 import { CefModule } from './modules/cef/cef.module';
 import { GameModule } from './modules/game/game.module';
+import { GMenusService } from './modules/game/menus.service';
 import { LoggerModule } from './modules/logger/logger.module';
 import { LoggerService } from './modules/logger/logger.service';
 import { SessionModule } from './modules/session/session.module';
@@ -39,17 +40,19 @@ const bootstrap = async () => {
       loggerService.ready(classId, `- ${Date.now() - start}ms`);
     }
 
-    mp.events.on('onResourceStopped', (res: string) => {
-      if (res === 'freeroam') {
-        container.unloadSync(...modules);
-        // this.destroy();
-      }
+    mp.events.on('resourceStop', () => {
+      console.log('Destroying freeroam');
+      container.unloadSync(...modules);
     });
 
     mp.events.addCommand('pos', () => {
       const { x, y, z } = mp.game.GetPlayer().GetWorldPosition();
 
       console.log(x, y, z);
+    });
+
+    mp.events.addCommand('close-menu', () => {
+      container.get(GMenusService).closeAllMenus();
     });
 
     loggerService.success('Client initialized');

@@ -1,21 +1,22 @@
 import type { ServerVector3, ServerVector4 } from '@cybermp/client-types';
+import type { Vector4 } from '@cybermp/client-types/game';
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
-import { createVector3 } from '../../lib/vectors';
+import { createVector3, createVector4 } from '../../lib/vectors';
 import { mp } from '../../mp';
 import { GHealthService } from '../game/health/health.service';
 
 type SpawnOptions = {
-  position: ServerVector4;
+  position: ServerVector4 | Vector4;
   health?: number;
 };
 
 @eager()
 @injectable()
 export class SpawnService {
-  private readonly BASE_SPAWN_POSITION: ServerVector3 = import.meta.env.DEV
-    ? [-4065.363525390625, -6477.3759765625, 75.70945739746094]
-    : [-1425.36669921875, -65.88517761230469, 30.32978057861328];
+  private readonly BASE_SPAWN_POSITION: ServerVector3 = [
+    -1425.36669921875, -65.88517761230469, 30.32978057861328,
+  ];
 
   private readonly SPAWN_RADIUS = 5.0;
 
@@ -35,7 +36,9 @@ export class SpawnService {
   spawn({ position, health }: SpawnOptions) {
     this.health.set(health ?? this.DEFAULT_HEALTH);
 
-    mp.setSpawnDataLocalPlayer(...position);
+    const pos = Array.isArray(position) ? createVector4(...position) : position;
+
+    mp.setSpawnDataLocalPlayer(pos.x, pos.y, pos.z, pos.w);
     mp.spawnLocalPlayer();
   }
 

@@ -1,19 +1,21 @@
 import type { ServerVector3 } from '@cybermp/client-types';
 import type {
+  EulerAngles,
   entEntity,
+  entEntityID,
   gameCameraComponent,
   Vector3,
 } from '@cybermp/client-types/game';
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct, preDestroy } from 'inversify';
-import { createVector3 } from '../../lib/vectors';
+import { createEulerAngles, createVector3 } from '../../lib/vectors';
 import { mp } from '../../mp';
 import { LoggerService } from '../logger/logger.service';
 import { GEntityService } from './entity.service';
 
 type CreateCameraOptions = {
   position: ServerVector3 | Vector3;
-  orientation?: [roll: number, pitch: number, yaw: number];
+  orientation?: EulerAngles | [roll: number, pitch: number, yaw: number];
 };
 
 @eager()
@@ -40,6 +42,10 @@ export class GCameraService {
   }
 
   getComponent(entity: entEntity) {
+    if (!entity) {
+      return;
+    }
+
     const candidate = entity.FindComponentByName(
       'camera',
     ) as gameCameraComponent;
@@ -52,6 +58,9 @@ export class GCameraService {
 
   async create({ position, orientation }: CreateCameraOptions) {
     const pos = Array.isArray(position) ? createVector3(...position) : position;
+    const or = Array.isArray(orientation)
+      ? createEulerAngles(...orientation)
+      : orientation;
 
     const entityId = mp.spawnLocalObject(
       this.cameraHash,
@@ -59,13 +68,15 @@ export class GCameraService {
       pos.x,
       pos.y,
       pos.z,
-      orientation?.[0] ?? 0,
-      orientation?.[1] ?? 0,
-      orientation?.[2] ?? 0,
+      or?.roll ?? 0,
+      or?.pitch ?? 0,
+      or?.yaw ?? 0,
       false,
     );
 
-    const entity = await this.entityService.waitForEntityToSpawn(entityId);
+    const entity = await this.entityService
+      .waitForEntityToSpawn(entityId)
+      .catch(this.logger.error);
     if (!entity) {
       this.logger.fail('Could not create a camera');
       return;
@@ -76,8 +87,30 @@ export class GCameraService {
     return entity;
   }
 
+  destroy(candidate: number | entEntityID | entEntity) {
+    let entity: entEntity;
+
+    if (typeof candidate === 'number' || 'hash' in candidate) {
+      entity = this.entityService.findById(candidate);
+    } else {
+      entity = candidate;
+    }
+
+    if (!entity) {
+      return;
+    }
+
+    const component = this.getComponent(entity);
+    component?.Deactivate(0, false);
+
+    const hash = entity.GetEntityID().hash;
+
+    mp.despawnLocalObject(hash);
+    this.cameraEntities.delete(hash);
+  }
+
   @preDestroy()
-  private destroy() {
+  private preDestroy() {
     for (const entityId of this.cameraEntities.values()) {
       const entity = this.entityService.findById(entityId);
       if (!entity) {
