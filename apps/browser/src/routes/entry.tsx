@@ -1,4 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
+import { useEffect } from 'react';
 import { Logo } from '@/components/logo';
 import { GlitchText } from '@/components/ui/glitch-text';
 import { client } from '@/rpc';
@@ -11,6 +12,14 @@ function RouteComponent() {
   const onClick = () => {
     client.session.enter.trigger();
   };
+
+  useEffect(() => {
+    client.cef.setFocus.trigger(true);
+
+    return () => {
+      client.cef.setFocus.trigger(false);
+    };
+  }, []);
 
   return (
     <div

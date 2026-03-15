@@ -2,6 +2,7 @@ import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
 import { mp } from '../../mp';
 import { browser } from '../../rpc/browser';
+import { CefService } from '../cef/cef.service';
 import { GHudService } from '../game/hud.service';
 import { GKeyboardService } from '../game/keyboard.service';
 import { GLoadingScreenService } from '../game/loading-screen.service';
@@ -22,19 +23,15 @@ export class EntryService {
     'GameplayRestriction.NoRadialMenus',
   ];
 
-  private passed = false;
-
   constructor(
     @inject(GLoadingScreenService) private loadingScreen: GLoadingScreenService,
     @inject(GKeyboardService) private keyboard: GKeyboardService,
     @inject(GHudService) private hud: GHudService,
     @inject(GStatusEffectsService)
     private statusEffects: GStatusEffectsService,
+    @inject(CefService)
+    private cefService: CefService,
   ) {}
-
-  isPassed() {
-    return this.passed === true;
-  }
 
   enter() {
     for (const effect of this.entryStatusEffect) {
@@ -44,9 +41,8 @@ export class EntryService {
     this.keyboard.unsubscribe(this.onInput);
     this.hud.show();
 
-    mp.cef.setFocus(false, false);
+    this.cefService.setLoadingRedirect('/hud');
     browser.navigate.trigger('/hud');
-    this.passed = true;
   }
 
   private onInput = (...args: any[]) => {
@@ -63,13 +59,13 @@ export class EntryService {
           this.statusEffects.add(effect);
         }
       });
+      this.hud.hide();
+
+      this.cefService.setLoadingRedirect('/entry');
 
       await this.loadingScreen.waitForLoadingScreenToHide(200, 1000);
 
       this.keyboard.subscribe(this.onInput);
-      this.hud.hide();
-
-      mp.cef.setFocus(true, true);
       browser.navigate.trigger('/entry');
     });
   }

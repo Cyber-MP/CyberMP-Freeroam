@@ -14,11 +14,11 @@ import { r } from './rpc';
 import { router } from './rpc/router';
 
 const modules: ContainerModule[] = [
+  CefModule,
   SessionModule,
   SpawnModule,
   LoggerModule,
   GameModule,
-  CefModule,
 ];
 
 const bootstrap = async () => {
