@@ -1,11 +1,10 @@
 import './mp';
 import 'reflect-metadata';
 import { eagerRegistry } from '@freeroam/inversify';
+import type { ContainerModule } from 'inversify';
 import { container } from './container';
 import { CefModule } from './modules/cef/cef.module';
-import { GCameraService } from './modules/game/camera.service';
 import { GameModule } from './modules/game/game.module';
-import { GKeyboardService } from './modules/game/keyboard.service';
 import { LoggerModule } from './modules/logger/logger.module';
 import { LoggerService } from './modules/logger/logger.service';
 import { SessionModule } from './modules/session/session.module';
@@ -14,17 +13,19 @@ import { mp } from './mp';
 import { r } from './rpc';
 import { router } from './rpc/router';
 
+const modules: ContainerModule[] = [
+  SessionModule,
+  SpawnModule,
+  LoggerModule,
+  GameModule,
+  CefModule,
+];
+
 const bootstrap = async () => {
   try {
     r.apply(router);
 
-    await container.load(
-      SessionModule,
-      SpawnModule,
-      LoggerModule,
-      GameModule,
-      CefModule,
-    );
+    await container.load(...modules);
 
     const loggerService = container.get(LoggerService);
 
@@ -38,15 +39,11 @@ const bootstrap = async () => {
       loggerService.ready(classId, `- ${Date.now() - start}ms`);
     }
 
-    const cameraService = container.get(GCameraService);
-
-    mp.events.addCommand('test-camera', () => {
-      console.log('creating');
-      cameraService.create();
-    });
-
-    container.get(GKeyboardService).subscribe((key) => {
-      console.log('KEY PRESSED', key);
+    mp.events.on('onResourceStopped', (res: string) => {
+      if (res === 'freeroam') {
+        container.unloadSync(...modules);
+        // this.destroy();
+      }
     });
 
     mp.events.addCommand('pos', () => {
@@ -55,14 +52,9 @@ const bootstrap = async () => {
       console.log(x, y, z);
     });
 
-    // mp.events.addCommand('apartment', () => {
-    //   console.log(123);
-    //   teleportService.teleport(-1392.637329, 1271.536865, 123.082397, 1);
-    // });
-
     loggerService.success('Client initialized');
   } catch (e) {
-    console.log('FAILED CLIENT INITIALIZATION', e);
+    console.log('Failed to initialize client: ', e);
   }
 };
 

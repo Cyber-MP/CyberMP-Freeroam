@@ -1,6 +1,7 @@
 import type { ServerVector3, ServerVector4 } from '@cybermp/client-types';
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
+import { createVector3 } from '../../lib/vectors';
 import { mp } from '../../mp';
 import { GHealthService } from '../game/health/health.service';
 
@@ -22,7 +23,7 @@ export class SpawnService {
 
   constructor(@inject(GHealthService) private health: GHealthService) {}
 
-  private getSpawnPosition(): ServerVector3 {
+  getSpawnPosition(): ServerVector3 {
     const [x, y, z] = this.BASE_SPAWN_POSITION;
 
     const randomX = x + (Math.random() * 2 - 1) * this.SPAWN_RADIUS;
@@ -40,9 +41,16 @@ export class SpawnService {
 
   @postConstruct()
   private init() {
+    // TODO: move this code to entry-service maybe?
+
     const spawnPosition = this.getSpawnPosition();
 
-    // mp.game.CyberMP.SetDefaultSpawnPosition(createVector3(...spawnPosition), 1);
+    mp.game.onInit(() => {
+      mp.game.CyberMP.SetDefaultSpawnPosition(
+        createVector3(...spawnPosition),
+        1,
+      );
+    });
 
     mp.game.onGameLoaded(() => {
       this.spawn({ position: [...spawnPosition, 1] });

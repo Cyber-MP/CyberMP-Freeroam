@@ -22,6 +22,8 @@ export class EntryService {
     'GameplayRestriction.NoRadialMenus',
   ];
 
+  private passed = false;
+
   constructor(
     @inject(GLoadingScreenService) private loadingScreen: GLoadingScreenService,
     @inject(GKeyboardService) private keyboard: GKeyboardService,
@@ -29,6 +31,10 @@ export class EntryService {
     @inject(GStatusEffectsService)
     private statusEffects: GStatusEffectsService,
   ) {}
+
+  isPassed() {
+    return this.passed === true;
+  }
 
   enter() {
     for (const effect of this.entryStatusEffect) {
@@ -40,21 +46,25 @@ export class EntryService {
 
     mp.cef.setFocus(false, false);
     browser.navigate.trigger('/hud');
+    this.passed = true;
   }
 
-  private onInput = () => {
+  private onInput = (...args: any[]) => {
+    console.log('input pressed', args);
     this.enter();
   };
 
   @postConstruct()
   private async init() {
-    mp.game.onGameLoaded(() => {
-      // @info: this is in setTimeout because effect "GameplayRestriction.NoMovement" cant work instantly on game loaded
+    mp.game.onGameLoaded(async () => {
+      // this in setTimeout because effect "GameplayRestriction.NoMovement" cant work instantly on game loaded
       setTimeout(() => {
         for (const effect of this.entryStatusEffect) {
           this.statusEffects.add(effect);
         }
       });
+
+      await this.loadingScreen.waitForLoadingScreenToHide(200, 1000);
 
       this.keyboard.subscribe(this.onInput);
       this.hud.hide();

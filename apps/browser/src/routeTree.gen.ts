@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoadingRouteImport } from './routes/loading'
 import { Route as HudRouteImport } from './routes/hud'
 import { Route as EntryRouteImport } from './routes/entry'
+import { Route as IndexRouteImport } from './routes/index'
 
 const LoadingRoute = LoadingRouteImport.update({
   id: '/loading',
@@ -28,32 +29,41 @@ const EntryRoute = EntryRouteImport.update({
   path: '/entry',
   getParentRoute: () => rootRouteImport,
 } as any)
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
   '/entry': typeof EntryRoute
   '/hud': typeof HudRoute
   '/loading': typeof LoadingRoute
 }
 export interface FileRoutesByTo {
+  '/': typeof IndexRoute
   '/entry': typeof EntryRoute
   '/hud': typeof HudRoute
   '/loading': typeof LoadingRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
   '/entry': typeof EntryRoute
   '/hud': typeof HudRoute
   '/loading': typeof LoadingRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/entry' | '/hud' | '/loading'
+  fullPaths: '/' | '/entry' | '/hud' | '/loading'
   fileRoutesByTo: FileRoutesByTo
-  to: '/entry' | '/hud' | '/loading'
-  id: '__root__' | '/entry' | '/hud' | '/loading'
+  to: '/' | '/entry' | '/hud' | '/loading'
+  id: '__root__' | '/' | '/entry' | '/hud' | '/loading'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
   EntryRoute: typeof EntryRoute
   HudRoute: typeof HudRoute
   LoadingRoute: typeof LoadingRoute
@@ -82,10 +92,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EntryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
   EntryRoute: EntryRoute,
   HudRoute: HudRoute,
   LoadingRoute: LoadingRoute,

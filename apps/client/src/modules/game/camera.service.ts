@@ -1,67 +1,93 @@
-import type { gameCameraComponent } from '@cybermp/client-types/game';
+import type { ServerVector3 } from '@cybermp/client-types';
+import type {
+  entEntity,
+  gameCameraComponent,
+  Vector3,
+} from '@cybermp/client-types/game';
 import { eager } from '@freeroam/inversify';
-import { injectable, postConstruct } from 'inversify';
-import { createVector4 } from '../../lib/vectors';
+import { inject, injectable, postConstruct, preDestroy } from 'inversify';
+import { createVector3 } from '../../lib/vectors';
 import { mp } from '../../mp';
+import { LoggerService } from '../logger/logger.service';
+import { GEntityService } from './entity.service';
+
+type CreateCameraOptions = {
+  position: ServerVector3 | Vector3;
+  orientation?: [roll: number, pitch: number, yaw: number];
+};
 
 @eager()
 @injectable()
 export class GCameraService {
+  private cameraHash!: number;
+
+  private cameraEntities = new Set<number>();
+
+  constructor(
+    @inject(GEntityService) private entityService: GEntityService,
+    @inject(LoggerService) private logger: LoggerService,
+  ) {
+    this.logger.setContext('GCameraService');
+  }
+
   @postConstruct()
-  private init() {}
+  private init() {
+    mp.game.onInit(() => {
+      this.cameraHash = mp.game.redResourceReferenceScriptToken.GetHash(
+        'base\\entities\\cameras\\simple_free_camera.ent',
+      );
+    });
+  }
 
-  create() {
-    // const cameraSpec = new mp.game.DynamicEntitySpec();
-    // cameraSpec.templatePath = ;
-
-    // const gamePosition = mp.game.GetPlayer().GetWorldPosition();
-    // gamePosition.z += 1.5;
-    // gamePosition.y += 1.5;
-
-    // cameraSpec.position = gamePosition;
-
-    // // cameraSpec.position = this.GetPosition(5.0, 45.0);
-    // // cameraSpec.orientation = this.GetOrientation(225.0);
-    // cameraSpec.persistState = true;
-    // cameraSpec.persistSpawn = true;
-    // cameraSpec.tags = ['camera'];
-
-    // const entityId = this.system.CreateEntity(cameraSpec);
-
-    const spawnTransform = mp.game.GetPlayer().GetWorldTransform();
-
-    const heading = mp.game.GetPlayer().GetWorldForward();
-    const playerPos = mp.game.GetPlayer().GetWorldPosition();
-    const { x, y, z, w } = createVector4(
-      playerPos.x + heading.x,
-      playerPos.y + heading.y,
-      playerPos.z + 1.5,
-      playerPos.w,
-    );
-
-    Object.assign(spawnTransform.Position, { x, y, z });
-
-    const entityId = mp.game.exEntitySpawner.Spawn(
-      'base\\entities\\cameras\\simple_free_camera.ent',
-      spawnTransform,
-      '',
-    );
-
-    console.log('entity created');
-
-    const entity = mp.game.ScriptGameInstance.FindEntityByID(entityId);
-    if (!entity) {
-      console.log('entity dont exist');
+  getComponent(entity: entEntity) {
+    const candidate = entity.FindComponentByName(
+      'camera',
+    ) as gameCameraComponent;
+    if (!candidate) {
       return;
     }
 
-    const component = entity.FindComponentByName(
-      'camera',
-    ) as gameCameraComponent;
-    component.SetFOV(60);
-    component.SetZoom(1);
+    return candidate;
+  }
 
-    component.Activate(0, false);
-    console.log('activated camera');
+  async create({ position, orientation }: CreateCameraOptions) {
+    const pos = Array.isArray(position) ? createVector3(...position) : position;
+
+    const entityId = mp.spawnLocalObject(
+      this.cameraHash,
+      0,
+      pos.x,
+      pos.y,
+      pos.z,
+      orientation?.[0] ?? 0,
+      orientation?.[1] ?? 0,
+      orientation?.[2] ?? 0,
+      false,
+    );
+
+    const entity = await this.entityService.waitForEntityToSpawn(entityId);
+    if (!entity) {
+      this.logger.fail('Could not create a camera');
+      return;
+    }
+
+    this.cameraEntities.add(entityId);
+
+    return entity;
+  }
+
+  @preDestroy()
+  private destroy() {
+    for (const entityId of this.cameraEntities.values()) {
+      const entity = this.entityService.findById(entityId);
+      if (!entity) {
+        continue;
+      }
+
+      const component = this.getComponent(entity);
+      component?.Deactivate(0, false);
+
+      mp.despawnLocalObject(entityId);
+    }
   }
 }

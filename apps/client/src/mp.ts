@@ -90,6 +90,9 @@ declare module '@cybermp/client-types/game' {
 
   export interface MpGame {
     exEntitySpawner: exEntitySpawner;
+    redResourceReferenceScriptToken: {
+      GetHash(token: string): number;
+    };
     // DynamicEntitySpec: typeof DynamicEntitySpec;
     // DynamicEntitySystem: typeof DynamicEntitySystem;
   }

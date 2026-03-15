@@ -1,8 +1,8 @@
 import z from 'zod';
 import { keysContract } from '../keys';
 import type { FileRoutesByFullPath } from '../routeTree.gen';
-import { r } from '.';
 import { tanstackRouter } from '../tanstack-router';
+import { r } from '.';
 
 export const rpcRouter = {
   pingBrowser: r.procedure.input(z.string()).handler(() => {
@@ -10,9 +10,13 @@ export const rpcRouter = {
   }),
   keys: keysContract,
   navigate: r.procedure
-    .input(z.string<keyof FileRoutesByFullPath>())
+    .input(z.union([z.string<keyof FileRoutesByFullPath>(), z.number()]))
     .handler((c) => {
-      tanstackRouter.navigate({ to: c.data });
+      if (typeof c.data === 'string') {
+        tanstackRouter.navigate({ to: c.data });
+      } else {
+        tanstackRouter.history.go(c.data);
+      }
     }),
 };
 

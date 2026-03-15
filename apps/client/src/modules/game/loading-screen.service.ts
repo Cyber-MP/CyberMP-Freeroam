@@ -2,6 +2,7 @@ import * as CyberEnums from '@cybermp/client-types/enums';
 import type { LoadingScreenSystem } from '@cybermp/client-types/game';
 import { eager } from '@freeroam/inversify';
 import { injectable, postConstruct } from 'inversify';
+import { debounce } from 'radash';
 import { Observer } from '../../lib/observer';
 import { mp } from '../../mp';
 
@@ -38,15 +39,13 @@ export class GLoadingScreenService {
       | CyberEnums.ELoadingScreenState
       | ((currentState: CyberEnums.ELoadingScreenState) => boolean),
   ) {
-    return new Promise((resolve) =>
-      setTimeout(() => {
-        resolve(
-          typeof state === 'function'
-            ? state(this.system.GetLoadingScreenState())
-            : this.system.GetLoadingScreenState() === state,
-        );
-      }, 100),
-    );
+    return typeof state === 'function'
+      ? state(this.getCurrentState())
+      : this.getCurrentState() === state;
+  }
+
+  getCurrentState() {
+    return +String(this.system.GetLoadingScreenState());
   }
 
   subscribeOnStateChange(cb: LoadingScreenStateSubscriber) {
@@ -57,23 +56,39 @@ export class GLoadingScreenService {
     this.observer.unsubscribe(cb);
   }
 
-  async waitForLoadingScreenToHide() {
-    const isLoading = await this.isState(
-      (c) => c !== CyberEnums.ELoadingScreenState.Hidden,
-    );
-    if (!isLoading) {
-      return;
-    }
+  async waitForLoadingScreenToHide(
+    settleTime = 200,
+    timeout = 3000,
+  ): Promise<void> {
+    return new Promise((resolve) => {
+      let timeoutId: number | null = setTimeout(() => {
+        if (this.isState(CyberEnums.ELoadingScreenState.Hidden)) {
+          resolve();
+        }
+      }, timeout);
 
-    return new Promise<void>((resolve) => {
-      const handler: LoadingScreenStateSubscriber = (newState) => {
-        if (newState !== CyberEnums.ELoadingScreenState.Hidden) {
-          return;
+      const debouncedHandler = debounce(
+        { delay: settleTime },
+
+        (state: CyberEnums.ELoadingScreenState) => {
+          if (state !== CyberEnums.ELoadingScreenState.Hidden) {
+            return;
+          }
+
+          resolve();
+
+          this.unsubscribeOnStateChange(handler);
+        },
+      );
+
+      const handler: LoadingScreenStateSubscriber = (s) => {
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+
+          timeoutId = null;
         }
 
-        resolve();
-
-        this.unsubscribeOnStateChange(handler);
+        debouncedHandler(s);
       };
 
       this.subscribeOnStateChange(handler);
