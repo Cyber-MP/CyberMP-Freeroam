@@ -6,12 +6,21 @@ import { mp } from '../../../mp';
 @eager()
 @injectable()
 export class GStatusEffectsService {
+  private readonly DEFAULT_STATUS_EFFECTS = [
+    'GameplayRestriction.NoPhotoMode',
+    'GameplayRestriction.NoScanning',
+  ];
+
   private effectsSystem!: gameStatusEffectSystem;
 
   @postConstruct()
   private init() {
     mp.game.onGameLoaded(() => {
       this.effectsSystem = mp.game.ScriptGameInstance.GetStatusEffectSystem();
+
+      for (const effect of this.DEFAULT_STATUS_EFFECTS) {
+        this.add(effect);
+      }
     });
   }
 

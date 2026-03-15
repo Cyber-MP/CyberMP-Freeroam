@@ -1,6 +1,6 @@
 import { mp } from './mp';
-import { router } from './rpc/router';
 import { client, r } from './rpc';
+import { router } from './rpc/router';
 
 const bootstrap = () => {
   r.apply(router);
@@ -15,6 +15,12 @@ const bootstrap = () => {
     });
 
     client.game.vehicles.requestSitInVehicle.trigger(player, newVehicle.id);
+  });
+
+  mp.events.on('playerDisconnected', (p) => {
+    const player = mp.players.at(p);
+
+    console.log(player.position);
   });
 
   mp.commands.add('fix-current-veh', (player) => {

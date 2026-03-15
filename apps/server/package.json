@@ -16,7 +16,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@cybermp/server-types": "^3.0.0",
+    "@cybermp/server-types": "^3.1.0",
     "@types/node": "^25.3.5",
     "cross-env": "^7.0.3",
     "typescript": "^5.8.3",

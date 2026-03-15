@@ -15,7 +15,7 @@ function RouteComponent() {
   return (
     <div
       onClick={onClick}
-      className="cursor-pointer fixed inset-0 w-full h-full flex flex-col gap-8 items-center justify-center"
+      className="cursor-pointer bg-black/20 fixed inset-0 w-full h-full flex flex-col gap-8 items-center justify-center"
     >
       <div className="flex items-center gap-4">
         <Logo className="size-[4vh]" />

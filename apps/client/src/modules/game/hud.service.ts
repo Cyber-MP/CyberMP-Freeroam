@@ -13,7 +13,9 @@ export class GHudService {
 
   @postConstruct()
   private init() {
-    this.system = mp.game.ScriptGameInstance.GetSettingsSystem();
+    mp.game.onGameLoaded(() => {
+      this.system = mp.game.ScriptGameInstance.GetSettingsSystem();
+    });
   }
 
   hide() {
@@ -21,7 +23,7 @@ export class GHudService {
     const vars = group.GetVars(false);
 
     for (const settingVar of vars) {
-      if (settingVar.GetType() !== InGameConfigVarType.Bool) {
+      if (+String(settingVar.GetType()) !== InGameConfigVarType.Bool) {
         continue;
       }
 
@@ -34,7 +36,7 @@ export class GHudService {
     const vars = group.GetVars(false);
 
     for (const settingVar of vars) {
-      if (settingVar.GetType() !== InGameConfigVarType.Bool) {
+      if (+String(settingVar.GetType()) !== InGameConfigVarType.Bool) {
         continue;
       }
 

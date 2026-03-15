@@ -198,14 +198,14 @@ importers:
         version: 0.1.0-rc.2
       '@cybermp/rpc-server':
         specifier: 0.1.0-rc.2
-        version: 0.1.0-rc.2(@cybermp/server-types@3.0.0)
+        version: 0.1.0-rc.2(@cybermp/server-types@3.1.0)
       zod:
         specifier: ^4.3.6
         version: 4.3.6
     devDependencies:
       '@cybermp/server-types':
-        specifier: ^3.0.0
-        version: 3.0.0
+        specifier: ^3.1.0
+        version: 3.1.0
       '@types/node':
         specifier: ^25.3.5
         version: 25.3.5
@@ -529,8 +529,8 @@ packages:
     peerDependencies:
       '@cybermp/server-types': ^2.0.2
 
-  '@cybermp/server-types@3.0.0':
-    resolution: {integrity: sha512-T/cEeI5AgbIVSDNpy7R3BMKIPlZRY65JDeVlGBeTgyVlKH5gRquFZfJbcvJMhpj7DqAl54s/u53ztHSt+UV6qQ==}
+  '@cybermp/server-types@3.1.0':
+    resolution: {integrity: sha512-bGBMpkKEcQE3mPsjYEp+hqqE7nRJ8QY4I6gKGVji6uxJiBsnLzZHUAkFtmFAGUgZQampUyN7DCABZvKxfGCaTw==}
 
   '@dotenvx/dotenvx@1.54.1':
     resolution: {integrity: sha512-41gU3q7v05GM92QPuPUf4CmUw+mmF8p4wLUh6MCRlxpCkJ9ByLcY9jUf6MwrMNmiKyG/rIckNxj9SCfmNCmCqw==}
@@ -4187,12 +4187,12 @@ snapshots:
       '@cybermp/rpc-core': 0.1.0-rc.2
       radash: 12.1.1
 
-  '@cybermp/rpc-server@0.1.0-rc.2(@cybermp/server-types@3.0.0)':
+  '@cybermp/rpc-server@0.1.0-rc.2(@cybermp/server-types@3.1.0)':
     dependencies:
       '@cybermp/rpc-core': 0.1.0-rc.2
-      '@cybermp/server-types': 3.0.0
+      '@cybermp/server-types': 3.1.0
 
-  '@cybermp/server-types@3.0.0': {}
+  '@cybermp/server-types@3.1.0': {}
 
   '@dotenvx/dotenvx@1.54.1':
     dependencies:

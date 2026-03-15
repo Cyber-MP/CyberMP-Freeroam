@@ -33,10 +33,64 @@ import type { MpClient } from '@cybermp/client-types';
 
 export const mp: MpClient = (globalThis as any).mp;
 
-// declare module '@cybermp/client-types/game' {
-//   export interface exEntitySpawner {}
+declare module '@cybermp/client-types/game' {
+  // export class DynamicEntitySpec {
+  //   // The entity record or template to spawn. Can't be used together.
+  //   recordID: string;
+  //   templatePath: string;
 
-//   export interface MpGame {
-//     exEntitySpawner: typeof exEntitySpawner;
-//   }
-// }
+  //   // Initial appearance name. If not set, default apperance will be used.
+  //   appearanceName: string;
+
+  //   // Initial spawn position and orientation.
+  //   position: Vector4;
+  //   orientation: Quaternion;
+
+  //   // Should entity state (position, inventory, health, etc.) be saved and restored on next spawn.
+  //   persistState: boolean;
+
+  //   // Should entity be saved and restored next time this playthrough is loaded.
+  //   persistSpawn: boolean;
+
+  //   // Should entity be always spawned or only when player is around.
+  //   alwaysSpawned: boolean;
+
+  //   // Should entity spawn when player sees spawn position, or wait until player will look away.
+  //   spawnInView: boolean;
+
+  //   // Should entity spawn on creation or just register in the system.
+  //   active: boolean;
+
+  //   // Initital tags associated with the entity.
+  //   tags: Array<string>;
+  // }
+
+  // export class DynamicEntitySystem {
+  //   CreateEntity(spec: DynamicEntitySpec): entEntityID;
+  //   DeleteEntity(id: entEntityID): boolean;
+  //   EnableEntity(id: entEntityID): boolean;
+  //   DisableEntity(id: entEntityID): boolean;
+  //   GetEntity<T>(id: entEntityID): T;
+  // }
+
+  // export namespace ScriptGameInstance {
+  //   export function GetDynamicEntitySystem(): DynamicEntitySystem;
+  // }
+  //
+
+  export class exEntitySpawner {
+    Spawn(
+      path: string,
+      transform: WorldTransform,
+      appearance: string,
+      recordDBID?: string,
+    ): entEntityID;
+    Despawn(entity: entEntity): void;
+  }
+
+  export interface MpGame {
+    exEntitySpawner: exEntitySpawner;
+    // DynamicEntitySpec: typeof DynamicEntitySpec;
+    // DynamicEntitySystem: typeof DynamicEntitySystem;
+  }
+}
