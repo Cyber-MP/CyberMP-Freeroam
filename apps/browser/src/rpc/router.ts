@@ -1,4 +1,5 @@
 import z from 'zod';
+import { hintsContract } from '@/store/hints';
 import { keysContract } from '../keys';
 import type { FileRoutesByFullPath } from '../routeTree.gen';
 import { tanstackRouter } from '../tanstack-router';
@@ -8,7 +9,10 @@ export const rpcRouter = {
   pingBrowser: r.procedure.input(z.string()).handler(() => {
     console.log('test handler invoked');
   }),
+
   keys: keysContract,
+  hints: hintsContract,
+
   navigate: r.procedure
     .input(z.union([z.string<keyof FileRoutesByFullPath>(), z.number()]))
     .handler((c) => {

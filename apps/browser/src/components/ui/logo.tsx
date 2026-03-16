@@ -1,7 +1,7 @@
 import { cva } from 'class-variance-authority';
 import type { ComponentProps, FC } from 'react';
-import LogoSVG from '../assets/images/logo.svg?react';
-import { cn } from '../lib/utils';
+import LogoSVG from '../../assets/images/logo.svg?react';
+import { cn } from '../../lib/utils';
 
 export type LogoProps = ComponentProps<'svg'> & {
   alternative?: boolean;

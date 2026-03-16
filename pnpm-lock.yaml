@@ -77,9 +77,15 @@ importers:
       tailwindcss:
         specifier: ^4.1.18
         version: 4.2.1
+      tailwindcss-px-to-viewport:
+        specifier: ^0.1.4
+        version: 0.1.4
       tw-animate-css:
         specifier: ^1.4.0
         version: 1.4.0
+      valtio:
+        specifier: ^2.3.1
+        version: 2.3.1(@types/react@19.2.14)(react@19.2.3)
       zod:
         specifier: ^4.3.6
         version: 4.3.6
@@ -126,6 +132,9 @@ importers:
       postcss-nesting:
         specifier: ^14.0.0
         version: 14.0.0(postcss@8.5.8)
+      postcss-px-to-viewport:
+        specifier: ^1.1.1
+        version: 1.1.1
       postcss-value-parser:
         specifier: ^4.2.0
         version: 4.2.0
@@ -3235,6 +3244,9 @@ packages:
     peerDependencies:
       postcss: ^8.4
 
+  postcss-px-to-viewport@1.1.1:
+    resolution: {integrity: sha512-2x9oGnBms+e0cYtBJOZdlwrFg/mLR4P1g2IFu7jYKvnqnH/HLhoKyareW2Q/x4sg0BgklHlP1qeWo2oCyPm8FQ==}
+
   postcss-selector-parser@7.1.1:
     resolution: {integrity: sha512-orRsuYpJVw8LdAwqqLykBj9ecS5/cRHlI5+nvTo8LcCKmzDmqVORXtOIYEEQuL9D4BxtA1lm5isAqzQZCoQ6Eg==}
     engines: {node: '>=4'}
@@ -3269,6 +3281,9 @@ packages:
   proxy-addr@2.0.7:
     resolution: {integrity: sha512-llQsMLSUDUPT44jdrU/O37qlnifitDP+ZwrmmZcoSKyLKvtZxpyV0n2/bD/N4tBAAZ/gJEdZU7KMraoK1+XYAg==}
     engines: {node: '>= 0.10'}
+
+  proxy-compare@3.0.1:
+    resolution: {integrity: sha512-V9plBAt3qjMlS1+nC8771KNf6oJ12gExvaxnNzN/9yVRLdTv/lc+oJlnSzrdYDAvBfTStPCoiaCOTmTs0adv7Q==}
 
   qs@6.15.0:
     resolution: {integrity: sha512-mAZTtNCeetKMH+pSjrb76NAM8V9a05I9aBZOHztWy/UqcJdQYNsf59vrRKWnojAT9Y+GbIvoTBC++CPHqpDBhQ==}
@@ -3600,6 +3615,9 @@ packages:
   tailwind-merge@3.5.0:
     resolution: {integrity: sha512-I8K9wewnVDkL1NTGoqWmVEIlUcB9gFriAEkXkfCjX5ib8ezGxtR3xD7iZIxrfArjEsH7F1CHD4RFUtxefdqV/A==}
 
+  tailwindcss-px-to-viewport@0.1.4:
+    resolution: {integrity: sha512-qNPXmBpsPqr0qZ1kKsQ6f2rW+A2OhB9LFBHvgYjYmJdKE/KasOeVd4ftnY+ucq6icfZa1Y3ywZn76Zh1rR4KSA==}
+
   tailwindcss@4.2.1:
     resolution: {integrity: sha512-/tBrSQ36vCleJkAOsy9kbNTgaxvGbyOamC30PRePTQe/o1MFwEKHQk4Cn7BNGaPtjp+PuUrByJehM1hgxfq4sw==}
 
@@ -3745,6 +3763,18 @@ packages:
   validate-npm-package-name@7.0.2:
     resolution: {integrity: sha512-hVDIBwsRruT73PbK7uP5ebUt+ezEtCmzZz3F59BSr2F6OVFnJ/6h8liuvdLrQ88Xmnk6/+xGGuq+pG9WwTuy3A==}
     engines: {node: ^20.17.0 || >=22.9.0}
+
+  valtio@2.3.1:
+    resolution: {integrity: sha512-ZsOaOEn0U9IJ96cAj3CZ3GjwpN3EJdjsi1PT4PREuB+Pcqfsczu16isT5DT1UrmHbk4PtLjk8kwNEHuR2CX56w==}
+    engines: {node: '>=12.20.0'}
+    peerDependencies:
+      '@types/react': '>=18.0.0'
+      react: '>=18.0.0'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      react:
+        optional: true
 
   vary@1.1.2:
     resolution: {integrity: sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==}
@@ -6683,6 +6713,11 @@ snapshots:
       postcss: 8.5.8
       postcss-selector-parser: 7.1.1
 
+  postcss-px-to-viewport@1.1.1:
+    dependencies:
+      object-assign: 4.1.1
+      postcss: 8.5.8
+
   postcss-selector-parser@7.1.1:
     dependencies:
       cssesc: 3.0.0
@@ -6715,6 +6750,8 @@ snapshots:
     dependencies:
       forwarded: 0.2.0
       ipaddr.js: 1.9.1
+
+  proxy-compare@3.0.1: {}
 
   qs@6.15.0:
     dependencies:
@@ -7150,6 +7187,8 @@ snapshots:
 
   tailwind-merge@3.5.0: {}
 
+  tailwindcss-px-to-viewport@0.1.4: {}
+
   tailwindcss@4.2.1: {}
 
   tapable@2.3.0: {}
@@ -7271,6 +7310,13 @@ snapshots:
   util-deprecate@1.0.2: {}
 
   validate-npm-package-name@7.0.2: {}
+
+  valtio@2.3.1(@types/react@19.2.14)(react@19.2.3):
+    dependencies:
+      proxy-compare: 3.0.1
+    optionalDependencies:
+      '@types/react': 19.2.14
+      react: 19.2.3
 
   vary@1.1.2: {}
 
