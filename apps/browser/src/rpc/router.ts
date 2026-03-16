@@ -1,5 +1,5 @@
 import z from 'zod';
-import { hintsContract } from '@/store/hints';
+import { hintsContract } from '../store/hints';
 import { keysContract } from '../keys';
 import type { FileRoutesByFullPath } from '../routeTree.gen';
 import { tanstackRouter } from '../tanstack-router';

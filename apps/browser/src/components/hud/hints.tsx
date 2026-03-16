@@ -1,6 +1,6 @@
 import { useSnapshot } from 'valtio';
 import { hintsState } from '@/store/hints';
-import { Kbd } from './ui/kbd';
+import { Kbd } from '../ui/kbd';
 
 export const Hints = () => {
   const state = useSnapshot(hintsState);

@@ -1,5 +1,7 @@
 import { createFileRoute, Outlet } from '@tanstack/react-router';
-import { Hints } from '@/components/hints';
+import { Chat } from '@/components/hud/chat';
+import { Hints } from '@/components/hud/hints';
+import { KillFeed } from '@/components/hud/kill-feed';
 import { Logo } from '@/components/ui/logo';
 
 export const Route = createFileRoute('/hud')({
@@ -27,6 +29,8 @@ function RouteComponent() {
           </h2>
         </div>
       </div>
+      <Chat />
+      <KillFeed />
       <Hints />
       <Outlet />
     </div>
