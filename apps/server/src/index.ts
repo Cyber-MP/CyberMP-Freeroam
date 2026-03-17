@@ -1,10 +1,11 @@
 import { eagerRegistry } from '@freeroam/inversify';
 import { container } from './container';
 import { ChatModule } from './modules/chat/chat.module';
+import { LoggerMiddleware } from './modules/logger/logger.middleware';
 import { LoggerModule } from './modules/logger/logger.module';
 import { LoggerService } from './modules/logger/logger.service';
 import { mp } from './mp';
-import { client, r } from './rpc';
+import { client, r, rpc } from './rpc';
 import { router } from './rpc/router';
 
 const modules = [LoggerModule, ChatModule];
@@ -14,6 +15,9 @@ const bootstrap = async () => {
     r.apply(router);
 
     await container.load(...modules);
+
+    const loggerMiddleware = container.get(LoggerMiddleware).middleware;
+    rpc.use(loggerMiddleware);
 
     const loggerService = container.get(LoggerService);
 

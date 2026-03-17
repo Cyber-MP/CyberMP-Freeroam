@@ -9,10 +9,11 @@ import { GameModule } from './modules/game/game.module';
 import { GMenusService } from './modules/game/menus.service';
 import { LoggerModule } from './modules/logger/logger.module';
 import { LoggerService } from './modules/logger/logger.service';
+import { SessionInterceptor } from './modules/session/session.interceptor';
 import { SessionModule } from './modules/session/session.module';
 import { SpawnModule } from './modules/spawn/spawn.module';
 import { mp } from './mp';
-import { r } from './rpc';
+import { r, rpc } from './rpc';
 import { router } from './rpc/router';
 
 const modules: ContainerModule[] = [
@@ -29,6 +30,9 @@ const bootstrap = async () => {
     r.apply(router);
 
     await container.load(...modules);
+
+    const sessionInterceptor = container.get(SessionInterceptor);
+    rpc.interceptors.request.use(sessionInterceptor.onRequest);
 
     const loggerService = container.get(LoggerService);
 

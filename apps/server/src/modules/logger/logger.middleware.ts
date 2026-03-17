@@ -1,8 +1,10 @@
-import { generateUUID, type RpcServerContext } from '@cybermp/rpc-server';
-import { eager } from '@freeroam/inversify';
-import { injectable, postConstruct } from 'inversify';
+import {
+  generateUUID,
+  type RpcNext,
+  type RpcServerContext,
+} from '@cybermp/rpc-server';
+import { injectable } from 'inversify';
 import type { LoggerService } from '../../../../client/src/modules/logger/logger.service';
-import { rpc } from '../../rpc';
 
 export type LoggerContext<
   D = any,
@@ -12,21 +14,12 @@ export type LoggerContext<
   log: LoggerService;
 };
 
-@eager()
 @injectable()
 export class LoggerMiddleware {
-  private middleware(c: LoggerContext) {
+  middleware(c: LoggerContext, next: RpcNext) {
     const reqId = generateUUID();
+    c.reqId = reqId;
 
-    // const logger = container.get(LoggerService);
-    // logger.setContext(reqId);
-
-    // c.reqId = reqId;
-    // c.log = logger;
-  }
-
-  @postConstruct()
-  private init() {
-    rpc.use(this.middleware.bind(this));
+    return next?.();
   }
 }
