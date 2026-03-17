@@ -5,6 +5,7 @@ import { mp } from '../../mp';
 import { browser } from '../../rpc/browser';
 import { GHealthService } from '../game/health/health.service';
 import { GHudService } from '../game/hud.service';
+import { GStatusEffectsService } from '../game/status-effects/status-effects.service';
 
 type OnDeathCallback = () => void;
 
@@ -14,12 +15,16 @@ export class DeathService {
   constructor(
     @inject(GHealthService) private healthService: GHealthService,
     @inject(GHudService) private hudService: GHudService,
+    @inject(GStatusEffectsService) private statusEffects: GStatusEffectsService,
   ) {}
 
   private onGameLoaded() {
     setInterval(() => {
       if (this.healthService.get() <= 0) {
+        this.statusEffects.add('GameplayRestriction.NoCameraControl');
         this.deathObserver.notify();
+      } else {
+        this.statusEffects.remove('GameplayRestriction.NoCameraControl');
       }
     }, 1000);
 
