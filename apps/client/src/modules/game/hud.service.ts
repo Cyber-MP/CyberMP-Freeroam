@@ -4,6 +4,8 @@ import { eager } from '@freeroam/inversify';
 import { injectable, postConstruct } from 'inversify';
 import { mp } from '../../mp';
 
+// TODO: disable default hud hints
+
 @eager()
 @injectable()
 export class GHudService {

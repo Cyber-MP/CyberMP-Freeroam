@@ -1,5 +1,5 @@
 import { procedure } from '@cybermp/rpc-router/server';
-import { proxy, subscribe, type Snapshot } from 'valtio';
+import { proxy, type Snapshot, subscribe } from 'valtio';
 import z from 'zod';
 import type { JSONSchema } from 'zod/v4/core';
 import { client, server } from '../rpc';
@@ -41,9 +41,9 @@ export const chatState = proxy<ChatState>({
 
 subscribe(chatState.messages, () => {
   if (chatState.visibility === ChatVisibility.HIDDEN) {
-    setChatVisibility(ChatVisibility.INACTIVE, false)
+    setChatVisibility(ChatVisibility.INACTIVE, false);
   }
-})
+});
 
 const fetchServerCommands = async () => {
   const commands = await server.chat.getCommandsMeta.call();
@@ -61,6 +61,7 @@ export const setChatVisibility = (
   updateFocus = true,
 ) => {
   chatState.visibility = value;
+  console.log('setted chat visibliity', value);
 
   if (updateFocus) {
     const isInFocus = value === ChatVisibility.ACTIVE;
@@ -113,9 +114,23 @@ export const clearChat = () => {
   chatState.messages = [];
 };
 
+export const executeChatCommand = (name: string, args: any[]) => {
+  const isExistOnClient = chatState.clientCommands.some((o) => o.name === name);
+  if (isExistOnClient) {
+    client.chat.executeCommand.trigger({ name, args });
+  }
+
+  const isExistOnServer = chatState.serverCommands.some((o) => o.name === name);
+  if (isExistOnServer) {
+    server.chat.executeCommand.trigger({ name, args });
+  }
+};
+
 document.addEventListener('DOMContentLoaded', () => {
-  void fetchServerCommands();
-  void fetchClientCommands();
+  setTimeout(() => {
+    void fetchServerCommands();
+    void fetchClientCommands();
+  }, 1000);
 });
 
 export const chatContract = {

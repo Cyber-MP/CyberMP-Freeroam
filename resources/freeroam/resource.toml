@@ -4,6 +4,8 @@ server_script = ["./server.js"]
 client_script = ["./client.js"]
 # file = ['../../assets/*']
 
+ui_page = "http://localhost:5173"
+
 use_game_natives = "true"
 
 hotreload = true

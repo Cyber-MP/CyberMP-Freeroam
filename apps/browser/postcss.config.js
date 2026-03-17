@@ -117,6 +117,7 @@ const colorMixVarResolverPlugin = () => {
         parsed.walk((node) => {
           if (node.type === 'function' && node.value === 'color-mix') {
             node.nodes.forEach((childNode) => {
+              // Check if this node is a var() function
               if (
                 childNode.type === 'function' &&
                 childNode.value === 'var' &&
@@ -125,17 +126,19 @@ const colorMixVarResolverPlugin = () => {
                 const varName = childNode.nodes[0]?.value;
                 if (!varName) return;
 
-                const resolvedVarName =
-                  cssVariables[varName] === undefined
-                    ? 'black'
-                    : cssVariables[varName]; // fall back to black if var is undefined
-                // add whitespace because it might just be a part of a color notation e.g. #fff 10%
-                const resolved = resolvedVarName || `var(${varName})`;
+                const resolvedValue = cssVariables[varName];
 
-                childNode.type = 'word';
-                childNode.value = resolved;
-                childNode.nodes = [];
-                modified = true;
+                if (resolvedValue !== undefined) {
+                  // Instead of changing the node type to 'word',
+                  // we convert the var() function into a raw value.
+                  // We use valueParser.parse to ensure if the variable contains
+                  // complex values, they are handled correctly.
+                  const tempParsed = valueParser(resolvedValue);
+                  childNode.type = 'word';
+                  childNode.value = resolvedValue;
+                  childNode.nodes = [];
+                  modified = true;
+                }
               }
             });
           }

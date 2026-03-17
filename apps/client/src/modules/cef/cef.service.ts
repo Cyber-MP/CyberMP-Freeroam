@@ -40,11 +40,11 @@ export class CefService {
 
   @postConstruct()
   private init() {
-    if (import.meta.env.DEV) {
-      mp.cef.setUrl('http://localhost:5173');
-    } else {
-      mp.cef.setUrl('cef://browser/index.html');
-    }
+    // if (import.meta.env.DEV) {
+    //   mp.cef.setUrl('http://localhost:5173');
+    // } else {
+    //   mp.cef.setUrl('cef://browser/index.html');
+    // }
 
     this.loadingService.subscribeOnStateChange(this.loadingHandler);
 

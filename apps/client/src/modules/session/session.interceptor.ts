@@ -7,14 +7,9 @@ import { injectable } from 'inversify';
 export class SessionInterceptor {
   readonly SESSION_ID = generateUUID();
 
-  onRequest(req: RpcPacket): RpcPacket {
+  onRequest = (req: RpcPacket): RpcPacket => {
     req.meta.sessionId = this.SESSION_ID;
 
     return req;
-  }
-
-  // @postConstruct()
-  // private init() {
-  //   rpc.interceptors.request.use(this.injectSessionInterceptor.bind(this));
-  // }
+  };
 }

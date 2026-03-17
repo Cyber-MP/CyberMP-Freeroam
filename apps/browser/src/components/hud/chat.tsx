@@ -6,6 +6,7 @@ import {
   type ChatCommand,
   ChatVisibility,
   chatState,
+  executeChatCommand,
   getCommandArguments,
   postChatMessage,
   setChatVisibility,
@@ -20,7 +21,7 @@ const ChatMessages = () => {
     messagesContainerRef.current?.scrollTo({
       top: messagesContainerRef.current?.scrollHeight,
       left: 0,
-      behavior: 'smooth',
+      behavior: 'instant',
     });
   }, [messages]);
 
@@ -146,7 +147,7 @@ const CommandSuggestions = ({
               ? selectedSuggestionRef
               : undefined
           }
-          className={`flex flex-col p-4 gap-2 ${suggestionIndex === selectedSuggestionIndex && 'bg-primary/60'}`}
+          className={`flex flex-col p-4 gap-2 ${suggestionIndex === selectedSuggestionIndex && 'bg-[#efb100]/40'}`}
           key={suggestion.name}
         >
           <div className="flex items-center gap-2">
@@ -154,10 +155,11 @@ const CommandSuggestions = ({
             <div className="flex items-center gap-1">
               {getCommandArguments(suggestion).map((arg, argIndex) => (
                 <span
-                  className={`${argIndex === currentArgumentIndex ? 'bg-primary' : 'bg-primary/30'} p-1`}
+                  className={`${argIndex === currentArgumentIndex ? 'bg-[#efb100]/80' : 'bg-black/40'} p-1`}
                   key={arg.title}
                 >
-                  {arg.title ?? 'arg' + argIndex}: {arg.type}
+                  {arg.title ?? 'arg' + argIndex}
+                  {arg.required ? '' : '?'}: {arg.type}
                 </span>
               ))}
             </div>
@@ -214,16 +216,30 @@ const ChatInput = () => {
 
   const onSubmit = (e: any) => {
     e.preventDefault();
-    const trimmed = input.trim();
+    const inputTrimmed = input.trim();
 
-    if (trimmed) {
-      postChatMessage(trimmed);
-      inputHistoryRef.current.push(trimmed);
+    if (!inputTrimmed) {
+      setInput('');
+      inputHistoryIndexRef.current = null;
+      setChatVisibility(ChatVisibility.INACTIVE);
+      return;
     }
 
-    setInput('');
+    if (isCommand) {
+      const [commandName, ...commandArgs] = input.replace('/', '').split(' ');
+      executeChatCommand(commandName, commandArgs);
+    } else {
+      postChatMessage(inputTrimmed);
+    }
+
+    inputHistoryRef.current.push(inputTrimmed);
     inputHistoryIndexRef.current = null;
+    setInput('');
     setChatVisibility(ChatVisibility.INACTIVE);
+
+    // setInput('');
+    // inputHistoryIndexRef.current = null;
+    // setChatVisibility(ChatVisibility.INACTIVE);
   };
 
   useHotkeys(
@@ -293,7 +309,7 @@ const ChatInput = () => {
         type="text"
         value={input}
         onChange={onInputChange}
-        className="w-full bg-muted/20 p-2 h-full outline-none border-none text-foreground text-base font-semibold"
+        className="w-full bg-black/40 p-2 h-full outline-none border-none text-foreground text-base font-semibold"
       />
       {isCommand && (
         <CommandSuggestions
@@ -359,8 +375,8 @@ export const Chat = () => {
 
   return (
     <div
-      onClick={() => setChatVisibility(ChatVisibility.ACTIVE)}
-      onBlur={() => setChatVisibility(ChatVisibility.INACTIVE)}
+      // onClick={() => setChatVisibility(ChatVisibility.ACTIVE)}
+      // onBlur={() => setChatVisibility(ChatVisibility.INACTIVE)}
       className={chatContainerVariants({ visibility })}
     >
       <ChatMessages />
