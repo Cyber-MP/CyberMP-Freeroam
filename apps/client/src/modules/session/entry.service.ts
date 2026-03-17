@@ -100,6 +100,8 @@ export class EntryService {
 
     this.keyboard.subscribe(this.onInput);
     browser.navigate.trigger('/entry');
+
+    this.logger.info('Fully initialized entry service, spawn player and etc ');
   }
 
   private async initCamera() {

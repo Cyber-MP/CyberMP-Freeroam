@@ -5,6 +5,7 @@ import {
   type LogObject,
 } from 'consola/browser';
 import { injectable } from 'inversify';
+import { server } from '../../rpc';
 
 class Reporter {
   prettyLog(logObj: LogObject) {
@@ -22,7 +23,7 @@ class Reporter {
   }
 
   jsonLog(logObj: LogObject) {
-    console.log(JSON.stringify(logObj));
+    server.logger.reportClientLog.trigger({ ...logObj, date: +logObj.date });
   }
 
   log(logObj: LogObject) {

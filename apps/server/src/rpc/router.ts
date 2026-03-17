@@ -1,5 +1,6 @@
 import z from 'zod';
 import { chatContract } from '../modules/chat/chat.controller';
+import { loggerContract } from '../modules/logger/logger.controller';
 import { r } from './rpc-router';
 
 export const router = {
@@ -9,6 +10,7 @@ export const router = {
     console.log('test handler invoked');
   }),
 
+  logger: loggerContract,
   chat: chatContract,
 };
 
