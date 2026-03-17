@@ -10,7 +10,7 @@ import { router } from './rpc/router';
 
 const modules = [LoggerModule, ChatModule];
 
-const bootstrap = async () => {
+const coopWhen = async () => {
   try {
     r.apply(router);
 
@@ -64,4 +64,4 @@ const bootstrap = async () => {
   });
 };
 
-void bootstrap();
+void coopWhen();

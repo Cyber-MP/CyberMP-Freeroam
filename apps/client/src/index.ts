@@ -25,7 +25,7 @@ const modules: ContainerModule[] = [
   GameModule,
 ];
 
-const bootstrap = async () => {
+const coopWhen = async () => {
   try {
     r.apply(router);
 
@@ -67,4 +67,4 @@ const bootstrap = async () => {
   }
 };
 
-void bootstrap();
+void coopWhen();
