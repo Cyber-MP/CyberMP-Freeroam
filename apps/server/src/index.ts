@@ -29,7 +29,7 @@ const coopWhen = async () => {
 
       await container.getAsync(constructorValue);
 
-      loggerService.ready(classId, `- ${Date.now() - start}ms`);
+      loggerService.ready(`${classId} - ${Date.now() - start}ms`);
     }
 
     mp.events.on('resourceStop', () => {

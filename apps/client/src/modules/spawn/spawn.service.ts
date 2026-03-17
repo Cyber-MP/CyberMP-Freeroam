@@ -4,7 +4,9 @@ import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
 import { createVector3, createVector4 } from '../../lib/vectors';
 import { mp } from '../../mp';
+import { DeathService } from '../death/death.service';
 import { GHealthService } from '../game/health/health.service';
+import { GVehiclesService } from '../game/vehicles/vehicles.service';
 
 type SpawnOptions = {
   position: ServerVector4 | Vector4;
@@ -22,7 +24,11 @@ export class SpawnService {
 
   private readonly DEFAULT_HEALTH = 300;
 
-  constructor(@inject(GHealthService) private health: GHealthService) {}
+  constructor(
+    @inject(GHealthService) private health: GHealthService,
+    @inject(DeathService) private deathService: DeathService,
+    @inject(GVehiclesService) private vehiclesService: GVehiclesService,
+  ) {}
 
   getSpawnPosition(): ServerVector3 {
     const [x, y, z] = this.BASE_SPAWN_POSITION;
@@ -34,17 +40,19 @@ export class SpawnService {
   }
 
   spawn({ position, health }: SpawnOptions) {
+    this.vehiclesService.requestLeaveVehicle();
     this.health.set(health ?? this.DEFAULT_HEALTH);
 
     const pos = Array.isArray(position) ? createVector4(...position) : position;
 
     mp.setSpawnDataLocalPlayer(pos.x, pos.y, pos.z, pos.w);
     mp.spawnLocalPlayer();
+    this.deathService.stand();
   }
 
   @postConstruct()
   private init() {
-    // TODO: move this code to entry-service maybe?
+    // TODO: get last player position from server and use it for spawn
 
     const spawnPosition = this.getSpawnPosition();
 

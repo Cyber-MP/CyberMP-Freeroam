@@ -1,6 +1,7 @@
 import * as CyberEnums from '@cybermp/client-types/enums';
 import type { vehicleBaseObject } from '@cybermp/client-types/game';
 import { injectable } from 'inversify';
+import { sleep } from 'radash';
 import { mp } from '../../../mp';
 
 type RequestSitInVehicleOptions = {
@@ -16,10 +17,14 @@ export class GVehiclesService {
   ) {
     const { instant = true, slot = 'seat_front_left' } = options ?? {};
 
-    const onVehicleStreamIn = (netId: number, hash: number) => {
+    const onVehicleStreamIn = async (netId: number, hash: number) => {
       if (netId !== vehicleNetId) {
         return;
       }
+
+      this.requestLeaveVehicle();
+
+      await sleep(50);
 
       const entityID = new mp.game.entEntityID();
       entityID.hash = hash;
@@ -29,9 +34,7 @@ export class GVehiclesService {
       }
 
       const data = new mp.game.gameMountEventData();
-      // TODO: when we fix instant seating uncomment this code
-      // data.isInstant = instant;
-      data.isInstant = false;
+      data.isInstant = instant;
       data.slotName = slot;
       data.mountParentEntityId = entity.GetEntityID();
       data.entryAnimName = 'forcedTransition';
@@ -55,7 +58,7 @@ export class GVehiclesService {
     mp.events.on('onVehicleStreamIn', onVehicleStreamIn);
   }
 
-  requestLeaveVehicle() {
+  requestLeaveVehicle(instant = true) {
     const vehicle = mp.game.GetMountedVehicle(mp.game.GetPlayerObject());
     if (!vehicle) {
       return;
@@ -64,7 +67,7 @@ export class GVehiclesService {
     const slot = vehicle.GetSlotIdForMountedObject(mp.game.GetPlayerObject());
 
     const data = new mp.game.gameMountEventData();
-    data.isInstant = true;
+    data.isInstant = instant;
     data.slotName = slot;
     data.mountParentEntityId = vehicle.GetEntityID();
     data.entryAnimName = 'forcedTransition';

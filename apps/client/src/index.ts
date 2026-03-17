@@ -5,6 +5,7 @@ import type { ContainerModule } from 'inversify';
 import { container } from './container';
 import { CefModule } from './modules/cef/cef.module';
 import { ChatModule } from './modules/chat/chat.module';
+import { DeathModule } from './modules/death/death.module';
 import { GameModule } from './modules/game/game.module';
 import { LoggerModule } from './modules/logger/logger.module';
 import { LoggerService } from './modules/logger/logger.service';
@@ -22,6 +23,7 @@ const modules: ContainerModule[] = [
   SpawnModule,
   LoggerModule,
   GameModule,
+  DeathModule,
 ];
 
 const coopWhen = async () => {
@@ -42,7 +44,7 @@ const coopWhen = async () => {
 
       await container.getAsync(constructorValue);
 
-      loggerService.ready(classId, `- ${Date.now() - start}ms`);
+      loggerService.ready(`${classId} - ${Date.now() - start}ms`);
     }
 
     mp.events.on('resourceStop', () => {
