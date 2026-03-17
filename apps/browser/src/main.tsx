@@ -2,6 +2,7 @@ import './styles/index.css';
 import { RpcRouterProvider } from '@cybermp/rpc-router-react';
 import { RouterProvider } from '@tanstack/react-router';
 import { createRoot } from 'react-dom/client';
+import { HotkeysProvider } from 'react-hotkeys-hook';
 import { r } from './rpc';
 import { rpcRouter } from './rpc/router';
 import { tanstackRouter } from './tanstack-router';
@@ -16,7 +17,9 @@ const bootstrap = () => {
 
   createRoot(root).render(
     <RpcRouterProvider router={r}>
-      <RouterProvider router={tanstackRouter} />
+      <HotkeysProvider>
+        <RouterProvider router={tanstackRouter} />
+      </HotkeysProvider>
     </RpcRouterProvider>,
   );
 

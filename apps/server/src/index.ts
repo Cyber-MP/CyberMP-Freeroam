@@ -1,9 +1,41 @@
+import { eagerRegistry } from '@freeroam/inversify';
+import { container } from './container';
+import { ChatModule } from './modules/chat/chat.module';
+import { LoggerModule } from './modules/logger/logger.module';
+import { LoggerService } from './modules/logger/logger.service';
 import { mp } from './mp';
 import { client, r } from './rpc';
 import { router } from './rpc/router';
 
-const bootstrap = () => {
-  r.apply(router);
+const modules = [LoggerModule, ChatModule];
+
+const bootstrap = async () => {
+  try {
+    r.apply(router);
+
+    await container.load(...modules);
+
+    const loggerService = container.get(LoggerService);
+
+    for (const constructorValue of eagerRegistry.values()) {
+      const classId = constructorValue.name.replace('$1', '');
+
+      const start = Date.now();
+
+      await container.getAsync(constructorValue);
+
+      loggerService.ready(classId, `- ${Date.now() - start}ms`);
+    }
+
+    mp.events.on('resourceStop', () => {
+      console.log('Destroying server');
+      container.unloadSync(...modules);
+    });
+
+    loggerService.success('Server initialized');
+  } catch (e) {
+    console.log('Failed to initialize server: ', e);
+  }
 
   mp.commands.add('test-vehicle', (player) => {
     const newVehicle = mp.vehicles.create({

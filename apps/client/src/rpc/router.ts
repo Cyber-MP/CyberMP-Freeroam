@@ -1,4 +1,5 @@
 import { cefContract } from '../modules/cef/cef.controller';
+import { chatContract } from '../modules/chat/chat.controller';
 import { healthContract } from '../modules/game/health/health.controller';
 import { statusEffectsContract } from '../modules/game/status-effects/status-effects.controller';
 import { teleportContract } from '../modules/game/teleport/teleport.controller';
@@ -14,6 +15,7 @@ export const router = {
   },
   session: sessionContract,
   cef: cefContract,
+  chat: chatContract,
 };
 
 export type ClientRouter = typeof router;

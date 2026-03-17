@@ -1,4 +1,5 @@
 import z from 'zod';
+import { chatContract } from '../modules/chat/chat.controller';
 import { r } from './rpc-router';
 
 export const router = {
@@ -7,6 +8,8 @@ export const router = {
 
     console.log('test handler invoked');
   }),
+
+  chat: chatContract,
 };
 
 export type ServerRouter = typeof router;

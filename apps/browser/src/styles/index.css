@@ -154,7 +154,7 @@
     }
 
     body {
-        @apply bg-background text-foreground text-base;
+        @apply bg-blue-500 text-foreground text-base;
     }
 
     html {

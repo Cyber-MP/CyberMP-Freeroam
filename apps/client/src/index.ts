@@ -4,6 +4,7 @@ import { eagerRegistry } from '@freeroam/inversify';
 import type { ContainerModule } from 'inversify';
 import { container } from './container';
 import { CefModule } from './modules/cef/cef.module';
+import { ChatModule } from './modules/chat/chat.module';
 import { GameModule } from './modules/game/game.module';
 import { GMenusService } from './modules/game/menus.service';
 import { LoggerModule } from './modules/logger/logger.module';
@@ -17,6 +18,7 @@ import { router } from './rpc/router';
 const modules: ContainerModule[] = [
   CefModule,
   SessionModule,
+  ChatModule,
   SpawnModule,
   LoggerModule,
   GameModule,
@@ -41,7 +43,7 @@ const bootstrap = async () => {
     }
 
     mp.events.on('resourceStop', () => {
-      console.log('Destroying freeroam');
+      console.log('Destroying client');
       container.unloadSync(...modules);
     });
 

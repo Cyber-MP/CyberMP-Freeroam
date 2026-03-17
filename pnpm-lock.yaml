@@ -50,6 +50,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      minisearch:
+        specifier: ^7.2.0
+        version: 7.2.0
       postcss:
         specifier: ^8.5.6
         version: 8.5.8
@@ -65,6 +68,9 @@ importers:
       react-hotkeys-hook:
         specifier: ^5.2.4
         version: 5.2.4(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+      react-minisearch:
+        specifier: ^7.1.4
+        version: 7.1.4(minisearch@7.2.0)(react@19.2.3)
       react-powerglitch:
         specifier: ^1.1.0
         version: 1.1.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -77,9 +83,6 @@ importers:
       tailwindcss:
         specifier: ^4.1.18
         version: 4.2.1
-      tailwindcss-px-to-viewport:
-        specifier: ^0.1.4
-        version: 0.1.4
       tw-animate-css:
         specifier: ^1.4.0
         version: 1.4.0
@@ -132,9 +135,6 @@ importers:
       postcss-nesting:
         specifier: ^14.0.0
         version: 14.0.0(postcss@8.5.8)
-      postcss-px-to-viewport:
-        specifier: ^1.1.1
-        version: 1.1.1
       postcss-value-parser:
         specifier: ^4.2.0
         version: 4.2.0
@@ -208,6 +208,21 @@ importers:
       '@cybermp/rpc-server':
         specifier: 0.1.0-rc.2
         version: 0.1.0-rc.2(@cybermp/server-types@3.1.0)
+      '@freeroam/inversify':
+        specifier: workspace:*
+        version: link:../../libs/inversify
+      consola:
+        specifier: ^3.4.2
+        version: 3.4.2
+      inversify:
+        specifier: ^7.11.0
+        version: 7.11.0(reflect-metadata@0.2.2)
+      radash:
+        specifier: ^12.1.1
+        version: 12.1.1
+      reflect-metadata:
+        specifier: ^0.2.2
+        version: 0.2.2
       zod:
         specifier: ^4.3.6
         version: 4.3.6
@@ -3080,6 +3095,9 @@ packages:
   minimist@1.2.8:
     resolution: {integrity: sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==}
 
+  minisearch@7.2.0:
+    resolution: {integrity: sha512-dqT2XBYUOZOiC5t2HRnwADjhNS2cecp9u+TJRiJ1Qp/f5qjkeT5APcGPjHw+bz89Ms8Jp+cG4AlE+QZ/QnDglg==}
+
   ms@2.1.3:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
 
@@ -3244,9 +3262,6 @@ packages:
     peerDependencies:
       postcss: ^8.4
 
-  postcss-px-to-viewport@1.1.1:
-    resolution: {integrity: sha512-2x9oGnBms+e0cYtBJOZdlwrFg/mLR4P1g2IFu7jYKvnqnH/HLhoKyareW2Q/x4sg0BgklHlP1qeWo2oCyPm8FQ==}
-
   postcss-selector-parser@7.1.1:
     resolution: {integrity: sha512-orRsuYpJVw8LdAwqqLykBj9ecS5/cRHlI5+nvTo8LcCKmzDmqVORXtOIYEEQuL9D4BxtA1lm5isAqzQZCoQ6Eg==}
     engines: {node: '>=4'}
@@ -3327,6 +3342,12 @@ packages:
     peerDependencies:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
+
+  react-minisearch@7.1.4:
+    resolution: {integrity: sha512-idVKJA+4iLH28yXdHWTkaROc7HuyUb0wNb+NO1+nlrK0oCJz6ZONxcYZMQq8aDvBKWg93crArluKG81XtC449Q==}
+    peerDependencies:
+      minisearch: ^7.1.0
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
   react-powerglitch@1.1.0:
     resolution: {integrity: sha512-ueYw9dZFszBnchxbTOBJunvoWhVDoValhjDBjuZTXl3Hnj3DdwykcrS5Hdz4HDapnjveERMWeQo78OS5hmwF9A==}
@@ -3614,9 +3635,6 @@ packages:
 
   tailwind-merge@3.5.0:
     resolution: {integrity: sha512-I8K9wewnVDkL1NTGoqWmVEIlUcB9gFriAEkXkfCjX5ib8ezGxtR3xD7iZIxrfArjEsH7F1CHD4RFUtxefdqV/A==}
-
-  tailwindcss-px-to-viewport@0.1.4:
-    resolution: {integrity: sha512-qNPXmBpsPqr0qZ1kKsQ6f2rW+A2OhB9LFBHvgYjYmJdKE/KasOeVd4ftnY+ucq6icfZa1Y3ywZn76Zh1rR4KSA==}
 
   tailwindcss@4.2.1:
     resolution: {integrity: sha512-/tBrSQ36vCleJkAOsy9kbNTgaxvGbyOamC30PRePTQe/o1MFwEKHQk4Cn7BNGaPtjp+PuUrByJehM1hgxfq4sw==}
@@ -6555,6 +6573,8 @@ snapshots:
 
   minimist@1.2.8: {}
 
+  minisearch@7.2.0: {}
+
   ms@2.1.3: {}
 
   msw@2.12.10(@types/node@25.3.5)(typescript@5.9.3):
@@ -6713,11 +6733,6 @@ snapshots:
       postcss: 8.5.8
       postcss-selector-parser: 7.1.1
 
-  postcss-px-to-viewport@1.1.1:
-    dependencies:
-      object-assign: 4.1.1
-      postcss: 8.5.8
-
   postcss-selector-parser@7.1.1:
     dependencies:
       cssesc: 3.0.0
@@ -6842,6 +6857,11 @@ snapshots:
     dependencies:
       react: 19.2.3
       react-dom: 19.2.3(react@19.2.3)
+
+  react-minisearch@7.1.4(minisearch@7.2.0)(react@19.2.3):
+    dependencies:
+      minisearch: 7.2.0
+      react: 19.2.3
 
   react-powerglitch@1.1.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
     dependencies:
@@ -7186,8 +7206,6 @@ snapshots:
   tagged-tag@1.0.0: {}
 
   tailwind-merge@3.5.0: {}
-
-  tailwindcss-px-to-viewport@0.1.4: {}
 
   tailwindcss@4.2.1: {}
 
