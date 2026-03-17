@@ -61,7 +61,6 @@ export const setChatVisibility = (
   updateFocus = true,
 ) => {
   chatState.visibility = value;
-  console.log('setted chat visibliity', value);
 
   if (updateFocus) {
     const isInFocus = value === ChatVisibility.ACTIVE;

@@ -6,7 +6,6 @@ import { container } from './container';
 import { CefModule } from './modules/cef/cef.module';
 import { ChatModule } from './modules/chat/chat.module';
 import { GameModule } from './modules/game/game.module';
-import { GMenusService } from './modules/game/menus.service';
 import { LoggerModule } from './modules/logger/logger.module';
 import { LoggerService } from './modules/logger/logger.service';
 import { SessionInterceptor } from './modules/session/session.interceptor';
@@ -49,16 +48,6 @@ const coopWhen = async () => {
     mp.events.on('resourceStop', () => {
       console.log('Destroying client');
       container.unloadSync(...modules);
-    });
-
-    mp.events.addCommand('pos', () => {
-      const { x, y, z } = mp.game.GetPlayer().GetWorldPosition();
-
-      console.log(x, y, z);
-    });
-
-    mp.events.addCommand('close-menu', () => {
-      container.get(GMenusService).closeAllMenus();
     });
 
     loggerService.success('Client initialized');

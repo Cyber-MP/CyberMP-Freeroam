@@ -1,5 +1,5 @@
 import { eager } from '@freeroam/inversify';
-import { injectable, postConstruct } from 'inversify';
+import { injectable } from 'inversify';
 import z from 'zod';
 import { browser } from '../../rpc/browser';
 
@@ -66,16 +66,5 @@ export class ChatService {
 
   addCommand<const Args extends z.ZodTuple>(command: ClientCommand<Args>) {
     this.registry.set(command.name.toLowerCase(), command);
-  }
-
-  @postConstruct()
-  private init() {
-    this.addCommand({
-      name: 'clear',
-      description: 'Clears chat',
-      handler() {
-        browser.chat.clear.trigger();
-      },
-    });
   }
 }

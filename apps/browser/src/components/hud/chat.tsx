@@ -375,8 +375,8 @@ export const Chat = () => {
 
   return (
     <div
-      // onClick={() => setChatVisibility(ChatVisibility.ACTIVE)}
-      // onBlur={() => setChatVisibility(ChatVisibility.INACTIVE)}
+      onClick={() => setChatVisibility(ChatVisibility.ACTIVE)}
+      onBlur={() => setChatVisibility(ChatVisibility.INACTIVE)}
       className={chatContainerVariants({ visibility })}
     >
       <ChatMessages />

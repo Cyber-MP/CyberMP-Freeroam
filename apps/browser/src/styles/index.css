@@ -157,6 +157,16 @@
         @apply bg-transparent text-foreground text-base;
     }
 
+    ::-webkit-scrollbar {
+        width: 0.4vw;
+        border-radius: #333;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #333;
+        width: 0.4vw;
+    }
+
     html {
         @apply font-mono;
     }

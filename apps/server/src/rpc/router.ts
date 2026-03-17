@@ -1,6 +1,8 @@
+import { RpcApplyType } from '@cybermp/rpc-server';
 import z from 'zod';
 import { chatContract } from '../modules/chat/chat.controller';
 import { loggerContract } from '../modules/logger/logger.controller';
+import { mp } from '../mp';
 import { r } from './rpc-router';
 
 export const router = {
@@ -9,6 +11,18 @@ export const router = {
 
     console.log('test handler invoked');
   }),
+  getPing: r.procedure
+    .method(RpcApplyType.REGISTER)
+    .output(z.number())
+    .handler((c) => c.player.ping),
+  getOnline: r.procedure
+    .method(RpcApplyType.REGISTER)
+    .output(z.number())
+    .handler(() => mp.players.toArray().length),
+  getPlayerId: r.procedure
+    .method(RpcApplyType.REGISTER)
+    .output(z.number())
+    .handler((c) => c.player.id),
 
   logger: loggerContract,
   chat: chatContract,

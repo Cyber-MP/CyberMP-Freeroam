@@ -1,6 +1,6 @@
 import type { MpPlayer } from '@cybermp/server-types';
 import { eager } from '@freeroam/inversify';
-import { injectable } from 'inversify';
+import { injectable, postConstruct } from 'inversify';
 import z from 'zod';
 import { browser } from '../../rpc/browser';
 
@@ -92,5 +92,16 @@ export class ChatService {
 
   addCommand<const Args extends z.ZodTuple>(command: ServerCommand<Args>) {
     this.registry.set(command.name.toLowerCase(), command);
+  }
+
+  @postConstruct()
+  private init() {
+    this.addCommand({
+      name: 'ping',
+      description: "Print's your current ping to chat",
+      handler: (player) => {
+        this.sendMessage(player, `${player.ping}ms`);
+      },
+    });
   }
 }
