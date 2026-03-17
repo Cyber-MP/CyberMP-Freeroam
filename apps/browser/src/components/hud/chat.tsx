@@ -27,7 +27,7 @@ const ChatMessages = () => {
   return (
     <div
       ref={messagesContainerRef}
-      className="bg-red-500 w-full outline-none border-none h-full px-2 pb-2 overflow-y-auto overflow-x-hidden gap-1 flex flex-col"
+      className="w-full outline-none border-none h-full px-2 pb-2 overflow-y-auto overflow-x-hidden gap-1 flex flex-col"
     >
       {messages.map((message) => (
         <div

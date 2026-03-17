@@ -1,5 +1,5 @@
 import { procedure } from '@cybermp/rpc-router/server';
-import { proxy, type Snapshot } from 'valtio';
+import { proxy, subscribe, type Snapshot } from 'valtio';
 import z from 'zod';
 import type { JSONSchema } from 'zod/v4/core';
 import { client, server } from '../rpc';
@@ -38,6 +38,12 @@ export const chatState = proxy<ChatState>({
   clientCommands: [],
   visibility: ChatVisibility.HIDDEN,
 });
+
+subscribe(chatState.messages, () => {
+  if (chatState.visibility === ChatVisibility.HIDDEN) {
+    setChatVisibility(ChatVisibility.INACTIVE, false)
+  }
+})
 
 const fetchServerCommands = async () => {
   const commands = await server.chat.getCommandsMeta.call();
