@@ -92,9 +92,9 @@ export class EntryService {
 
     setTimeout(() => this.toggleEntryRestrictions(true), 0);
 
-    this.initCamera();
-
     await this.loadingScreen.waitForLoadingScreenToHide(200, 1000);
+
+    this.initCamera();
 
     this.playerService.invisible(true);
 
