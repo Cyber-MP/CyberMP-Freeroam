@@ -32,7 +32,7 @@ export class BasicChatCommands {
 
   private spawn() {
     this.spawnService.spawn({
-      position: [...this.spawnService.getSpawnPosition(), 1],
+      position: this.spawnService.getSpawnPosition(),
     });
   }
 

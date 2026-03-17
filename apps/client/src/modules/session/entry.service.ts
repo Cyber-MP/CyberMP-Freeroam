@@ -76,15 +76,10 @@ export class EntryService {
     }
 
     this.toggleEntryRestrictions(false);
-    this.keyboard.unsubscribe(this.onInput);
 
     this.cefService.setLoadingRedirect('/hud');
     browser.navigate.trigger('/hud');
   }
-
-  private onInput = () => {
-    this.enter();
-  };
 
   private async onGameLoaded() {
     this.hud.hide();
@@ -98,7 +93,6 @@ export class EntryService {
 
     this.playerService.invisible(true);
 
-    this.keyboard.subscribe(this.onInput);
     browser.navigate.trigger('/entry');
 
     this.logger.info('Fully initialized entry service, spawn player and etc ');

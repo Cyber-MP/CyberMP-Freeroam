@@ -2,14 +2,19 @@ import { inject, postConstruct } from 'inversify';
 import { sleep } from 'radash';
 import { Observer } from '../../lib/observer';
 import { mp } from '../../mp';
+import { browser } from '../../rpc/browser';
 import { GHealthService } from '../game/health/health.service';
+import { GHudService } from '../game/hud.service';
 
 type OnDeathCallback = () => void;
 
 export class DeathService {
   private deathObserver = new Observer<OnDeathCallback>();
 
-  constructor(@inject(GHealthService) private healthService: GHealthService) {}
+  constructor(
+    @inject(GHealthService) private healthService: GHealthService,
+    @inject(GHudService) private hudService: GHudService,
+  ) {}
 
   private onGameLoaded() {
     setInterval(() => {
@@ -17,6 +22,8 @@ export class DeathService {
         this.deathObserver.notify();
       }
     }, 1000);
+
+    this.subscribe(this.onGlobalDeath.bind(this));
   }
 
   async stand() {
@@ -44,6 +51,11 @@ export class DeathService {
 
   unsubscribe(callback: OnDeathCallback) {
     this.deathObserver.unsubscribe(callback);
+  }
+
+  private onGlobalDeath() {
+    this.hudService.hide();
+    browser.navigate.trigger('/death');
   }
 
   @postConstruct()

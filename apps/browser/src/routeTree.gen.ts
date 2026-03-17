@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoadingRouteImport } from './routes/loading'
 import { Route as HudRouteImport } from './routes/hud'
 import { Route as EntryRouteImport } from './routes/entry'
+import { Route as DeathRouteImport } from './routes/death'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as HudMenuRouteImport } from './routes/hud.menu'
 
@@ -30,6 +31,11 @@ const EntryRoute = EntryRouteImport.update({
   path: '/entry',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DeathRoute = DeathRouteImport.update({
+  id: '/death',
+  path: '/death',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -43,6 +49,7 @@ const HudMenuRoute = HudMenuRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/death': typeof DeathRoute
   '/entry': typeof EntryRoute
   '/hud': typeof HudRouteWithChildren
   '/loading': typeof LoadingRoute
@@ -50,6 +57,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/death': typeof DeathRoute
   '/entry': typeof EntryRoute
   '/hud': typeof HudRouteWithChildren
   '/loading': typeof LoadingRoute
@@ -58,6 +66,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/death': typeof DeathRoute
   '/entry': typeof EntryRoute
   '/hud': typeof HudRouteWithChildren
   '/loading': typeof LoadingRoute
@@ -65,14 +74,15 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/entry' | '/hud' | '/loading' | '/hud/menu'
+  fullPaths: '/' | '/death' | '/entry' | '/hud' | '/loading' | '/hud/menu'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/entry' | '/hud' | '/loading' | '/hud/menu'
-  id: '__root__' | '/' | '/entry' | '/hud' | '/loading' | '/hud/menu'
+  to: '/' | '/death' | '/entry' | '/hud' | '/loading' | '/hud/menu'
+  id: '__root__' | '/' | '/death' | '/entry' | '/hud' | '/loading' | '/hud/menu'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DeathRoute: typeof DeathRoute
   EntryRoute: typeof EntryRoute
   HudRoute: typeof HudRouteWithChildren
   LoadingRoute: typeof LoadingRoute
@@ -99,6 +109,13 @@ declare module '@tanstack/react-router' {
       path: '/entry'
       fullPath: '/entry'
       preLoaderRoute: typeof EntryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/death': {
+      id: '/death'
+      path: '/death'
+      fullPath: '/death'
+      preLoaderRoute: typeof DeathRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -130,6 +147,7 @@ const HudRouteWithChildren = HudRoute._addFileChildren(HudRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DeathRoute: DeathRoute,
   EntryRoute: EntryRoute,
   HudRoute: HudRouteWithChildren,
   LoadingRoute: LoadingRoute,

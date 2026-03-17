@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { useEffect } from 'react';
 import { GlitchText } from '@/components/ui/glitch-text';
 import { Logo } from '@/components/ui/logo';
+import { useFocus } from '@/hooks/use-focus';
 import { client } from '@/rpc';
 
 export const Route = createFileRoute('/entry')({
@@ -13,13 +13,7 @@ function RouteComponent() {
     client.session.enter.trigger();
   };
 
-  useEffect(() => {
-    client.cef.setFocus.trigger(true);
-
-    return () => {
-      client.cef.setFocus.trigger(false);
-    };
-  }, []);
+  useFocus();
 
   return (
     <div
