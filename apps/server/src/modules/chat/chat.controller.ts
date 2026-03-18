@@ -4,14 +4,16 @@ import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
 import z from 'zod';
 import { r } from '../../rpc';
-import { ChatService, zChatCommandMeta, zExecuteCommand } from './chat.service';
+import { ChatService } from './chat.service';
+import { zChatCommandMetaDTO } from './dto/chat-command-meta';
+import { zExecuteCommandDTO } from './dto/execute-command';
 
 export const chatContract = {
   postMessage: r.contract.input(z.string()).build(),
-  executeCommand: r.contract.input(zExecuteCommand).build(),
+  executeCommand: r.contract.input(zExecuteCommandDTO).build(),
   getCommandsMeta: r.contract
     .method(RpcApplyType.REGISTER)
-    .output(z.array(zChatCommandMeta))
+    .output(z.array(zChatCommandMetaDTO))
     .build(),
 };
 
