@@ -26,7 +26,7 @@ export class WeatherCommands {
   private init() {
     this.chat.addCommand({
       name: 'weather',
-      args: z.tuple([zWeatherState]),
+      args: z.tuple([zWeatherState.meta({ title: 'weather' })]),
       handler: this.setClientWeather.bind(this),
       description: 'Sets local client weather',
     });
