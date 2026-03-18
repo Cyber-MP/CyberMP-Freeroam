@@ -2,8 +2,7 @@ import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
 import { mp } from '../../mp';
 import { browser } from '../../rpc/browser';
-import { GHealthService } from '../game/health/health.service';
-import { SpawnService } from '../spawn/spawn.service';
+import { GStatusEffectsService } from '../game/status-effects/status-effects.service';
 import { ChatService } from './chat.service';
 
 @eager()
@@ -11,8 +10,7 @@ import { ChatService } from './chat.service';
 export class BasicChatCommands {
   constructor(
     @inject(ChatService) private chatService: ChatService,
-    @inject(GHealthService) private healthService: GHealthService,
-    @inject(SpawnService) private spawnService: SpawnService,
+    @inject(GStatusEffectsService) private statusEffects: GStatusEffectsService,
   ) {}
 
   private clear() {
@@ -26,14 +24,9 @@ export class BasicChatCommands {
     this.chatService.sendMessage(`${x} ${y} ${z}`);
   }
 
-  private killme() {
-    this.healthService.setCurrent(0);
-  }
-
-  private spawn() {
-    this.spawnService.spawn({
-      position: this.spawnService.getSpawnPosition(),
-    });
+  private fixWeapons() {
+    this.statusEffects.remove('GameplayRestriction.NoCombat');
+    this.statusEffects.remove('GameplayRestriction.NoWeapons');
   }
 
   @postConstruct()
@@ -51,15 +44,9 @@ export class BasicChatCommands {
     });
 
     this.chatService.addCommand({
-      name: 'killme',
-      description: 'You should.. NOW and give somebody else...',
-      handler: this.killme.bind(this),
-    });
-
-    this.chatService.addCommand({
-      name: 'spawn',
-      description: 'Spawns you... duh',
-      handler: this.spawn.bind(this),
+      name: 'fixweapons',
+      description: 'Tries to fix your weapons in case you cant shoot',
+      handler: this.fixWeapons.bind(this),
     });
   }
 }
