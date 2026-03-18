@@ -22,8 +22,6 @@ export class TimeCommands {
 
   @postConstruct()
   private init() {
-    console.log('TIME COMMANDS INITIALIZED');
-
     this.chat.addCommand({
       name: 'time',
       args: z.tuple([

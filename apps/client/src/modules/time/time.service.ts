@@ -47,7 +47,7 @@ export class TimeService {
     }
   }
 
-  apply(time: Time) {
+  private apply(time: Time) {
     if (!time) {
       this.logger.warn('Tried to apply time without passing time');
       return;

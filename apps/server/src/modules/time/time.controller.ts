@@ -1,8 +1,14 @@
 import { RpcApplyType } from '@cybermp/rpc-server';
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
+import z from 'zod';
 import { r } from '../../rpc';
-import { TimeService, zServerTime } from './time.service';
+import { TimeService } from './time.service';
+
+export const zServerTime = z.object({
+  hours: z.number().min(0).max(24),
+  minutes: z.number().min(0).max(60),
+});
 
 export const timeContract = {
   getCurrentTime: r.contract

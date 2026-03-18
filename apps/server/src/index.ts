@@ -7,11 +7,18 @@ import { LoggerMiddleware } from './modules/logger/logger.middleware';
 import { LoggerModule } from './modules/logger/logger.module';
 import { LoggerService } from './modules/logger/logger.service';
 import { TimeModule } from './modules/time/time.module';
+import { WeatherModule } from './modules/weather/weather.module';
 import { mp } from './mp';
 import { client, r, rpc } from './rpc';
 import { router } from './rpc/router';
 
-const modules = [LoggerModule, ChatModule, KillFeedModule, TimeModule];
+const modules = [
+  LoggerModule,
+  ChatModule,
+  KillFeedModule,
+  TimeModule,
+  WeatherModule,
+];
 
 const coopWhen = async () => {
   try {

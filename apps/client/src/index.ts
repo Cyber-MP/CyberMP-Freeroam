@@ -13,6 +13,7 @@ import { SessionInterceptor } from './modules/session/session.interceptor';
 import { SessionModule } from './modules/session/session.module';
 import { SpawnModule } from './modules/spawn/spawn.module';
 import { TimeModule } from './modules/time/time.module';
+import { WeatherModule } from './modules/weather/weather.module';
 import { mp } from './mp';
 import { r, rpc } from './rpc';
 import { router } from './rpc/router';
@@ -26,6 +27,7 @@ const modules: ContainerModule[] = [
   GameModule,
   DeathModule,
   TimeModule,
+  WeatherModule,
 ];
 
 const coopWhen = async () => {

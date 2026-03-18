@@ -1,14 +1,9 @@
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
-import z from 'zod';
+import type z from 'zod';
 import { client } from '../../rpc';
-import { ChatService } from '../chat/chat.service';
 import { LoggerService } from '../logger/logger.service';
-
-export const zServerTime = z.object({
-  hours: z.number().min(0).max(24),
-  minutes: z.number().min(0).max(60),
-});
+import { zServerTime } from './time.controller';
 
 export type ServerTime = z.infer<typeof zServerTime>;
 
@@ -25,10 +20,7 @@ export class TimeService {
     return this.time;
   }
 
-  constructor(
-    @inject(LoggerService) private logger: LoggerService,
-    @inject(ChatService) private chat: ChatService,
-  ) {
+  constructor(@inject(LoggerService) private logger: LoggerService) {
     this.logger.setContext('TimeService');
   }
 
