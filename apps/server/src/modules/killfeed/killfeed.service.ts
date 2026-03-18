@@ -8,22 +8,15 @@ import { browser } from '../../rpc/browser';
 @injectable()
 export class KillFeedService {
   private onPlayerDeath(victimId: number, killerId?: number) {
-    try {
-      // const victim = mp.players.at(victimId);
-      // console.log();
+    const victim = mp.players.at(+victimId);
+    const killer = killerId ? mp.players.at(+killerId) : undefined;
 
-      // const killer = killerId ? mp.players.at(killerId) : undefined;
-      // console.log(victim.nickname, killer?.nickname);
-
-      browser.killFeed.registerKill.trigger(-1, {
-        id: generateUUID(),
-        timestamp: Date.now(),
-        victimName: '123',
-        killerName: '123',
-      });
-    } catch (e) {
-      console.log('ERROR', JSON.stringify(e));
-    }
+    browser.killFeed.registerKill.trigger(-1, {
+      id: generateUUID(),
+      timestamp: Date.now(),
+      victimName: victim.nickname,
+      killerName: killer?.nickname,
+    });
   }
 
   @postConstruct()

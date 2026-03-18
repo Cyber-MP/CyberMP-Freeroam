@@ -40,7 +40,7 @@ export const KillFeed = () => {
               )}
 
               <span className="flex items-center justify-center">
-                <IoSkull size={16} className="text-yellow" />
+                <IoSkull size={16} className="text-[#ffef00]" />
               </span>
 
               <span
