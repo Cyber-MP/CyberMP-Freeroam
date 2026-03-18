@@ -2,6 +2,8 @@ import { eager } from '@freeroam/inversify';
 import { injectable } from 'inversify';
 import z from 'zod';
 import { browser } from '../../rpc/browser';
+import { zChatCommandMetaDTO } from './dto/chat-command-meta';
+import type { ExecuteCommandDTO } from './dto/execute-command';
 
 export type ChatCommand<Args extends z.ZodTuple> = {
   name: string;
@@ -9,40 +11,16 @@ export type ChatCommand<Args extends z.ZodTuple> = {
   args?: Args;
 };
 
-export const zChatCommandMeta = z.object({
-  name: z.string(),
-  description: z.string().optional(),
-  args: z
-    .object({
-      type: z.literal('array'),
-      prefixItems: z.array(
-        z.object({
-          type: z.enum(['string', 'number', 'boolean']),
-          title: z.string().optional(),
-        }),
-      ),
-    })
-    .loose()
-    .optional(),
-});
-
 export type ClientCommand<Args extends z.ZodTuple> = ChatCommand<Args> & {
   handler(...args: z.infer<Args>): void;
 };
-
-export const zExecuteCommand = z.object({
-  name: z.string(),
-  args: z.array(z.string()).optional(),
-});
-
-export type ExecuteCommand = z.infer<typeof zExecuteCommand>;
 
 @eager()
 @injectable()
 export class ChatService {
   private registry = new Map<string, ClientCommand<z.ZodTuple<any>>>();
 
-  executeCommand({ name, args }: ExecuteCommand) {
+  executeCommand({ name, args }: ExecuteCommandDTO) {
     const command = this.registry.get(name);
     if (!command) {
       return;
@@ -67,7 +45,7 @@ export class ChatService {
 
   getCommandsMeta() {
     return [...this.registry.values()].map((o) =>
-      zChatCommandMeta.parse({
+      zChatCommandMetaDTO.parse({
         ...o,
         args: o.args ? z.toJSONSchema(o.args) : undefined,
       }),

@@ -5,14 +5,10 @@ import { injectable, postConstruct } from 'inversify';
 import z from 'zod';
 import { mp } from '../../mp';
 import { r } from '../../rpc';
-
-const zSetFocusInput = z.union([
-  z.boolean(),
-  z.tuple([z.boolean(), z.boolean()]),
-]);
+import { zSetFocusDTO } from './dto/set-focus-dto';
 
 export const cefContract = {
-  setFocus: contract.input(zSetFocusInput).build(),
+  setFocus: contract.input(zSetFocusDTO).build(),
   isInFocus: contract.method(RpcApplyType.REGISTER).output(z.boolean()).build(),
 };
 
