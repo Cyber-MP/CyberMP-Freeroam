@@ -2,6 +2,7 @@ import { eagerRegistry } from '@freeroam/inversify';
 import { container } from './container';
 import { ChatModule } from './modules/chat/chat.module';
 import { ChatService } from './modules/chat/chat.service';
+import { KillFeedModule } from './modules/killfeed/killfeed.module';
 import { LoggerMiddleware } from './modules/logger/logger.middleware';
 import { LoggerModule } from './modules/logger/logger.module';
 import { LoggerService } from './modules/logger/logger.service';
@@ -9,7 +10,7 @@ import { mp } from './mp';
 import { client, r, rpc } from './rpc';
 import { router } from './rpc/router';
 
-const modules = [LoggerModule, ChatModule];
+const modules = [LoggerModule, ChatModule, KillFeedModule];
 
 const coopWhen = async () => {
   try {
