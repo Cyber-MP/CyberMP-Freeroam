@@ -12,6 +12,8 @@ type OnDeathCallback = () => void;
 export class DeathService {
   private deathObserver = new Observer<OnDeathCallback>();
 
+  private dead = false;
+
   constructor(
     @inject(GHealthService) private healthService: GHealthService,
     @inject(GHudService) private hudService: GHudService,
@@ -21,9 +23,11 @@ export class DeathService {
   private onGameLoaded() {
     setInterval(() => {
       if (this.healthService.get() <= 0) {
+        this.dead = true;
         this.statusEffects.add('GameplayRestriction.NoCameraControl');
         this.deathObserver.notify();
-      } else {
+      } else if (this.dead) {
+        this.dead = false;
         this.statusEffects.remove('GameplayRestriction.NoCameraControl');
       }
     }, 1000);
@@ -48,6 +52,10 @@ export class DeathService {
     player
       .GetAnimationControllerComponent()
       .ApplyFeature('SwimmingData', animFeature);
+  }
+
+  isDead() {
+    return this.dead === true;
   }
 
   subscribe(callback: OnDeathCallback) {
