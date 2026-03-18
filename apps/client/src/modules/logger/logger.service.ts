@@ -62,6 +62,10 @@ export class LoggerService {
     this.instance.log(message, ...args);
   }
 
+  warn(message: InputLogObject | any, ...args: any[]) {
+    this.instance.warn(message, ...args);
+  }
+
   silent(message: InputLogObject | any, ...args: any[]) {
     this.instance.silent(message, ...args);
   }

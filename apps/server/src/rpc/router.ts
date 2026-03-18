@@ -2,6 +2,7 @@ import { RpcApplyType } from '@cybermp/rpc-server';
 import z from 'zod';
 import { chatContract } from '../modules/chat/chat.controller';
 import { loggerContract } from '../modules/logger/logger.controller';
+import { timeContract } from '../modules/time/time.controller';
 import { mp } from '../mp';
 import { r } from './rpc-router';
 
@@ -24,6 +25,7 @@ export const router = {
     .output(z.number())
     .handler((c) => c.player.id),
 
+  time: timeContract,
   logger: loggerContract,
   chat: chatContract,
 };

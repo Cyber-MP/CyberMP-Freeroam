@@ -6,6 +6,7 @@ import { teleportContract } from '../modules/game/teleport/teleport.controller';
 import { vehiclesContract } from '../modules/game/vehicles/vehicles.controller';
 import { sessionContract } from '../modules/session/session.controller';
 import { spawnContract } from '../modules/spawn/spawn.controller';
+import { timeContract } from '../modules/time/time.controller';
 
 export const router = {
   game: {
@@ -14,6 +15,7 @@ export const router = {
     statusEffects: statusEffectsContract,
     teleport: teleportContract,
   },
+  time: timeContract,
   spawn: spawnContract,
   session: sessionContract,
   cef: cefContract,

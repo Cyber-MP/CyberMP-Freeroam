@@ -6,11 +6,12 @@ import { KillFeedModule } from './modules/killfeed/killfeed.module';
 import { LoggerMiddleware } from './modules/logger/logger.middleware';
 import { LoggerModule } from './modules/logger/logger.module';
 import { LoggerService } from './modules/logger/logger.service';
+import { TimeModule } from './modules/time/time.module';
 import { mp } from './mp';
 import { client, r, rpc } from './rpc';
 import { router } from './rpc/router';
 
-const modules = [LoggerModule, ChatModule, KillFeedModule];
+const modules = [LoggerModule, ChatModule, KillFeedModule, TimeModule];
 
 const coopWhen = async () => {
   try {
@@ -58,20 +59,6 @@ const coopWhen = async () => {
       client.game.vehicles.requestSitInVehicle.trigger(player, newVehicle.id);
     },
   });
-
-  // mp.commands.add('test-vehicle', (player) => {
-
-  // });
-
-  // mp.events.on('playerDisconnected', (p) => {
-  //   const player = mp.players.at(p);
-
-  //   console.log(player.position);
-  // });
-
-  // mp.commands.add('fix-current-veh', (player) => {
-  //   client.game.vehicles.fixCurrentVehicle.trigger(player);
-  // });
 };
 
 void coopWhen();

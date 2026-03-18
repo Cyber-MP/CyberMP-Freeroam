@@ -58,7 +58,17 @@ export class ChatService {
       return;
     }
 
-    command.handler(player, ...(args ?? []));
+    if (!command.args) {
+      return command.handler(player);
+    }
+
+    const resultArgs = command.args.safeParse(args);
+    if (!resultArgs.success) {
+      this.sendMessage(player, 'Arguments validation failed');
+      return;
+    }
+
+    command.handler(player, ...(resultArgs.data ?? []));
   }
 
   postMessage(player: MpPlayer, content: string) {

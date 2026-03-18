@@ -3,6 +3,8 @@ import { inject, injectable, postConstruct } from 'inversify';
 import { ChatService } from '../../chat/chat.service';
 import { GHealthService } from './health.service';
 
+// TODO: add heal command
+
 @eager()
 @injectable()
 export class GHealthCommands {

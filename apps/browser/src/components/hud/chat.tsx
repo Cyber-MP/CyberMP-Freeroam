@@ -158,8 +158,7 @@ const CommandSuggestions = ({
                   className={`${argIndex === currentArgumentIndex ? 'bg-[#efb100]/80' : 'bg-black/40'} p-1`}
                   key={arg.title}
                 >
-                  {arg.title ?? 'arg' + argIndex}
-                  {arg.required ? '' : '?'}: {arg.type}
+                  {arg.title ?? 'arg' + argIndex}: {arg.type}
                 </span>
               ))}
             </div>

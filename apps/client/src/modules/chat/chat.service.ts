@@ -40,7 +40,7 @@ export type ExecuteCommand = z.infer<typeof zExecuteCommand>;
 @eager()
 @injectable()
 export class ChatService {
-  private registry = new Map<string, ClientCommand<any>>();
+  private registry = new Map<string, ClientCommand<z.ZodTuple<any>>>();
 
   executeCommand({ name, args }: ExecuteCommand) {
     const command = this.registry.get(name);
@@ -48,7 +48,17 @@ export class ChatService {
       return;
     }
 
-    command.handler(...(args ?? []));
+    if (!command.args) {
+      return command.handler();
+    }
+
+    const resultArgs = command.args.safeParse(args);
+    if (!resultArgs.success) {
+      this.sendMessage('Arguments validation failed');
+      return;
+    }
+
+    command.handler(...(resultArgs.data ?? []));
   }
 
   sendMessage(content: string) {
