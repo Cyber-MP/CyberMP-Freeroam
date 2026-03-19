@@ -12,6 +12,14 @@ const keyCodeToName: Record<number, string> = {
   40: 'down',
   160: 'ShiftLeft',
   162: 'ControlLeft',
+  113: 'F2',
+  114: 'F3',
+  115: 'F4',
+  116: 'F5',
+  117: 'F6',
+  118: 'F7',
+  119: 'F9',
+  120: 'F10',
   18: 'AltLeft',
   91: 'MetaLeft',
 };
@@ -22,12 +30,17 @@ const keyMap: Record<number, string> = {
   18: 'Alt',
 };
 
+const keyCodeMap: Record<number, number> = {
+  162: 17,
+};
+
 function simulateKey(keyCode: number, type: 'down' | 'up' | 'press') {
   const mappedCode =
     keyCodeToName[keyCode] ?? `Key${String.fromCharCode(keyCode)}`;
 
   const eventData = {
-    keyCode,
+    keyCode: keyCodeMap[keyCode] ?? keyCode,
+    which: keyCodeMap[keyCode] ?? keyCode,
     key: keyMap[keyCode]
       ? keyMap[keyCode]
       : String.fromCharCode(keyCode).toLowerCase(),
@@ -38,6 +51,7 @@ function simulateKey(keyCode: number, type: 'down' | 'up' | 'press') {
     metaKey: mappedCode.toLowerCase().includes('meta'),
   };
 
+  // console.log(JSON.stringify(eventData));
 
   const event = new KeyboardEvent(`key${type}`, eventData);
 
