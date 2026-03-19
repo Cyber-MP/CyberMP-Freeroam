@@ -15,12 +15,22 @@ export class GVehiclesCommands {
     this.vehiclesService.requestLeaveVehicle();
   }
 
+  private repair() {
+    this.vehiclesService.fixCurrentVehicle();
+  }
+
   @postConstruct()
   private init() {
     this.chatService.addCommand({
       name: 'getout',
       description: "Get's you out of current vehicle in case you stuck",
       handler: this.getOut.bind(this),
+    });
+
+    this.chatService.addCommand({
+      name: 'repair',
+      description: 'Fixes your current vehicle',
+      handler: this.repair.bind(this),
     });
   }
 }
