@@ -10,9 +10,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@cybermp/rpc-browser": "0.1.0-rc.2",
-    "@cybermp/rpc-router": "0.1.0-rc.2",
-    "@cybermp/rpc-router-react": "0.1.0-rc.2",
+    "@cybermp/rpc-browser": "0.1.0-rc.4",
+    "@cybermp/rpc-router": "0.1.0-rc.4",
+    "@cybermp/rpc-router-react": "0.1.0-rc.4",
+    "@cybermp/rpc-router-tanstack-query": "0.1.0-rc.4",
     "@fontsource-variable/geist-mono": "^5.2.7",
     "@remixicon/react": "^4.9.0",
     "@tailwindcss/postcss": "^4.1.18",

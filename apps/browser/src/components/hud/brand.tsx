@@ -1,22 +1,15 @@
 import { useQuery } from '@tanstack/react-query';
-import { server } from '@/rpc';
+import { serverQuery } from '@/rpc';
 import { Logo } from '../ui/logo';
 
 export const Brand = () => {
-  const { data: ping } = useQuery({
-    queryKey: ['ping'],
-    queryFn: server.getPing.call,
-    refetchInterval: 1000,
-  });
-  const { data: online } = useQuery({
-    queryKey: ['online'],
-    queryFn: server.getOnline.call,
-    refetchInterval: 5000,
-  });
-  const { data: playerId } = useQuery({
-    queryKey: ['player-id'],
-    queryFn: server.getPlayerId.call,
-  });
+  const { data: ping } = useQuery(
+    serverQuery.getPing.queryOptions({ refetchInterval: 1000 }),
+  );
+  const { data: online } = useQuery(
+    serverQuery.getOnline.queryOptions({ refetchInterval: 5000 }),
+  );
+  const { data: playerId } = useQuery(serverQuery.getPlayerId.queryOptions());
 
   return (
     <div className="fixed top-[0.5vh] w-full flex flex-col items-center justify-center">

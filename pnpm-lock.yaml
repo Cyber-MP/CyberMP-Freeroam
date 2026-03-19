@@ -21,14 +21,17 @@ importers:
   apps/browser:
     dependencies:
       '@cybermp/rpc-browser':
-        specifier: 0.1.0-rc.2
-        version: 0.1.0-rc.2(@cybermp/browser-types@1.1.0)
+        specifier: 0.1.0-rc.4
+        version: 0.1.0-rc.4(@cybermp/browser-types@1.1.0)
       '@cybermp/rpc-router':
-        specifier: 0.1.0-rc.2
-        version: 0.1.0-rc.2
+        specifier: 0.1.0-rc.4
+        version: 0.1.0-rc.4
       '@cybermp/rpc-router-react':
-        specifier: 0.1.0-rc.2
-        version: 0.1.0-rc.2(@cybermp/browser-types@1.1.0)(@cybermp/rpc-browser@0.1.0-rc.2(@cybermp/browser-types@1.1.0))(@cybermp/rpc-router@0.1.0-rc.2)(react@19.2.3)
+        specifier: 0.1.0-rc.4
+        version: 0.1.0-rc.4(@cybermp/browser-types@1.1.0)(@cybermp/rpc-browser@0.1.0-rc.4(@cybermp/browser-types@1.1.0))(@cybermp/rpc-router@0.1.0-rc.4)(react@19.2.3)
+      '@cybermp/rpc-router-tanstack-query':
+        specifier: 0.1.0-rc.4
+        version: 0.1.0-rc.4(@cybermp/rpc-core@0.1.0-rc.4)(@cybermp/rpc-router@0.1.0-rc.4)(@tanstack/query-core@5.90.20)
       '@fontsource-variable/geist-mono':
         specifier: ^5.2.7
         version: 5.2.7
@@ -175,11 +178,11 @@ importers:
   apps/client:
     dependencies:
       '@cybermp/rpc-client':
-        specifier: 0.1.0-rc.2
-        version: 0.1.0-rc.2(@cybermp/client-types@2.0.2)
+        specifier: 0.1.0-rc.4
+        version: 0.1.0-rc.4(@cybermp/client-types@2.0.2)
       '@cybermp/rpc-router':
-        specifier: 0.1.0-rc.2
-        version: 0.1.0-rc.2
+        specifier: 0.1.0-rc.4
+        version: 0.1.0-rc.4
       '@freeroam/inversify':
         specifier: workspace:*
         version: link:../../libs/inversify
@@ -221,11 +224,11 @@ importers:
   apps/server:
     dependencies:
       '@cybermp/rpc-router':
-        specifier: 0.1.0-rc.2
-        version: 0.1.0-rc.2
+        specifier: 0.1.0-rc.4
+        version: 0.1.0-rc.4
       '@cybermp/rpc-server':
-        specifier: 0.1.0-rc.2
-        version: 0.1.0-rc.2(@cybermp/server-types@3.1.0)
+        specifier: 0.1.0-rc.4
+        version: 0.1.0-rc.4(@cybermp/server-types@3.1.0)
       '@freeroam/inversify':
         specifier: workspace:*
         version: link:../../libs/inversify
@@ -542,32 +545,39 @@ packages:
   '@cybermp/client-types@2.0.2':
     resolution: {integrity: sha512-HOc8wXotrhID4tmjTVt2k3eq0GlbbjMpm+XKDRHr4gsiinyETk8hxJBfffvsaZsvw6CzBS10SwkiwoD+x6MDwA==}
 
-  '@cybermp/rpc-browser@0.1.0-rc.2':
-    resolution: {integrity: sha512-LMoM65jJhr/SDSe1GzClj7ovsOwTvCdKAq0ct3Qrzr5ILQ2y3Vd74HLndXgGzZPBzO+z+WP1IOenamVtZcWPBQ==}
+  '@cybermp/rpc-browser@0.1.0-rc.4':
+    resolution: {integrity: sha512-Lgx5figi3sp4XMi3/+5I55XIiPkg/MZPHIykOdcggiSkfKeC3fbf+UPkZwZdSqI3/X7KNg8USDlxMk4RU0gCLw==}
     peerDependencies:
       '@cybermp/browser-types': ^1.0.0
 
-  '@cybermp/rpc-client@0.1.0-rc.2':
-    resolution: {integrity: sha512-shcfRbGrX7BsgilBv+P9xCwGdhL4NM0Sl3VUde7/2L3J4rfIHNwfAi19wjraMimnP+2gbHw72fc5RkAQI9BnvQ==}
+  '@cybermp/rpc-client@0.1.0-rc.4':
+    resolution: {integrity: sha512-1vSqt5HNbL3oyQQep5QLxY10+r5M/TFstsr81qSnJhvEuMgmlhBZVOzZKTUKGbi8kip6dQbYElYHrCSqwLBFIw==}
     peerDependencies:
       '@cybermp/client-types': ^1.6.11
 
-  '@cybermp/rpc-core@0.1.0-rc.2':
-    resolution: {integrity: sha512-syaBGuh3x6XQzdqw5HbAU3+0c0zeCinGRamUUOfD0NtiwmZ9hpiEUFBvjHdy00g9lnrxyUGxd7XHHyHafT1rBw==}
+  '@cybermp/rpc-core@0.1.0-rc.4':
+    resolution: {integrity: sha512-mAR9Bc5Nckhv9yXb+w5zzCCyw1LPQHRYwh4HWFPn/xSPhdel/F8RpQ3yQ4jzq+oV6Ooh8xjGe2D7dOkUIlfCvQ==}
 
-  '@cybermp/rpc-router-react@0.1.0-rc.2':
-    resolution: {integrity: sha512-qCx3jA1g2Z936Kp1vtT2Fsy++tETrUBCrMiFyPbQ8BY6zIQeHZXhKZ9g3aN2iLAf1sI0oLfbFNFZb7Pf2CtKHA==}
+  '@cybermp/rpc-router-react@0.1.0-rc.4':
+    resolution: {integrity: sha512-Fw82g2tEAmsz3a8L5K0eY7YRQ4N5Cm3G5bPU1fVqtffLZsLe0695zBzJzaX6cczLbLDxX3QoBlmHY/zJtIiDKQ==}
     peerDependencies:
       '@cybermp/browser-types': ^1.0.0
-      '@cybermp/rpc-browser': 0.1.0-rc.2
-      '@cybermp/rpc-router': 0.1.0-rc.2
+      '@cybermp/rpc-browser': 0.1.0-rc.4
+      '@cybermp/rpc-router': 0.1.0-rc.4
       react: '>=18.0.0'
 
-  '@cybermp/rpc-router@0.1.0-rc.2':
-    resolution: {integrity: sha512-L3lqYjz3Ox5Re+WNhAiMlVaWcQfKEl5PnBU+BcAn0+0TyXdAZOOTDPjjhgrmy9UX+rWS7LS9kiSh9V5xDg63Uw==}
+  '@cybermp/rpc-router-tanstack-query@0.1.0-rc.4':
+    resolution: {integrity: sha512-p/bcEARRRAacjmzXEQyhRDvX4+FMnxufHSIIRueFsOHU9s6QrIlgnEJcLPHwE76QpwDJNzC3Ni5enQNITD6clg==}
+    peerDependencies:
+      '@cybermp/rpc-core': 0.1.0-rc.4
+      '@cybermp/rpc-router': 0.1.0-rc.4
+      '@tanstack/query-core': '>=5.80.2'
 
-  '@cybermp/rpc-server@0.1.0-rc.2':
-    resolution: {integrity: sha512-zcj7oDBB769aMAPOAQizG2u6ljnqeYK/uU7X+6YLh/EFN9z1Cs2RhON8h95XLOA2MwH4/VKgQEfzxUP8PjikSg==}
+  '@cybermp/rpc-router@0.1.0-rc.4':
+    resolution: {integrity: sha512-rHXKiMM0cckKhtVR0iI7nXaYIQKS3uiLHZGfkiSFktG4hZAhpsLiTonzjVujVMe4VOBTgx689SxiodJ3gFbUqg==}
+
+  '@cybermp/rpc-server@0.1.0-rc.4':
+    resolution: {integrity: sha512-/IUcUHCnUynkhrV1Z3dCsPKUeoQdY9oGHROWHvBF+9EJRDhMDgkWoZj0yyEPTNl3HtgzuDZvnA8XdGFZ3ifNPg==}
     peerDependencies:
       '@cybermp/server-types': ^2.0.2
 
@@ -4265,33 +4275,39 @@ snapshots:
 
   '@cybermp/client-types@2.0.2': {}
 
-  '@cybermp/rpc-browser@0.1.0-rc.2(@cybermp/browser-types@1.1.0)':
+  '@cybermp/rpc-browser@0.1.0-rc.4(@cybermp/browser-types@1.1.0)':
     dependencies:
       '@cybermp/browser-types': 1.1.0
-      '@cybermp/rpc-core': 0.1.0-rc.2
+      '@cybermp/rpc-core': 0.1.0-rc.4
 
-  '@cybermp/rpc-client@0.1.0-rc.2(@cybermp/client-types@2.0.2)':
+  '@cybermp/rpc-client@0.1.0-rc.4(@cybermp/client-types@2.0.2)':
     dependencies:
       '@cybermp/client-types': 2.0.2
-      '@cybermp/rpc-core': 0.1.0-rc.2
+      '@cybermp/rpc-core': 0.1.0-rc.4
 
-  '@cybermp/rpc-core@0.1.0-rc.2': {}
+  '@cybermp/rpc-core@0.1.0-rc.4': {}
 
-  '@cybermp/rpc-router-react@0.1.0-rc.2(@cybermp/browser-types@1.1.0)(@cybermp/rpc-browser@0.1.0-rc.2(@cybermp/browser-types@1.1.0))(@cybermp/rpc-router@0.1.0-rc.2)(react@19.2.3)':
+  '@cybermp/rpc-router-react@0.1.0-rc.4(@cybermp/browser-types@1.1.0)(@cybermp/rpc-browser@0.1.0-rc.4(@cybermp/browser-types@1.1.0))(@cybermp/rpc-router@0.1.0-rc.4)(react@19.2.3)':
     dependencies:
       '@cybermp/browser-types': 1.1.0
-      '@cybermp/rpc-browser': 0.1.0-rc.2(@cybermp/browser-types@1.1.0)
-      '@cybermp/rpc-router': 0.1.0-rc.2
+      '@cybermp/rpc-browser': 0.1.0-rc.4(@cybermp/browser-types@1.1.0)
+      '@cybermp/rpc-router': 0.1.0-rc.4
       react: 19.2.3
 
-  '@cybermp/rpc-router@0.1.0-rc.2':
+  '@cybermp/rpc-router-tanstack-query@0.1.0-rc.4(@cybermp/rpc-core@0.1.0-rc.4)(@cybermp/rpc-router@0.1.0-rc.4)(@tanstack/query-core@5.90.20)':
     dependencies:
-      '@cybermp/rpc-core': 0.1.0-rc.2
+      '@cybermp/rpc-core': 0.1.0-rc.4
+      '@cybermp/rpc-router': 0.1.0-rc.4
+      '@tanstack/query-core': 5.90.20
+
+  '@cybermp/rpc-router@0.1.0-rc.4':
+    dependencies:
+      '@cybermp/rpc-core': 0.1.0-rc.4
       radash: 12.1.1
 
-  '@cybermp/rpc-server@0.1.0-rc.2(@cybermp/server-types@3.1.0)':
+  '@cybermp/rpc-server@0.1.0-rc.4(@cybermp/server-types@3.1.0)':
     dependencies:
-      '@cybermp/rpc-core': 0.1.0-rc.2
+      '@cybermp/rpc-core': 0.1.0-rc.4
       '@cybermp/server-types': 3.1.0
 
   '@cybermp/server-types@3.1.0': {}
