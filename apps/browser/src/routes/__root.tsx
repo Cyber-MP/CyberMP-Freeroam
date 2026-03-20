@@ -1,18 +1,13 @@
 import { createRootRoute, Outlet } from '@tanstack/react-router';
+import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 
 const RootLayout = () => {
-  // const [devtools, setDevtools] = useState(false);
-
-  // useHotkeys('f7', () => {
-  //   setDevtools((prev) => !prev);
-  // });
-
-  // useFocus(devtools, [devtools]);
+  console.log(window.MOCKED_MP);
 
   return (
     <>
       <Outlet />
-      {/*{devtools && <TanStackRouterDevtools initialIsOpen={true} />}*/}
+      {window.MOCKED_MP && <TanStackRouterDevtools />}
     </>
   );
 };

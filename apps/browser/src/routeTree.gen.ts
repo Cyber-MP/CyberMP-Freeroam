@@ -17,6 +17,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as HudMenuRouteImport } from './routes/hud.menu'
 import { Route as HudMenuIndexRouteImport } from './routes/hud.menu.index'
 import { Route as HudMenuWeaponsRouteImport } from './routes/hud.menu.weapons'
+import { Route as HudMenuTeleportsRouteImport } from './routes/hud.menu.teleports'
 import { Route as HudMenuLobbiesRouteImport } from './routes/hud.menu.lobbies'
 
 const LoadingRoute = LoadingRouteImport.update({
@@ -59,6 +60,11 @@ const HudMenuWeaponsRoute = HudMenuWeaponsRouteImport.update({
   path: '/weapons',
   getParentRoute: () => HudMenuRoute,
 } as any)
+const HudMenuTeleportsRoute = HudMenuTeleportsRouteImport.update({
+  id: '/teleports',
+  path: '/teleports',
+  getParentRoute: () => HudMenuRoute,
+} as any)
 const HudMenuLobbiesRoute = HudMenuLobbiesRouteImport.update({
   id: '/lobbies',
   path: '/lobbies',
@@ -73,6 +79,7 @@ export interface FileRoutesByFullPath {
   '/loading': typeof LoadingRoute
   '/hud/menu': typeof HudMenuRouteWithChildren
   '/hud/menu/lobbies': typeof HudMenuLobbiesRoute
+  '/hud/menu/teleports': typeof HudMenuTeleportsRoute
   '/hud/menu/weapons': typeof HudMenuWeaponsRoute
   '/hud/menu/': typeof HudMenuIndexRoute
 }
@@ -83,6 +90,7 @@ export interface FileRoutesByTo {
   '/hud': typeof HudRouteWithChildren
   '/loading': typeof LoadingRoute
   '/hud/menu/lobbies': typeof HudMenuLobbiesRoute
+  '/hud/menu/teleports': typeof HudMenuTeleportsRoute
   '/hud/menu/weapons': typeof HudMenuWeaponsRoute
   '/hud/menu': typeof HudMenuIndexRoute
 }
@@ -95,6 +103,7 @@ export interface FileRoutesById {
   '/loading': typeof LoadingRoute
   '/hud/menu': typeof HudMenuRouteWithChildren
   '/hud/menu/lobbies': typeof HudMenuLobbiesRoute
+  '/hud/menu/teleports': typeof HudMenuTeleportsRoute
   '/hud/menu/weapons': typeof HudMenuWeaponsRoute
   '/hud/menu/': typeof HudMenuIndexRoute
 }
@@ -108,6 +117,7 @@ export interface FileRouteTypes {
     | '/loading'
     | '/hud/menu'
     | '/hud/menu/lobbies'
+    | '/hud/menu/teleports'
     | '/hud/menu/weapons'
     | '/hud/menu/'
   fileRoutesByTo: FileRoutesByTo
@@ -118,6 +128,7 @@ export interface FileRouteTypes {
     | '/hud'
     | '/loading'
     | '/hud/menu/lobbies'
+    | '/hud/menu/teleports'
     | '/hud/menu/weapons'
     | '/hud/menu'
   id:
@@ -129,6 +140,7 @@ export interface FileRouteTypes {
     | '/loading'
     | '/hud/menu'
     | '/hud/menu/lobbies'
+    | '/hud/menu/teleports'
     | '/hud/menu/weapons'
     | '/hud/menu/'
   fileRoutesById: FileRoutesById
@@ -199,6 +211,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HudMenuWeaponsRouteImport
       parentRoute: typeof HudMenuRoute
     }
+    '/hud/menu/teleports': {
+      id: '/hud/menu/teleports'
+      path: '/teleports'
+      fullPath: '/hud/menu/teleports'
+      preLoaderRoute: typeof HudMenuTeleportsRouteImport
+      parentRoute: typeof HudMenuRoute
+    }
     '/hud/menu/lobbies': {
       id: '/hud/menu/lobbies'
       path: '/lobbies'
@@ -211,12 +230,14 @@ declare module '@tanstack/react-router' {
 
 interface HudMenuRouteChildren {
   HudMenuLobbiesRoute: typeof HudMenuLobbiesRoute
+  HudMenuTeleportsRoute: typeof HudMenuTeleportsRoute
   HudMenuWeaponsRoute: typeof HudMenuWeaponsRoute
   HudMenuIndexRoute: typeof HudMenuIndexRoute
 }
 
 const HudMenuRouteChildren: HudMenuRouteChildren = {
   HudMenuLobbiesRoute: HudMenuLobbiesRoute,
+  HudMenuTeleportsRoute: HudMenuTeleportsRoute,
   HudMenuWeaponsRoute: HudMenuWeaponsRoute,
   HudMenuIndexRoute: HudMenuIndexRoute,
 }

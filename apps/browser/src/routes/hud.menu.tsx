@@ -1,4 +1,9 @@
-import { RiCarLine, RiGamepadLine, RiSwordLine } from '@remixicon/react';
+import {
+  RiCarLine,
+  RiGamepadLine,
+  RiMap2Line,
+  RiSwordLine,
+} from '@remixicon/react';
 import {
   createFileRoute,
   Link,
@@ -29,24 +34,29 @@ export const Route = createFileRoute('/hud/menu')({
 type NavbarData = {
   name: string;
   icon: ReactElement;
-  to: ToOptions;
+  to: ToOptions['to'];
 };
 
 const data: NavbarData[] = [
   {
     name: 'Vehicles',
     icon: <RiCarLine />,
-    to: { to: '/hud/menu' },
+    to: '/hud/menu',
   },
   {
     name: 'Weapons',
     icon: <RiSwordLine />,
-    to: { to: '/hud/menu/weapons' },
+    to: '/hud/menu/weapons',
+  },
+  {
+    name: 'Teleports',
+    icon: <RiMap2Line />,
+    to: '/hud/menu/teleports',
   },
   {
     name: 'Lobbies',
     icon: <RiGamepadLine />,
-    to: { to: '/hud/menu/lobbies' },
+    to: '/hud/menu/lobbies',
   },
 ];
 
@@ -61,7 +71,7 @@ function RouteComponent() {
   return (
     <div className="fixed inset-0 w-full h-full z-20">
       <Dialog open={true}>
-        <DialogContent className="overflow-hidden p-0 max-h-160 lg:max-w-240">
+        <DialogContent className="overflow-hidden p-0 max-h-160 lg:max-w-300">
           <SidebarProvider className="items-start">
             <Sidebar collapsible="none" className="hidden md:flex">
               <SidebarContent>
@@ -73,9 +83,9 @@ function RouteComponent() {
                           <SidebarMenuButton
                             size="lg"
                             asChild
-                            isActive={!!matchRoute(item.to)}
+                            isActive={!!matchRoute({ to: item.to })}
                           >
-                            <Link to={item.to.to}>
+                            <Link to={item.to}>
                               {item.icon}
                               <span>{item.name}</span>
                             </Link>

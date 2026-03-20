@@ -15,6 +15,8 @@ const bootstrap = () => {
     throw new Error('Entry point of application was not found');
   }
 
+  console.log(import.meta.env.BROWSER);
+
   r.apply(rpcRouter);
 
   createRoot(root).render(

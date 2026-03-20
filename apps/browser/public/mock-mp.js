@@ -13,4 +13,6 @@ if (typeof mp === 'undefined') {
       },
     },
   };
+
+  window.MOCKED_MP = true;
 }
