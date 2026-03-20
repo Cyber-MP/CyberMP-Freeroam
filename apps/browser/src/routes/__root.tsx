@@ -7,7 +7,7 @@ const RootLayout = () => {
   return (
     <>
       <Outlet />
-      {window.MOCKED_MP && <TanStackRouterDevtools />}
+      {window.MOCKED_MP && <TanStackRouterDevtools position='top-left' />}
     </>
   );
 };

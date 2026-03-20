@@ -64,14 +64,18 @@ function RouteComponent() {
   const navigate = useNavigate();
   const matchRoute = useMatchRoute();
 
-  useHotkeys('esc', () => navigate({ to: '/hud' }), { scopes: 'hud' });
+  const close = () => {
+    navigate({ to: '/hud' });
+  };
+
+  useHotkeys('esc', close, { scopes: 'hud' });
 
   useFocus();
 
   return (
     <div className="fixed inset-0 w-full h-full z-20">
-      <Dialog open={true}>
-        <DialogContent className="overflow-hidden p-0 max-h-160 lg:max-w-300">
+      <Dialog open={true} onOpenChange={(s) => !s && close()}>
+        <DialogContent className="overflow-hidden p-0 h-full max-h-160 lg:max-w-300">
           <SidebarProvider className="items-start">
             <Sidebar collapsible="none" className="hidden md:flex">
               <SidebarContent>
@@ -97,7 +101,9 @@ function RouteComponent() {
                 </SidebarGroup>
               </SidebarContent>
             </Sidebar>
-            <Outlet />
+            <div className="flex-1 p-4 h-full overflow-y-auto">
+              <Outlet />
+            </div>
           </SidebarProvider>
         </DialogContent>
       </Dialog>

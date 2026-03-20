@@ -21,7 +21,7 @@ export const rpcRouter = {
     .input(z.union([z.string<keyof FileRoutesByFullPath>(), z.number()]))
     .handler((c) => {
       if (typeof c.data === 'string') {
-        tanstackRouter.navigate({ to: c.data });
+        tanstackRouter.navigate({ to: c.data as any });
       } else {
         tanstackRouter.history.go(c.data);
       }
