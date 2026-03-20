@@ -1,17 +1,96 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { RiCarLine, RiGamepadLine, RiSwordLine } from '@remixicon/react';
+import {
+  createFileRoute,
+  Link,
+  Outlet,
+  type ToOptions,
+  useMatchRoute,
+  useNavigate,
+} from '@tanstack/react-router';
+import type { ReactElement } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+} from '@/components/ui/sidebar';
 import { useFocus } from '@/hooks/use-focus';
 
 export const Route = createFileRoute('/hud/menu')({
   component: RouteComponent,
 });
 
+type NavbarData = {
+  name: string;
+  icon: ReactElement;
+  to: ToOptions;
+};
+
+const data: NavbarData[] = [
+  {
+    name: 'Vehicles',
+    icon: <RiCarLine />,
+    to: { to: '/hud/menu' },
+  },
+  {
+    name: 'Weapons',
+    icon: <RiSwordLine />,
+    to: { to: '/hud/menu/weapons' },
+  },
+  {
+    name: 'Lobbies',
+    icon: <RiGamepadLine />,
+    to: { to: '/hud/menu/lobbies' },
+  },
+];
+
 function RouteComponent() {
   const navigate = useNavigate();
+  const matchRoute = useMatchRoute();
 
   useHotkeys('esc', () => navigate({ to: '/hud' }), { scopes: 'hud' });
 
   useFocus();
 
-  return <div>Hello "/hud/menu"!</div>;
+  return (
+    <div className="fixed inset-0 w-full h-full z-20">
+      <Dialog open={true}>
+        <DialogContent className="overflow-hidden p-0 max-h-160 lg:max-w-240">
+          <SidebarProvider className="items-start">
+            <Sidebar collapsible="none" className="hidden md:flex">
+              <SidebarContent>
+                <SidebarGroup>
+                  <SidebarGroupContent>
+                    <SidebarMenu>
+                      {data.map((item) => (
+                        <SidebarMenuItem key={item.name}>
+                          <SidebarMenuButton
+                            size="lg"
+                            asChild
+                            isActive={!!matchRoute(item.to)}
+                          >
+                            <Link to={item.to.to}>
+                              {item.icon}
+                              <span>{item.name}</span>
+                            </Link>
+                          </SidebarMenuButton>
+                        </SidebarMenuItem>
+                      ))}
+                    </SidebarMenu>
+                  </SidebarGroupContent>
+                </SidebarGroup>
+              </SidebarContent>
+            </Sidebar>
+            <Outlet />
+          </SidebarProvider>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
 }

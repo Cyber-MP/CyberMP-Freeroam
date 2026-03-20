@@ -1,22 +1,18 @@
 import { createRootRoute, Outlet } from '@tanstack/react-router';
-import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
-import { useState } from 'react';
-import { useHotkeys } from 'react-hotkeys-hook';
-import { useFocus } from '@/hooks/use-focus';
 
 const RootLayout = () => {
-  const [devtools, setDevtools] = useState(false);
+  // const [devtools, setDevtools] = useState(false);
 
-  useHotkeys('f7', () => {
-    setDevtools((prev) => !prev);
-  });
+  // useHotkeys('f7', () => {
+  //   setDevtools((prev) => !prev);
+  // });
 
-  useFocus(devtools, [devtools]);
+  // useFocus(devtools, [devtools]);
 
   return (
     <>
       <Outlet />
-      {devtools && <TanStackRouterDevtools initialIsOpen={true} />}
+      {/*{devtools && <TanStackRouterDevtools initialIsOpen={true} />}*/}
     </>
   );
 };

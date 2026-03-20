@@ -345,7 +345,7 @@ export const Chat = () => {
     }
 
     const t = setTimeout(
-      () => setChatVisibility(ChatVisibility.HIDDEN),
+      () => setChatVisibility(ChatVisibility.HIDDEN, false),
       INACTIVE_TIME,
     );
 

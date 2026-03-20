@@ -15,6 +15,9 @@ import { Route as EntryRouteImport } from './routes/entry'
 import { Route as DeathRouteImport } from './routes/death'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as HudMenuRouteImport } from './routes/hud.menu'
+import { Route as HudMenuIndexRouteImport } from './routes/hud.menu.index'
+import { Route as HudMenuWeaponsRouteImport } from './routes/hud.menu.weapons'
+import { Route as HudMenuLobbiesRouteImport } from './routes/hud.menu.lobbies'
 
 const LoadingRoute = LoadingRouteImport.update({
   id: '/loading',
@@ -46,6 +49,21 @@ const HudMenuRoute = HudMenuRouteImport.update({
   path: '/menu',
   getParentRoute: () => HudRoute,
 } as any)
+const HudMenuIndexRoute = HudMenuIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => HudMenuRoute,
+} as any)
+const HudMenuWeaponsRoute = HudMenuWeaponsRouteImport.update({
+  id: '/weapons',
+  path: '/weapons',
+  getParentRoute: () => HudMenuRoute,
+} as any)
+const HudMenuLobbiesRoute = HudMenuLobbiesRouteImport.update({
+  id: '/lobbies',
+  path: '/lobbies',
+  getParentRoute: () => HudMenuRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -53,7 +71,10 @@ export interface FileRoutesByFullPath {
   '/entry': typeof EntryRoute
   '/hud': typeof HudRouteWithChildren
   '/loading': typeof LoadingRoute
-  '/hud/menu': typeof HudMenuRoute
+  '/hud/menu': typeof HudMenuRouteWithChildren
+  '/hud/menu/lobbies': typeof HudMenuLobbiesRoute
+  '/hud/menu/weapons': typeof HudMenuWeaponsRoute
+  '/hud/menu/': typeof HudMenuIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -61,7 +82,9 @@ export interface FileRoutesByTo {
   '/entry': typeof EntryRoute
   '/hud': typeof HudRouteWithChildren
   '/loading': typeof LoadingRoute
-  '/hud/menu': typeof HudMenuRoute
+  '/hud/menu/lobbies': typeof HudMenuLobbiesRoute
+  '/hud/menu/weapons': typeof HudMenuWeaponsRoute
+  '/hud/menu': typeof HudMenuIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -70,14 +93,44 @@ export interface FileRoutesById {
   '/entry': typeof EntryRoute
   '/hud': typeof HudRouteWithChildren
   '/loading': typeof LoadingRoute
-  '/hud/menu': typeof HudMenuRoute
+  '/hud/menu': typeof HudMenuRouteWithChildren
+  '/hud/menu/lobbies': typeof HudMenuLobbiesRoute
+  '/hud/menu/weapons': typeof HudMenuWeaponsRoute
+  '/hud/menu/': typeof HudMenuIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/death' | '/entry' | '/hud' | '/loading' | '/hud/menu'
+  fullPaths:
+    | '/'
+    | '/death'
+    | '/entry'
+    | '/hud'
+    | '/loading'
+    | '/hud/menu'
+    | '/hud/menu/lobbies'
+    | '/hud/menu/weapons'
+    | '/hud/menu/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/death' | '/entry' | '/hud' | '/loading' | '/hud/menu'
-  id: '__root__' | '/' | '/death' | '/entry' | '/hud' | '/loading' | '/hud/menu'
+  to:
+    | '/'
+    | '/death'
+    | '/entry'
+    | '/hud'
+    | '/loading'
+    | '/hud/menu/lobbies'
+    | '/hud/menu/weapons'
+    | '/hud/menu'
+  id:
+    | '__root__'
+    | '/'
+    | '/death'
+    | '/entry'
+    | '/hud'
+    | '/loading'
+    | '/hud/menu'
+    | '/hud/menu/lobbies'
+    | '/hud/menu/weapons'
+    | '/hud/menu/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -132,15 +185,51 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HudMenuRouteImport
       parentRoute: typeof HudRoute
     }
+    '/hud/menu/': {
+      id: '/hud/menu/'
+      path: '/'
+      fullPath: '/hud/menu/'
+      preLoaderRoute: typeof HudMenuIndexRouteImport
+      parentRoute: typeof HudMenuRoute
+    }
+    '/hud/menu/weapons': {
+      id: '/hud/menu/weapons'
+      path: '/weapons'
+      fullPath: '/hud/menu/weapons'
+      preLoaderRoute: typeof HudMenuWeaponsRouteImport
+      parentRoute: typeof HudMenuRoute
+    }
+    '/hud/menu/lobbies': {
+      id: '/hud/menu/lobbies'
+      path: '/lobbies'
+      fullPath: '/hud/menu/lobbies'
+      preLoaderRoute: typeof HudMenuLobbiesRouteImport
+      parentRoute: typeof HudMenuRoute
+    }
   }
 }
 
+interface HudMenuRouteChildren {
+  HudMenuLobbiesRoute: typeof HudMenuLobbiesRoute
+  HudMenuWeaponsRoute: typeof HudMenuWeaponsRoute
+  HudMenuIndexRoute: typeof HudMenuIndexRoute
+}
+
+const HudMenuRouteChildren: HudMenuRouteChildren = {
+  HudMenuLobbiesRoute: HudMenuLobbiesRoute,
+  HudMenuWeaponsRoute: HudMenuWeaponsRoute,
+  HudMenuIndexRoute: HudMenuIndexRoute,
+}
+
+const HudMenuRouteWithChildren =
+  HudMenuRoute._addFileChildren(HudMenuRouteChildren)
+
 interface HudRouteChildren {
-  HudMenuRoute: typeof HudMenuRoute
+  HudMenuRoute: typeof HudMenuRouteWithChildren
 }
 
 const HudRouteChildren: HudRouteChildren = {
-  HudMenuRoute: HudMenuRoute,
+  HudMenuRoute: HudMenuRouteWithChildren,
 }
 
 const HudRouteWithChildren = HudRoute._addFileChildren(HudRouteChildren)
