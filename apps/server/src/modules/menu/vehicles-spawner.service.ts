@@ -157,7 +157,22 @@ const VehiclesSpawnerData: Record<
 
 @injectable()
 export class VehiclesSpawnerService {
+  private playersVehiclesMap = new Map<number, Set<number>>();
+
   constructor(@inject(ChatService) private chatService: ChatService) {}
+
+  clearPlayerVehicles(playerId: number) {
+    const vehicles = this.playersVehiclesMap.get(playerId);
+    if (!vehicles || !vehicles.size) {
+      return;
+    }
+
+    for (const vehicleId of vehicles.values()) {
+      mp.vehicles.destroy(vehicleId);
+    }
+
+    vehicles.clear();
+  }
 
   spawnVehicle(player: MpPlayer, vehicleKey: VehiclesSpawnerKey) {
     const [modelName, appearanceName] = VehiclesSpawnerData[vehicleKey] ?? [];
@@ -183,6 +198,12 @@ export class VehiclesSpawnerService {
       dimension: player.dimension,
       health: 500,
     });
+
+    if (this.playersVehiclesMap.has(player.id)) {
+      this.playersVehiclesMap.get(player.id)?.add(newVehicle.id);
+    } else {
+      this.playersVehiclesMap.set(player.id, new Set([newVehicle.id]));
+    }
 
     client.game.vehicles.requestSitInVehicle.trigger(player, newVehicle.id);
   }

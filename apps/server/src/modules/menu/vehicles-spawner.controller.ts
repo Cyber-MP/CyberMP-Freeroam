@@ -8,6 +8,7 @@ import {
   type VehiclesSpawnerKey,
   VehiclesSpawnerService,
 } from './vehicles-spawner.service';
+import { mp } from '../../mp';
 
 const zVehicleSpawnerKey = z.enum(VEHICLES_SPAWNER_KEYS);
 
@@ -35,5 +36,9 @@ export class VehiclesController {
     r.implement(vehiclesSpawnerContract, {
       spawnVehicle: this.spawnVehicle.bind(this),
     });
+    
+    mp.events.on('playerDisconnected', (playerId) => {
+      this.vehiclesSpawnerService.clearPlayerVehicles(playerId)
+    })
   }
 }
