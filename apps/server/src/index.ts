@@ -6,6 +6,7 @@ import { KillFeedModule } from './modules/killfeed/killfeed.module';
 import { LoggerMiddleware } from './modules/logger/logger.middleware';
 import { LoggerModule } from './modules/logger/logger.module';
 import { LoggerService } from './modules/logger/logger.service';
+import { MenuModule } from './modules/menu/menu.module';
 import { TimeModule } from './modules/time/time.module';
 import { WeatherModule } from './modules/weather/weather.module';
 import { mp } from './mp';
@@ -18,6 +19,7 @@ const modules = [
   KillFeedModule,
   TimeModule,
   WeatherModule,
+  MenuModule,
 ];
 
 const coopWhen = async () => {
