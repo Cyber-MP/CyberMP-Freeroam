@@ -1,7 +1,4 @@
-import { Race } from './race';
+import { RaceLaps } from './race-laps';
+import { RaceP2P } from './race-p2p';
 
-export enum GameModeName {
-  RACE = 'race',
-}
-
-export const GameModes = [Race];
+export const GameModes = [RaceLaps, RaceP2P];

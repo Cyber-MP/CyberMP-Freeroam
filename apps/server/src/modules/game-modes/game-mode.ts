@@ -1,9 +1,9 @@
 import type {
-  Match,
+  GameModeName,
   zCreateMatchOptions,
   zJoinMatchOptions,
-} from '../matchmaking/match';
-import type { GameModeName } from './modes';
+} from '@freeroam/shared';
+import type { Match } from '../matchmaking/match';
 
 export abstract class BaseGameMode<
   TCreateOptions extends

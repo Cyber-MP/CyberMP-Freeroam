@@ -1,7 +1,9 @@
 import { RpcApplyType } from '@cybermp/rpc-server';
 import z from 'zod';
 import { chatContract } from '../modules/chat/chat.controller';
+import { gameModesContract } from '../modules/game-modes/game-modes.controller';
 import { loggerContract } from '../modules/logger/logger.controller';
+import { matchmakingContract } from '../modules/matchmaking/matchmaking.controller';
 import { vehiclesSpawnerContract } from '../modules/menu/vehicles-spawner.controller';
 import { timeContract } from '../modules/time/time.controller';
 import { weatherContract } from '../modules/weather/weather.controller';
@@ -27,9 +29,9 @@ export const router = {
     .output(z.number())
     .handler((c) => c.player.id),
 
-  menu: {
-    vehicles: vehiclesSpawnerContract,
-  },
+  matchmaking: matchmakingContract,
+  gameModes: gameModesContract,
+  vehiclesSpawner: vehiclesSpawnerContract,
   weather: weatherContract,
   time: timeContract,
   logger: loggerContract,

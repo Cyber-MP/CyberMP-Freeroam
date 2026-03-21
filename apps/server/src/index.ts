@@ -2,10 +2,12 @@ import { eagerRegistry } from '@freeroam/inversify';
 import { container } from './container';
 import { ChatModule } from './modules/chat/chat.module';
 import { ChatService } from './modules/chat/chat.service';
+import { GameModesModule } from './modules/game-modes/game-modes.module';
 import { KillFeedModule } from './modules/killfeed/killfeed.module';
 import { LoggerMiddleware } from './modules/logger/logger.middleware';
 import { LoggerModule } from './modules/logger/logger.module';
 import { LoggerService } from './modules/logger/logger.service';
+import { MatchmakingModule } from './modules/matchmaking/matchmaking.module';
 import { MenuModule } from './modules/menu/menu.module';
 import { TimeModule } from './modules/time/time.module';
 import { WeatherModule } from './modules/weather/weather.module';
@@ -20,6 +22,8 @@ const modules = [
   TimeModule,
   WeatherModule,
   MenuModule,
+  MatchmakingModule,
+  GameModesModule,
 ];
 
 const coopWhen = async () => {

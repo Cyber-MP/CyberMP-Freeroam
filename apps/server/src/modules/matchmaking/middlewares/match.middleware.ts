@@ -3,7 +3,7 @@ import {
   type RpcHandler,
   type RpcServerContext,
 } from '@cybermp/rpc-server';
-import { container } from '../../../container';
+import type { Container, ResolutionContext } from 'inversify';
 import type { BaseGameMode } from '../../game-modes/game-mode';
 import type { Match } from '../match';
 import { MatchRepository } from '../match.repository';
@@ -16,14 +16,42 @@ export type RpcMatchContext<
   match: Match<TGameMode>;
 };
 
-export const matchMiddleware: RpcHandler<RpcMatchContext> = (context, next) => {
-  context.match = container
-    .get(MatchRepository)
-    .getByMemberId(context.player.id) as (typeof context)['match'];
+export type MatchMiddleware = RpcHandler<RpcMatchContext>;
 
-  if (!context.match) {
-    throw RpcError.notFound({ message: 'Match was not found' });
-  }
+export const matchMemberMiddleware = (
+  c: Container | ResolutionContext,
+): RpcHandler<RpcMatchContext> => {
+  return (context, next) => {
+    const matchRepo = c.get(MatchRepository);
 
-  return next?.();
+    const match = matchRepo.getByMemberId(context.player.id);
+    if (!match) {
+      throw RpcError.invalidData({
+        message: "You're not participating in any match",
+      });
+    }
+
+    context.match = match;
+
+    return next?.();
+  };
+};
+
+export const matchOwnerMiddleware = (
+  c: Container | ResolutionContext,
+): RpcHandler<RpcMatchContext> => {
+  return (context, next) => {
+    const matchRepo = c.get(MatchRepository);
+
+    const match = matchRepo.getByOwnerId(context.player.id);
+    if (!match) {
+      throw RpcError.invalidData({
+        message: "You're not owner in any match",
+      });
+    }
+
+    context.match = match;
+
+    return next?.();
+  };
 };

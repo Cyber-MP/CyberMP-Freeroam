@@ -10,6 +10,10 @@ export class MatchRepository {
     this.matches.set(match.id, match);
   }
 
+  delete(match: Match) {
+    this.matches.delete(match.id);
+  }
+
   findById(id: string) {
     return this.matches.get(id);
   }

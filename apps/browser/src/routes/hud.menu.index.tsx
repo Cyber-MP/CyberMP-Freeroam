@@ -224,7 +224,7 @@ function RouteComponent() {
   };
 
   const spawnVehicle = (key: VehicleKey) => {
-    server.menu.vehicles.spawnVehicle.trigger(key);
+    server.vehiclesSpawner.spawnVehicle.trigger(key);
     close();
   };
 

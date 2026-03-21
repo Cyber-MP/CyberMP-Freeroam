@@ -1,5 +1,5 @@
+import { GameModeName } from '@freeroam/shared';
 import z from 'zod';
-import { GameModeName } from '../modes';
 
 export const zGameModesSchemas = z.record(
   z.enum(GameModeName),

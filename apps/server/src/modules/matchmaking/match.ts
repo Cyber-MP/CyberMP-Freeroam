@@ -1,22 +1,8 @@
 import { generateUUID } from '@cybermp/rpc-server';
-import z from 'zod';
+import { type MatchDTO, MatchStatus, zMatchDTO } from '@freeroam/shared';
+import type z from 'zod';
+import { client } from '../../rpc';
 import type { BaseGameMode } from '../game-modes/game-mode';
-
-export enum MatchStatus {
-  LOBBY,
-  ACTIVE,
-  ENDED,
-}
-
-export const zCreateMatchOptions = z.object({
-  maxPlayers: z.number().min(1).max(20),
-});
-
-export type CreateMatchOptions = z.infer<typeof zCreateMatchOptions>;
-
-export const zJoinMatchOptions = z.object({});
-
-export type JoinMatchOptions = z.infer<typeof zJoinMatchOptions>;
 
 type MatchConstructorOptions<TGameMode extends BaseGameMode> = {
   createOptions: z.infer<TGameMode['CREATE_OPTIONS_SCHEMA']>;
@@ -24,6 +10,13 @@ type MatchConstructorOptions<TGameMode extends BaseGameMode> = {
   ownerId: number;
   dimension: number;
   mode: TGameMode;
+};
+
+export type MatchHooks = {
+  onStart?(): void;
+  onEnd?(): void;
+  onPlayerJoin?(playerId: number): void;
+  onPlayerLeave?(playerId: number): void;
 };
 
 export class Match<TGameMode extends BaseGameMode = BaseGameMode> {
@@ -35,13 +28,16 @@ export class Match<TGameMode extends BaseGameMode = BaseGameMode> {
   mode: TGameMode;
   status = MatchStatus.LOBBY;
 
-  constructor({
-    dimension,
-    mode,
-    createOptions,
-    joinOptions,
-    ownerId,
-  }: MatchConstructorOptions<TGameMode>) {
+  constructor(
+    {
+      dimension,
+      mode,
+      createOptions,
+      joinOptions,
+      ownerId,
+    }: MatchConstructorOptions<TGameMode>,
+    private hooks?: MatchHooks,
+  ) {
     this.id = generateUUID();
     this.ownerId = ownerId;
     this.dimension = dimension;
@@ -51,6 +47,18 @@ export class Match<TGameMode extends BaseGameMode = BaseGameMode> {
     this.members.set(ownerId, joinOptions);
 
     this.mode.init(this);
+  }
+
+  toDTO(): MatchDTO {
+    return zMatchDTO.parse({
+      id: this.id,
+      ownerId: this.ownerId,
+      dimension: this.dimension,
+      modeName: this.mode.name,
+      options: this.options,
+      members: Object.fromEntries(this.members),
+      status: this.status,
+    });
   }
 
   canJoin(playerId: number) {
@@ -79,11 +87,12 @@ export class Match<TGameMode extends BaseGameMode = BaseGameMode> {
       return true;
     }
 
-    this.mode.onPlayerJoin(playerId);
     this.members.set(
       playerId,
       joinOptions.data as z.infer<TGameMode['JOIN_OPTIONS_SCHEMA']>,
     );
+    this.mode.onPlayerJoin(playerId);
+    this.hooks?.onPlayerJoin?.(playerId);
 
     return true;
   }
@@ -93,14 +102,19 @@ export class Match<TGameMode extends BaseGameMode = BaseGameMode> {
       return;
     }
 
-    this.mode.onPlayerLeave(playerId);
     this.members.delete(playerId);
+    this.mode.onPlayerLeave(playerId);
+    this.hooks?.onPlayerLeave?.(playerId);
 
-    if (this.ownerId === playerId) {
-      const newAuthor = this.members.keys().next().value;
-      if (newAuthor) {
-        this.ownerId = newAuthor;
-      }
+    if (this.ownerId !== playerId) {
+      return;
+    }
+
+    const newAuthor = this.members.keys().next().value;
+    if (newAuthor) {
+      this.ownerId = newAuthor;
+    } else {
+      this.end();
     }
   }
 
@@ -111,16 +125,25 @@ export class Match<TGameMode extends BaseGameMode = BaseGameMode> {
 
     this.status = MatchStatus.ACTIVE;
 
-    // TODO: maybe trigger client here
+    for (const playerId of this.members.keys()) {
+      client.gameModes.start.trigger(playerId, this.toDTO());
+    }
 
     this.mode.start();
+    this.hooks?.onStart?.();
 
     return true;
   }
 
   end() {
+    this.status = MatchStatus.ENDED;
+
     this.mode.end();
 
-    this.status = MatchStatus.ENDED;
+    for (const playerId of this.members.keys()) {
+      client.gameModes.end.trigger(playerId);
+    }
+
+    this.hooks?.onEnd?.();
   }
 }
