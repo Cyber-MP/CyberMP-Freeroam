@@ -21,8 +21,12 @@ export class GameModesController {
     @inject(GameModesService) private gameModesService: GameModesService,
   ) {}
 
+  private getSchemas() {
+    return this.gameModesService.getSchemas();
+  }
+
   @postConstruct()
   private init() {
-    console.log(this.gameModesService.getSchemas());
+    r.implement(gameModesContract.getSchemas, this.getSchemas.bind(this));
   }
 }

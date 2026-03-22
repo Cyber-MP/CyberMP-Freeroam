@@ -352,7 +352,7 @@ export const Chat = () => {
     return () => clearTimeout(t);
   }, [visibility]);
 
-  useHotkeys<HTMLDivElement>(
+  const ref = useHotkeys<HTMLDivElement>(
     'esc',
     () => {
       setChatVisibility(ChatVisibility.INACTIVE);
@@ -374,6 +374,7 @@ export const Chat = () => {
 
   return (
     <div
+      ref={ref}
       onClick={() => setChatVisibility(ChatVisibility.ACTIVE)}
       onBlur={() => setChatVisibility(ChatVisibility.INACTIVE)}
       className={chatContainerVariants({ visibility })}

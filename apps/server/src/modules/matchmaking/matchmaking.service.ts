@@ -42,6 +42,8 @@ export class MatchmakingService {
       },
     );
 
+    this.leaveMatch(ownerId);
+
     this.matchRepository.save(match);
 
     return match;
@@ -52,6 +54,8 @@ export class MatchmakingService {
     if (!match) {
       return false;
     }
+
+    this.leaveMatch(playerId);
 
     return match.join(playerId, dto.options as JoinMatchOptions);
   }

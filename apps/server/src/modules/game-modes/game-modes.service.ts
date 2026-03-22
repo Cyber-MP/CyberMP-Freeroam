@@ -12,8 +12,12 @@ export class GameModesService {
       const instance = new GameMode();
 
       result[instance.name] = {
-        createSchema: z.toJSONSchema(instance.CREATE_OPTIONS_SCHEMA),
-        joinSchema: z.toJSONSchema(instance.JOIN_OPTIONS_SCHEMA),
+        createSchema: z.toJSONSchema(instance.CREATE_OPTIONS_SCHEMA, {
+          target: 'draft-07',
+        }),
+        joinSchema: z.toJSONSchema(instance.JOIN_OPTIONS_SCHEMA, {
+          target: 'draft-07',
+        }),
       };
     }
 

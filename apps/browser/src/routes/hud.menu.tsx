@@ -25,6 +25,7 @@ import {
   SidebarMenuItem,
   SidebarProvider,
 } from '@/components/ui/sidebar';
+import { Spinner } from '@/components/ui/spinner';
 import { useFocus } from '@/hooks/use-focus';
 
 export const Route = createFileRoute('/hud/menu')({
@@ -54,9 +55,9 @@ const data: NavbarData[] = [
     to: '/hud/menu/teleports',
   },
   {
-    name: 'Lobbies',
+    name: 'Matchmaking',
     icon: <RiGamepadLine />,
-    to: '/hud/menu/lobbies',
+    to: '/hud/menu/matchmaking',
   },
 ];
 
@@ -68,7 +69,7 @@ function RouteComponent() {
     navigate({ to: '/hud' });
   };
 
-  useHotkeys('esc', close, { scopes: 'hud' });
+  const ref = useHotkeys<HTMLDivElement>('esc', close, { scopes: 'hud' });
 
   useFocus();
 
@@ -76,7 +77,7 @@ function RouteComponent() {
     <div className="fixed inset-0 w-full h-full z-20">
       <Dialog open={true} onOpenChange={(s) => !s && close()}>
         <DialogContent className="overflow-hidden p-0 h-full max-h-160 lg:max-w-300">
-          <SidebarProvider className="items-start">
+          <SidebarProvider ref={ref} className="items-start">
             <Sidebar collapsible="none" className="hidden md:flex">
               <SidebarContent>
                 <SidebarGroup>
@@ -89,8 +90,17 @@ function RouteComponent() {
                             asChild
                             isActive={!!matchRoute({ to: item.to })}
                           >
-                            <Link to={item.to}>
-                              {item.icon}
+                            <Link
+                              preload="intent"
+                              resetScroll
+                              to={item.to}
+                              className="[&>svg]:size-6"
+                            >
+                              {matchRoute({ to: item.to, pending: true }) ? (
+                                <Spinner />
+                              ) : (
+                                item.icon
+                              )}
                               <span>{item.name}</span>
                             </Link>
                           </SidebarMenuButton>

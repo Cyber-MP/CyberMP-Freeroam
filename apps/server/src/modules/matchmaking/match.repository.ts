@@ -26,6 +26,14 @@ export class MatchRepository {
     }
   }
 
+  getByOwnerId(ownerId: number) {
+    for (const match of this.matches.values()) {
+      if (match.ownerId === ownerId) {
+        return match;
+      }
+    }
+  }
+
   getUniqueDimension() {
     let candidate: number;
 
@@ -36,14 +44,6 @@ export class MatchRepository {
     );
 
     return candidate;
-  }
-
-  getByOwnerId(ownerId: number) {
-    for (const match of this.matches.values()) {
-      if (match.ownerId === ownerId) {
-        return match;
-      }
-    }
   }
 
   getAll() {

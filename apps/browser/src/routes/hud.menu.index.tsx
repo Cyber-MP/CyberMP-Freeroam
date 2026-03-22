@@ -26,12 +26,12 @@ import { type ServerInputs, server } from '@/rpc';
 //import hellhoundImg from "#/images/vehicles/hellhound.png?w=300&h=150&imagetools";
 
 type VehicleInfo = {
-  key: ServerInputs['menu']['vehicles']['spawnVehicle'];
+  key: ServerInputs['vehiclesSpawner']['spawnVehicle'];
   name: string;
   image?: any;
 };
 
-type VehicleKey = ServerInputs['menu']['vehicles']['spawnVehicle'];
+type VehicleKey = ServerInputs['vehiclesSpawner']['spawnVehicle'];
 
 const VehiclesInfo: VehicleInfo[] = [
   {

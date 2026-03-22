@@ -8,13 +8,11 @@ import type { Match } from '../../../matchmaking/match';
 import { BaseGameMode } from '../../game-mode';
 
 export const zCreateRaceLapsOptions = zCreateMatchOptions.extend({
-  map: z.string(),
+  map: z.enum(['ad', 'zxc']),
   laps: z.number().min(1).max(10),
 });
 
-export const zJoinRaceLapsOptions = zJoinMatchOptions.extend({
-  car: z.string(),
-});
+export const zJoinRaceLapsOptions = zJoinMatchOptions;
 
 export class RaceLaps extends BaseGameMode<
   typeof zCreateRaceLapsOptions,
