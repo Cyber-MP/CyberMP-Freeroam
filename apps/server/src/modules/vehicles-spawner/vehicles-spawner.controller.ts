@@ -21,7 +21,7 @@ export const vehiclesSpawnerContract = {
 
 @eager()
 @injectable()
-export class VehiclesController {
+export class VehiclesSpawnerController {
   constructor(
     @inject(VehiclesSpawnerService)
     private vehiclesSpawnerService: VehiclesSpawnerService,

@@ -184,10 +184,7 @@ export class VehiclesSpawnerService {
     const appearanceHash = mp.hashes.cname(appearanceName);
 
     if (player.vehicle) {
-      return this.chatService.sendMessage(
-        player,
-        'You need to leave from current vehicle, to spawn new one',
-      );
+      player.vehicle.destroy();
     }
 
     const newVehicle = mp.vehicles.create({

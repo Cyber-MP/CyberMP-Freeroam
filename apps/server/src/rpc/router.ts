@@ -4,7 +4,7 @@ import { chatContract } from '../modules/chat/chat.controller';
 import { gameModesContract } from '../modules/game-modes/game-modes.controller';
 import { loggerContract } from '../modules/logger/logger.controller';
 import { matchmakingContract } from '../modules/matchmaking/matchmaking.controller';
-import { vehiclesSpawnerContract } from '../modules/menu/vehicles-spawner.controller';
+import { vehiclesSpawnerContract } from '../modules/vehicles-spawner/vehicles-spawner.controller';
 import { timeContract } from '../modules/time/time.controller';
 import { weatherContract } from '../modules/weather/weather.controller';
 import { mp } from '../mp';

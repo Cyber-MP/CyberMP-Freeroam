@@ -10,6 +10,7 @@ import { BaseGameMode } from '../../game-mode';
 export const zCreateRaceLapsOptions = zCreateMatchOptions.extend({
   map: z.enum(['ad', 'zxc']),
   laps: z.number().min(1).max(10),
+  combat: z.boolean(),
 });
 
 const vehicles: Record<string, string[]> = {

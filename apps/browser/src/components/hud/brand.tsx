@@ -10,6 +10,9 @@ export const Brand = () => {
     serverQuery.getOnline.queryOptions({ refetchInterval: 5000 }),
   );
   const { data: playerId } = useQuery(serverQuery.getPlayerId.queryOptions());
+  const { data: serverTime } = useQuery(
+    serverQuery.time.getCurrentTime.queryOptions({ refetchInterval: 5000 }),
+  );
 
   return (
     <div className="fixed top-[0.5vh] w-full flex flex-col items-center justify-center">
@@ -34,6 +37,10 @@ export const Brand = () => {
           <span>ID: {playerId ?? '-1'}</span>
           <span>Ping: {ping ?? '-1'}ms</span>
           <span>Online: {online ?? '-1'}</span>
+          <span>
+            Server time: {String(serverTime?.hours ?? '-1').padStart(2, '0')}:
+            {serverTime?.minutes ?? '-1'.padStart(2, '0')}
+          </span>
         </div>
       </div>
     </div>
