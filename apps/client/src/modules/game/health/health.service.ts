@@ -85,4 +85,14 @@ export class GHealthService {
       false,
     );
   }
+
+  getMax() {
+    const player = mp.game.GetPlayer();
+    const playerGameId = player.GetEntityID() as unknown as gameStatsObjectID;
+
+    return mp.game.ScriptGameInstance.GetStatsSystem().GetStatValue(
+      playerGameId,
+      CyberEnums.gamedataStatType.Health,
+    );
+  }
 }

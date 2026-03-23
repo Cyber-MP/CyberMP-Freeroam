@@ -16,3 +16,5 @@ export const activeGameMiddleware = (
     return next?.();
   };
 };
+
+export const ActiveGameMiddleware = Symbol.for('activeGameMiddleware');

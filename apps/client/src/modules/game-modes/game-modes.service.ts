@@ -1,14 +1,17 @@
 import type { MatchDTO } from '@freeroam/shared';
 import { inject, injectable } from 'inversify';
-import { TYPES } from '../../types';
-import type { BaseGameMode, GameModeFactory } from './game-mode';
+import {
+  type BaseGameMode,
+  type GameModeFactory,
+  GameModeFactorySymbol,
+} from './game-mode';
 
 @injectable()
 export class GameModesService {
   private activeMode: BaseGameMode | null = null;
 
   constructor(
-    @inject(TYPES.GameModeFactory) private gameModeFactory: GameModeFactory,
+    @inject(GameModeFactorySymbol) private gameModeFactory: GameModeFactory,
   ) {}
 
   isActive() {

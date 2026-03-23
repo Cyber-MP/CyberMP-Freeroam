@@ -24,3 +24,4 @@ export abstract class BaseGameMode<
 }
 
 export type GameModeFactory = (name: GameModeName) => BaseGameMode;
+export const GameModeFactorySymbol = Symbol.for('GameModeFactory');

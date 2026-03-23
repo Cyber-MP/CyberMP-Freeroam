@@ -10,6 +10,7 @@ import { GMenusService } from './menus.service';
 import { GPlayerService } from './player.service';
 import { GStatusEffectsController } from './status-effects/status-effects.controller';
 import { GStatusEffectsService } from './status-effects/status-effects.service';
+import { GTeleportCommands } from './teleport/teleport.commands';
 import { GTeleportController } from './teleport/teleport.controller';
 import { GTeleportService } from './teleport/teleport.service';
 import { GVehiclesCommands } from './vehicles/vehicles.commands';
@@ -30,6 +31,7 @@ export const GameModule = new ContainerModule(({ bind }) => {
 
   bind(GTeleportService).toSelf().inSingletonScope();
   bind(GTeleportController).toSelf().inSingletonScope();
+  bind(GTeleportCommands).toSelf().inSingletonScope();
 
   bind(GHealthService).toSelf().inSingletonScope();
   bind(GHealthController).toSelf().inSingletonScope();
