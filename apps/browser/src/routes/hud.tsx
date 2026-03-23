@@ -4,6 +4,7 @@ import { Brand } from '@/components/hud/brand';
 import { Chat } from '@/components/hud/chat';
 import { Hints } from '@/components/hud/hints';
 import { KillFeed } from '@/components/hud/kill-feed';
+import { LobbyMatch } from '@/components/hud/lobby-match';
 
 export const Route = createFileRoute('/hud')({
   component: RouteComponent,
@@ -20,6 +21,7 @@ function RouteComponent() {
       <Chat />
       <KillFeed />
       <Hints />
+      <LobbyMatch />
       <Outlet />
     </div>
   );

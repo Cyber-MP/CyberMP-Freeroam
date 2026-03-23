@@ -30,7 +30,8 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Skeleton } from '@/components/ui/skeleton';
-import { type ServerOutputs, serverQuery } from '@/rpc';
+import { isMatchMember, type Match, type MatchStatus } from '@/lib/match';
+import { serverQuery } from '@/rpc';
 import { queryClient } from '@/tanstack-query';
 
 export const Route = createFileRoute('/hud/menu/matchmaking/')({
@@ -44,17 +45,6 @@ export const Route = createFileRoute('/hud/menu/matchmaking/')({
     );
   },
 });
-
-type MatchStatus = `${ServerOutputs['matchmaking']['getAll'][0]['status']}`;
-type GameModeName = `${ServerOutputs['matchmaking']['getAll'][0]['modeName']}`;
-
-type Match = Omit<
-  ServerOutputs['matchmaking']['getAll'][0],
-  'modeName' | 'status'
-> & {
-  status: MatchStatus;
-  modeName: GameModeName;
-};
 
 function PendingComponent() {
   return (
@@ -155,7 +145,7 @@ const JoinMatch = (match: Match) => {
             </Button>
           </DialogClose>
           <Button
-            onClick={() => formRef.current.submit()}
+            onClick={() => formRef.current?.submit()}
             size="sm"
             type="submit"
           >
@@ -166,9 +156,6 @@ const JoinMatch = (match: Match) => {
     </Dialog>
   );
 };
-
-const isMatchMember = (match: Match, playerId: number) =>
-  Object.keys(match.members).some((o) => +o === +(playerId ?? 0));
 
 const MatchComponent = (match: Match) => {
   const leaveMutation = useMutation(

@@ -15,7 +15,7 @@ export const KillFeed = () => {
   });
 
   return (
-    <div className="fixed bottom-0 w-full flex justify-center">
+    <div className="fixed left-0 bottom-76 w-full flex flex-col">
       <AnimatePresence mode="popLayout">
         {killFeed
           .slice()
@@ -23,9 +23,9 @@ export const KillFeed = () => {
           .map((o) => (
             <motion.div
               layout
-              initial={{ y: 100, opacity: 0 }}
+              initial={{ y: -100, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              exit={{ y: -100, opacity: 0 }}
+              exit={{ y: 100, opacity: 0 }}
               transition={{ duration: 0.3, ease: 'easeInOut' }}
               key={o.id}
               className="flex items-center gap-2.5 text-[18px] w-fit px-2.5 py-1.5 rounded-md text-white overflow-hidden whitespace-nowrap"

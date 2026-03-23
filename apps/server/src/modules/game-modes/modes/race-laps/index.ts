@@ -6,20 +6,17 @@ import {
 import z from 'zod';
 import type { Match } from '../../../matchmaking/match';
 import { BaseGameMode } from '../../game-mode';
+import { RaceLapsMap, RaceLapsVehicleClass, RaceLapsVehicleMap } from './data';
 
 export const zCreateRaceLapsOptions = zCreateMatchOptions.extend({
-  map: z.enum(['ad', 'zxc']),
+  map: z.enum(RaceLapsMap),
+  vehicleClass: z.enum(RaceLapsVehicleClass),
   laps: z.number().min(1).max(10),
   combat: z.boolean(),
 });
 
-const vehicles: Record<string, string[]> = {
-  ad: ['veh1', 'veh2'],
-  zxc: ['veh3', 'veh4'],
-};
-
 export const zJoinRaceLapsOptions = zJoinMatchOptions.extend({
-  vehicle: z.enum(Object.values(vehicles).flat()),
+  vehicle: z.enum(Object.values(RaceLapsVehicleMap).flat()),
 });
 
 export class RaceLaps extends BaseGameMode<
@@ -35,7 +32,7 @@ export class RaceLaps extends BaseGameMode<
     createOptions: z.infer<typeof zCreateRaceLapsOptions>,
   ): typeof zJoinRaceLapsOptions {
     return this.JOIN_OPTIONS_SCHEMA.extend({
-      vehicle: z.enum(vehicles[createOptions.map]),
+      vehicle: z.enum(RaceLapsVehicleMap[createOptions.vehicleClass]),
     });
   }
 
