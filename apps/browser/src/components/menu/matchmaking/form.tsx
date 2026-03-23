@@ -12,6 +12,9 @@ const createUiSchema: UiSchema = {
   laps: {
     'ui:widget': 'SliderWidget',
   },
+  combat: {
+    'ui:widget': 'SwitchWidget',
+  },
 };
 
 export const CreateMatchForm = ({

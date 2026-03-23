@@ -39,7 +39,7 @@ export const Brand = () => {
           <span>Online: {online ?? '-1'}</span>
           <span>
             Server time: {String(serverTime?.hours ?? '-1').padStart(2, '0')}:
-            {serverTime?.minutes ?? '-1'.padStart(2, '0')}
+            {String(serverTime?.minutes ?? '-1').padStart(2, '0')}
           </span>
         </div>
       </div>

@@ -19,6 +19,7 @@ import {
   SelectValue,
 } from './select';
 import { Slider } from './slider';
+import { Switch } from './switch';
 
 const FieldTemplate = ({
   id,
@@ -140,6 +141,26 @@ const SliderWidget = ({
   );
 };
 
+const SwitchWidget = ({
+  value,
+  required,
+  disabled,
+  defaultChecked,
+  readonly,
+  onChange,
+}: WidgetProps) => {
+  return (
+    <Switch
+      disabled={disabled || readonly}
+      required={required}
+      value={value ? 'on' : 'off'}
+      defaultChecked={defaultChecked}
+      checked={value}
+      onCheckedChange={(e) => onChange(e)}
+    />
+  );
+};
+
 /**
  * Custom Submit Button Template using Shadcn Button.
  */
@@ -167,6 +188,7 @@ const widgets: RegistryWidgetsType = {
   TextWidget,
   SelectWidget,
   SliderWidget,
+  SwitchWidget,
   EmailWidget: TextWidget,
   PasswordWidget: TextWidget,
   URLWidget: TextWidget,

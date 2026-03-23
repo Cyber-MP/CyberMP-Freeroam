@@ -1,3 +1,5 @@
+import type Form from '@rjsf/core';
+import type { RJSFSchema } from '@rjsf/utils';
 import {
   useMutation,
   useQuery,
@@ -6,6 +8,7 @@ import {
 } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { cva } from 'class-variance-authority';
+import { useMemo, useRef } from 'react';
 import { JoinMatchForm } from '@/components/menu/matchmaking/form';
 import { Button } from '@/components/ui/button';
 import {
@@ -21,7 +24,6 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -104,6 +106,8 @@ const JoinMatch = (match: Match) => {
     }),
   );
 
+  const formRef = useRef<Form<any, RJSFSchema, any>>(null);
+
   if (
     !Object.keys(match.joinSchema.properties as Record<string, string>).length
   ) {
@@ -118,6 +122,10 @@ const JoinMatch = (match: Match) => {
     );
   }
 
+  const onSubmit = (formData: Record<string, unknown>) => {
+    joinMutation.mutate([{ id: match.id, options: formData }]);
+  };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -127,12 +135,11 @@ const JoinMatch = (match: Match) => {
       </DialogTrigger>
       <DialogContent overlay className="sm:max-w-sm">
         <DialogHeader>
-          <DialogTitle>Edit profile</DialogTitle>
-          <DialogDescription>
-            Make changes to your profile here. Click save when you&apos;re done.
-          </DialogDescription>
+          <DialogTitle>Join {match.modeName}</DialogTitle>
         </DialogHeader>
         <JoinMatchForm
+          ref={formRef}
+          onSubmit={(e) => onSubmit(e.formData)}
           showErrorList={false}
           uiSchema={{
             'ui:submitButtonOptions': {
@@ -143,14 +150,25 @@ const JoinMatch = (match: Match) => {
         />
         <DialogFooter>
           <DialogClose asChild>
-            <Button variant="outline">Cancel</Button>
+            <Button size="sm" variant="outline">
+              Cancel
+            </Button>
           </DialogClose>
-          <Button type="submit">Save changes</Button>
+          <Button
+            onClick={() => formRef.current.submit()}
+            size="sm"
+            type="submit"
+          >
+            Join
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   );
 };
+
+const isMatchMember = (match: Match, playerId: number) =>
+  Object.keys(match.members).some((o) => +o === +(playerId ?? 0));
 
 const MatchComponent = (match: Match) => {
   const leaveMutation = useMutation(
@@ -177,7 +195,7 @@ const MatchComponent = (match: Match) => {
     ...matchOptions,
   };
 
-  const isMember = members.some((o) => +o === +(playerId ?? 0));
+  const isMember = isMatchMember(match, playerId!);
   const isOwner = match.owner.id === playerId;
 
   return (
@@ -209,7 +227,7 @@ const MatchComponent = (match: Match) => {
                 key={`${match.id}-${key}`}
                 className="bg-secondary px-2 py-0.5 rounded text-[1vh] capitalize"
               >
-                {key}: {value}
+                {key}: {String(value)}
               </span>
             ))}
           </div>
@@ -220,20 +238,13 @@ const MatchComponent = (match: Match) => {
         <CardFooter>
           <CardAction className="w-full flex items-center justify-between">
             {isOwner && <Button size="xs">Start</Button>}
-            <div className="flex items-center gap-4">
-              {isOwner && (
-                <Button size="xs" variant="secondary">
-                  Edit
-                </Button>
-              )}
-              {!isMember ? (
-                <JoinMatch {...match} />
-              ) : (
-                <Button onClick={leaveMatch} size="xs" variant="destructive">
-                  Leave
-                </Button>
-              )}
-            </div>
+            {!isMember ? (
+              <JoinMatch {...match} />
+            ) : (
+              <Button onClick={leaveMatch} size="xs" variant="destructive">
+                Leave
+              </Button>
+            )}
           </CardAction>
         </CardFooter>
       )}
@@ -246,6 +257,21 @@ function RouteComponent() {
     serverQuery.matchmaking.getAll.queryOptions({ refetchInterval: 1000 }),
   );
 
+  const { data: playerId } = useQuery(serverQuery.getPlayerId.queryOptions());
+
+  const sortedMatches = useMemo(
+    () =>
+      [...matches].sort((a, b) => {
+        const isPlayerInA = isMatchMember(a, playerId!);
+        const isPlayerInB = isMatchMember(b, playerId!);
+
+        if (isPlayerInA && !isPlayerInB) return -1;
+        if (!isPlayerInA && isPlayerInB) return 1;
+        return 0;
+      }),
+    [playerId, matches],
+  );
+
   return (
     <div className="p-4 flex flex-col gap-4">
       <Link from="/hud/menu/matchmaking/" to="create" className="w-full">
@@ -253,7 +279,7 @@ function RouteComponent() {
       </Link>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        {matches.map((match) => (
+        {sortedMatches.map((match) => (
           <MatchComponent {...match} key={match.id} />
         ))}
       </div>
