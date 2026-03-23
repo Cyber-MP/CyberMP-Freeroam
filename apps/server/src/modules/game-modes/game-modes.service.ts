@@ -1,24 +1,31 @@
+import type { GameModeName } from '@freeroam/shared';
 import { injectable } from 'inversify';
 import z from 'zod';
-import type { zGameModesSchemas } from './dto/game-modes-schemas.dto';
+import type { zGameModesCreateSchemas } from './dto/game-modes-schemas.dto';
 import { GameModes } from './modes';
 
 @injectable()
 export class GameModesService {
-  getSchemas() {
-    const result: z.infer<typeof zGameModesSchemas> = {} as any;
+  getJoinSchema(modeName: GameModeName, createOptions: any) {
+    const GameModeClass = GameModes.find((m) => new m().name === modeName);
+    if (!GameModeClass) throw new Error(`Game mode ${modeName} not found`);
+
+    const instance = new GameModeClass();
+
+    const dynamicZodSchema = instance.getJoinSchema(createOptions);
+
+    return dynamicZodSchema.toJSONSchema({ target: 'draft-07' });
+  }
+
+  getCreateSchemas() {
+    const result: z.infer<typeof zGameModesCreateSchemas> = {} as any;
 
     for (const GameMode of GameModes) {
       const instance = new GameMode();
 
-      result[instance.name] = {
-        createSchema: z.toJSONSchema(instance.CREATE_OPTIONS_SCHEMA, {
-          target: 'draft-07',
-        }),
-        joinSchema: z.toJSONSchema(instance.JOIN_OPTIONS_SCHEMA, {
-          target: 'draft-07',
-        }),
-      };
+      result[instance.name] = z.toJSONSchema(instance.CREATE_OPTIONS_SCHEMA, {
+        target: 'draft-07',
+      });
     }
 
     return result;

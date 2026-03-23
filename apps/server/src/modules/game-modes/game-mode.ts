@@ -3,6 +3,7 @@ import type {
   zCreateMatchOptions,
   zJoinMatchOptions,
 } from '@freeroam/shared';
+import type z from 'zod';
 import type { Match } from '../matchmaking/match';
 
 export abstract class BaseGameMode<
@@ -12,6 +13,11 @@ export abstract class BaseGameMode<
 > {
   abstract readonly CREATE_OPTIONS_SCHEMA: TCreateOptions;
   abstract readonly JOIN_OPTIONS_SCHEMA: TJoinOptions;
+
+  getJoinSchema(createOptions: z.infer<TCreateOptions>) {
+    return this.JOIN_OPTIONS_SCHEMA;
+  }
+
   abstract name: GameModeName;
   abstract onPlayerJoin(playerId: number): void;
   abstract onPlayerLeave(playerId: number): void;

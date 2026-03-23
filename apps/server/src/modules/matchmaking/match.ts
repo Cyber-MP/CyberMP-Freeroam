@@ -1,6 +1,7 @@
 import { generateUUID } from '@cybermp/rpc-server';
 import { type MatchDTO, MatchStatus, zMatchDTO } from '@freeroam/shared';
 import type z from 'zod';
+import { mp } from '../../mp';
 import { client } from '../../rpc';
 import type { BaseGameMode } from '../game-modes/game-mode';
 
@@ -52,7 +53,13 @@ export class Match<TGameMode extends BaseGameMode = BaseGameMode> {
   toDTO(): MatchDTO {
     return zMatchDTO.parse({
       id: this.id,
-      ownerId: this.ownerId,
+      owner: {
+        id: this.ownerId,
+        nickname: mp.players.at(this.ownerId).nickname,
+      },
+      joinSchema: this.mode
+        .getJoinSchema(this.options)
+        .toJSONSchema({ target: 'draft-07' }),
       dimension: this.dimension,
       modeName: this.mode.name,
       options: this.options,

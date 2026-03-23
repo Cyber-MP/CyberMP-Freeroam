@@ -1,4 +1,3 @@
-import validator from '@rjsf/validator-ajv8';
 import {
   useMutation,
   useQuery,
@@ -7,6 +6,7 @@ import {
 } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { cva } from 'class-variance-authority';
+import { JoinMatchForm } from '@/components/menu/matchmaking/form';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -27,7 +27,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { Rjsf } from '@/components/ui/rjsf';
 import { Skeleton } from '@/components/ui/skeleton';
 import { type ServerOutputs, serverQuery } from '@/rpc';
 import { queryClient } from '@/tanstack-query';
@@ -38,9 +37,6 @@ export const Route = createFileRoute('/hud/menu/matchmaking/')({
   pendingMs: 500,
   pendingMinMs: 300,
   loader: async () => {
-    await queryClient.ensureQueryData(
-      serverQuery.gameModes.getSchemas.queryOptions(),
-    );
     await queryClient.ensureQueryData(
       serverQuery.matchmaking.getAll.queryOptions(),
     );
@@ -65,11 +61,6 @@ function PendingComponent() {
         <Button className="w-full">Create</Button>
       </Link>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        <Skeleton className="h-68" />
-        <Skeleton className="h-68" />
-        <Skeleton className="h-68" />
-        <Skeleton className="h-68" />
-        <Skeleton className="h-68" />
         <Skeleton className="h-68" />
         <Skeleton className="h-68" />
         <Skeleton className="h-68" />
@@ -112,13 +103,10 @@ const JoinMatch = (match: Match) => {
       },
     }),
   );
-  const { data: gameModesSchemas } = useSuspenseQuery(
-    serverQuery.gameModes.getSchemas.queryOptions(),
-  );
 
-  const schema = gameModesSchemas[match.modeName].joinSchema;
-
-  if (!Object.keys(schema.properties as Record<string, string>).length) {
+  if (
+    !Object.keys(match.joinSchema.properties as Record<string, string>).length
+  ) {
     return (
       <Button
         onClick={() => joinMutation.mutate([{ id: match.id, options: {} }])}
@@ -144,16 +132,14 @@ const JoinMatch = (match: Match) => {
             Make changes to your profile here. Click save when you&apos;re done.
           </DialogDescription>
         </DialogHeader>
-        <Rjsf
+        <JoinMatchForm
           showErrorList={false}
           uiSchema={{
             'ui:submitButtonOptions': {
               norender: true,
-              submitText: 'Submit',
             },
           }}
-          schema={gameModesSchemas[match.modeName]['joinSchema'] as any}
-          validator={validator}
+          schema={match.joinSchema as any}
         />
         <DialogFooter>
           <DialogClose asChild>
@@ -183,24 +169,16 @@ const MatchComponent = (match: Match) => {
     );
   };
 
-  // const joinMatch = async () => {
-  //   await joinMutation.mutateAsync([{}]);
-
-  //   queryClient.invalidateQueries(
-  //     serverQuery.matchmaking.getAll.queryOptions(),
-  //   );
-  // };
-
   const members = Object.keys(match.members);
   const { maxPlayers, ...matchOptions } = match.options;
 
   const options = {
-    owner: match.ownerId,
+    owner: match.owner.nickname,
     ...matchOptions,
   };
 
   const isMember = members.some((o) => +o === +(playerId ?? 0));
-  const isOwner = match.ownerId === playerId;
+  const isOwner = match.owner.id === playerId;
 
   return (
     <Card key={match.id} className="flex flex-col justify-between">

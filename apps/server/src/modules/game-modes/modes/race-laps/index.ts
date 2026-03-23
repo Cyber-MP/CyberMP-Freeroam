@@ -12,7 +12,14 @@ export const zCreateRaceLapsOptions = zCreateMatchOptions.extend({
   laps: z.number().min(1).max(10),
 });
 
-export const zJoinRaceLapsOptions = zJoinMatchOptions;
+const vehicles: Record<string, string[]> = {
+  ad: ['veh1', 'veh2'],
+  zxc: ['veh3', 'veh4'],
+};
+
+export const zJoinRaceLapsOptions = zJoinMatchOptions.extend({
+  vehicle: z.enum(Object.values(vehicles).flat()),
+});
 
 export class RaceLaps extends BaseGameMode<
   typeof zCreateRaceLapsOptions,
@@ -22,6 +29,14 @@ export class RaceLaps extends BaseGameMode<
 
   readonly CREATE_OPTIONS_SCHEMA = zCreateRaceLapsOptions;
   readonly JOIN_OPTIONS_SCHEMA = zJoinRaceLapsOptions;
+
+  override getJoinSchema(
+    createOptions: z.infer<typeof zCreateRaceLapsOptions>,
+  ): typeof zJoinRaceLapsOptions {
+    return this.JOIN_OPTIONS_SCHEMA.extend({
+      vehicle: z.enum(vehicles[createOptions.map]),
+    });
+  }
 
   end(): void {}
 

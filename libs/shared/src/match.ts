@@ -19,8 +19,12 @@ export type JoinMatchOptions = z.infer<typeof zJoinMatchOptions>;
 
 export const zMatchDTO = z.object({
   id: z.string(),
-  ownerId: z.number(),
+  owner: z.object({
+    id: z.number(),
+    nickname: z.string(),
+  }),
   dimension: z.number(),
+  joinSchema: z.record(z.string(), z.unknown()),
   modeName: z.enum(GameModeName),
   options: zCreateMatchOptions,
   members: z.record(z.number(), zJoinMatchOptions),

@@ -1,13 +1,14 @@
 import { RiArrowLeftSLine } from '@remixicon/react';
-import type { UiSchema } from '@rjsf/utils';
-import validator from '@rjsf/validator-ajv8';
-import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 import { DefaultPendingPage } from '@/components/default-pending-page';
+import {
+  CreateMatchForm,
+  JoinMatchForm,
+} from '@/components/menu/matchmaking/form';
 import { Button } from '@/components/ui/button';
 import { Field, FieldLabel, FieldSet } from '@/components/ui/field';
-import { Rjsf } from '@/components/ui/rjsf';
 import {
   Select,
   SelectContent,
@@ -25,28 +26,32 @@ export const Route = createFileRoute('/hud/menu/matchmaking/create')({
   pendingMinMs: 300,
   loader: async () => {
     await queryClient.ensureQueryData(
-      serverQuery.gameModes.getSchemas.queryOptions(),
+      serverQuery.gameModes.getCreateSchemas.queryOptions(),
     );
   },
 });
 
-const createUiSchema: UiSchema = {
-  maxPlayers: {
-    'ui:widget': 'SliderWidget',
-  },
-  laps: {
-    'ui:widget': 'SliderWidget',
-  },
-};
-
 function RouteComponent() {
-  const { data: gameModesSchemas } = useSuspenseQuery(
-    serverQuery.gameModes.getSchemas.queryOptions(),
-  );
   const navigate = useNavigate();
 
-  const [gameMode, setGameMode] = useState<keyof typeof gameModesSchemas>();
+  const [gameMode, setGameMode] =
+    useState<keyof typeof createGameModeSchemas>();
   const [createOptions, setCreateOptions] = useState<Record<string, unknown>>();
+
+  const {
+    data: joinSchema,
+    isLoading: isJoinSchemaLoading,
+    refetch,
+  } = useQuery(
+    serverQuery.gameModes.getJoinSchema.queryOptions({
+      input: [{ createOptions: createOptions!, modeName: gameMode! }],
+      enabled: false,
+    }),
+  );
+
+  const { data: createGameModeSchemas } = useSuspenseQuery(
+    serverQuery.gameModes.getCreateSchemas.queryOptions(),
+  );
   const mutation = useMutation(
     serverQuery.matchmaking.create.triggerMutationOptions({
       onSuccess() {
@@ -55,8 +60,8 @@ function RouteComponent() {
     }),
   );
 
-  const gameModes = Object.keys(gameModesSchemas);
-  const schema = gameMode ? gameModesSchemas[gameMode] : null;
+  const gameModes = Object.keys(createGameModeSchemas);
+  const createSchema = gameMode ? createGameModeSchemas[gameMode] : null;
 
   const onJoinOptionsSubmit = (formData: Record<string, unknown>) => {
     mutation.mutate([
@@ -68,12 +73,15 @@ function RouteComponent() {
     ]);
   };
 
-  const onCreateOptionsSubmit = (formData: Record<string, unknown>) => {
+  const onCreateOptionsSubmit = async (formData: Record<string, unknown>) => {
     setCreateOptions(formData);
 
+    const joinSchemaResponse = await refetch();
+
     if (
-      !Object.keys(schema?.joinSchema?.properties as Record<string, string>)
-        .length
+      !Object.keys(
+        joinSchemaResponse.data?.properties as Record<string, string>,
+      ).length
     ) {
       mutation.mutate([
         {
@@ -84,6 +92,10 @@ function RouteComponent() {
       ]);
     }
   };
+
+  if (isJoinSchemaLoading) {
+    return <DefaultPendingPage />;
+  }
 
   return (
     <div className="flex flex-col items-center justify-center w-full h-full gap-4 relative">
@@ -97,14 +109,11 @@ function RouteComponent() {
         </Button>
       </Link>
       <div className="w-64 flex flex-col gap-4">
-        {createOptions ? (
+        {createOptions && joinSchema ? (
           <FieldSet>
-            <Rjsf
-              showErrorList={false}
+            <JoinMatchForm
               key={`${gameMode}-join`}
-              uiSchema={createUiSchema}
-              schema={schema?.joinSchema as any}
-              validator={validator}
+              schema={joinSchema as any}
               onSubmit={(s) => onJoinOptionsSubmit(s.formData)}
             />
           </FieldSet>
@@ -127,12 +136,9 @@ function RouteComponent() {
             </Field>
 
             {gameMode && (
-              <Rjsf
-                showErrorList={false}
+              <CreateMatchForm
                 key={`${gameMode}-create`}
-                uiSchema={createUiSchema}
-                schema={schema?.createSchema as any}
-                validator={validator}
+                schema={createSchema as any}
                 formData={createOptions}
                 onSubmit={(s) => onCreateOptionsSubmit(s.formData)}
               />

@@ -51,7 +51,11 @@ export class MatchmakingController {
       return;
     }
 
-    return newMatch.toDTO();
+    try {
+      return newMatch.toDTO();
+    } catch (e) {
+      console.error('e', e);
+    }
   }
 
   private getAll() {
