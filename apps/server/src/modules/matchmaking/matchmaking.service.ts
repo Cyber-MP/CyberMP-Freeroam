@@ -1,4 +1,5 @@
-import type { JoinMatchOptions } from '@freeroam/shared';
+import type { MpPlayer } from '@cybermp/server-types';
+import { type JoinMatchOptions, MatchStatus } from '@freeroam/shared';
 import { inject, injectable } from 'inversify';
 import type z from 'zod';
 import { TYPES } from '../../types';
@@ -15,6 +16,17 @@ export class MatchmakingService {
     @inject(TYPES.GameModeFactory)
     private gameModeFactory: GameModeFactory,
   ) {}
+
+  isOnActiveMatch(player: number | MpPlayer) {
+    const match = this.matchRepository.getByMemberId(
+      typeof player === 'number' ? player : player.id,
+    );
+    if (!match) {
+      return false;
+    }
+
+    return match.status === MatchStatus.ACTIVE;
+  }
 
   createMatch(ownerId: number, dto: z.infer<typeof zCreateMatchDTO>) {
     const mode = this.gameModeFactory(dto.name);

@@ -23,8 +23,6 @@ export class SpawnService {
 
   private readonly SPAWN_RADIUS = 5.0;
 
-  private readonly DEFAULT_HEALTH = 300;
-
   constructor(
     @inject(GHealthService) private health: GHealthService,
     @inject(DeathService) private deathService: DeathService,
@@ -41,9 +39,9 @@ export class SpawnService {
     return [randomX, randomY, z, 1];
   }
 
-  spawn({ position, health = this.DEFAULT_HEALTH }: SpawnOptions) {
+  spawn({ position, health = this.health.getDefaultHealth() }: SpawnOptions) {
     this.vehiclesService.requestLeaveVehicle();
-    this.health.set(+health || this.DEFAULT_HEALTH);
+    this.health.set(+health || this.health.getDefaultHealth());
 
     const pos = Array.isArray(position) ? createVector4(...position) : position;
 

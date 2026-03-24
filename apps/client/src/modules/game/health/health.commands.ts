@@ -21,6 +21,10 @@ export class GHealthCommands {
     this.healthService.god(!this.healthService.isGod());
   }
 
+  private heal() {
+    this.healthService.heal();
+  }
+
   @postConstruct()
   private init() {
     this.chatService.addCommand({
@@ -32,6 +36,11 @@ export class GHealthCommands {
       name: 'god',
       description: "Toggle's god mod",
       handler: this.god.bind(this),
+    });
+    this.chatService.addCommand({
+      name: 'heal',
+      description: 'Heals you...',
+      handler: this.heal.bind(this),
     });
   }
 }

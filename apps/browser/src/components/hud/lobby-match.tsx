@@ -5,13 +5,14 @@ import { motion } from 'framer-motion';
 import { isMatchMember, type Match } from '@/lib/match';
 import { serverQuery } from '@/rpc';
 import { CardAction, CardHeader, CardTitle } from '../ui/card';
+import { usePlayerId } from '@/hooks/use-player-id';
 
 export const LobbyMatch = () => {
   const { data: matches } = useSuspenseQuery<Match[]>(
     serverQuery.matchmaking.getAll.queryOptions({ refetchInterval: 1000 }),
   );
 
-  const { data: playerId } = useQuery(serverQuery.getPlayerId.queryOptions());
+  const playerId = usePlayerId();
 
   const matchRoute = useMatchRoute();
   const isHud = matchRoute({ to: '/hud' });

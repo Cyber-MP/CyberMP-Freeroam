@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { usePlayerId } from '@/hooks/use-player-id';
 import { serverQuery } from '@/rpc';
 import { Logo } from '../ui/logo';
 
@@ -9,7 +10,7 @@ export const Brand = () => {
   const { data: online } = useQuery(
     serverQuery.getOnline.queryOptions({ refetchInterval: 5000 }),
   );
-  const { data: playerId } = useQuery(serverQuery.getPlayerId.queryOptions());
+  const playerId = usePlayerId();
   const { data: serverTime } = useQuery(
     serverQuery.time.getCurrentTime.queryOptions({ refetchInterval: 5000 }),
   );

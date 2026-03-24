@@ -7,7 +7,15 @@ import { GHealthService } from '../game/health/health.service';
 import { GHudService } from '../game/hud.service';
 import { GStatusEffectsService } from '../game/status-effects/status-effects.service';
 
-type OnDeathCallback = () => void;
+class DeathEvent {
+  prevented = false;
+
+  preventDefault() {
+    this.prevented = true;
+  }
+}
+
+type OnDeathCallback = (event: DeathEvent) => void;
 
 export class DeathService {
   private deathObserver = new Observer<OnDeathCallback>();
@@ -23,16 +31,31 @@ export class DeathService {
   private onGameLoaded() {
     setInterval(() => {
       if (this.healthService.get() <= 0) {
-        this.dead = true;
-        this.statusEffects.add('GameplayRestriction.NoCameraControl');
-        this.deathObserver.notify();
+        this.onDeath();
       } else if (this.dead) {
-        this.dead = false;
-        this.statusEffects.remove('GameplayRestriction.NoCameraControl');
+        this.onRevive();
       }
-    }, 1000);
+    }, 300);
+  }
 
-    this.subscribe(this.onGlobalDeath.bind(this));
+  private onDeath() {
+    const event = new DeathEvent();
+
+    this.deathObserver.notify(event);
+    if (event.prevented) {
+      return;
+    }
+
+    this.dead = true;
+    this.statusEffects.add('GameplayRestriction.NoCameraControl');
+
+    this.hudService.hide();
+    browser.navigate.trigger('/death');
+  }
+
+  private onRevive() {
+    this.dead = false;
+    this.statusEffects.remove('GameplayRestriction.NoCameraControl');
   }
 
   async stand() {
@@ -64,11 +87,6 @@ export class DeathService {
 
   unsubscribe(callback: OnDeathCallback) {
     this.deathObserver.unsubscribe(callback);
-  }
-
-  private onGlobalDeath() {
-    this.hudService.hide();
-    browser.navigate.trigger('/death');
   }
 
   @postConstruct()

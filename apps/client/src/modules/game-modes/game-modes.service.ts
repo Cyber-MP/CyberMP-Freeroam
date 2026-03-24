@@ -14,6 +14,10 @@ export class GameModesService {
     @inject(GameModeFactorySymbol) private gameModeFactory: GameModeFactory,
   ) {}
 
+  getActiveGameMode<T extends BaseGameMode = BaseGameMode>(): T | null {
+    return this.activeMode as T | null;
+  }
+
   isActive() {
     return this.activeMode !== null;
   }

@@ -2,7 +2,7 @@ import type { MpPlayer } from '@cybermp/server-types';
 import { inject, injectable } from 'inversify';
 import { mp } from '../../mp';
 import { client } from '../../rpc';
-import { ChatService } from '../chat/chat.service';
+import { MatchmakingService } from '../matchmaking/matchmaking.service';
 
 export const VEHICLES_SPAWNER_KEYS = [
   'herrera',
@@ -159,7 +159,9 @@ const VehiclesSpawnerData: Record<
 export class VehiclesSpawnerService {
   private playersVehiclesMap = new Map<number, Set<number>>();
 
-  constructor(@inject(ChatService) private chatService: ChatService) {}
+  constructor(
+    @inject(MatchmakingService) private matchmakingService: MatchmakingService,
+  ) {}
 
   clearPlayerVehicles(playerId: number) {
     const vehicles = this.playersVehiclesMap.get(playerId);
@@ -175,6 +177,10 @@ export class VehiclesSpawnerService {
   }
 
   spawnVehicle(player: MpPlayer, vehicleKey: VehiclesSpawnerKey) {
+    if (this.matchmakingService.isOnActiveMatch(player)) {
+      return;
+    }
+
     const [modelName, appearanceName] = VehiclesSpawnerData[vehicleKey] ?? [];
     if (!modelName || !appearanceName) {
       return;

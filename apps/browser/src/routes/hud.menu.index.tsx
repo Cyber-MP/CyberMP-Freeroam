@@ -21,6 +21,7 @@ import quadraImg from '#/images/vehicles/quadra.webp?w=300&h=150&imagetools';
 import shionImg from '#/images/vehicles/shion.webp?w=300&h=150&imagetools';
 import type66Img from '#/images/vehicles/type66.webp?w=300&h=150&imagetools';
 import yaibaImg from '#/images/vehicles/yaiba.webp?w=300&h=150&imagetools';
+import { withDisabledDuringMatch } from '@/hocs/with-disabled-during-match';
 import { type ServerInputs, server } from '@/rpc';
 
 //import hellhoundImg from "#/images/vehicles/hellhound.png?w=300&h=150&imagetools";
@@ -213,7 +214,7 @@ const VehiclesInfo: VehicleInfo[] = [
 ];
 
 export const Route = createFileRoute('/hud/menu/')({
-  component: RouteComponent,
+  component: withDisabledDuringMatch(RouteComponent),
 });
 
 function RouteComponent() {

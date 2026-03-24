@@ -8,9 +8,15 @@ import { GStatusEffectsService } from '../status-effects/status-effects.service'
 export class GHealthService {
   private readonly GOD_STATUS_EFFECT = 'BaseStatusEffect.Invulnerable';
 
+  private readonly DEFAULT_HEALTH = 300;
+
   constructor(
     @inject(GStatusEffectsService) private statusEffects: GStatusEffectsService,
   ) {}
+
+  getDefaultHealth() {
+    return this.DEFAULT_HEALTH;
+  }
 
   god(enabled: boolean) {
     if (enabled) {
@@ -94,5 +100,9 @@ export class GHealthService {
       playerGameId,
       CyberEnums.gamedataStatType.Health,
     );
+  }
+
+  heal() {
+    this.setCurrent(this.getMax());
   }
 }

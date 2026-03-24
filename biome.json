@@ -27,7 +27,8 @@
       "a11y": "off",
       "suspicious": {
         "noExplicitAny": "off",
-        "noConstEnum": "off"
+        "noConstEnum": "off",
+        "noConfusingVoidType": "off"
       },
       "style": {
         "noRestrictedGlobals": {

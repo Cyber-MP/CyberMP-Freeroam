@@ -2,7 +2,6 @@ import type Form from '@rjsf/core';
 import type { RJSFSchema } from '@rjsf/utils';
 import {
   useMutation,
-  useQuery,
   useQueryClient,
   useSuspenseQuery,
 } from '@tanstack/react-query';
@@ -30,6 +29,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Skeleton } from '@/components/ui/skeleton';
+import { usePlayerId } from '@/hooks/use-player-id';
 import { isMatchMember, type Match, type MatchStatus } from '@/lib/match';
 import { serverQuery } from '@/rpc';
 import { queryClient } from '@/tanstack-query';
@@ -161,13 +161,24 @@ const MatchComponent = (match: Match) => {
   const leaveMutation = useMutation(
     serverQuery.matchmaking.leave.triggerMutationOptions({}),
   );
+  const startMutation = useMutation(
+    serverQuery.matchmaking.start.triggerMutationOptions({}),
+  );
 
-  const { data: playerId } = useQuery(serverQuery.getPlayerId.queryOptions());
+  const playerId = usePlayerId();
 
   const queryClient = useQueryClient();
 
   const leaveMatch = async () => {
     await leaveMutation.mutateAsync([]);
+
+    queryClient.invalidateQueries(
+      serverQuery.matchmaking.getAll.queryOptions(),
+    );
+  };
+
+  const startMatch = async () => {
+    await startMutation.mutateAsync([]);
 
     queryClient.invalidateQueries(
       serverQuery.matchmaking.getAll.queryOptions(),
@@ -221,11 +232,15 @@ const MatchComponent = (match: Match) => {
         </div>
       </CardContent>
 
-      {match.status === 'LOBBY' && (
+      {!!(match.status === 'LOBBY' || isMember) && (
         <CardFooter>
           <CardAction className="w-full flex items-center justify-between">
-            {isOwner && <Button size="xs">Start</Button>}
-            {!isMember ? (
+            {!!(isOwner && match.status === 'LOBBY') && (
+              <Button onClick={startMatch} size="xs">
+                Start
+              </Button>
+            )}
+            {!isMember && match.status === 'LOBBY' ? (
               <JoinMatch {...match} />
             ) : (
               <Button onClick={leaveMatch} size="xs" variant="destructive">
@@ -244,7 +259,7 @@ function RouteComponent() {
     serverQuery.matchmaking.getAll.queryOptions({ refetchInterval: 1000 }),
   );
 
-  const { data: playerId } = useQuery(serverQuery.getPlayerId.queryOptions());
+  const playerId = usePlayerId();
 
   const sortedMatches = useMemo(
     () =>

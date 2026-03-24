@@ -4,7 +4,17 @@ import type {
   Vector3,
   Vector4,
 } from '@cybermp/client-types/game';
+import z from 'zod';
 import { mp } from '../mp';
+
+export const zServerVector3 = z.tuple([z.number(), z.number(), z.number()]);
+export const zServerVector4 = z.tuple([
+  z.number(),
+  z.number(),
+  z.number(),
+  z.number().optional(),
+]);
+export const zServerEulerAngles = z.tuple([z.number(), z.number(), z.number()]);
 
 export const createVector3 = (x: number, y: number, z: number) => {
   return Object.assign(new mp.game.Vector3(), {

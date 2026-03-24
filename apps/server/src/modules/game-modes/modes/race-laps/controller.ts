@@ -18,8 +18,6 @@ export class RaceLapsController {
   constructor(
     @inject(TYPES.MatchMemberMiddleware)
     private matchMemberMiddleware: MatchMiddleware,
-    @inject(TYPES.MatchOwnerMiddleware)
-    private matchOwnerMiddleware: MatchMiddleware,
   ) {}
 
   @postConstruct()

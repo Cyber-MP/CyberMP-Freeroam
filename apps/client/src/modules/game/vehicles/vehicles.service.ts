@@ -19,6 +19,7 @@ export class GVehiclesService {
 
     const onVehicleStreamIn = async (netId: number, hash: number) => {
       if (netId !== vehicleNetId) {
+        console.log('doesnt match', netId, vehicleNetId);
         return;
       }
 
@@ -54,6 +55,16 @@ export class GVehiclesService {
 
       mp.events.off('onVehicleStreamIn', onVehicleStreamIn);
     };
+
+    const alreadyStreamed = mp
+      .getStreamedPool('CVehicle')
+      .find((hash) => mp.getVehicleNetworkIdByGameId(hash) === vehicleNetId);
+    if (alreadyStreamed) {
+      return onVehicleStreamIn(
+        mp.getVehicleNetworkIdByGameId(alreadyStreamed),
+        alreadyStreamed,
+      );
+    }
 
     mp.events.on('onVehicleStreamIn', onVehicleStreamIn);
   }

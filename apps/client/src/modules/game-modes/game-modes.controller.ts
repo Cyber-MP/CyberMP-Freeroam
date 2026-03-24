@@ -5,10 +5,12 @@ import { type MatchDTO, zMatchDTO } from '@freeroam/shared';
 import { inject, injectable, postConstruct } from 'inversify';
 import { r } from '../../rpc';
 import { GameModesService } from './game-modes.service';
+import { raceLapsContract } from './modes/race-laps/controller';
 
 export const gameModesContract = {
   start: contract.input(zMatchDTO).build(),
   end: contract.build(),
+  raceLaps: raceLapsContract,
 };
 
 @eager()
