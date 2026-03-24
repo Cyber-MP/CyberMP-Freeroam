@@ -1,5 +1,10 @@
 import { RiArrowLeftSLine } from '@remixicon/react';
-import { useMutation, useQuery, useSuspenseQuery } from '@tanstack/react-query';
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  useSuspenseQuery,
+} from '@tanstack/react-query';
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 import { DefaultPendingPage } from '@/components/default-pending-page';
@@ -34,6 +39,8 @@ export const Route = createFileRoute('/hud/menu/matchmaking/create')({
 function RouteComponent() {
   const navigate = useNavigate();
 
+  const queryClient = useQueryClient();
+
   const [gameMode, setGameMode] =
     useState<keyof typeof createGameModeSchemas>();
   const [createOptions, setCreateOptions] = useState<Record<string, unknown>>();
@@ -56,6 +63,10 @@ function RouteComponent() {
     serverQuery.matchmaking.create.triggerMutationOptions({
       onSuccess() {
         navigate({ to: '/hud/menu/matchmaking' });
+
+        queryClient.invalidateQueries(
+          serverQuery.matchmaking.getAll.queryOptions(),
+        );
       },
     }),
   );

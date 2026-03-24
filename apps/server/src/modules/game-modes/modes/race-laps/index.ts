@@ -4,7 +4,9 @@ import {
   zCreateMatchOptions,
   zJoinMatchOptions,
 } from '@freeroam/shared';
-import { inject } from 'inversify';
+import { inject, injectable } from 'inversify';
+import ms from 'ms';
+import { sleep } from 'radash';
 import z from 'zod';
 import { mp } from '../../../../mp';
 import { client } from '../../../../rpc';
@@ -79,12 +81,17 @@ class Racer {
       health: 800,
     });
 
-    await client.gameModes.raceLaps.prepare.call(this.player, {
-      map: this.map,
-      startPoint: structuredClone(startPoint),
-      trackPath: this.trackPath,
-      vehicleId: this.vehicle.id,
-    });
+    await client.gameModes.raceLaps.prepare.call(
+      this.player,
+      {
+        map: this.map,
+        startPoint: structuredClone(startPoint),
+        trackPath: this.trackPath,
+        vehicleId: this.vehicle.id,
+      },
+      {},
+      { timeout: ms('15s') },
+    );
   }
 
   reset() {
@@ -96,6 +103,7 @@ class Racer {
   }
 }
 
+@injectable()
 export class RaceLaps extends BaseGameMode<
   typeof zCreateRaceLapsOptions,
   typeof zJoinRaceLapsOptions
@@ -110,13 +118,12 @@ export class RaceLaps extends BaseGameMode<
   private trackPath!: PathTransform[];
 
   private racers = new Map<number, Racer>();
+  private released = false;
 
-  constructor(
-    @inject(RaceLapsTrackCalculator)
-    private trackCalculator: RaceLapsTrackCalculator,
-  ) {
-    super();
-  }
+  private readonly COUNTDOWN_TIME = ms('5s');
+
+  @inject(RaceLapsTrackCalculator)
+  private trackCalculator!: RaceLapsTrackCalculator;
 
   override getJoinSchema(
     createOptions: z.infer<typeof zCreateRaceLapsOptions>,
@@ -153,6 +160,26 @@ export class RaceLaps extends BaseGameMode<
         this.racers.set(member, racer);
       }),
     );
+
+    await this.startCountdown();
+  }
+
+  release() {
+    this.released = true;
+
+    // race started
+  }
+
+  async startCountdown() {
+    const startDate = Date.now() + this.COUNTDOWN_TIME;
+
+    for (const racer of this.racers.keys()) {
+      client.gameModes.raceLaps.startCountdown.trigger(racer, startDate);
+    }
+
+    await sleep(this.COUNTDOWN_TIME);
+
+    this.release();
   }
 
   end() {

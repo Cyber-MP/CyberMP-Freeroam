@@ -9,6 +9,7 @@ export class GStatusEffectsService {
   private readonly DEFAULT_STATUS_EFFECTS = [
     'GameplayRestriction.NoPhotoMode',
     'GameplayRestriction.NoScanning',
+    'GameplayRestriction.InfiniteAmmo',
   ];
 
   private effectsSystem!: gameStatusEffectSystem;

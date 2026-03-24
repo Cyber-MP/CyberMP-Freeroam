@@ -30,7 +30,9 @@ export class GameModesController {
 
   @postConstruct()
   private init() {
-    r.implement(gameModesContract, {
+    const { raceLaps, ...contract } = gameModesContract;
+
+    r.implement(contract, {
       start: this.start.bind(this),
       end: this.end.bind(this),
     });

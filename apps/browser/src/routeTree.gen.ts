@@ -14,6 +14,7 @@ import { Route as HudRouteImport } from './routes/hud'
 import { Route as EntryRouteImport } from './routes/entry'
 import { Route as DeathRouteImport } from './routes/death'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as HudRaceLapsRouteImport } from './routes/hud.race-laps'
 import { Route as HudMenuRouteImport } from './routes/hud.menu'
 import { Route as HudMenuIndexRouteImport } from './routes/hud.menu.index'
 import { Route as HudMenuWeaponsRouteImport } from './routes/hud.menu.weapons'
@@ -45,6 +46,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const HudRaceLapsRoute = HudRaceLapsRouteImport.update({
+  id: '/race-laps',
+  path: '/race-laps',
+  getParentRoute: () => HudRoute,
 } as any)
 const HudMenuRoute = HudMenuRouteImport.update({
   id: '/menu',
@@ -85,6 +91,7 @@ export interface FileRoutesByFullPath {
   '/hud': typeof HudRouteWithChildren
   '/loading': typeof LoadingRoute
   '/hud/menu': typeof HudMenuRouteWithChildren
+  '/hud/race-laps': typeof HudRaceLapsRoute
   '/hud/menu/teleports': typeof HudMenuTeleportsRoute
   '/hud/menu/weapons': typeof HudMenuWeaponsRoute
   '/hud/menu/': typeof HudMenuIndexRoute
@@ -97,6 +104,7 @@ export interface FileRoutesByTo {
   '/entry': typeof EntryRoute
   '/hud': typeof HudRouteWithChildren
   '/loading': typeof LoadingRoute
+  '/hud/race-laps': typeof HudRaceLapsRoute
   '/hud/menu/teleports': typeof HudMenuTeleportsRoute
   '/hud/menu/weapons': typeof HudMenuWeaponsRoute
   '/hud/menu': typeof HudMenuIndexRoute
@@ -111,6 +119,7 @@ export interface FileRoutesById {
   '/hud': typeof HudRouteWithChildren
   '/loading': typeof LoadingRoute
   '/hud/menu': typeof HudMenuRouteWithChildren
+  '/hud/race-laps': typeof HudRaceLapsRoute
   '/hud/menu/teleports': typeof HudMenuTeleportsRoute
   '/hud/menu/weapons': typeof HudMenuWeaponsRoute
   '/hud/menu/': typeof HudMenuIndexRoute
@@ -126,6 +135,7 @@ export interface FileRouteTypes {
     | '/hud'
     | '/loading'
     | '/hud/menu'
+    | '/hud/race-laps'
     | '/hud/menu/teleports'
     | '/hud/menu/weapons'
     | '/hud/menu/'
@@ -138,6 +148,7 @@ export interface FileRouteTypes {
     | '/entry'
     | '/hud'
     | '/loading'
+    | '/hud/race-laps'
     | '/hud/menu/teleports'
     | '/hud/menu/weapons'
     | '/hud/menu'
@@ -151,6 +162,7 @@ export interface FileRouteTypes {
     | '/hud'
     | '/loading'
     | '/hud/menu'
+    | '/hud/race-laps'
     | '/hud/menu/teleports'
     | '/hud/menu/weapons'
     | '/hud/menu/'
@@ -202,6 +214,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/hud/race-laps': {
+      id: '/hud/race-laps'
+      path: '/race-laps'
+      fullPath: '/hud/race-laps'
+      preLoaderRoute: typeof HudRaceLapsRouteImport
+      parentRoute: typeof HudRoute
     }
     '/hud/menu': {
       id: '/hud/menu'
@@ -269,10 +288,12 @@ const HudMenuRouteWithChildren =
 
 interface HudRouteChildren {
   HudMenuRoute: typeof HudMenuRouteWithChildren
+  HudRaceLapsRoute: typeof HudRaceLapsRoute
 }
 
 const HudRouteChildren: HudRouteChildren = {
   HudMenuRoute: HudMenuRouteWithChildren,
+  HudRaceLapsRoute: HudRaceLapsRoute,
 }
 
 const HudRouteWithChildren = HudRoute._addFileChildren(HudRouteChildren)

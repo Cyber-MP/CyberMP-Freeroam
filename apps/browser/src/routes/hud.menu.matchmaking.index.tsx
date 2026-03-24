@@ -5,7 +5,7 @@ import {
   useQueryClient,
   useSuspenseQuery,
 } from '@tanstack/react-query';
-import { createFileRoute, Link } from '@tanstack/react-router';
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { cva } from 'class-variance-authority';
 import { useMemo, useRef } from 'react';
 import { JoinMatchForm } from '@/components/menu/matchmaking/form';
@@ -165,6 +165,8 @@ const MatchComponent = (match: Match) => {
     serverQuery.matchmaking.start.triggerMutationOptions({}),
   );
 
+  const navigate = useNavigate();
+
   const playerId = usePlayerId();
 
   const queryClient = useQueryClient();
@@ -183,6 +185,8 @@ const MatchComponent = (match: Match) => {
     queryClient.invalidateQueries(
       serverQuery.matchmaking.getAll.queryOptions(),
     );
+
+    navigate({ to: '/hud' });
   };
 
   const members = Object.keys(match.members);

@@ -1,4 +1,5 @@
 import z from 'zod';
+import { raceLapsContract } from '../contracts/race-laps';
 import { keysContract } from '../keys';
 import type { FileRoutesByFullPath } from '../routeTree.gen';
 import { chatContract } from '../store/chat';
@@ -11,7 +12,7 @@ export const rpcRouter = {
   pingBrowser: r.procedure.input(z.string()).handler(() => {
     console.log('test handler invoked');
   }),
-
+  gameModes: { raceLaps: raceLapsContract },
   keys: keysContract,
   hints: hintsContract,
   chat: chatContract,
