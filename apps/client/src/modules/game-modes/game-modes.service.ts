@@ -1,5 +1,5 @@
 import type { MatchDTO } from '@freeroam/shared';
-import { inject, injectable } from 'inversify';
+import { inject, injectable, preDestroy } from 'inversify';
 import {
   type BaseGameMode,
   type GameModeFactory,
@@ -37,5 +37,10 @@ export class GameModesService {
     instance.start();
 
     this.activeMode = instance;
+  }
+
+  @preDestroy()
+  private destroy() {
+    this.activeMode?.end();
   }
 }

@@ -2,7 +2,7 @@
 
 server_script = ["./server.js"]
 client_script = ["./client.js"]
-# file = ['../../assets/*']
+file = ["./assets/in_world_navigation.archive"]
 
 ui_page = "http://localhost:5173"
 

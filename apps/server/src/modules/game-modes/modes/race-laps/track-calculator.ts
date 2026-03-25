@@ -46,129 +46,82 @@ export class RaceLapsTrackCalculator {
   getTrackPath(mapName: RaceLapsMapName): PathTransform[] | undefined {
     return this.registry.get(mapName);
   }
-
+  
   private generateTrackPath(
     map: RaceLapsMap,
     stepDistance: number = 2.0,
   ): PathTransform[] {
-    const transforms: PathTransform[] = [];
-    if (map.checkpoints.length === 0) return transforms;
+    const path: PathTransform[] = [];
 
-    const rawPoints: Vector3[] = [];
-    const segmentDirections: string[] = [];
-
-    let previousPos = map.startPoints[0].position;
-    let previousYaw = this.getAngleBetween(
-      previousPos,
-      map.checkpoints[0].position,
-    );
-
-    // 1. Generate High-Res Path with Metadata
-    for (const cp of map.checkpoints) {
-      const segment = this.calculateBezierSegment(
-        previousPos,
-        previousYaw,
-        cp.position,
-        cp.yaw ?? 0,
-        30,
-      );
-
-      rawPoints.push(...segment);
-      // Map the checkpoint's direction to every point in this segment
-      for (let i = 0; i <= 30; i++) {
-        segmentDirections.push(cp.direction!);
-      }
-
-      previousPos = cp.position;
-      previousYaw = cp.yaw ?? 0;
-    }
-
-    // 2. Walk the path and calculate 3D Rotations
-    let lastSpawnPos = rawPoints[0];
-
-    for (let i = 1; i < rawPoints.length; i++) {
-      const currentPos = rawPoints[i];
-      const dist = this.getDistance(lastSpawnPos, currentPos);
-
-      if (dist >= stepDistance) {
-        // YAW (Z) - Horizontal facing
-        const yaw = this.getAngleBetween(lastSpawnPos, currentPos);
-
-        // PITCH (X) - Climbing/Descending
-        const verticalDist = currentPos[2] - lastSpawnPos[2];
-        const horizontalDist = Math.sqrt(
-          (currentPos[0] - lastSpawnPos[0]) ** 2 +
-            (currentPos[1] - lastSpawnPos[1]) ** 2,
-        );
-        const pitch =
-          Math.atan2(verticalDist, horizontalDist) * (180 / Math.PI);
-
-        // ROLL (Y) - Leaning into the turn
-        let roll = 0;
-        const dir = segmentDirections[i];
-        if (dir === 'left') roll = -15;
-        else if (dir === 'right') roll = 15;
-
-        transforms.push({
-          position: currentPos,
-          rotation: [pitch, roll, yaw],
-        });
-
-        lastSpawnPos = currentPos;
-      }
-    }
-
-    return transforms;
-  }
-
-  private calculateBezierSegment(
-    p0: Vector3,
-    yaw0: number,
-    p3: Vector3,
-    yaw3: number,
-    segments: number,
-  ): Vector3[] {
-    const points: Vector3[] = [];
-    const strength = this.getDistance(p0, p3) * 0.35;
-
-    const p1 = this.getForwardPoint(p0, yaw0, strength);
-    const p2 = this.getForwardPoint(p3, yaw3, -strength);
-
-    for (let i = 0; i <= segments; i++) {
-      const t = i / segments;
-      const invT = 1 - t;
-      const b = (idx: number) =>
-        invT ** 3 * p0[idx] +
-        3 * invT ** 2 * t * p1[idx] +
-        3 * invT * t ** 2 * p2[idx] +
-        t ** 3 * p3[idx];
-
-      points.push([b(0), b(1), b(2)]);
-    }
-    return points;
-  }
-
-  private getForwardPoint(
-    pos: Vector3,
-    yaw: number,
-    distance: number,
-  ): Vector3 {
-    const rad = (yaw * Math.PI) / 180;
-    return [
-      pos[0] + Math.sin(rad) * distance,
-      pos[1] + Math.cos(rad) * distance,
-      pos[2],
+    // 1. Combine Start Point and Checkpoints into a single sequence of nodes
+    // We'll use the first start point as the origin
+    const nodes = [
+      {
+        position: map.startPoints[0].position,
+        yaw: map.startPoints[0].yaw ?? 0,
+      },
+      ...map.checkpoints.map((cp) => ({
+        position: cp.position,
+        yaw: cp.yaw ?? 0,
+      })),
     ];
+
+    if (nodes.length < 2) return path;
+
+    for (let i = 0; i < nodes.length - 1; i++) {
+      const startNode = nodes[i];
+      const endNode = nodes[i + 1];
+
+      const startPos = startNode.position;
+      const endPos = endNode.position;
+
+      // Calculate distance between these two points
+      const dx = endPos[0] - startPos[0];
+      const dy = endPos[1] - startPos[1];
+      const dz = endPos[2] - startPos[2];
+      const segmentDistance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+      // Determine how many steps fit in this segment
+      const steps = Math.max(1, Math.floor(segmentDistance / stepDistance));
+
+      for (let j = 0; j < steps; j++) {
+        const t = j / steps;
+
+        // Interpolate Position
+        const position: Vector3 = [
+          startPos[0] + dx * t,
+          startPos[1] + dy * t,
+          startPos[2] + dz * t,
+        ];
+
+        // Interpolate Rotation (Yaw)
+        // We use lerpAngle to ensure we rotate the shortest way around the circle
+        const rotation: Rotation = [
+          0, // Pitch: could be calculated based on dz/segmentDistance if needed
+          0, // Roll
+          this.lerpAngle(startNode.yaw, endNode.yaw, t),
+        ];
+
+        path.push({ position, rotation });
+      }
+    }
+
+    // Add the final checkpoint position to close the path
+    const lastNode = nodes[nodes.length - 1];
+    path.push({
+      position: lastNode.position,
+      rotation: [0, 0, lastNode.yaw],
+    });
+
+    return path;
   }
 
-  private getDistance(a: Vector3, b: Vector3): number {
-    return Math.sqrt(
-      (b[0] - a[0]) ** 2 + (b[1] - a[1]) ** 2 + (b[2] - a[2]) ** 2,
-    );
-  }
-
-  private getAngleBetween(a: Vector3, b: Vector3): number {
-    const angle = Math.atan2(b[0] - a[0], b[1] - a[1]) * (180 / Math.PI);
-    return (angle + 360) % 360;
+  /**
+   * Smoothly interpolates between two angles in degrees,
+   * ensuring it takes the shortest path (e.g., 350 to 10 goes through 0).
+   */
+  private lerpAngle(start: number, end: number, t: number): number {
+    const delta = ((end - start + 540) % 360) - 180;
+    return start + delta * t;
   }
 }

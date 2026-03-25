@@ -1,6 +1,12 @@
-import type { Vector4 } from '@cybermp/client-types/game';
+import type {
+  gameFxInstance,
+  gameFxResource,
+  Vector4,
+  WorldTransform,
+} from '@cybermp/client-types/game';
 import type { GameModeName } from '@freeroam/shared';
 import { inject, injectable } from 'inversify';
+import { createEulerAngles, createVector4 } from '../../../../lib/vectors';
 import { mp } from '../../../../mp';
 import { browser } from '../../../../rpc/browser';
 import { CefService } from '../../../cef/cef.service';
@@ -16,6 +22,54 @@ import type {
   RaceLapsTrackPath,
 } from './dto';
 
+class RaceNavigation {
+  private fxInstances = new Map<gameFxInstance, WorldTransform>();
+
+  private updateTick!: number;
+
+  private updateFxInstances() {
+    for (const [instance, transform] of this.fxInstances.entries()) {
+      instance.SetBlackboardValue('alpha', 1);
+      instance.UpdateTransform(transform);
+    }
+  }
+
+  create(trackPath: RaceLapsTrackPath) {
+    for (const path of trackPath) {
+      const [x, y, z] = path.position;
+      const [roll, pitch, yaw] = path.rotation;
+
+      const transform = new mp.game.WorldTransform();
+      mp.game.WorldTransform.SetPosition(transform, createVector4(x, y, z, 1));
+      mp.game.WorldTransform.SetOrientationEuler(
+        transform,
+        createEulerAngles(roll, pitch, yaw),
+      );
+
+      const instance =
+        mp.game.ScriptGameInstance.GetFxSystem().SpawnEffectOnGround(
+          Object.assign(new mp.game.gameFxResource(), {
+            effect:
+              'user\\jackhumbert\\effects\\world_navigation_white.effect' as any,
+          } satisfies gameFxResource),
+          transform,
+        );
+      this.fxInstances.set(instance, transform);
+    }
+
+    this.updateTick = mp.setTick(this.updateFxInstances.bind(this));
+  }
+
+  destroy() {
+    for (const instance of this.fxInstances.keys()) {
+      instance.Kill();
+      instance.SetBlackboardValue('alpha', 0);
+    }
+
+    mp.clearTick(this.updateTick);
+  }
+}
+
 @injectable()
 export class RaceLaps extends BaseGameMode<GameModeName.RACE_LAPS> {
   private trackPath!: RaceLapsTrackPath;
@@ -24,6 +78,8 @@ export class RaceLaps extends BaseGameMode<GameModeName.RACE_LAPS> {
   private startPoint!: RaceLapsStartPoint;
 
   private initialPosition!: Vector4;
+
+  private navigation = new RaceNavigation();
 
   constructor(
     @inject(CefService) private cefService: CefService,
@@ -51,6 +107,8 @@ export class RaceLaps extends BaseGameMode<GameModeName.RACE_LAPS> {
   }
 
   end(): void {
+    this.navigation.destroy();
+
     this.cefService.setLoadingRedirect(null);
 
     this.teleportService.teleport(this.initialPosition);
@@ -78,6 +136,8 @@ export class RaceLaps extends BaseGameMode<GameModeName.RACE_LAPS> {
     this.trackPath = data.trackPath;
     this.map = data.map;
     this.vehicleId = data.vehicleId;
+
+    this.navigation.create(this.trackPath);
   }
 
   release() {

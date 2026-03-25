@@ -84,9 +84,9 @@ class Racer {
     await client.gameModes.raceLaps.prepare.call(
       this.player,
       {
-        map: this.map,
+        map: structuredClone(this.map),
         startPoint: structuredClone(startPoint),
-        trackPath: this.trackPath,
+        trackPath: structuredClone(this.trackPath),
         vehicleId: this.vehicle.id,
       },
       {},
