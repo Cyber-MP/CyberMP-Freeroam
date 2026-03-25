@@ -1,4 +1,5 @@
 import type { MpClient } from '@cybermp/client-types';
+import type { redResourceReferenceScriptToken as _redResourceReferenceScriptToken } from '@cybermp/client-types/game';
 
 // const createCallableProxy = () => {
 //   // We use an empty function as the target so the proxy is "callable"
@@ -39,9 +40,30 @@ declare module '@cybermp/client-types/game' {
     GetComponents(): entIComponent[];
   }
 
+  export class inkLayerWrapper {
+    GetLayerName(): string;
+    GetVirtualWindow(): inkVirtualWindow;
+  }
+
+  export interface inkSystem extends gameIGameSystem {
+    GetLayers(): inkLayerWrapper[];
+    GetLayer(layer: string): inkLayerWrapper;
+    GetClipboardText(): string;
+    SetClipboardText(data: string): void;
+    SetFocus(widget: inkWidget): void;
+    ResetFocus(): void;
+  }
+
+  export namespace ScriptGameInstance {
+    export function GetInkSystem(): inkSystem;
+  }
+
+  // @ts-expect-error
+  export class redResourceReferenceScriptToken extends _redResourceReferenceScriptToken {
+    GetHash(token: string): number;
+  }
+
   export interface MpGame {
-    redResourceReferenceScriptToken: {
-      GetHash(token: string): number;
-    };
+    redResourceReferenceScriptToken: typeof redResourceReferenceScriptToken;
   }
 }
