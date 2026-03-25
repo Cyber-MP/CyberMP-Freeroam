@@ -20,11 +20,6 @@ type SpawnLocalObjectOptions = {
 
 type OnObjectDestroyCallback = (entityId: number) => void;
 
-class LocalObjects {
-  id: number;
-  onDestroy(): void;
-}
-
 @eager()
 @injectable()
 export class GObjectsService {
