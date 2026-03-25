@@ -2,12 +2,8 @@ import type { Rotation, Vector3 } from '@cybermp/server-types';
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
 import { LoggerService } from '../../../logger/logger.service';
-import {
-  type RaceLapsMap,
-  type RaceLapsMapName,
-  RaceLapsMaps,
-  zRaceLapsMap,
-} from './data';
+import { type RaceLapsMap, type RaceLapsMapName, zRaceLapsMap } from './data';
+import { RaceLapsMaps } from './maps';
 
 export interface PathTransform {
   position: Vector3;
@@ -25,28 +21,25 @@ export class RaceLapsTrackCalculator {
 
   @postConstruct()
   private init() {
-    for (const [name, map] of Object.entries(RaceLapsMaps)) {
+    for (const map of RaceLapsMaps) {
       const parsedMap = zRaceLapsMap.safeParse(map);
       if (!parsedMap.success) {
         this.logger.error(
-          `map "${name}" has an invalid schema -`,
+          `map "${map.name}" has an invalid schema -`,
           parsedMap.error.message,
         );
         continue;
       }
 
-      this.registry.set(
-        name as RaceLapsMapName,
-        this.generateTrackPath(map as RaceLapsMap),
-      );
-      this.logger.success(`Generated track path for "${name}" map`);
+      this.registry.set(map.name, this.generateTrackPath(map as RaceLapsMap));
+      this.logger.success(`Generated track path for "${map.name}" map`);
     }
   }
 
   getTrackPath(mapName: RaceLapsMapName): PathTransform[] | undefined {
     return this.registry.get(mapName);
   }
-  
+
   private generateTrackPath(
     map: RaceLapsMap,
     stepDistance: number = 2.0,
@@ -55,16 +48,7 @@ export class RaceLapsTrackCalculator {
 
     // 1. Combine Start Point and Checkpoints into a single sequence of nodes
     // We'll use the first start point as the origin
-    const nodes = [
-      {
-        position: map.startPoints[0].position,
-        yaw: map.startPoints[0].yaw ?? 0,
-      },
-      ...map.checkpoints.map((cp) => ({
-        position: cp.position,
-        yaw: cp.yaw ?? 0,
-      })),
-    ];
+    const nodes = [...map.nodes.filter((o) => o.type !== 'start-point')];
 
     if (nodes.length < 2) return path;
 
@@ -99,7 +83,7 @@ export class RaceLapsTrackCalculator {
         const rotation: Rotation = [
           0, // Pitch: could be calculated based on dz/segmentDistance if needed
           0, // Roll
-          this.lerpAngle(startNode.yaw, endNode.yaw, t),
+          this.lerpAngle(startNode.yaw!, endNode.yaw!, t),
         ];
 
         path.push({ position, rotation });
@@ -110,7 +94,7 @@ export class RaceLapsTrackCalculator {
     const lastNode = nodes[nodes.length - 1];
     path.push({
       position: lastNode.position,
-      rotation: [0, 0, lastNode.yaw],
+      rotation: [0, 0, lastNode.yaw!],
     });
 
     return path;

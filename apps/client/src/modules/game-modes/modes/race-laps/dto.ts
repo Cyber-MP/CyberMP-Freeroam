@@ -1,26 +1,38 @@
 import z from 'zod';
 import { zServerEulerAngles, zServerVector3 } from '../../../../lib/vectors';
 
-export const zRaceLapsCheckpoint = z.object({
+export const zRaceLapsBaseNode = z.object({
+  type: z.string(),
   position: zServerVector3,
   yaw: z.number().default(0).optional(),
+});
+
+export const zRaceLapsCheckpointNode = zRaceLapsBaseNode.extend({
+  type: z.literal('checkpoint'),
   direction: z.enum(['forward', 'left', 'right']).default('forward').optional(),
   radius: z.number().default(10).optional(),
 });
 
-export type RaceLapsCheckpoint = z.infer<typeof zRaceLapsStartPoint>;
-
-export const zRaceLapsStartPoint = z.object({
-  position: zServerVector3,
-  yaw: z.number().default(0).optional(),
+export const zRaceLapsStartPointNode = zRaceLapsBaseNode.extend({
+  type: z.literal('start-point'),
 });
 
-export type RaceLapsStartPoint = z.infer<typeof zRaceLapsStartPoint>;
+export type RaceLapsStartPointNode = z.infer<typeof zRaceLapsStartPointNode>;
+
+export const zRaceLapsPathPointNode = zRaceLapsBaseNode.extend({
+  type: z.literal('path-point'),
+});
 
 export const zRaceLapsMap = z.object({
+  name: z.string(),
   mapping: z.looseObject({}).optional(),
-  startPoints: z.array(zRaceLapsStartPoint).min(1).max(20),
-  checkpoints: z.array(zRaceLapsCheckpoint),
+  nodes: z.array(
+    z.union([
+      zRaceLapsStartPointNode,
+      zRaceLapsPathPointNode,
+      zRaceLapsCheckpointNode,
+    ]),
+  ),
 });
 
 export type RaceLapsMap = z.infer<typeof zRaceLapsMap>;
@@ -37,7 +49,7 @@ export type RaceLapsTrackPath = z.infer<typeof zRaceLapsTrackPath>;
 export const zRaceLapsPrepareDTO = z.object({
   vehicleId: z.number(),
   map: zRaceLapsMap,
-  startPoint: zRaceLapsStartPoint,
+  startPoint: zRaceLapsStartPointNode,
   trackPath: zRaceLapsTrackPath,
 });
 

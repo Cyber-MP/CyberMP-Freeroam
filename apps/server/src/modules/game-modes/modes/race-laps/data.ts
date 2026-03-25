@@ -1,6 +1,5 @@
 import z from 'zod';
 import { zVector3 } from '../../../../lib/vectors';
-import { RACE_LAPS_TEST_MAP } from './maps/test-map';
 
 export enum RaceLapsVehicleClass {
   MOTO = 'moto',
@@ -39,33 +38,43 @@ export const RaceLapsVehicleMap: Record<
   ],
 };
 
-export const zRaceLapsCheckpoint = z.object({
+export const zRaceLapsBaseNode = z.object({
+  type: z.string(),
   position: zVector3,
   yaw: z.number().default(0).optional(),
+});
+
+export const zRaceLapsCheckpointNode = zRaceLapsBaseNode.extend({
+  type: z.literal('checkpoint'),
   direction: z.enum(['forward', 'left', 'right']).default('forward').optional(),
   radius: z.number().default(10).optional(),
 });
 
-export const zRaceLapsStartPoint = z.object({
-  position: zVector3,
-  yaw: z.number().default(0).optional(),
+export const zRaceLapsStartPointNode = zRaceLapsBaseNode.extend({
+  type: z.literal('start-point'),
 });
 
-export const zRaceLapsMap = z.object({
-  mapping: z.looseObject({}).optional(),
-  startPoints: z.array(zRaceLapsStartPoint).min(1).max(20),
-  checkpoints: z.array(zRaceLapsCheckpoint),
+export const zRaceLapsPathPointNode = zRaceLapsBaseNode.extend({
+  type: z.literal('path-point'),
 });
-
-export type RaceLapsMap = z.infer<typeof zRaceLapsMap>;
-export type RaceLapsCheckpoint = z.infer<typeof zRaceLapsCheckpoint>;
-export type RaceLapsCheckpointDirection = RaceLapsCheckpoint['direction'];
-export type RaceLapsStartPoint = z.infer<typeof zRaceLapsStartPoint>;
 
 export enum RaceLapsMapName {
   TEST = 'test',
 }
 
-export const RaceLapsMaps: Record<RaceLapsMapName, RaceLapsMap> = {
-  [RaceLapsMapName.TEST]: RACE_LAPS_TEST_MAP,
-};
+export const zRaceLapsMap = z.object({
+  name: z.enum(RaceLapsMapName),
+  mapping: z.looseObject({}).optional(),
+  nodes: z.array(
+    z.union([
+      zRaceLapsStartPointNode,
+      zRaceLapsPathPointNode,
+      zRaceLapsCheckpointNode,
+    ]),
+  ),
+});
+
+export type RaceLapsMap = z.infer<typeof zRaceLapsMap>;
+export type RaceLapsCheckpointNode = z.infer<typeof zRaceLapsCheckpointNode>;
+export type RaceLapsCheckpointDirection = RaceLapsCheckpointNode['direction'];
+export type RaceLapsStartPointNode = z.infer<typeof zRaceLapsStartPointNode>;

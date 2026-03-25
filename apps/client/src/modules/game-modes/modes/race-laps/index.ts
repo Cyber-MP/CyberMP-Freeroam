@@ -2,7 +2,6 @@ import type {
   gameFxInstance,
   gameFxResource,
   Vector4,
-  WorldTransform,
 } from '@cybermp/client-types/game';
 import type { GameModeName } from '@freeroam/shared';
 import { inject, injectable } from 'inversify';
@@ -18,54 +17,80 @@ import { BaseGameMode } from '../../game-mode';
 import type {
   RaceLapsMap,
   RaceLapsPrepareDTO,
-  RaceLapsStartPoint,
+  RaceLapsStartPointNode,
   RaceLapsTrackPath,
 } from './dto';
 
-class RaceNavigation {
-  private fxInstances = new Map<gameFxInstance, WorldTransform>();
-
+class TrackPathNavigation {
+  // Store the raw data for all points
+  private trackData: RaceLapsTrackPath = [];
+  // Only store active instances currently in the world
+  private activeFx = new Map<number, gameFxInstance>();
   private updateTick!: number;
 
   private updateFxInstances() {
-    for (const [instance, transform] of this.fxInstances.entries()) {
-      instance.SetBlackboardValue('alpha', 1);
-      instance.UpdateTransform(transform);
+    const playerPos = mp.game.GetPlayer().GetWorldPosition();
+    const SPAWN_DISTANCE = 100;
+
+    this.trackData.forEach((path, index) => {
+      const [x, y, z] = path.position;
+      const effectPos = createVector4(x, y, z, 1);
+      const distance = mp.game.Vector4.Distance(effectPos, playerPos);
+      const isSpawned = this.activeFx.has(index);
+
+      // Condition: Should be visible
+      if (distance <= SPAWN_DISTANCE) {
+        if (!isSpawned) {
+          this.spawnEffect(index, path);
+        }
+      }
+      // Condition: Too far, remove it
+      else if (isSpawned) {
+        this.despawnEffect(index);
+      }
+    });
+  }
+
+  private spawnEffect(index: number, path: RaceLapsTrackPath[number]) {
+    const [x, y, z] = path.position;
+    const [roll, pitch, yaw] = path.rotation;
+
+    const transform = new mp.game.WorldTransform();
+    mp.game.WorldTransform.SetPosition(transform, createVector4(x, y, z, 1));
+    mp.game.WorldTransform.SetOrientationEuler(
+      transform,
+      createEulerAngles(roll, pitch, yaw),
+    );
+
+    const instance = mp.game.ScriptGameInstance.GetFxSystem().SpawnEffect(
+      Object.assign(new mp.game.gameFxResource(), {
+        effect:
+          'user\\jackhumbert\\effects\\world_navigation_yellow.effect' as any,
+      } satisfies gameFxResource),
+      transform,
+    );
+
+    this.activeFx.set(index, instance);
+  }
+
+  private despawnEffect(index: number) {
+    const instance = this.activeFx.get(index);
+    if (instance) {
+      instance.Kill();
+      this.activeFx.delete(index);
     }
   }
 
   create(trackPath: RaceLapsTrackPath) {
-    for (const path of trackPath) {
-      const [x, y, z] = path.position;
-      const [roll, pitch, yaw] = path.rotation;
-
-      const transform = new mp.game.WorldTransform();
-      mp.game.WorldTransform.SetPosition(transform, createVector4(x, y, z, 1));
-      mp.game.WorldTransform.SetOrientationEuler(
-        transform,
-        createEulerAngles(roll, pitch, yaw),
-      );
-
-      const instance =
-        mp.game.ScriptGameInstance.GetFxSystem().SpawnEffectOnGround(
-          Object.assign(new mp.game.gameFxResource(), {
-            effect:
-              'user\\jackhumbert\\effects\\world_navigation_white.effect' as any,
-          } satisfies gameFxResource),
-          transform,
-        );
-      this.fxInstances.set(instance, transform);
-    }
-
+    this.trackData = trackPath;
     this.updateTick = mp.setTick(this.updateFxInstances.bind(this));
   }
 
   destroy() {
-    for (const instance of this.fxInstances.keys()) {
-      instance.Kill();
-      instance.SetBlackboardValue('alpha', 0);
+    for (const index of this.activeFx.keys()) {
+      this.despawnEffect(index);
     }
-
+    this.trackData = [];
     mp.clearTick(this.updateTick);
   }
 }
@@ -75,11 +100,11 @@ export class RaceLaps extends BaseGameMode<GameModeName.RACE_LAPS> {
   private trackPath!: RaceLapsTrackPath;
   private map!: RaceLapsMap;
   private vehicleId!: number;
-  private startPoint!: RaceLapsStartPoint;
+  private startPoint!: RaceLapsStartPointNode;
 
   private initialPosition!: Vector4;
 
-  private navigation = new RaceNavigation();
+  private navigation = new TrackPathNavigation();
 
   constructor(
     @inject(CefService) private cefService: CefService,

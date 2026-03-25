@@ -16,10 +16,11 @@ import {
   RaceLapsClassVehicleMap,
   type RaceLapsMap,
   RaceLapsMapName,
-  RaceLapsMaps,
+  type RaceLapsStartPointNode,
   RaceLapsVehicleClass,
   RaceLapsVehicleMap,
 } from './data';
+import { RaceLapsMaps } from './maps';
 import {
   type PathTransform,
   RaceLapsTrackCalculator,
@@ -66,8 +67,14 @@ class Racer {
   async prepare() {
     this.player.dimension = this.match.dimension;
 
-    const startPoint =
-      this.map.startPoints[this.index] ?? this.map.startPoints[0];
+    const startPoints = this.map.nodes.filter((o) => o.type === 'start-point');
+    const checkpoints = this.map.nodes.filter((o) => o.type === 'checkpoint');
+
+    const startPoint = (
+      startPoints.length
+        ? (startPoints[this.index] ?? checkpoints[0])
+        : checkpoints[0]
+    ) as RaceLapsStartPointNode;
 
     const [vehicleModel, vehicleAppearance] =
       RaceLapsVehicleMap[this.options.vehicle];
@@ -138,7 +145,7 @@ export class RaceLaps extends BaseGameMode<
 
   init(match: Match<this>): void {
     this.match = match;
-    this.map = RaceLapsMaps[this.match.options.map];
+    this.map = RaceLapsMaps.find((o) => o.name === this.match.options.map)!;
     this.trackPath = this.trackCalculator.getTrackPath(this.match.options.map)!;
   }
 

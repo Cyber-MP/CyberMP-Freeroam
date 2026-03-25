@@ -1,36 +1,42 @@
-import type { RaceLapsMap } from '../../data';
+import { type RaceLapsMap, RaceLapsMapName } from '../../data';
 
 export const RACE_LAPS_TEST_MAP: RaceLapsMap = {
-  checkpoints: [
+  name: RaceLapsMapName.TEST,
+  nodes: [
     {
+      type: 'start-point',
+      position: [33.94544219970703, 836.812255859375, 128.98919677734375],
+      yaw: 13,
+    },
+    {
+      type: 'checkpoint',
       position: [31.706016540527344, 902.0220947265625, 129.7743682861328],
       yaw: 4.989357948303223,
     },
     {
+      type: 'checkpoint',
       position: [28.086219787597656, 966.19970703125, 130.41546630859375],
       yaw: -3.3106391429901123,
     },
     {
+      type: 'checkpoint',
       position: [28.288284301757812, 1042.8363037109375, 132.9825897216797],
       yaw: 2.7893483638763428,
     },
     {
+      type: 'checkpoint',
       position: [42.553436279296875, 1114.3953857421875, 139.22740173339844],
       yaw: -18.344482421875,
     },
     {
+      type: 'checkpoint',
       position: [109.95002746582031, 1252.8446044921875, 144.81777954101562],
       yaw: -60.4410514831543,
     },
     {
+      type: 'checkpoint',
       position: [181.17384338378906, 1268.1947021484375, 151.6881103515625],
       yaw: -71.72624969482422,
-    },
-  ],
-  startPoints: [
-    {
-      position: [33.94544219970703, 836.812255859375, 128.98919677734375],
-      yaw: 13,
     },
   ],
 };
