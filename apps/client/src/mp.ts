@@ -60,7 +60,7 @@ declare module '@cybermp/client-types/game' {
 
   // @ts-expect-error
   export class redResourceReferenceScriptToken extends _redResourceReferenceScriptToken {
-    GetHash(token: string): number;
+    static GetHash(token: string): number;
   }
 
   export interface MpGame {

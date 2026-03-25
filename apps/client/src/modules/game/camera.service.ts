@@ -7,11 +7,12 @@ import type {
   Vector3,
 } from '@cybermp/client-types/game';
 import { eager } from '@freeroam/inversify';
-import { inject, injectable, postConstruct, preDestroy } from 'inversify';
+import { inject, injectable, postConstruct } from 'inversify';
 import { createEulerAngles, createVector3 } from '../../lib/vectors';
 import { mp } from '../../mp';
 import { LoggerService } from '../logger/logger.service';
 import { GEntityService } from './entity.service';
+import { GObjectsService } from './objects.service';
 
 type CreateCameraOptions = {
   position: ServerVector3 | Vector3;
@@ -23,10 +24,9 @@ type CreateCameraOptions = {
 export class GCameraService {
   private cameraHash!: number;
 
-  private cameraEntities = new Set<number>();
-
   constructor(
     @inject(GEntityService) private entityService: GEntityService,
+    @inject(GObjectsService) private objectsService: GObjectsService,
     @inject(LoggerService) private logger: LoggerService,
   ) {
     this.logger.setContext('GCameraService');
@@ -62,16 +62,21 @@ export class GCameraService {
       ? createEulerAngles(...orientation)
       : orientation;
 
-    const entityId = mp.spawnLocalObject(
-      this.cameraHash,
-      0,
-      pos.x,
-      pos.y,
-      pos.z,
-      or?.roll ?? 0,
-      or?.pitch ?? 0,
-      or?.yaw ?? 0,
-      false,
+    const entityId = this.objectsService.create(
+      {
+        skinHash: this.cameraHash,
+        position: pos,
+        rotation: or,
+      },
+      (hash) => {
+        const entityToDestroy = this.entityService.findById(hash);
+        if (!entityToDestroy) {
+          return;
+        }
+
+        const component = this.getComponent(entityToDestroy);
+        component?.Deactivate(0, false);
+      },
     );
 
     const entity = await this.entityService
@@ -82,45 +87,10 @@ export class GCameraService {
       return;
     }
 
-    this.cameraEntities.add(entityId);
-
     return entity;
   }
 
   destroy(candidate: number | entEntityID | entEntity) {
-    let entity: entEntity;
-
-    if (typeof candidate === 'number' || 'hash' in candidate) {
-      entity = this.entityService.findById(candidate);
-    } else {
-      entity = candidate;
-    }
-
-    if (!entity) {
-      return;
-    }
-
-    const component = this.getComponent(entity);
-    component?.Deactivate(0, false);
-
-    const hash = entity.GetEntityID().hash;
-
-    mp.despawnLocalObject(hash);
-    this.cameraEntities.delete(hash);
-  }
-
-  @preDestroy()
-  private preDestroy() {
-    for (const entityId of this.cameraEntities.values()) {
-      const entity = this.entityService.findById(entityId);
-      if (!entity) {
-        continue;
-      }
-
-      const component = this.getComponent(entity);
-      component?.Deactivate(0, false);
-
-      mp.despawnLocalObject(entityId);
-    }
+    this.objectsService.destroy(candidate);
   }
 }

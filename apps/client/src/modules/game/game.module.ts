@@ -7,6 +7,7 @@ import { GHudService } from './hud.service';
 import { GKeyboardService } from './keyboard.service';
 import { GLoadingScreenService } from './loading-screen.service';
 import { GMenusService } from './menus.service';
+import { GObjectsService } from './objects.service';
 import { GPlayerService } from './player.service';
 import { GStatusEffectsController } from './status-effects/status-effects.controller';
 import { GStatusEffectsService } from './status-effects/status-effects.service';
@@ -24,6 +25,7 @@ export const GameModule = new ContainerModule(({ bind }) => {
   bind(GHudService).toSelf().inSingletonScope();
   bind(GCameraService).toSelf().inSingletonScope();
   bind(GPlayerService).toSelf().inSingletonScope();
+  bind(GObjectsService).toSelf().inSingletonScope();
 
   bind(GVehiclesService).toSelf().inSingletonScope();
   bind(GVehiclesController).toSelf().inSingletonScope();
