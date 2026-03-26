@@ -2,9 +2,13 @@
 
 server_script = ["./server.js"]
 client_script = ["./client.js"]
-file = ["./assets/in_world_navigation.archive"]
+file = [
+  "./assets/in_world_navigation.archive",
+  "./browser/*",
+  "./browser/assets/*"
+]
 
-ui_page = "http://localhost:5173"
+ui_page = "./browser/index.html"
 
 use_game_natives = "true"
 
