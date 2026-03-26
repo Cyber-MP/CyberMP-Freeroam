@@ -28,7 +28,7 @@ class TrackPathNavigation {
 
   private updateFxInstances() {
     const playerPos = mp.game.GetPlayer().GetWorldPosition();
-    const SPAWN_DISTANCE = 100;
+    const SPAWN_DISTANCE = 70;
 
     this.trackData.forEach((path, index) => {
       const [x, y, z] = path.position;
