@@ -40,20 +40,22 @@ export class CefService {
 
   @postConstruct()
   private init() {
-    if (import.meta.env.DEV) {
-      mp.cef.setUrl('http://localhost:5173');
-    } else {
-      mp.cef.setUrl('./browser/index.html');
-    }
-
-    this.loadingService.subscribeOnStateChange(this.loadingHandler);
-
-    this.keyboard.subscribe((key, action) => {
-      if (mp.cef.isInFocus()) {
-        return;
+    mp.game.onInit(() => {
+      if (import.meta.env.DEV) {
+        mp.cef.setUrl('http://localhost:5173');
+      } else {
+        mp.cef.setUrl('./browser/index.html');
       }
 
-      browser.keys.incomingKeyPressed.trigger({ action, key });
+      this.loadingService.subscribeOnStateChange(this.loadingHandler);
+
+      this.keyboard.subscribe((key, action) => {
+        if (mp.cef.isInFocus()) {
+          return;
+        }
+
+        browser.keys.incomingKeyPressed.trigger({ action, key });
+      });
     });
   }
 }
