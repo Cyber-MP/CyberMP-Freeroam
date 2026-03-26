@@ -1,7 +1,6 @@
 import { RiArrowLeftSLine } from '@remixicon/react';
 import {
   useMutation,
-  useQuery,
   useQueryClient,
   useSuspenseQuery,
 } from '@tanstack/react-query';
@@ -45,16 +44,11 @@ function RouteComponent() {
     useState<keyof typeof createGameModeSchemas>();
   const [createOptions, setCreateOptions] = useState<Record<string, unknown>>();
 
-  const {
-    data: joinSchema,
-    isLoading: isJoinSchemaLoading,
-    refetch,
-  } = useQuery(
-    serverQuery.gameModes.getJoinSchema.queryOptions({
-      input: [{ createOptions: createOptions!, modeName: gameMode! }],
-      enabled: false,
-    }),
+  const joinSchemaMutation = useMutation(
+    serverQuery.gameModes.getJoinSchema.callMutationOptions(),
   );
+  const joinSchema = joinSchemaMutation.data;
+  const isJoinSchemaLoading = joinSchemaMutation.isPending;
 
   const { data: createGameModeSchemas } = useSuspenseQuery(
     serverQuery.gameModes.getCreateSchemas.queryOptions(),
@@ -87,12 +81,13 @@ function RouteComponent() {
   const onCreateOptionsSubmit = async (formData: Record<string, unknown>) => {
     setCreateOptions(formData);
 
-    const joinSchemaResponse = await refetch();
+    const joinSchemaResponse = await joinSchemaMutation.mutateAsync([
+      { createOptions: formData, modeName: gameMode! },
+    ]);
 
     if (
-      !Object.keys(
-        joinSchemaResponse.data?.properties as Record<string, string>,
-      ).length
+      !Object.keys(joinSchemaResponse.properties as Record<string, string>)
+        .length
     ) {
       mutation.mutate([
         {
