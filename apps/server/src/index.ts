@@ -1,18 +1,18 @@
 import { eagerRegistry } from '@freeroam/inversify';
 import { container } from './container';
 import { ChatModule } from './modules/chat/chat.module';
-import { ChatService } from './modules/chat/chat.service';
 import { GameModesModule } from './modules/game-modes/game-modes.module';
 import { KillFeedModule } from './modules/killfeed/killfeed.module';
 import { LoggerMiddleware } from './modules/logger/logger.middleware';
 import { LoggerModule } from './modules/logger/logger.module';
 import { LoggerService } from './modules/logger/logger.service';
 import { MatchmakingModule } from './modules/matchmaking/matchmaking.module';
+import { PolygonsModule } from './modules/polygons/polygons.module';
 import { TimeModule } from './modules/time/time.module';
 import { VehiclesSpawnerModule } from './modules/vehicles-spawner/vehicles-spawner.module';
 import { WeatherModule } from './modules/weather/weather.module';
 import { mp } from './mp';
-import { client, r, rpc } from './rpc';
+import { r, rpc } from './rpc';
 import { router } from './rpc/router';
 
 const modules = [
@@ -24,6 +24,7 @@ const modules = [
   VehiclesSpawnerModule,
   MatchmakingModule,
   GameModesModule,
+  PolygonsModule,
 ];
 
 const coopWhen = async () => {
@@ -56,22 +57,6 @@ const coopWhen = async () => {
   } catch (e) {
     console.log('Failed to initialize server: ', e);
   }
-
-  const chatService = container.get(ChatService);
-  chatService.addCommand({
-    name: 'test-vehicle',
-    handler(player) {
-      const newVehicle = mp.vehicles.create({
-        position: player.position,
-        model: mp.hashes.tweakdbid(
-          'Vehicle.v_sport1_rayfield_caliburn_mordred_player',
-        ),
-        appearance: mp.hashes.cname('rayfield_caliburn__basic_mordred'),
-      });
-
-      client.game.vehicles.requestSitInVehicle.trigger(player, newVehicle.id);
-    },
-  });
 };
 
 void coopWhen();
