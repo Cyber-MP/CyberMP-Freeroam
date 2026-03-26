@@ -22,9 +22,7 @@ import type {
 } from './dto';
 
 class TrackPathNavigation {
-  // Store the raw data for all points
   private trackData: RaceLapsTrackPath = [];
-  // Only store active instances currently in the world
   private activeFx = new Map<number, gameFxInstance>();
   private updateTick!: number;
 
@@ -38,14 +36,11 @@ class TrackPathNavigation {
       const distance = mp.game.Vector4.Distance(effectPos, playerPos);
       const isSpawned = this.activeFx.has(index);
 
-      // Condition: Should be visible
       if (distance <= SPAWN_DISTANCE) {
         if (!isSpawned) {
           this.spawnEffect(index, path);
         }
-      }
-      // Condition: Too far, remove it
-      else if (isSpawned) {
+      } else if (isSpawned) {
         this.despawnEffect(index);
       }
     });
@@ -116,7 +111,7 @@ export class RaceLaps extends BaseGameMode<GameModeName.RACE_LAPS> {
     super();
   }
 
-  start(): void {
+  start() {
     this.healthService.set(this.healthService.getDefaultHealth());
 
     this.cefService.setLoadingRedirect('/hud/race-laps');
@@ -131,7 +126,7 @@ export class RaceLaps extends BaseGameMode<GameModeName.RACE_LAPS> {
     this.statusEffects.add('GameplayRestriction.NoWeapons');
   }
 
-  end(): void {
+  end() {
     this.navigation.destroy();
 
     this.cefService.setLoadingRedirect(null);

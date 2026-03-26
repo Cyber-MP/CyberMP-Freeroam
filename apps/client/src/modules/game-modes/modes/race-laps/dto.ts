@@ -13,6 +13,8 @@ export const zRaceLapsCheckpointNode = zRaceLapsBaseNode.extend({
   radius: z.number().default(10).optional(),
 });
 
+export type RaceLapsCheckpointNode = z.infer<typeof zRaceLapsCheckpointNode>;
+
 export const zRaceLapsStartPointNode = zRaceLapsBaseNode.extend({
   type: z.literal('start-point'),
 });
@@ -23,16 +25,18 @@ export const zRaceLapsPathPointNode = zRaceLapsBaseNode.extend({
   type: z.literal('path-point'),
 });
 
+export const zRaceLapsMapNode = z.union([
+  zRaceLapsStartPointNode,
+  zRaceLapsPathPointNode,
+  zRaceLapsCheckpointNode,
+]);
+
+export type RaceLapsMapNode = z.infer<typeof zRaceLapsMapNode>;
+
 export const zRaceLapsMap = z.object({
   name: z.string(),
   mapping: z.looseObject({}).optional(),
-  nodes: z.array(
-    z.union([
-      zRaceLapsStartPointNode,
-      zRaceLapsPathPointNode,
-      zRaceLapsCheckpointNode,
-    ]),
-  ),
+  nodes: z.array(zRaceLapsMapNode),
 });
 
 export type RaceLapsMap = z.infer<typeof zRaceLapsMap>;
