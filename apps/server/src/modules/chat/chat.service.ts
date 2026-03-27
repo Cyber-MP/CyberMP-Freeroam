@@ -14,22 +14,62 @@ export type ChatCommand<Args extends z.ZodTuple> = {
   args?: Args;
 };
 
+export enum ChatCommandFlag {
+  None = 0,
+  DisableInGameMode = 1 << 2,
+}
+
 export type ServerCommand<Args extends z.ZodTuple> = ChatCommand<Args> & {
   handler(player: MpPlayer, ...args: z.infer<Args>): void;
+  flags?: ChatCommandFlag;
 };
 
 @eager()
 @injectable()
 export class ChatService {
   private registry = new Map<string, ServerCommand<any>>();
+  private playersFlags = new Map<number, number>();
 
   constructor(@inject(LoggerService) private logger: LoggerService) {
     this.logger.setContext('ChatService');
   }
 
+  addCommandFlag(player: MpPlayer | number, flag: ChatCommandFlag) {
+    const playerId = typeof player === 'number' ? player : player.id;
+
+    const currentFlags = this.playersFlags.get(playerId);
+    if (currentFlags === undefined) {
+      return;
+    }
+
+    this.playersFlags.set(playerId, currentFlags | flag);
+  }
+
+  removeCommandFlag(player: MpPlayer | number, flag: ChatCommandFlag) {
+    const playerId = typeof player === 'number' ? player : player.id;
+
+    const currentFlags = this.playersFlags.get(playerId);
+    if (currentFlags === undefined) {
+      return;
+    }
+
+    this.playersFlags.set(playerId, currentFlags & ~flag);
+  }
+
   executeCommand(player: MpPlayer, { name, args }: ExecuteCommandDTO) {
     const command = this.registry.get(name);
     if (!command) {
+      return;
+    }
+
+    const playerFlags =
+      this.playersFlags.get(player.id) ?? ChatCommandFlag.None;
+
+    if (command.flags && (playerFlags & command.flags) !== 0) {
+      this.sendMessage(
+        player,
+        `Command /${command.name} is disabled for you right now.`,
+      );
       return;
     }
 
