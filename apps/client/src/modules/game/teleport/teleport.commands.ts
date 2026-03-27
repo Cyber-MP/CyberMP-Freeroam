@@ -1,7 +1,7 @@
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
 import z from 'zod';
-import { ChatService } from '../../chat/chat.service';
+import { ChatCommandFlag, ChatService } from '../../chat/chat.service';
 import { GTeleportService } from './teleport.service';
 
 @eager()
@@ -16,6 +16,7 @@ export class GTeleportCommands {
   private init() {
     this.chatService.addCommand({
       name: 'tp',
+      flags: ChatCommandFlag.DisableInGameMode,
       args: z.tuple([
         z.coerce.number().meta({ title: 'x' }),
         z.coerce.number().meta({ title: 'y' }),

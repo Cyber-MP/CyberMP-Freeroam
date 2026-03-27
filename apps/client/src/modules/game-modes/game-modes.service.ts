@@ -1,5 +1,6 @@
 import type { MatchDTO } from '@freeroam/shared';
 import { inject, injectable, preDestroy } from 'inversify';
+import { ChatCommandFlag, ChatService } from '../chat/chat.service';
 import {
   type BaseGameMode,
   type GameModeFactory,
@@ -12,6 +13,7 @@ export class GameModesService {
 
   constructor(
     @inject(GameModeFactorySymbol) private gameModeFactory: GameModeFactory,
+    @inject(ChatService) private chatService: ChatService,
   ) {}
 
   getActiveGameMode<T extends BaseGameMode = BaseGameMode>(): T | null {
@@ -22,21 +24,25 @@ export class GameModesService {
     return this.activeMode !== null;
   }
 
-  end() {
-    if (!this.activeMode) {
-      return;
-    }
-
-    this.activeMode.end();
-    this.activeMode = null;
-  }
-
   start(match: MatchDTO) {
     const instance = this.gameModeFactory(match.modeName);
     instance.init(match);
     instance.start();
 
+    this.chatService.addCommandFlag(ChatCommandFlag.DisableInGameMode);
+
     this.activeMode = instance;
+  }
+
+  end() {
+    if (!this.activeMode) {
+      return;
+    }
+
+    this.chatService.removeCommandFlag(ChatCommandFlag.DisableInGameMode);
+
+    this.activeMode.end();
+    this.activeMode = null;
   }
 
   @preDestroy()

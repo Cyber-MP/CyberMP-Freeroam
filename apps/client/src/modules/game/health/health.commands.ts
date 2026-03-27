@@ -1,6 +1,6 @@
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
-import { ChatService } from '../../chat/chat.service';
+import { ChatCommandFlag, ChatService } from '../../chat/chat.service';
 import { GHealthService } from './health.service';
 
 // TODO: add heal command
@@ -30,16 +30,19 @@ export class GHealthCommands {
     this.chatService.addCommand({
       name: 'killme',
       description: 'You should.. NOW and give somebody else...',
+      flags: ChatCommandFlag.DisableInGameMode,
       handler: this.killme.bind(this),
     });
     this.chatService.addCommand({
       name: 'god',
       description: "Toggle's god mod",
+      flags: ChatCommandFlag.DisableInGameMode,
       handler: this.god.bind(this),
     });
     this.chatService.addCommand({
       name: 'heal',
       description: 'Heals you...',
+      flags: ChatCommandFlag.DisableInGameMode,
       handler: this.heal.bind(this),
     });
   }

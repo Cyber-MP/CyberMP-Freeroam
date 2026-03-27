@@ -11,8 +11,14 @@ export type ChatCommand<Args extends z.ZodTuple> = {
   args?: Args;
 };
 
+export enum ChatCommandFlag {
+  None = 0,
+  DisableInGameMode = 1 << 2,
+}
+
 export type ClientCommand<Args extends z.ZodTuple> = ChatCommand<Args> & {
   handler(...args: z.infer<Args>): void;
+  flags?: ChatCommandFlag;
 };
 
 @eager()
@@ -20,9 +26,24 @@ export type ClientCommand<Args extends z.ZodTuple> = ChatCommand<Args> & {
 export class ChatService {
   private registry = new Map<string, ClientCommand<z.ZodTuple<any>>>();
 
+  private commandsFlags = ChatCommandFlag.None;
+
+  addCommandFlag(flag: ChatCommandFlag) {
+    this.commandsFlags |= flag;
+  }
+
+  removeCommandFlag(flag: ChatCommandFlag) {
+    this.commandsFlags &= ~flag;
+  }
+
   executeCommand({ name, args }: ExecuteCommandDTO) {
     const command = this.registry.get(name);
     if (!command) {
+      return;
+    }
+
+    if (command.flags && (this.commandsFlags & command.flags) !== 0) {
+      this.sendMessage(`Command /${command.name} is disabled right now.`);
       return;
     }
 

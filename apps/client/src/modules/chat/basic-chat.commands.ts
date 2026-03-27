@@ -3,7 +3,7 @@ import { inject, injectable, postConstruct } from 'inversify';
 import { mp } from '../../mp';
 import { browser } from '../../rpc/browser';
 import { GStatusEffectsService } from '../game/status-effects/status-effects.service';
-import { ChatService } from './chat.service';
+import { ChatCommandFlag, ChatService } from './chat.service';
 
 @eager()
 @injectable()
@@ -45,6 +45,7 @@ export class BasicChatCommands {
 
     this.chatService.addCommand({
       name: 'fixweapons',
+      flags: ChatCommandFlag.DisableInGameMode,
       description: 'Tries to fix your weapons in case you cant shoot',
       handler: this.fixWeapons.bind(this),
     });
