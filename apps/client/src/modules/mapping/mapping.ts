@@ -1,8 +1,9 @@
 import type { Quaternion, Vector3, Vector4 } from '@cybermp/client-types/game';
 import { inject, injectable } from 'inversify';
+import { uid } from 'radash';
 import { createQuaternion } from '../../lib/vectors';
 import { mp } from '../../mp';
-import { GEntityService } from '../game/entity.service';
+import { GObjectsService } from '../game/objects.service';
 
 type SectorNodeData = {
   entityTemplate: {
@@ -47,11 +48,12 @@ export type MappingProject = {
 
 @injectable()
 export class Mapping {
-  private project!: MappingProject;
+  private readonly id = uid(8);
+  private readonly group = `mapping-${this.id}`;
 
-  objects = new Set<number>();
-
-  constructor(@inject(GEntityService) private entityService: GEntityService) {}
+  constructor(
+    @inject(GObjectsService) private objectsService: GObjectsService,
+  ) {}
 
   private async renderSectorNode(node: SectorNode) {
     const model = mp.game.redResourceReferenceScriptToken.GetHash(
@@ -67,31 +69,20 @@ export class Mapping {
             ),
           );
 
-    const { x, y, z } = node.position;
-    const { roll, pitch, yaw } = mp.game.Quaternion.ToEulerAngles(
+    const rot = mp.game.Quaternion.ToEulerAngles(
       createQuaternion(
         ...(Object.values(node.rotation) as [number, number, number, number]),
       ),
     );
 
-    const newObject = mp.spawnLocalObject(
-      model,
-      appearance,
-      x,
-      y,
-      z,
-      roll,
-      pitch,
-      yaw,
-      true,
-    );
-
-    const entity = await this.entityService.waitForEntityToSpawn(newObject);
-    if (!entity) {
-      return;
-    }
-
-    this.objects.add(newObject);
+    this.objectsService.create({
+      skinHash: model,
+      appHash: appearance,
+      position: node.position,
+      rotation: rot,
+      streaming: true,
+      group: this.group,
+    });
   }
 
   private renderSectors(sectors: Sector[]) {
@@ -117,14 +108,10 @@ export class Mapping {
   }
 
   create(project: MappingProject) {
-    this.project = project;
-
     this.renderSectors(project.sectors);
   }
 
   destroy() {
-    for (const objId of this.objects.values()) {
-      mp.despawnLocalObject(objId);
-    }
+    this.objectsService.destroyGroup(this.group);
   }
 }

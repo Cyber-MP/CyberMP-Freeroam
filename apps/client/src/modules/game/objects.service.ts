@@ -16,6 +16,7 @@ type SpawnLocalObjectOptions = {
   position: Vector3 | ServerVector3;
   rotation?: EulerAngles | [roll: number, pitch: number, yaw: number];
   streaming?: boolean;
+  group?: string;
 };
 
 type OnObjectDestroyCallback = (entityId: number) => void;
@@ -24,6 +25,7 @@ type OnObjectDestroyCallback = (entityId: number) => void;
 @injectable()
 export class GObjectsService {
   private objects = new Map<number, OnObjectDestroyCallback>();
+  private groups = new Map<string, Set<number>>();
 
   create(
     {
@@ -32,6 +34,7 @@ export class GObjectsService {
       position,
       rotation = [0, 0, 0],
       streaming = false,
+      group,
     }: SpawnLocalObjectOptions,
     onDestroy: OnObjectDestroyCallback = () => {},
   ) {
@@ -63,6 +66,13 @@ export class GObjectsService {
 
     this.objects.set(newObjId, onDestroy);
 
+    if (group) {
+      if (!this.groups.has(group)) {
+        this.groups.set(group, new Set());
+      }
+      this.groups.get(group)?.add(newObjId);
+    }
+
     return newObjId;
   }
 
@@ -75,11 +85,27 @@ export class GObjectsService {
           : objId.GetEntityID().hash;
 
     const onDestroy = this.objects.get(hash);
-
     onDestroy?.(hash);
+
+    // Clean up from groups
+    for (const groupSet of this.groups.values()) {
+      groupSet.delete(hash);
+    }
 
     mp.despawnLocalObject(hash);
     this.objects.delete(hash);
+  }
+
+  destroyGroup(groupName: string) {
+    const groupSet = this.groups.get(groupName);
+    if (!groupSet) {
+      return;
+    }
+
+    for (const id of groupSet) {
+      this.destroy(id);
+    }
+    this.groups.delete(groupName);
   }
 
   @preDestroy()
