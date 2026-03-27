@@ -8,16 +8,20 @@ import { mp } from '../../mp';
 
 const REFERENCE_WIDTH = 1920;
 
-export class EntityLabel {
-  protected widget: inkTextWidget;
-  public text: string;
+export type EntityLabelFactory = () => EntityLabel;
 
-  constructor(
-    public entity: entEntity,
-    initialText: string = '',
-    protected fontSize = 17,
-  ) {
+export const EntityLabelFactorySymbol = Symbol.for('EntityLabelFactorySymbol');
+
+export class EntityLabel {
+  protected widget!: inkTextWidget;
+  protected fontSize!: number;
+  public text!: string;
+  entity!: entEntity;
+
+  create(entity: entEntity, initialText: string, fontSize = 17) {
+    this.entity = entity;
     this.text = initialText;
+    this.fontSize = fontSize;
     this.widget = new mp.game.inkTextWidget();
     this.setup();
   }

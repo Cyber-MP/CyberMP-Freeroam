@@ -1,14 +1,24 @@
+import type { entEntity } from '@cybermp/client-types/game';
 import { eager } from '@freeroam/inversify';
-import { injectable, postConstruct, preDestroy } from 'inversify';
+import { inject, injectable, postConstruct, preDestroy } from 'inversify';
 import { world3dToScreen2d } from '../../lib/vectors';
 import { mp } from '../../mp';
-import type { EntityLabel } from './entity-label';
+import {
+  type EntityLabel,
+  type EntityLabelFactory,
+  EntityLabelFactorySymbol,
+} from './entity-label';
 
 @eager()
 @injectable()
 export class EntityLabelsService {
   private labels = new Set<EntityLabel>();
   private updateTick!: number;
+
+  constructor(
+    @inject(EntityLabelFactorySymbol)
+    private entityLabelFactory: EntityLabelFactory,
+  ) {}
 
   @postConstruct()
   private init() {
@@ -19,17 +29,21 @@ export class EntityLabelsService {
   private destroyAll() {
     mp.clearTick(this.updateTick);
 
-    for (const l of this.labels.values()) {
-      l.destroy();
+    for (const label of this.labels.values()) {
+      label.destroy();
     }
+
     this.labels.clear();
   }
 
-  public add(label: EntityLabel) {
-    this.labels.add(label);
+  create(entity: entEntity, text: string, fontSize?: number) {
+    const newLabel = this.entityLabelFactory();
+    newLabel.create(entity, text, fontSize);
+
+    this.labels.add(newLabel);
   }
 
-  public remove(label: EntityLabel) {
+  destroy(label: EntityLabel) {
     label.destroy();
     this.labels.delete(label);
   }
