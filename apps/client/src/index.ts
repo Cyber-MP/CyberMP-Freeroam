@@ -6,6 +6,7 @@ import { container } from './container';
 import { CefModule } from './modules/cef/cef.module';
 import { ChatModule } from './modules/chat/chat.module';
 import { DeathModule } from './modules/death/death.module';
+import { EntityLabelsModule } from './modules/entity-labels/entity-labels.module';
 import { GameModule } from './modules/game/game.module';
 import { GameModesModule } from './modules/game-modes/game-modes.module';
 import { LoggerModule } from './modules/logger/logger.module';
@@ -32,6 +33,7 @@ const modules: ContainerModule[] = [
   WeatherModule,
   GameModesModule,
   MappingModule,
+  EntityLabelsModule,
 ];
 
 const coopWhen = async () => {

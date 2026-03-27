@@ -1,22 +1,28 @@
 import { eager } from '@freeroam/inversify';
-import { injectable, postConstruct } from 'inversify';
-import { throttle } from 'radash';
+import { injectable, postConstruct, preDestroy } from 'inversify';
 import { world3dToScreen2d } from '../../lib/vectors';
 import { mp } from '../../mp';
 import type { EntityLabel } from './entity-label';
-
-const throttleLog = throttle({ interval: 4000 }, (...ags: any) => {
-  console.log(...ags);
-});
 
 @eager()
 @injectable()
 export class EntityLabelsService {
   private labels = new Set<EntityLabel>();
+  private updateTick!: number;
 
   @postConstruct()
   private init() {
-    mp.setTick(() => this.onTick());
+    this.updateTick = mp.setTick(() => this.onTick());
+  }
+
+  @preDestroy()
+  private destroyAll() {
+    mp.clearTick(this.updateTick);
+
+    for (const l of this.labels.values()) {
+      l.destroy();
+    }
+    this.labels.clear();
   }
 
   public add(label: EntityLabel) {
@@ -38,8 +44,6 @@ export class EntityLabelsService {
       const labelMaxDist = label.getMaxDistance();
 
       if (dist < labelMaxDist) {
-        throttleLog('RENDERING', labelPos, dist);
-
         const t = Math.min(dist / labelMaxDist, 1);
         const scale = 1.0 - t * 0.4;
         const alpha = 1.0 - t * 0.8;
@@ -52,7 +56,6 @@ export class EntityLabelsService {
 
         label.update(screenPos, scale, alpha);
       } else {
-        throttleLog('SKIIPING DIST');
         label.hide();
       }
     }

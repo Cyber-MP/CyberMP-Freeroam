@@ -4,14 +4,9 @@ import type {
   Vector3,
   Vector4,
 } from '@cybermp/client-types/game';
-import { throttle } from 'radash';
 import { mp } from '../../mp';
 
 const REFERENCE_WIDTH = 1920;
-
-const throttleLog = throttle({ interval: 4000 }, (...ags: any) => {
-  console.log(...ags);
-});
 
 export class EntityLabel {
   protected widget: inkTextWidget;
@@ -31,6 +26,9 @@ export class EntityLabel {
     const [width] = mp.game.getDisplayResolution();
     const fontSize = this.fontSize * (width / REFERENCE_WIDTH);
 
+    const inkSystem = mp.game.ScriptGameInstance.GetInkSystem();
+    const hudRoot = inkSystem.GetLayer('inkHUDLayer').GetVirtualWindow();
+
     this.widget.SetName(`label_${this.entity.GetEntityID().hash}`);
     this.widget.SetFontFamily(
       'base\\gameplay\\gui\\fonts\\arial\\arial.inkfontfamily',
@@ -44,9 +42,6 @@ export class EntityLabel {
 
     this.widget.BindProperty('tintColor', 'MainColors.ActiveWhite');
     this.widget.SetVisible(true);
-
-    const inkSystem = mp.game.ScriptGameInstance.GetInkSystem();
-    const hudRoot = inkSystem.GetLayer('inkHUDLayer').GetVirtualWindow();
     this.widget.Reparent(hudRoot);
   }
 
@@ -55,7 +50,7 @@ export class EntityLabel {
   }
 
   getMaxDistance() {
-    return 15;
+    return 10;
   }
 
   public getPosition(): Vector4 {
@@ -68,11 +63,10 @@ export class EntityLabel {
 
     const centeringX = (content.length * (this.fontSize / 2) * scale) / 2;
 
-    this.widget.SetTranslation(screenPos.x - centeringX, screenPos.y);
+    this.widget.SetTranslation({ x: screenPos.x - centeringX, y: screenPos.y });
     this.widget.SetScale({ x: scale, y: scale });
     this.widget.SetOpacity(alpha);
     this.widget.SetVisible(true);
-    throttleLog('updated', content, alpha, scale, screenPos);
   }
 
   public hide() {
