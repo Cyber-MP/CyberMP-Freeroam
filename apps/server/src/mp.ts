@@ -7,4 +7,3 @@ const originalPlayerToArray = mp.players.toArray;
 mp.players.toArray = () => {
   return originalPlayerToArray().map((o) => mp.players.at(+o.id));
 };
-  

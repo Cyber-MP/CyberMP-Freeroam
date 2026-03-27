@@ -19,7 +19,6 @@ export class GVehiclesService {
 
     const onVehicleStreamIn = async (netId: number, hash: number) => {
       if (netId !== vehicleNetId) {
-        console.log('doesnt match', netId, vehicleNetId);
         return;
       }
 
