@@ -24,5 +24,8 @@
     "@biomejs/biome": "2.4.6",
     "type-fest": "^5.4.4",
     "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "cross-env": "^7.0.3"
   }
 }
