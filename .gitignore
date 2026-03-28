@@ -33,6 +33,7 @@ mp/linux/*
 crashdumps
 cache
 ./resources/core
+/resources/core
 ./apps/browser/.tanstack
 
 **/tsconfig.tsbuildinfo

@@ -72,8 +72,6 @@ export class Polygon {
         streaming: true,
       });
     }
-
-    console.log('created debug pbjects');
   }
 
   private destroyDebugObjects() {
@@ -104,13 +102,8 @@ export class Polygon {
     this.entityEnterObserver.notify(entity);
   }
 
-  removeFromContains(candidateEntity: entEntity | entEntityID | number) {
-    const hash =
-      typeof candidateEntity === 'number'
-        ? candidateEntity
-        : 'hash' in candidateEntity
-          ? candidateEntity.hash
-          : candidateEntity.GetEntityID().hash;
+  removeFromContains(candidateEntity: entEntity) {
+    const hash = candidateEntity.GetEntityID().hash;
 
     if (!this._contains.has(hash)) {
       return;
@@ -118,9 +111,7 @@ export class Polygon {
 
     this._contains.delete(hash);
 
-    const entity = this.entityService.findById(hash);
-
-    this.entityLeaveObserver.notify(entity);
+    this.entityLeaveObserver.notify(candidateEntity);
   }
 
   isContaining(entity: entEntity | entEntityID | number) {

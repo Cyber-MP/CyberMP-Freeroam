@@ -1,9 +1,6 @@
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct, preDestroy } from 'inversify';
-import { throttle } from 'radash';
-import { createVector3 } from '../../lib/vectors';
 import { mp } from '../../mp';
-import { ChatService } from '../chat/chat.service';
 import { GEntityService } from '../game/entity.service';
 import {
   type Polygon,
@@ -11,8 +8,6 @@ import {
   PolygonFactorySymbol,
   type PolygonOptions,
 } from './polygon';
-
-const throttleLog = throttle({ interval: 1000 }, console.log);
 
 @eager()
 @injectable()
@@ -23,73 +18,42 @@ export class PolygonsService {
   constructor(
     @inject(GEntityService) private entityService: GEntityService,
     @inject(PolygonFactorySymbol) private polygonFactory: PolygonFactory,
-    @inject(ChatService) private chatService: ChatService,
-  ) {
-    this.chatService.addCommand({
-      name: 'test-pol',
-      handler: () => {
-        try {
-          const size = 5;
-          const { x, y, z } = mp.game.GetPlayer().GetWorldPosition();
-
-          const polygon = this.create({
-            height: 5,
-            vertices: [
-              createVector3(x - size, y - size, z), // Точка 1
-              createVector3(x - size, y + size, z), // Точка 2
-              createVector3(x + size, y + size, z), // Точка 3
-              createVector3(x + size, y - size, z), // Точка 4
-            ],
-            visible: true,
-          });
-
-          polygon.entityLeaveObserver.subscribe((ent) => {
-            console.log('LEAVED', ent.GetClassName());
-          });
-          polygon.entityEnterObserver.subscribe((ent) => {
-            console.log('ENTERED', ent.GetClassName());
-          });
-          console.log('created pol');
-        } catch (e) {
-          console.log('err', e.message);
-        }
-      },
-    });
-  }
+  ) {}
 
   private onTick() {
-    try {
-      const polygons = Array.from(this.registry);
-      if (polygons.length === 0) {
-        return;
-      }
+    const polygons = Array.from(this.registry);
+    if (polygons.length === 0) {
+      return;
+    }
 
-      const entities: number[] = [
-        ...mp.getStreamedPlayers(),
-        ...mp.getStreamedPool('CObject'),
-        ...mp.getStreamedPool('CPed'),
-        ...mp.getStreamedPool('CPickup'),
-        ...mp.getStreamedPool('CVehicle'),
-      ];
+    const entities: number[] = [
+      ...mp.getStreamedPlayers(),
+      // ...mp.getStreamedPool('CObject'),
+      // ...mp.getStreamedPool('CPed'),
+      // ...mp.getStreamedPool('CPickup'),
+      ...mp.getStreamedPool('CVehicle'),
+      mp.game.GetPlayerObject().GetEntityID().hash,
+    ].map((o) => +String(o));
 
-      for (const polygon of polygons) {
-        for (const entityId of entities) {
-          const entity = this.entityService.findById(entityId);
+    for (const polygon of polygons) {
+      for (const entityId of entities) {
+        const entity =
+          entityId === 1
+            ? mp.game.GetPlayer()
+            : this.entityService.findById(entityId);
+        if (!entity) {
+          continue;
+        }
 
-          const colliding = polygon.isColliding(entity.GetWorldPosition());
-          const contained = polygon.isContaining(entity);
+        const colliding = polygon.isColliding(entity.GetWorldPosition());
+        const contained = polygon.isContaining(entity);
 
-          if (contained && !colliding) {
-            throttleLog('removing');
-            polygon.removeFromContains(entity);
-          } else if (!contained && colliding) {
-            throttleLog('adding');
-            polygon.addToContains(entity);
-          }
+        if (contained && !colliding) {
+          polygon.removeFromContains(entity);
+        } else if (!contained && colliding) {
+          polygon.addToContains(entity);
         }
       }
-    } catch (e) {
-      throttleLog(e.message, 'ah');
     }
   }
 
