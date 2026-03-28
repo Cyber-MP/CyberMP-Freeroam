@@ -1,7 +1,7 @@
 import type { entEntity } from '@cybermp/client-types/game';
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct, preDestroy } from 'inversify';
-import { world3dToScreen2d } from '../../lib/vectors';
+import { world3dToScreen2d } from '../../lib/math';
 import { mp } from '../../mp';
 import {
   type EntityLabel,

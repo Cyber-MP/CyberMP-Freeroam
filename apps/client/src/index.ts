@@ -12,6 +12,7 @@ import { GameModesModule } from './modules/game-modes/game-modes.module';
 import { LoggerModule } from './modules/logger/logger.module';
 import { LoggerService } from './modules/logger/logger.service';
 import { MappingModule } from './modules/mapping/mapping.module';
+import { PolygonsModule } from './modules/polygons/polygons.module';
 import { SessionInterceptor } from './modules/session/session.interceptor';
 import { SessionModule } from './modules/session/session.module';
 import { SpawnModule } from './modules/spawn/spawn.module';
@@ -34,6 +35,7 @@ const modules: ContainerModule[] = [
   GameModesModule,
   MappingModule,
   EntityLabelsModule,
+  PolygonsModule,
 ];
 
 const coopWhen = async () => {
