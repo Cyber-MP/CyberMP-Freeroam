@@ -33,7 +33,15 @@ export class ChatService {
   }
 
   removeCommandFlag(flag: ChatCommandFlag) {
+    const before = this.commandsFlags;
     this.commandsFlags &= ~flag;
+    const after = this.commandsFlags;
+
+    if (before === after) {
+      console.warn(
+        `Flag ${flag} was not present in ${before} or removal failed.`,
+      );
+    }
   }
 
   executeCommand({ name, args }: ExecuteCommandDTO) {

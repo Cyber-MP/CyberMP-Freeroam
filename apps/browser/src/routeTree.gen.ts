@@ -15,12 +15,12 @@ import { Route as EntryRouteImport } from './routes/entry'
 import { Route as DeathRouteImport } from './routes/death'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as HudRaceLapsRouteImport } from './routes/hud.race-laps'
-import { Route as HudMenuRouteImport } from './routes/hud.menu'
-import { Route as HudMenuIndexRouteImport } from './routes/hud.menu.index'
-import { Route as HudMenuWeaponsRouteImport } from './routes/hud.menu.weapons'
-import { Route as HudMenuTeleportsRouteImport } from './routes/hud.menu.teleports'
-import { Route as HudMenuMatchmakingIndexRouteImport } from './routes/hud.menu.matchmaking.index'
-import { Route as HudMenuMatchmakingCreateRouteImport } from './routes/hud.menu.matchmaking.create'
+import { Route as HudMenuRouteRouteImport } from './routes/hud.menu/route'
+import { Route as HudMenuIndexRouteImport } from './routes/hud.menu/index'
+import { Route as HudMenuWorldRouteImport } from './routes/hud.menu/world'
+import { Route as HudMenuItemsRouteImport } from './routes/hud.menu/items'
+import { Route as HudMenuMatchmakingIndexRouteImport } from './routes/hud.menu/matchmaking/index'
+import { Route as HudMenuMatchmakingCreateRouteImport } from './routes/hud.menu/matchmaking/create'
 
 const LoadingRoute = LoadingRouteImport.update({
   id: '/loading',
@@ -52,7 +52,7 @@ const HudRaceLapsRoute = HudRaceLapsRouteImport.update({
   path: '/race-laps',
   getParentRoute: () => HudRoute,
 } as any)
-const HudMenuRoute = HudMenuRouteImport.update({
+const HudMenuRouteRoute = HudMenuRouteRouteImport.update({
   id: '/menu',
   path: '/menu',
   getParentRoute: () => HudRoute,
@@ -60,28 +60,28 @@ const HudMenuRoute = HudMenuRouteImport.update({
 const HudMenuIndexRoute = HudMenuIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => HudMenuRoute,
+  getParentRoute: () => HudMenuRouteRoute,
 } as any)
-const HudMenuWeaponsRoute = HudMenuWeaponsRouteImport.update({
-  id: '/weapons',
-  path: '/weapons',
-  getParentRoute: () => HudMenuRoute,
+const HudMenuWorldRoute = HudMenuWorldRouteImport.update({
+  id: '/world',
+  path: '/world',
+  getParentRoute: () => HudMenuRouteRoute,
 } as any)
-const HudMenuTeleportsRoute = HudMenuTeleportsRouteImport.update({
-  id: '/teleports',
-  path: '/teleports',
-  getParentRoute: () => HudMenuRoute,
+const HudMenuItemsRoute = HudMenuItemsRouteImport.update({
+  id: '/items',
+  path: '/items',
+  getParentRoute: () => HudMenuRouteRoute,
 } as any)
 const HudMenuMatchmakingIndexRoute = HudMenuMatchmakingIndexRouteImport.update({
   id: '/matchmaking/',
   path: '/matchmaking/',
-  getParentRoute: () => HudMenuRoute,
+  getParentRoute: () => HudMenuRouteRoute,
 } as any)
 const HudMenuMatchmakingCreateRoute =
   HudMenuMatchmakingCreateRouteImport.update({
     id: '/matchmaking/create',
     path: '/matchmaking/create',
-    getParentRoute: () => HudMenuRoute,
+    getParentRoute: () => HudMenuRouteRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -90,10 +90,10 @@ export interface FileRoutesByFullPath {
   '/entry': typeof EntryRoute
   '/hud': typeof HudRouteWithChildren
   '/loading': typeof LoadingRoute
-  '/hud/menu': typeof HudMenuRouteWithChildren
+  '/hud/menu': typeof HudMenuRouteRouteWithChildren
   '/hud/race-laps': typeof HudRaceLapsRoute
-  '/hud/menu/teleports': typeof HudMenuTeleportsRoute
-  '/hud/menu/weapons': typeof HudMenuWeaponsRoute
+  '/hud/menu/items': typeof HudMenuItemsRoute
+  '/hud/menu/world': typeof HudMenuWorldRoute
   '/hud/menu/': typeof HudMenuIndexRoute
   '/hud/menu/matchmaking/create': typeof HudMenuMatchmakingCreateRoute
   '/hud/menu/matchmaking/': typeof HudMenuMatchmakingIndexRoute
@@ -105,8 +105,8 @@ export interface FileRoutesByTo {
   '/hud': typeof HudRouteWithChildren
   '/loading': typeof LoadingRoute
   '/hud/race-laps': typeof HudRaceLapsRoute
-  '/hud/menu/teleports': typeof HudMenuTeleportsRoute
-  '/hud/menu/weapons': typeof HudMenuWeaponsRoute
+  '/hud/menu/items': typeof HudMenuItemsRoute
+  '/hud/menu/world': typeof HudMenuWorldRoute
   '/hud/menu': typeof HudMenuIndexRoute
   '/hud/menu/matchmaking/create': typeof HudMenuMatchmakingCreateRoute
   '/hud/menu/matchmaking': typeof HudMenuMatchmakingIndexRoute
@@ -118,10 +118,10 @@ export interface FileRoutesById {
   '/entry': typeof EntryRoute
   '/hud': typeof HudRouteWithChildren
   '/loading': typeof LoadingRoute
-  '/hud/menu': typeof HudMenuRouteWithChildren
+  '/hud/menu': typeof HudMenuRouteRouteWithChildren
   '/hud/race-laps': typeof HudRaceLapsRoute
-  '/hud/menu/teleports': typeof HudMenuTeleportsRoute
-  '/hud/menu/weapons': typeof HudMenuWeaponsRoute
+  '/hud/menu/items': typeof HudMenuItemsRoute
+  '/hud/menu/world': typeof HudMenuWorldRoute
   '/hud/menu/': typeof HudMenuIndexRoute
   '/hud/menu/matchmaking/create': typeof HudMenuMatchmakingCreateRoute
   '/hud/menu/matchmaking/': typeof HudMenuMatchmakingIndexRoute
@@ -136,8 +136,8 @@ export interface FileRouteTypes {
     | '/loading'
     | '/hud/menu'
     | '/hud/race-laps'
-    | '/hud/menu/teleports'
-    | '/hud/menu/weapons'
+    | '/hud/menu/items'
+    | '/hud/menu/world'
     | '/hud/menu/'
     | '/hud/menu/matchmaking/create'
     | '/hud/menu/matchmaking/'
@@ -149,8 +149,8 @@ export interface FileRouteTypes {
     | '/hud'
     | '/loading'
     | '/hud/race-laps'
-    | '/hud/menu/teleports'
-    | '/hud/menu/weapons'
+    | '/hud/menu/items'
+    | '/hud/menu/world'
     | '/hud/menu'
     | '/hud/menu/matchmaking/create'
     | '/hud/menu/matchmaking'
@@ -163,8 +163,8 @@ export interface FileRouteTypes {
     | '/loading'
     | '/hud/menu'
     | '/hud/race-laps'
-    | '/hud/menu/teleports'
-    | '/hud/menu/weapons'
+    | '/hud/menu/items'
+    | '/hud/menu/world'
     | '/hud/menu/'
     | '/hud/menu/matchmaking/create'
     | '/hud/menu/matchmaking/'
@@ -226,7 +226,7 @@ declare module '@tanstack/react-router' {
       id: '/hud/menu'
       path: '/menu'
       fullPath: '/hud/menu'
-      preLoaderRoute: typeof HudMenuRouteImport
+      preLoaderRoute: typeof HudMenuRouteRouteImport
       parentRoute: typeof HudRoute
     }
     '/hud/menu/': {
@@ -234,65 +234,66 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/hud/menu/'
       preLoaderRoute: typeof HudMenuIndexRouteImport
-      parentRoute: typeof HudMenuRoute
+      parentRoute: typeof HudMenuRouteRoute
     }
-    '/hud/menu/weapons': {
-      id: '/hud/menu/weapons'
-      path: '/weapons'
-      fullPath: '/hud/menu/weapons'
-      preLoaderRoute: typeof HudMenuWeaponsRouteImport
-      parentRoute: typeof HudMenuRoute
+    '/hud/menu/world': {
+      id: '/hud/menu/world'
+      path: '/world'
+      fullPath: '/hud/menu/world'
+      preLoaderRoute: typeof HudMenuWorldRouteImport
+      parentRoute: typeof HudMenuRouteRoute
     }
-    '/hud/menu/teleports': {
-      id: '/hud/menu/teleports'
-      path: '/teleports'
-      fullPath: '/hud/menu/teleports'
-      preLoaderRoute: typeof HudMenuTeleportsRouteImport
-      parentRoute: typeof HudMenuRoute
+    '/hud/menu/items': {
+      id: '/hud/menu/items'
+      path: '/items'
+      fullPath: '/hud/menu/items'
+      preLoaderRoute: typeof HudMenuItemsRouteImport
+      parentRoute: typeof HudMenuRouteRoute
     }
     '/hud/menu/matchmaking/': {
       id: '/hud/menu/matchmaking/'
       path: '/matchmaking'
       fullPath: '/hud/menu/matchmaking/'
       preLoaderRoute: typeof HudMenuMatchmakingIndexRouteImport
-      parentRoute: typeof HudMenuRoute
+      parentRoute: typeof HudMenuRouteRoute
     }
     '/hud/menu/matchmaking/create': {
       id: '/hud/menu/matchmaking/create'
       path: '/matchmaking/create'
       fullPath: '/hud/menu/matchmaking/create'
       preLoaderRoute: typeof HudMenuMatchmakingCreateRouteImport
-      parentRoute: typeof HudMenuRoute
+      parentRoute: typeof HudMenuRouteRoute
     }
   }
 }
 
-interface HudMenuRouteChildren {
-  HudMenuTeleportsRoute: typeof HudMenuTeleportsRoute
-  HudMenuWeaponsRoute: typeof HudMenuWeaponsRoute
+interface HudMenuRouteRouteChildren {
+  HudMenuItemsRoute: typeof HudMenuItemsRoute
+  HudMenuWorldRoute: typeof HudMenuWorldRoute
   HudMenuIndexRoute: typeof HudMenuIndexRoute
   HudMenuMatchmakingCreateRoute: typeof HudMenuMatchmakingCreateRoute
   HudMenuMatchmakingIndexRoute: typeof HudMenuMatchmakingIndexRoute
 }
 
-const HudMenuRouteChildren: HudMenuRouteChildren = {
-  HudMenuTeleportsRoute: HudMenuTeleportsRoute,
-  HudMenuWeaponsRoute: HudMenuWeaponsRoute,
+const HudMenuRouteRouteChildren: HudMenuRouteRouteChildren = {
+  HudMenuItemsRoute: HudMenuItemsRoute,
+  HudMenuWorldRoute: HudMenuWorldRoute,
   HudMenuIndexRoute: HudMenuIndexRoute,
   HudMenuMatchmakingCreateRoute: HudMenuMatchmakingCreateRoute,
   HudMenuMatchmakingIndexRoute: HudMenuMatchmakingIndexRoute,
 }
 
-const HudMenuRouteWithChildren =
-  HudMenuRoute._addFileChildren(HudMenuRouteChildren)
+const HudMenuRouteRouteWithChildren = HudMenuRouteRoute._addFileChildren(
+  HudMenuRouteRouteChildren,
+)
 
 interface HudRouteChildren {
-  HudMenuRoute: typeof HudMenuRouteWithChildren
+  HudMenuRouteRoute: typeof HudMenuRouteRouteWithChildren
   HudRaceLapsRoute: typeof HudRaceLapsRoute
 }
 
 const HudRouteChildren: HudRouteChildren = {
-  HudMenuRoute: HudMenuRouteWithChildren,
+  HudMenuRouteRoute: HudMenuRouteRouteWithChildren,
   HudRaceLapsRoute: HudRaceLapsRoute,
 }
 

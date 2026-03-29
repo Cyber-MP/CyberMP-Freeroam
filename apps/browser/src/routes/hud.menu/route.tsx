@@ -45,14 +45,14 @@ const data: NavbarData[] = [
     to: '/hud/menu',
   },
   {
-    name: 'Weapons',
+    name: 'Items',
     icon: <RiSwordLine />,
-    to: '/hud/menu/weapons',
+    to: '/hud/menu/items',
   },
   {
-    name: 'Teleports',
+    name: 'World',
     icon: <RiMap2Line />,
-    to: '/hud/menu/teleports',
+    to: '/hud/menu/world',
   },
   {
     name: 'Matchmaking',
