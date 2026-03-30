@@ -1,14 +1,17 @@
 import type { RpcClientContext } from '@cybermp/rpc-client';
 import { contract } from '@cybermp/rpc-router/server';
 import { eager } from '@freeroam/inversify';
-import { type MatchDTO, zMatchDTO } from '@freeroam/shared';
 import { inject, injectable, postConstruct } from 'inversify';
+import z from 'zod';
 import { r } from '../../rpc';
 import { GameModesService } from './game-modes.service';
+import type { MatchDTO } from './match';
 import { raceLapsContract } from './modes/race-laps/controller';
 
 export const gameModesContract = {
-  start: contract.input(zMatchDTO).build(),
+  start: contract
+    .input(z.record(z.string(), z.any()) as unknown as z.ZodCustom<MatchDTO>)
+    .build(),
   end: contract.build(),
   raceLaps: raceLapsContract,
 };

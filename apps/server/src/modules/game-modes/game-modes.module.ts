@@ -1,7 +1,10 @@
-import { GameModeName } from '@freeroam/shared';
 import { ContainerModule } from 'inversify';
 import { TYPES } from '../../types';
-import type { GameModeFactory } from './game-mode';
+import {
+  type GameModeFactory,
+  GameModeName,
+  type TGameModeName,
+} from './game-mode';
 import { GameModesController } from './game-modes.controller';
 import { GameModesService } from './game-modes.service';
 import { RaceLaps } from './modes/race-laps';
@@ -19,7 +22,7 @@ export const GameModesModule = new ContainerModule(({ bind }) => {
   bind(RaceLapsTrackCalculator).toSelf().inSingletonScope();
 
   bind<GameModeFactory>(TYPES.GameModeFactory).toFactory((c) => {
-    return (name: GameModeName) => {
+    return (name: TGameModeName) => {
       return c.get(name);
     };
   });

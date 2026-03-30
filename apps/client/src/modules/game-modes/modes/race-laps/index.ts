@@ -3,7 +3,6 @@ import type {
   gameFxResource,
   Vector4,
 } from '@cybermp/client-types/game';
-import type { GameModeName } from '@freeroam/shared';
 import { inject, injectable } from 'inversify';
 import { createEulerAngles, createVector4 } from '../../../../lib/vectors';
 import { mp } from '../../../../mp';
@@ -14,7 +13,9 @@ import { GStatusEffectsService } from '../../../game/status-effects/status-effec
 import { GTeleportService } from '../../../game/teleport/teleport.service';
 import { GVehiclesService } from '../../../game/vehicles/vehicles.service';
 import { BaseGameMode } from '../../game-mode';
+import { RaceLapsCheckpoint } from './checkpoint';
 import type {
+  RaceLapsCheckpointNode,
   RaceLapsMap,
   RaceLapsPrepareDTO,
   RaceLapsStartPointNode,
@@ -91,11 +92,14 @@ class TrackPathNavigation {
 }
 
 @injectable()
-export class RaceLaps extends BaseGameMode<GameModeName.RACE_LAPS> {
+export class RaceLaps extends BaseGameMode<'race_laps'> {
   private trackPath!: RaceLapsTrackPath;
   private map!: RaceLapsMap;
+  private checkpoints: RaceLapsCheckpointNode[] = [];
   private vehicleId!: number;
   private startPoint!: RaceLapsStartPointNode;
+
+  private currentCheckpointIndex = 0;
 
   private initialPosition!: Vector4;
 
@@ -107,6 +111,7 @@ export class RaceLaps extends BaseGameMode<GameModeName.RACE_LAPS> {
     @inject(GTeleportService) private teleportService: GTeleportService,
     @inject(GHealthService) private healthService: GHealthService,
     @inject(GStatusEffectsService) private statusEffects: GStatusEffectsService,
+    @inject(RaceLapsCheckpoint) private checkpoint: RaceLapsCheckpoint,
   ) {
     super();
   }
@@ -128,6 +133,7 @@ export class RaceLaps extends BaseGameMode<GameModeName.RACE_LAPS> {
 
   end() {
     this.navigation.destroy();
+    this.checkpoint.destroy();
 
     this.cefService.setLoadingRedirect(null);
 
@@ -157,6 +163,9 @@ export class RaceLaps extends BaseGameMode<GameModeName.RACE_LAPS> {
 
     this.trackPath = data.trackPath;
     this.map = data.map;
+    this.checkpoints = data.map.nodes.filter(
+      (node): node is RaceLapsCheckpointNode => node.type === 'checkpoint',
+    );
     this.vehicleId = data.vehicleId;
 
     this.navigation.create(this.trackPath);
@@ -169,6 +178,12 @@ export class RaceLaps extends BaseGameMode<GameModeName.RACE_LAPS> {
       this.statusEffects.remove('GameplayRestriction.NoCombat');
       this.statusEffects.remove('GameplayRestriction.NoWeapons');
     }
+
+    const currentCheckpointNode = this.checkpoints[this.currentCheckpointIndex];
+
+    this.checkpoint.spawn(currentCheckpointNode, () => {
+      // this.currentCheckpointIndex++;
+    });
   }
 
   startCountdown(startTimestamp: number) {

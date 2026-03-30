@@ -1,7 +1,6 @@
 import type { InferRouterInputs } from '@cybermp/rpc-router/server';
 import { RpcApplyType, type RpcServerContext } from '@cybermp/rpc-server';
 import { eager } from '@freeroam/inversify';
-import { zMatchDTO } from '@freeroam/shared';
 import { inject, injectable, postConstruct } from 'inversify';
 import z from 'zod';
 import { mp } from '../../mp';
@@ -9,6 +8,7 @@ import { r } from '../../rpc';
 import { TYPES } from '../../types';
 import { zCreateMatchDTO } from './dto/create-match.dto';
 import { zJoinMatchDTO } from './dto/join-match.dto';
+import { zMatchDTO } from './match';
 import { MatchRepository } from './match.repository';
 import { MatchmakingService } from './matchmaking.service';
 import type {
@@ -17,10 +17,7 @@ import type {
 } from './middlewares/match.middleware';
 
 export const matchmakingContract = {
-  create: r.contract
-    .input(zCreateMatchDTO)
-    .output(z.union([z.undefined(), zMatchDTO]))
-    .build(),
+  create: r.contract.input(zCreateMatchDTO).output(zMatchDTO).build(),
   join: r.contract.input(zJoinMatchDTO).output(z.boolean()).build(),
   leave: r.contract.build(),
   start: r.contract.context<RpcMatchContext>(),
@@ -47,15 +44,8 @@ export class MatchmakingController {
       context.player.id,
       context.data,
     );
-    if (!newMatch) {
-      return;
-    }
 
-    try {
-      return newMatch.toDTO();
-    } catch (e) {
-      console.error('e', e);
-    }
+    return newMatch.toDTO();
   }
 
   private getAll() {

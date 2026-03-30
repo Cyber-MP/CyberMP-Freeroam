@@ -9,7 +9,7 @@ import type {
 import type { RaceLaps } from '.';
 
 export const raceLapsContract = {
-  testMethod: r.contract.context<RpcMatchContext<RaceLaps>>(),
+  processCheckpoint: r.contract.context<RpcMatchContext<RaceLaps>>(),
 };
 
 @eager()
@@ -20,12 +20,18 @@ export class RaceLapsController {
     private matchMemberMiddleware: MatchMiddleware,
   ) {}
 
+  processCheckpoint(ctx: RpcMatchContext<RaceLaps>) {
+    // ctx.match.mode.proces
+  }
+
   @postConstruct()
   private init() {
+    const { processCheckpoint } = raceLapsContract;
+
     r.implement(raceLapsContract, {
-      testMethod: raceLapsContract.testMethod.implement(
+      processCheckpoint: processCheckpoint.implement(
         this.matchMemberMiddleware,
-        (c) => {},
+        this.processCheckpoint.bind(this),
       ),
     });
   }

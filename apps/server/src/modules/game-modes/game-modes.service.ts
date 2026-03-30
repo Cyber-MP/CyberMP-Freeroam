@@ -1,12 +1,12 @@
-import type { GameModeName } from '@freeroam/shared';
 import { injectable } from 'inversify';
 import z from 'zod';
 import type { zGameModesCreateSchemas } from './dto/game-modes-schemas.dto';
+import type { TGameModeName } from './game-mode';
 import { GameModes } from './modes';
 
 @injectable()
 export class GameModesService {
-  getJoinSchema(modeName: GameModeName, createOptions: any) {
+  getJoinSchema(modeName: TGameModeName, createOptions: any) {
     const GameModeClass = GameModes.find((m) => new m().name === modeName);
     if (!GameModeClass) throw new Error(`Game mode ${modeName} not found`);
 

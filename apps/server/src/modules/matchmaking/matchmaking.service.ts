@@ -1,12 +1,12 @@
+import { RpcError } from '@cybermp/rpc-server';
 import type { MpPlayer } from '@cybermp/server-types';
-import { type JoinMatchOptions, MatchStatus } from '@freeroam/shared';
 import { inject, injectable } from 'inversify';
 import type z from 'zod';
 import { TYPES } from '../../types';
 import type { GameModeFactory } from '../game-modes/game-mode';
 import type { zCreateMatchDTO } from './dto/create-match.dto';
 import type { zJoinMatchDTO } from './dto/join-match.dto';
-import { Match } from './match';
+import { type JoinMatchOptions, Match, MatchStatus } from './match';
 import { MatchRepository } from './match.repository';
 
 @injectable()
@@ -32,11 +32,15 @@ export class MatchmakingService {
     const mode = this.gameModeFactory(dto.name);
 
     if (!mode.CREATE_OPTIONS_SCHEMA.safeParse(dto.createOptions).success) {
-      return;
+      throw new RpcError({
+        message: 'Invalid create options',
+      });
     }
 
     if (!mode.JOIN_OPTIONS_SCHEMA.safeParse(dto.joinOptions).success) {
-      return;
+      throw new RpcError({
+        message: 'Invalid join options',
+      });
     }
 
     const match = new Match<any>(

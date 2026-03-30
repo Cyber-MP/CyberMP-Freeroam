@@ -1,10 +1,16 @@
+import type z from 'zod';
 import type {
-  GameModeName,
+  Match,
   zCreateMatchOptions,
   zJoinMatchOptions,
-} from '@freeroam/shared';
-import type z from 'zod';
-import type { Match } from '../matchmaking/match';
+} from '../matchmaking/match';
+
+export const GameModeName = {
+  RACE_LAPS: 'race_laps',
+  RACE_P2P: 'race_p2p',
+} as const;
+
+export type TGameModeName = (typeof GameModeName)[keyof typeof GameModeName];
 
 export abstract class BaseGameMode<
   TCreateOptions extends
@@ -18,7 +24,7 @@ export abstract class BaseGameMode<
     return this.JOIN_OPTIONS_SCHEMA;
   }
 
-  abstract name: GameModeName;
+  abstract name: TGameModeName;
   abstract onPlayerJoin(playerId: number): void;
   abstract onPlayerLeave(playerId: number): void;
   abstract init(match: Match<this>): void;
@@ -26,4 +32,4 @@ export abstract class BaseGameMode<
   abstract end(): void;
 }
 
-export type GameModeFactory = (name: GameModeName) => BaseGameMode;
+export type GameModeFactory = (name: TGameModeName) => BaseGameMode;

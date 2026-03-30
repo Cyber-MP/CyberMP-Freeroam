@@ -1,11 +1,10 @@
+import z from 'zod';
 import {
-  GameModeName,
+  type Match,
   zCreateMatchOptions,
   zJoinMatchOptions,
-} from '@freeroam/shared';
-import z from 'zod';
-import type { Match } from '../../../matchmaking/match';
-import { BaseGameMode } from '../../game-mode';
+} from '../../../matchmaking/match';
+import { BaseGameMode, GameModeName } from '../../game-mode';
 
 export const zCreateRaceP2POptions = zCreateMatchOptions.extend({
   map: z.string(),
