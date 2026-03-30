@@ -1,9 +1,42 @@
 import { generateUUID } from '@cybermp/rpc-server';
-import { type MatchDTO, MatchStatus, zMatchDTO } from '@freeroam/shared';
-import type z from 'zod';
+import z from 'zod';
 import { mp } from '../../mp';
 import { client } from '../../rpc';
-import type { BaseGameMode } from '../game-modes/game-mode';
+import { type BaseGameMode, GameModeName } from '../game-modes/game-mode';
+
+export const MatchStatus = {
+  LOBBY: 'LOBBY',
+  ACTIVE: 'ACTIVE',
+  ENDED: 'ENDED',
+} as const;
+
+export type TMatchStatus = (typeof MatchStatus)[keyof typeof MatchStatus];
+
+export const zCreateMatchOptions = z.looseObject({
+  maxPlayers: z.number().min(1).max(20),
+});
+
+export type CreateMatchOptions = z.infer<typeof zCreateMatchOptions>;
+
+export const zJoinMatchOptions = z.looseObject({});
+
+export type JoinMatchOptions = z.infer<typeof zJoinMatchOptions>;
+
+export const zMatchDTO = z.object({
+  id: z.string(),
+  owner: z.object({
+    id: z.number(),
+    nickname: z.string(),
+  }),
+  dimension: z.number(),
+  joinSchema: z.record(z.string(), z.unknown()),
+  modeName: z.enum(GameModeName),
+  options: zCreateMatchOptions,
+  members: z.record(z.number(), zJoinMatchOptions),
+  status: z.enum(MatchStatus),
+});
+
+export type MatchDTO = z.infer<typeof zMatchDTO>;
 
 type MatchConstructorOptions<TGameMode extends BaseGameMode> = {
   createOptions: z.infer<TGameMode['CREATE_OPTIONS_SCHEMA']>;
@@ -27,7 +60,7 @@ export class Match<TGameMode extends BaseGameMode = BaseGameMode> {
   options: z.infer<TGameMode['CREATE_OPTIONS_SCHEMA']>;
   members: Map<number, z.infer<TGameMode['JOIN_OPTIONS_SCHEMA']>> = new Map();
   mode: TGameMode;
-  status = MatchStatus.LOBBY;
+  status: TMatchStatus = MatchStatus.LOBBY;
 
   constructor(
     {

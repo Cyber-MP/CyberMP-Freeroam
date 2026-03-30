@@ -1,6 +1,9 @@
-import { GameModeName } from '@freeroam/shared';
 import { ContainerModule } from 'inversify';
-import { type GameModeFactory, GameModeFactorySymbol } from './game-mode';
+import {
+  type GameModeFactory,
+  GameModeFactorySymbol,
+  type GameModeName,
+} from './game-mode';
 import { GameModesController } from './game-modes.controller';
 import { GameModesService } from './game-modes.service';
 import {
@@ -15,7 +18,9 @@ export const GameModesModule = new ContainerModule(({ bind }) => {
   bind(GameModesService).toSelf().inSingletonScope();
   bind(GameModesController).toSelf().inSingletonScope();
 
-  bind(GameModeName.RACE_LAPS).to(RaceLaps).inRequestScope();
+  bind('race_laps' satisfies GameModeName)
+    .to(RaceLaps)
+    .inRequestScope();
   bind(RaceLapsController).to(RaceLapsController).inSingletonScope();
   bind(RaceLapsMapBuilder).to(RaceLapsMapBuilder).inSingletonScope();
 

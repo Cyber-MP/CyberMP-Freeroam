@@ -1,5 +1,5 @@
-import { GameModeName } from '@freeroam/shared';
 import z from 'zod';
+import { GameModeName } from '../../game-modes/game-mode';
 import {
   zCreateRaceLapsOptions,
   zJoinRaceLapsOptions,

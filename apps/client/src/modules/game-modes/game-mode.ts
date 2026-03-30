@@ -1,7 +1,9 @@
-import type { GameModeName, MatchDTO } from '@freeroam/shared';
 import type { ServerInputs } from '../../rpc';
+import type { MatchDTO } from './match';
 
 type GameModesOptions = ServerInputs['matchmaking']['create'];
+
+export type GameModeName = MatchDTO['modeName'];
 
 export abstract class BaseGameMode<
   TName extends GameModeName = GameModeName,

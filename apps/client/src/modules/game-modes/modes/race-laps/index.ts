@@ -3,7 +3,6 @@ import type {
   gameFxResource,
   Vector4,
 } from '@cybermp/client-types/game';
-import type { GameModeName } from '@freeroam/shared';
 import { inject, injectable } from 'inversify';
 import { createEulerAngles, createVector4 } from '../../../../lib/vectors';
 import { mp } from '../../../../mp';
@@ -91,7 +90,7 @@ class TrackPathNavigation {
 }
 
 @injectable()
-export class RaceLaps extends BaseGameMode<GameModeName.RACE_LAPS> {
+export class RaceLaps extends BaseGameMode<'race_laps'> {
   private trackPath!: RaceLapsTrackPath;
   private map!: RaceLapsMap;
   private vehicleId!: number;
