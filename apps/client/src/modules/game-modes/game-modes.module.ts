@@ -11,6 +11,7 @@ import {
   activeGameMiddleware,
 } from './middleware/active-game.middleware';
 import { RaceLaps } from './modes/race-laps';
+import { RaceLapsCheckpoint } from './modes/race-laps/checkpoint';
 import { RaceLapsController } from './modes/race-laps/controller';
 import { RaceLapsMapBuilder } from './modes/race-laps/map-builder';
 
@@ -21,8 +22,9 @@ export const GameModesModule = new ContainerModule(({ bind }) => {
   bind('race_laps' satisfies GameModeName)
     .to(RaceLaps)
     .inRequestScope();
-  bind(RaceLapsController).to(RaceLapsController).inSingletonScope();
-  bind(RaceLapsMapBuilder).to(RaceLapsMapBuilder).inSingletonScope();
+  bind(RaceLapsController).toSelf().inSingletonScope();
+  bind(RaceLapsMapBuilder).toSelf().inSingletonScope();
+  bind(RaceLapsCheckpoint).toSelf().inRequestScope();
 
   bind(ActiveGameMiddlewareSymbol).toDynamicValue(activeGameMiddleware);
   bind<GameModeFactory>(GameModeFactorySymbol).toFactory((c) => {

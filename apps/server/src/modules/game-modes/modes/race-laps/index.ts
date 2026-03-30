@@ -12,6 +12,7 @@ import {
 } from '../../../matchmaking/match';
 import { BaseGameMode, GameModeName } from '../../game-mode';
 import {
+  type RaceLapsCheckpointNode,
   RaceLapsClassVehicleMap,
   type RaceLapsMap,
   RaceLapsMapName,
@@ -51,8 +52,12 @@ class Racer {
   private map: RaceLapsMap;
   private trackPath: PathTransform[];
   private match: Match<RaceLaps>;
+  private checkpoints: RaceLapsCheckpointNode[];
 
   vehicle!: MpVehicle;
+  finished = false;
+  currentCheckpointIndex = 0;
+  currentLap = 0;
 
   constructor(opts: RacerConstructorOptions) {
     this.map = opts.map;
@@ -60,6 +65,11 @@ class Racer {
     this.index = opts.index;
     this.trackPath = opts.trackPath;
     this.match = opts.match;
+    this.checkpoints = this.map.nodes.filter(
+      (o) => o.type === 'checkpoint',
+    ) as RaceLapsCheckpointNode[];
+
+    // biome-ignore lint/style/noNonNullAssertion: Player is obviously present
     this.options = opts.match.members.get(opts.player)!;
   }
 
@@ -100,9 +110,27 @@ class Racer {
     );
   }
 
+  processCheckpoint() {
+    if (this.finished) {
+      return;
+    }
+
+    const totalCheckpoints = this.checkpoints.length;
+
+    if (this.currentCheckpointIndex >= totalCheckpoints - 1) {
+      if (this.currentLap >= this.match.options.laps) {
+        this.finished = true;
+      } else {
+        this.currentLap++;
+        this.currentCheckpointIndex = 0;
+      }
+    } else {
+      this.currentCheckpointIndex++;
+    }
+  }
+
   reset() {
     this.vehicle.destroy();
-
     this.player.dimension = 0;
 
     client.gameModes.raceLaps.reset.trigger(this.player);
@@ -174,6 +202,16 @@ export class RaceLaps extends BaseGameMode<
     this.released = true;
 
     // race started
+  }
+
+  processCheckpoint(playerId: number) {
+    const racer = this.racers.get(playerId);
+
+    if (!racer) {
+      return;
+    }
+
+    racer.processCheckpoint();
   }
 
   async startCountdown() {

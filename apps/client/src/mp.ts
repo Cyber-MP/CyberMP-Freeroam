@@ -54,6 +54,10 @@ declare module '@cybermp/client-types/game' {
     ResetFocus(): void;
   }
 
+  export interface gamemappinsMappinSystem {
+    TrackMappin(id: gameNewMappinID): void;
+  }
+
   export namespace ScriptGameInstance {
     export function GetInkSystem(): inkSystem;
   }

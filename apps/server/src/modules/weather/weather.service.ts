@@ -4,6 +4,8 @@ import z from 'zod';
 import { client } from '../../rpc';
 import { LoggerService } from '../logger/logger.service';
 
+// TODO: add weather progression so it would applying randomly over time
+
 export enum EWeatherState {
   SUNNY = '24h_weather_sunny',
   LIGHT_CLOUDS = '24h_weather_light_clouds',
