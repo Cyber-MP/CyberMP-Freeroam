@@ -8,7 +8,7 @@ import {
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { cva } from 'class-variance-authority';
 import { useMemo, useRef } from 'react';
-import { JoinMatchForm } from '@/components/menu/matchmaking/form';
+import { JoinMatchForm } from './-components/form';
 import { Button } from '@/components/ui/button';
 import {
   Card,

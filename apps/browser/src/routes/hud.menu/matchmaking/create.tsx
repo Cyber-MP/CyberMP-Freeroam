@@ -7,10 +7,6 @@ import {
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 import { DefaultPendingPage } from '@/components/default-pending-page';
-import {
-  CreateMatchForm,
-  JoinMatchForm,
-} from '@/components/menu/matchmaking/form';
 import { Button } from '@/components/ui/button';
 import { Field, FieldLabel, FieldSet } from '@/components/ui/field';
 import {
@@ -22,6 +18,7 @@ import {
 } from '@/components/ui/select';
 import { serverQuery } from '@/rpc';
 import { queryClient } from '@/tanstack-query';
+import { CreateMatchForm, JoinMatchForm } from './-components/form';
 
 export const Route = createFileRoute('/hud/menu/matchmaking/create')({
   component: RouteComponent,
