@@ -113,6 +113,8 @@ export class Match<TGameMode extends BaseGameMode = BaseGameMode> {
     this.mode.onPlayerLeave(playerId);
     this.hooks?.onPlayerLeave?.(playerId);
 
+    client.gameModes.end.trigger(playerId);
+
     if (this.ownerId !== playerId) {
       return;
     }
