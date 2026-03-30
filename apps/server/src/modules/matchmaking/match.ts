@@ -154,5 +154,7 @@ export class Match<TGameMode extends BaseGameMode = BaseGameMode> {
     }
 
     this.hooks?.onEnd?.();
+
+    this.members.clear();
   }
 }
