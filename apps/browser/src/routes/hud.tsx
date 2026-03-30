@@ -25,11 +25,11 @@ function RouteComponent() {
 
   return (
     <div>
-      {/*<Brand />
+      <Brand />
       <Chat />
       <KillFeed />
       <Hints />
-      <LobbyMatch />*/}
+      <LobbyMatch />
       <Outlet />
     </div>
   );
