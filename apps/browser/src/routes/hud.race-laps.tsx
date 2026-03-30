@@ -59,6 +59,7 @@ const Countdown = () => {
 function RouteComponent() {
   return (
     <div>
+      RACE LAPS HUD
       <Countdown />
     </div>
   );

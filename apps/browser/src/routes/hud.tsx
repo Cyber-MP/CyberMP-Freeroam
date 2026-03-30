@@ -1,13 +1,26 @@
-import { createFileRoute, Outlet, useNavigate } from '@tanstack/react-router';
+import {
+  createFileRoute,
+  Outlet,
+  redirect,
+  useNavigate,
+} from '@tanstack/react-router';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { Brand } from '@/components/hud/brand';
 import { Chat } from '@/components/hud/chat';
 import { Hints } from '@/components/hud/hints';
 import { KillFeed } from '@/components/hud/kill-feed';
 import { LobbyMatch } from '@/components/hud/lobby-match';
+import { hudState } from '@/store/hud';
 
 export const Route = createFileRoute('/hud')({
   component: RouteComponent,
+  beforeLoad: async ({ location }) => {
+    if (location.href === '/hud' && hudState.globalPath !== '/hud') {
+      throw redirect({
+        to: hudState.globalPath,
+      });
+    }
+  },
 });
 
 function RouteComponent() {

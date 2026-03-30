@@ -4,6 +4,7 @@ import { keysContract } from '../keys';
 import type { FileRoutesByFullPath } from '../routeTree.gen';
 import { chatContract } from '../store/chat';
 import { hintsContract } from '../store/hints';
+import { hudContract } from '../store/hud';
 import { killFeedContract } from '../store/kill-feed';
 import { tanstackRouter } from '../tanstack-router';
 import { r } from '.';
@@ -17,6 +18,7 @@ export const rpcRouter = {
   hints: hintsContract,
   chat: chatContract,
   killFeed: killFeedContract,
+  hud: hudContract,
 
   navigate: r.procedure
     .input(z.union([z.string<keyof FileRoutesByFullPath>(), z.number()]))

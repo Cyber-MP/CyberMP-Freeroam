@@ -140,6 +140,7 @@ export class RaceLaps extends BaseGameMode<GameModeName.RACE_LAPS> {
     this.statusEffects.remove('GameplayRestriction.NoCombat');
     this.statusEffects.remove('GameplayRestriction.NoWeapons');
 
+    browser.hud.setGlobalPath.trigger('/hud');
     browser.navigate.trigger('/hud');
   }
 
@@ -149,6 +150,7 @@ export class RaceLaps extends BaseGameMode<GameModeName.RACE_LAPS> {
       data.startPoint.yaw,
     );
 
+    browser.hud.setGlobalPath.trigger('/hud/race-laps');
     browser.navigate.trigger('/hud/race-laps');
 
     this.vehiclesService.requestSitInVehicle(data.vehicleId);
