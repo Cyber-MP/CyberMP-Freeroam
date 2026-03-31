@@ -5,6 +5,7 @@ import { statusEffectsContract } from '../modules/game/status-effects/status-eff
 import { teleportContract } from '../modules/game/teleport/teleport.controller';
 import { vehiclesContract } from '../modules/game/vehicles/vehicles.controller';
 import { gameModesContract } from '../modules/game-modes/game-modes.controller';
+import { itemSpawnerContract } from '../modules/item-spawner/item-spawner.controller';
 import { sessionContract } from '../modules/session/session.controller';
 import { spawnContract } from '../modules/spawn/spawn.controller';
 import { timeContract } from '../modules/time/time.controller';
@@ -24,6 +25,7 @@ export const router = {
   session: sessionContract,
   cef: cefContract,
   chat: chatContract,
+  itemSpawner: itemSpawnerContract,
 };
 
 export type ClientRouter = typeof router;
