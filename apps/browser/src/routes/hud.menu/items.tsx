@@ -1,11 +1,46 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { isHotkeyPressed } from 'react-hotkeys-hook';
+import Boots_03_old_01 from '#/images/clothes/Boots_03_old_01.webp?w=300&h=300&imagetools';
+import Boots_07_basic_01 from '#/images/clothes/Boots_07_basic_01.webp?w=300&h=300&imagetools';
+import Boots_09_old_01 from '#/images/clothes/Boots_09_old_01.webp?w=300&h=300&imagetools';
+import Boots_09_rich_03 from '#/images/clothes/Boots_09_rich_03.webp?w=300&h=300&imagetools';
+import CasualShoes_04_basic_02 from '#/images/clothes/CasualShoes_04_basic_02.webp?w=300&h=300&imagetools';
+import Cop_01_Set_Boots from '#/images/clothes/Cop_01_Set_Boots.webp?w=300&h=300&imagetools';
+import Cop_01_Set_Jacket from '#/images/clothes/Cop_01_Set_Jacket.webp?w=300&h=300&imagetools';
+import FormalPants_02_basic_01 from '#/images/clothes/FormalPants_02_basic_01.webp?w=300&h=300&imagetools';
+import FormalShoes_02_rich_01 from '#/images/clothes/FormalShoes_02_rich_01.webp?w=300&h=300&imagetools';
+import FormalShoes_03_rich_02 from '#/images/clothes/FormalShoes_03_rich_02.webp?w=300&h=300&imagetools';
+import FormalSkirt_01_basic_02 from '#/images/clothes/FormalSkirt_01_basic_02.webp?w=300&h=300&imagetools';
+import Media_01_Set_Pants from '#/images/clothes/Media_01_Set_Pants.webp?w=300&h=300&imagetools';
+import Pants_03_basic_03 from '#/images/clothes/Pants_03_basic_03.webp?w=300&h=300&imagetools';
+import Pants_03_rich_03 from '#/images/clothes/Pants_03_rich_03.webp?w=300&h=300&imagetools';
+import Pants_07_old_02 from '#/images/clothes/Pants_07_old_02.webp?w=300&h=300&imagetools';
+import Pants_11_old_02 from '#/images/clothes/Pants_11_old_02.webp?w=300&h=300&imagetools';
 import Q005_Johnny_Glasses from '#/images/clothes/Q005_Johnny_Glasses.webp?w=300&h=300&imagetools';
 import Q005_Johnny_Pants from '#/images/clothes/Q005_Johnny_Pants.webp?w=300&h=300&imagetools';
 import Q005_Johnny_Shirt from '#/images/clothes/Q005_Johnny_Shirt.webp?w=300&h=300&imagetools';
 import Q005_Johnny_Shoes from '#/images/clothes/Q005_Johnny_Shoes.webp?w=300&h=300&imagetools';
+import Q115_Custom_Predator_Armor from '#/images/clothes/Q115_Custom_Predator_Armor.webp?w=300&h=300&imagetools';
 import Q303_mask_h1 from '#/images/clothes/Q303_mask_h1.webp?w=300&h=300&imagetools';
+import SQ030_Diving_Suit from '#/images/clothes/SQ030_Diving_Suit.webp?w=300&h=300&imagetools';
+import SQ030_MaxTac_Chest from '#/images/clothes/SQ030_MaxTac_Chest.webp?w=300&h=300&imagetools';
 import SQ031_Samurai_Jacket from '#/images/clothes/SQ031_Samurai_Jacket.webp?w=300&h=300&imagetools';
+import Tech_01_rich_01 from '#/images/clothes/Tech_01_rich_01.webp?w=300&h=300&imagetools';
+import Tech_02_basic_02 from '#/images/clothes/Tech_02_basic_02.webp?w=300&h=300&imagetools';
+import TightJumpsuit_01_basic_01 from '#/images/clothes/TightJumpsuit_01_basic_01.webp?w=300&h=150&imagetools';
+import TightJumpsuit_01_rich_02 from '#/images/clothes/TightJumpsuit_01_rich_02.webp?w=300&h=150&imagetools';
+import Trauma_Team_Outfit from '#/images/clothes/Trauma_Team_Outfit.webp?w=300&h=300&imagetools';
+import Tshirt_12_basic_01 from '#/images/clothes/Tshirt_12_basic_01.webp?w=300&h=300&imagetools';
+import Tshirt_12_old_04 from '#/images/clothes/Tshirt_12_old_04.webp?w=300&h=300&imagetools';
+import Twitch_Drop_Specs from '#/images/clothes/Twitch_Drop_Specs.webp?w=300&h=300&imagetools';
+import Undershirt_03_basic_02 from '#/images/clothes/Undershirt_03_basic_02.webp?w=300&h=300&imagetools';
+import Vest_02_rich_02 from '#/images/clothes/Vest_02_rich_02.webp?w=300&h=300&imagetools';
+import Vest_04_rich_02 from '#/images/clothes/Vest_04_rich_02.webp?w=300&h=300&imagetools';
+import Vest_08_basic_01 from '#/images/clothes/Vest_08_basic_01.webp?w=300&h=300&imagetools';
+import Vest_21_rich_03 from '#/images/clothes/Vest_21_rich_03.webp?w=300&h=300&imagetools';
+import Vest_24_basic_01 from '#/images/clothes/Vest_24_basic_01.webp?w=300&h=300&imagetools';
+import Visor_01_basic_02 from '#/images/clothes/Visor_01_basic_02.webp?w=300&h=300&imagetools';
+import Visor_02_basic_01 from '#/images/clothes/Visor_02_basic_01.webp?w=300&h=300&imagetools';
 import BlackLaceV1 from '#/images/consumables/BlackLaceV1.webp?w=300&h=300&imagetools';
 import Blackmarket_MemoryBooster from '#/images/consumables/Blackmarket_MemoryBooster.webp?w=300&h=300&imagetools';
 import Blackmarket_StaminaBooster from '#/images/consumables/Blackmarket_StaminaBooster.webp?w=300&h=150&imagetools';
@@ -16,9 +51,19 @@ import GrenadeFragLegendaryPlus from '#/images/consumables/GrenadeFragLegendaryP
 import GrenadeOzobsNose from '#/images/consumables/GrenadeOzobsNose.webp?w=300&h=300&fit=contain&imagetools';
 import HealthBooster from '#/images/consumables/HealthBooster.webp?w=300&h=300&imagetools';
 import OxyBooster from '#/images/consumables/OxyBooster.webp?w=300&h=300&imagetools';
+import AdvancedBoostedTendonsLegendaryPlusPlus from '#/images/implants/AdvancedBoostedTendonsLegendaryPlusPlus.webp?w=300&h=300&imagetools';
 import AdvancedBoringPlatingLegendaryPlusPlus from '#/images/implants/AdvancedBoringPlatingLegendaryPlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedJointLockLegendaryPlusPlus from '#/images/implants/AdvancedJointLockLegendaryPlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedMaxTacMantisBladesLegendaryPlusPlus from '#/images/implants/AdvancedMaxTacMantisBladesLegendaryPlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedNanoWiresLegendaryPlusPlus from '#/images/implants/AdvancedNanoWiresLegendaryPlusPlus.webp?w=300&h=300&imagetools';
 import AdvancedNetwatchNetdriverMKLegendaryPlusPlus from '#/images/implants/AdvancedNetwatchNetdriverMKLegendaryPlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedPowerGripLegendaryPlusPlus from '#/images/implants/AdvancedPowerGripLegendaryPlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedProjectileLauncherLegendaryPlusPlus from '#/images/implants/AdvancedProjectileLauncherLegendaryPlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedReinforcedMusclesLegendaryPlusPlus from '#/images/implants/AdvancedReinforcedMusclesLegendaryPlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedSmartLinkLegendaryPlusPlus from '#/images/implants/AdvancedSmartLinkLegendaryPlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedStrongArmsLegendaryPlusPlus from '#/images/implants/AdvancedStrongArmsLegendaryPlusPlus.webp?w=300&h=300&imagetools';
 import AdvancedTimeBankLegendaryPlusPlus from '#/images/implants/AdvancedTimeBankLegendaryPlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedTitaniumInfusedBonesLegendaryPlusPlus from '#/images/implants/AdvancedTitaniumInfusedBonesLegendaryPlusPlus.webp?w=300&h=300&imagetools';
 import CapacityBoosterLegendaryPlusPlus from '#/images/implants/CapacityBoosterLegendaryPlusPlus.webp?w=300&h=300&imagetools';
 import HauntedCyberdeck_LegendaryPlusPlus from '#/images/implants/HauntedCyberdeck_LegendaryPlusPlus.webp?w=300&h=300&imagetools';
 import Iconic_AdvancedKiroshiOpticsBareLegendaryPlusPlus from '#/images/implants/Iconic_AdvancedKiroshiOpticsBareLegendaryPlusPlus.webp?w=300&h=300&imagetools';
@@ -339,6 +384,56 @@ const DATA: Record<ItemCategory, Item[]> = {
       name: 'Leeroy Ligament System',
       image: IconicJenkinsTendonsPlusPlus,
     },
+    {
+      key: 'AdvancedReinforcedMusclesLegendaryPlusPlus',
+      name: 'Fortified Ankles',
+      image: AdvancedReinforcedMusclesLegendaryPlusPlus,
+    },
+    {
+      key: 'AdvancedBoostedTendonsLegendaryPlusPlus',
+      name: 'Reinforced Tendons',
+      image: AdvancedBoostedTendonsLegendaryPlusPlus,
+    },
+    {
+      key: 'AdvancedNanoWiresLegendaryPlusPlus',
+      name: 'Monowire',
+      image: AdvancedNanoWiresLegendaryPlusPlus,
+    },
+    {
+      key: 'AdvancedStrongArmsLegendaryPlusPlus',
+      name: 'Gorilla Arms',
+      image: AdvancedStrongArmsLegendaryPlusPlus,
+    },
+    {
+      key: 'AdvancedMaxTacMantisBladesLegendaryPlusPlus',
+      name: 'MaxTac Mantis Blades',
+      image: AdvancedMaxTacMantisBladesLegendaryPlusPlus,
+    },
+    {
+      key: 'AdvancedProjectileLauncherLegendaryPlusPlus',
+      name: 'Projectile Launch System',
+      image: AdvancedProjectileLauncherLegendaryPlusPlus,
+    },
+    {
+      key: 'AdvancedTitaniumInfusedBonesLegendaryPlusPlus',
+      name: 'Titanium Bones',
+      image: AdvancedTitaniumInfusedBonesLegendaryPlusPlus,
+    },
+    {
+      key: 'AdvancedPowerGripLegendaryPlusPlus',
+      name: 'Ballistic Coprocessor',
+      image: AdvancedPowerGripLegendaryPlusPlus,
+    },
+    {
+      key: 'AdvancedJointLockLegendaryPlusPlus',
+      name: 'Shock Absorber',
+      image: AdvancedJointLockLegendaryPlusPlus,
+    },
+    {
+      key: 'AdvancedSmartLinkLegendaryPlusPlus',
+      name: 'Smart Link',
+      image: AdvancedSmartLinkLegendaryPlusPlus,
+    },
   ],
   [ItemCategory.CLOTHES]: [
     {
@@ -370,6 +465,181 @@ const DATA: Record<ItemCategory, Item[]> = {
       key: 'Q005_Johnny_Shoes',
       name: "Johnny's shoes",
       image: Q005_Johnny_Shoes,
+    },
+    {
+      key: 'Visor_01_basic_02',
+      name: 'Illegally modified military infovisor',
+      image: Visor_01_basic_02,
+    },
+    {
+      key: 'Visor_02_basic_01',
+      name: 'Boostknit-polymer military techgogs',
+      image: Visor_02_basic_01,
+    },
+    {
+      key: 'Tech_01_rich_01',
+      name: 'Kang Tao manganese combat ocuset',
+      image: Tech_01_rich_01,
+    },
+    {
+      key: 'Tech_02_basic_02',
+      name: 'Lightweight tungsten-steel BD wreath',
+      image: Tech_02_basic_02,
+    },
+    {
+      key: 'Vest_04_rich_02',
+      name: 'Daemon Hunter titanium-weave ballistic vest',
+      image: Vest_04_rich_02,
+    },
+    {
+      key: 'Vest_02_rich_02',
+      name: 'Militech armor-quilted aramid vest',
+      image: Vest_02_rich_02,
+    },
+    {
+      key: 'SQ030_MaxTac_Chest',
+      name: 'MaxTac multilayered armor-weave Jacket',
+      image: SQ030_MaxTac_Chest,
+    },
+    {
+      key: 'Q115_Custom_Predator_Armor',
+      name: 'Predator Aramid Armor (from Rogue)',
+      image: Q115_Custom_Predator_Armor,
+    },
+    {
+      key: 'Cop_01_Set_Jacket',
+      name: 'Heavy-duty aramid-reinforced badge coat',
+      image: Cop_01_Set_Jacket,
+    },
+    {
+      key: 'Twitch_Drop_Specs',
+      name: 'NUS infiltrator headgear',
+      image: Twitch_Drop_Specs,
+    },
+    {
+      key: 'Vest_08_basic_01',
+      name: 'Militech heavy tactical vest',
+      image: Vest_08_basic_01,
+    },
+    {
+      key: 'TightJumpsuit_01_rich_02',
+      name: 'Red Alert anti-surge netrunning suit',
+      image: TightJumpsuit_01_rich_02,
+    },
+    {
+      key: 'TightJumpsuit_01_basic_01',
+      name: 'Military-grade aramid netrunning suit',
+      image: TightJumpsuit_01_basic_01,
+    },
+    {
+      key: 'Vest_24_basic_01',
+      name: 'Militech tactical chest holster',
+      image: Vest_24_basic_01,
+    },
+    {
+      key: 'Vest_21_rich_03',
+      name: 'Breathable tac vest with elastic synth-silk',
+      image: Vest_21_rich_03,
+    },
+    {
+      key: 'FormalPants_02_basic_01',
+      name: 'Classic immuno-cotton corporate pants',
+      image: FormalPants_02_basic_01,
+    },
+    {
+      key: 'Undershirt_03_basic_02',
+      name: 'Bara Kaika syn-leather bustier',
+      image: Undershirt_03_basic_02,
+    },
+    {
+      key: 'Tshirt_12_old_04',
+      name: 'Quick-dry composite t-shirt',
+      image: Tshirt_12_old_04,
+    },
+    {
+      key: 'Tshirt_12_basic_01',
+      name: 'Thermodynamic t-shirt with nanotube lining',
+      image: Tshirt_12_basic_01,
+    },
+    {
+      key: 'FormalSkirt_01_basic_02',
+      name: 'Classy aramid-weave skirt',
+      image: FormalSkirt_01_basic_02,
+    },
+    {
+      key: 'Media_01_Set_Pants',
+      name: 'Anti-piercing tactical media cargo pants',
+      image: Media_01_Set_Pants,
+    },
+    {
+      key: 'Pants_03_basic_03',
+      name: 'BITCH V.13 syn-resistant pants',
+      image: Pants_03_basic_03,
+    },
+    {
+      key: 'Pants_03_rich_03',
+      name: 'PSYCHO tac-fiber biker pants',
+      image: Pants_03_rich_03,
+    },
+    {
+      key: 'Pants_07_old_02',
+      name: 'Worn Kang Tao tactical pants',
+      image: Pants_07_old_02,
+    },
+    {
+      key: 'Pants_11_old_02',
+      name: 'Nomad eazy-breathe cargo pants',
+      image: Pants_11_old_02,
+    },
+    {
+      key: 'Boots_03_old_01',
+      name: 'Weathered combat boots',
+      image: Boots_03_old_01,
+    },
+    {
+      key: 'Boots_07_basic_01',
+      name: 'GLITTER laceless sturdy-stitched steel-toes',
+      image: Boots_07_basic_01,
+    },
+    {
+      key: 'Boots_09_old_01',
+      name: 'Composite punk exo-jacks',
+      image: Boots_09_old_01,
+    },
+    {
+      key: 'Boots_09_rich_03',
+      name: 'Reinforced Rouge Absurde exo-jacks with defensive nanotubing',
+      image: Boots_09_rich_03,
+    },
+    {
+      key: 'CasualShoes_04_basic_02',
+      name: 'Darra Polytechnic suede sneakers',
+      image: CasualShoes_04_basic_02,
+    },
+    {
+      key: 'Cop_01_Set_Boots',
+      name: 'Waterpoof badge combat boots',
+      image: Cop_01_Set_Boots,
+    },
+    {
+      key: 'FormalShoes_02_rich_01',
+      name: 'Silver Blood evening pumps with protective insoles',
+      image: FormalShoes_02_rich_01,
+    },
+    {
+      key: 'FormalShoes_03_rich_02',
+      name: 'Creamy Rhubarb dress wedges with sole support',
+      image: FormalShoes_03_rich_02,
+    },
+    {
+      key: 'SQ030_Diving_Suit',
+      name: 'Neoprene diving suit with flippers (from Judy)',
+      image: SQ030_Diving_Suit,
+    },
+    {
+      key: 'Trauma_Team_Outfit',
+      name: 'Trauma Team uniform',
+      image: Trauma_Team_Outfit,
     },
   ],
 };
@@ -424,7 +694,7 @@ function ItemsContent<T extends ItemCategory>({ value }: { value: T }) {
       {DATA[value].map((item) => (
         <div
           key={item.key}
-          className="flex flex-col justify-center items-center w-full bg-[#85858520] hover:bg-[#85858540] transition-colors duration-150 group cursor-pointer border-2 border-transparent hover:border-primary"
+          className="flex flex-col justify-between items-center w-full bg-[#85858520] hover:bg-[#85858540] transition-colors duration-150 group cursor-pointer border-2 border-transparent hover:border-primary"
           onClick={() => spawnItem(item.key)}
         >
           <img
@@ -434,7 +704,7 @@ function ItemsContent<T extends ItemCategory>({ value }: { value: T }) {
             draggable={false}
           />
 
-          <span className="text-[#aaa] group-hover:text-white bg-muted w-full text-center">
+          <span className="text-[#aaa] group-hover:text-white bg-muted w-full text-center text-xs p-1 truncate">
             {item.name}
           </span>
         </div>
