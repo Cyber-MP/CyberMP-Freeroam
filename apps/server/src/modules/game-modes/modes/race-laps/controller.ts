@@ -1,3 +1,4 @@
+import { RpcApplyType } from '@cybermp/rpc-server';
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
 import { r } from '../../../../rpc';
@@ -7,9 +8,13 @@ import type {
   RpcMatchContext,
 } from '../../../matchmaking/middlewares/match.middleware';
 import type { RaceLaps } from '.';
+import { zRaceLapsRacerDTO } from './data';
 
 export const raceLapsContract = {
-  processCheckpoint: r.contract.context<RpcMatchContext<RaceLaps>>(),
+  processCheckpoint: r.contract
+    .method(RpcApplyType.REGISTER)
+    .context<RpcMatchContext<RaceLaps>>()
+    .output(zRaceLapsRacerDTO),
 };
 
 @eager()
@@ -21,7 +26,7 @@ export class RaceLapsController {
   ) {}
 
   processCheckpoint(ctx: RpcMatchContext<RaceLaps>) {
-    // ctx.match.mode.proces
+    return ctx.match.mode.processCheckpoint(ctx.player.id);
   }
 
   @postConstruct()

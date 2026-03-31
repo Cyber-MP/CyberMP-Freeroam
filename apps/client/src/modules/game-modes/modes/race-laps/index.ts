@@ -6,6 +6,7 @@ import type {
 import { inject, injectable } from 'inversify';
 import { createEulerAngles, createVector4 } from '../../../../lib/vectors';
 import { mp } from '../../../../mp';
+import { server } from '../../../../rpc';
 import { browser } from '../../../../rpc/browser';
 import { CefService } from '../../../cef/cef.service';
 import { GHealthService } from '../../../game/health/health.service';
@@ -18,6 +19,7 @@ import type {
   RaceLapsCheckpointNode,
   RaceLapsMap,
   RaceLapsPrepareDTO,
+  RaceLapsRacerDTO,
   RaceLapsStartPointNode,
   RaceLapsTrackPath,
 } from './dto';
@@ -82,7 +84,11 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
   private vehicleId!: number;
   private startPoint!: RaceLapsStartPointNode;
 
-  private currentCheckpointIndex = 0;
+  private data: RaceLapsRacerDTO = {
+    currentCheckpointIndex: 0,
+    currentLap: 0,
+    finished: false,
+  };
 
   private initialPosition!: Vector4;
 
@@ -154,6 +160,23 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
     this.navigation.create(this.trackPath);
   }
 
+  private createCheckpoint() {
+    const currentCheckpointNode =
+      this.checkpoints[this.data.currentCheckpointIndex];
+
+    this.checkpoint.spawn(currentCheckpointNode, async () => {
+      const nextData = await server.gameModes.raceLaps.processCheckpoint
+        .call()
+        .catch(() => null);
+      if (!nextData || nextData.finished) {
+        return;
+      }
+
+      this.data = nextData;
+      this.createCheckpoint();
+    });
+  }
+
   release() {
     this.statusEffects.remove('GameplayRestriction.NoDriving');
 
@@ -162,11 +185,7 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
       this.statusEffects.remove('GameplayRestriction.NoWeapons');
     }
 
-    const currentCheckpointNode = this.checkpoints[this.currentCheckpointIndex];
-
-    this.checkpoint.spawn(currentCheckpointNode, () => {
-      // this.currentCheckpointIndex++;
-    });
+    this.createCheckpoint();
   }
 
   startCountdown(startTimestamp: number) {

@@ -11,10 +11,9 @@ import type { RaceLapsCheckpointNode } from './dto';
 
 @injectable()
 export class RaceLapsCheckpoint {
-  private objectId?: number;
   private mappinId?: gameNewMappinID;
   private polygon?: Polygon;
-  private objectsGroup = `race-laps-checkpoint-${uid(7)}`;
+  private objectsGroup?: string;
 
   private onEnter?: () => void;
 
@@ -41,7 +40,9 @@ export class RaceLapsCheckpoint {
       ),
     };
 
-    this.objectId = this.objectsService.create({
+    this.objectsGroup = `race-laps-checkpoint-${uid(7)}`;
+
+    this.objectsService.create({
       skinHash: HASHES[direction],
       position: node.position,
       rotation: [0, 0, node.yaw || 0],
@@ -79,8 +80,8 @@ export class RaceLapsCheckpoint {
   }
 
   destroy() {
-    if (this.objectId) {
-      mp.despawnLocalObject(this.objectId);
+    if (this.objectsGroup) {
+      this.objectsService.destroyGroup(this.objectsGroup);
     }
 
     if (this.mappinId) {
@@ -90,12 +91,15 @@ export class RaceLapsCheckpoint {
       );
     }
 
-    if (this.polygon && this.onEnter) {
-      this.polygon.entityEnterObserver.unsubscribe(this.onEnter);
+    if (this.onEnter) {
+      this.polygon?.entityEnterObserver.unsubscribe(this.onEnter);
+    }
+
+    if (this.polygon) {
       this.polygonsService.destroy(this.polygon);
     }
 
-    this.objectId = undefined;
+    this.objectsGroup = undefined;
     this.mappinId = undefined;
     this.polygon = undefined;
   }
