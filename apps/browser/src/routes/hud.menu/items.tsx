@@ -77,11 +77,11 @@ enum ItemCategory {
   IMPLANTS = 'implants',
 }
 
-interface Item {
+type Item = {
   key: ClientInputs['itemSpawner']['spawnItem'];
   name: string;
   image: string;
-}
+};
 
 const DATA: Record<ItemCategory, Item[]> = {
   [ItemCategory.WEAPONS]: [
@@ -408,7 +408,7 @@ function RouteComponent() {
   );
 }
 
-function ItemsContent<const T extends ItemCategory>({ value }: { value: T }) {
+function ItemsContent<T extends ItemCategory>({ value }: { value: T }) {
   const navigate = useNavigate();
 
   const spawnItem = (key: Item['key']) => {
