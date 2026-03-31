@@ -1,4 +1,5 @@
 import type {
+  entEntity,
   gameFxInstance,
   gameFxResource,
   Vector4,
@@ -139,6 +140,15 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
     browser.navigate.trigger('/hud');
   }
 
+  updateRacerData(data: Partial<RaceLapsRacerDTO> = {}) {
+    this.data = { ...this.data, ...data };
+    browser.gameModes.raceLaps.updateData.trigger({
+      ...this.data,
+      totalCheckpoints: this.checkpoints.length,
+      totalLaps: this.options.laps,
+    });
+  }
+
   async prepare(data: RaceLapsPrepareDTO) {
     await this.teleportService.teleportAsync(
       ...data.startPoint.position,
@@ -158,13 +168,18 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
     this.vehicleId = data.vehicleId;
 
     this.navigation.create(this.trackPath);
+    this.updateRacerData(this.data);
   }
 
   private createCheckpoint() {
     const currentCheckpointNode =
       this.checkpoints[this.data.currentCheckpointIndex];
 
-    const onEnterCheckpoint = async () => {
+    const onEnterCheckpoint = async (entity: entEntity) => {
+      if (entity.GetClassName() !== 'PlayerPuppet') {
+        return;
+      }
+
       const nextData = await server.gameModes.raceLaps.processCheckpoint
         .call()
         .catch(() => null);
@@ -172,7 +187,8 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
         return;
       }
 
-      this.data = nextData;
+      this.updateRacerData(nextData);
+
       this.createCheckpoint();
     };
 
