@@ -1,6 +1,6 @@
 import type { MpPlayer } from '@cybermp/server-types';
 import { eager } from '@freeroam/inversify';
-import { inject, injectable } from 'inversify';
+import { inject, injectable, postConstruct } from 'inversify';
 import { ChatCommandFlag, ChatService } from '../chat/chat.service';
 import { VehiclesSpawnerService } from './vehicles-spawner.service';
 
@@ -17,6 +17,7 @@ export class VehiclesSpawnerCommands {
     this.vehiclesSpawnerService.clearPlayerVehicles(player.id);
   }
 
+  @postConstruct()
   private init() {
     this.chatService.addCommand({
       name: 'clearveh',
