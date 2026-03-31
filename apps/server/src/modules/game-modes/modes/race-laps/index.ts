@@ -16,9 +16,11 @@ import {
   RaceLapsClassVehicleMap,
   type RaceLapsMap,
   RaceLapsMapName,
+  type RaceLapsRacerDTO,
   type RaceLapsStartPointNode,
   RaceLapsVehicleClass,
   RaceLapsVehicleMap,
+  zRaceLapsRacerDTO,
 } from './data';
 import { RaceLapsMaps } from './maps';
 import {
@@ -129,6 +131,14 @@ class Racer {
     }
   }
 
+  toDTO(): RaceLapsRacerDTO {
+    return zRaceLapsRacerDTO.parse({
+      currentCheckpointIndex: this.currentCheckpointIndex,
+      currentLap: this.currentLap,
+      finished: this.finished,
+    });
+  }
+
   reset() {
     this.vehicle.destroy();
     this.player.dimension = 0;
@@ -210,8 +220,8 @@ export class RaceLaps extends BaseGameMode<
     if (!racer) {
       return;
     }
-
     racer.processCheckpoint();
+    return racer.toDTO();
   }
 
   async startCountdown() {

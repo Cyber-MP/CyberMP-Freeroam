@@ -38,6 +38,14 @@ export const RaceLapsVehicleMap: Record<
   ],
 };
 
+export const zRaceLapsRacerDTO = z.object({
+  currentCheckpointIndex: z.number().default(0),
+  currentLap: z.number(),
+  finished: z.boolean().default(false),
+});
+
+export type RaceLapsRacerDTO = z.infer<typeof zRaceLapsRacerDTO>;
+
 export const zRaceLapsBaseNode = z.object({
   type: z.string(),
   position: zVector3,
