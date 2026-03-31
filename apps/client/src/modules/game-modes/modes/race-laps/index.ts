@@ -164,7 +164,7 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
     const currentCheckpointNode =
       this.checkpoints[this.data.currentCheckpointIndex];
 
-    this.checkpoint.spawn(currentCheckpointNode, async () => {
+    const onEnterCheckpoint = async () => {
       const nextData = await server.gameModes.raceLaps.processCheckpoint
         .call()
         .catch(() => null);
@@ -174,7 +174,9 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
 
       this.data = nextData;
       this.createCheckpoint();
-    });
+    };
+
+    this.checkpoint.spawn(currentCheckpointNode, onEnterCheckpoint);
   }
 
   release() {
