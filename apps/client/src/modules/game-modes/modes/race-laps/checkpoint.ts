@@ -1,5 +1,5 @@
 import { gamedataMappinVariant } from '@cybermp/client-types/enums';
-import type { gameNewMappinID } from '@cybermp/client-types/game';
+import type { entEntity, gameNewMappinID } from '@cybermp/client-types/game';
 import { inject, injectable } from 'inversify';
 import { uid } from 'radash';
 import { createVector3, createVector4 } from '../../../../lib/vectors';
@@ -15,14 +15,14 @@ export class RaceLapsCheckpoint {
   private polygon?: Polygon;
   private objectsGroup?: string;
 
-  private onEnter?: () => void;
+  private onEnter?: (ent: entEntity) => void;
 
   constructor(
     @inject(GObjectsService) private objectsService: GObjectsService,
     @inject(PolygonsService) private polygonsService: PolygonsService,
   ) {}
-
-  spawn(node: RaceLapsCheckpointNode, onEnter: () => void) {
+  
+  spawn(node: RaceLapsCheckpointNode, onEnter: (ent: entEntity) => void) {
     this.destroy();
 
     const [x, y, z] = node.position;
