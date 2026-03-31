@@ -1,0 +1,17 @@
+FROM node:20-slim AS builder
+
+# Install pnpm
+RUN npm install -g pnpm
+
+WORKDIR /app
+
+COPY . .
+
+RUN pnpm i && pnpm build
+
+FROM ghcr.io/cyber-mp/server:latest
+
+WORKDIR /cybermp
+
+COPY --from=builder /app/resources /cybermp/resources
+COPY --from=builder /app/server.toml /cybermp/server.toml
