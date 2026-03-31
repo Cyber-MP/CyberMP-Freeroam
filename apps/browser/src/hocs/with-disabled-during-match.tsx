@@ -1,9 +1,13 @@
-import type { ComponentType, FC } from 'react';
+import type { FC } from 'react';
 import { useActiveMatch } from '@/hooks/use-active-match';
 
 export function withDisabledDuringMatch<T extends Record<string, any>>(
-  WrappedComponent: ComponentType<T>,
+  WrappedComponent: FC<T>,
 ) {
+  if (window.MOCKED_MP) {
+    return WrappedComponent;
+  }
+
   const displayName =
     WrappedComponent.displayName || WrappedComponent.name || 'Component';
 
