@@ -58,7 +58,7 @@ export class GLoadingScreenService {
 
   async waitForLoadingScreenToHide(
     settleTime = 200,
-    timeout = 3000,
+    timeout = 1000,
   ): Promise<void> {
     return new Promise((resolve) => {
       let timeoutId: ReturnType<typeof setTimeout> | null = setTimeout(() => {
