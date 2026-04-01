@@ -38,11 +38,13 @@ import v_standard25_mahir_supron_player from '../../assets/images/vehicles/v_sta
 import v_standard25_thorton_colby_nomad_player from '../../assets/images/vehicles/v_standard25_thorton_colby_nomad_player.webp?w=300&h=225&imagetools';
 import v_standard25_thorton_colby_pickup_player from '../../assets/images/vehicles/v_standard25_thorton_colby_pickup_player.webp?w=300&h=225&imagetools';
 
-type VehiclesData = ServerOutputs['vehiclesSpawner']['getAll'];
+type Vehicles = ServerOutputs['vehiclesSpawner']['getAll'];
 
-type VehicleCategory = `${VehiclesData[number]['category']}` | 'all';
+type Vehicle = Vehicles[number];
 
-const VEHICLE_IMAGES: Record<VehiclesData[number]['model'], string> = {
+type VehicleCategory = `${Vehicle['category']}` | 'all';
+
+const VEHICLE_IMAGES: Record<Vehicle['model'], string> = {
   v_sport1_rayfield_aerondight_player,
   v_sport1_rayfield_caliburn_player,
   v_standard2_archer_bandit,
@@ -119,7 +121,7 @@ function RouteComponent() {
 
   const categories = useMemo(() => {
     return (
-      vehicles.reduce<Record<VehicleCategory, VehiclesData>>(
+      vehicles.reduce<Record<VehicleCategory, Vehicles>>(
         (acc, vehicle) => {
           const category = vehicle.category as VehicleCategory;
 
@@ -131,7 +133,7 @@ function RouteComponent() {
 
           return acc;
         },
-        {} as Record<VehicleCategory, VehiclesData>,
+        {} as Record<VehicleCategory, Vehicles>,
       ) || []
     );
   }, [vehicles]);
@@ -172,10 +174,10 @@ function RouteComponent() {
   );
 }
 
-function ItemsContent({ vehicles }: { vehicles: VehiclesData }) {
+function ItemsContent({ vehicles }: { vehicles: Vehicles }) {
   const navigate = useNavigate();
 
-  const spawnVehicle = (key: VehiclesData[number]['model']) => {
+  const spawnVehicle = (key: Vehicle['model']) => {
     server.vehiclesSpawner.spawnVehicle.trigger(key);
 
     navigate({ to: '/hud' });
