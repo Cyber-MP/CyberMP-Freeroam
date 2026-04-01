@@ -15,7 +15,8 @@
     "type:check": "pnpm -r type:check",
     "biome:lint": "biome lint --write ./apps",
     "biome:format": "biome format --write ./apps",
-    "biome:check": "biome check --write ./apps"
+    "biome:check": "biome check --write ./apps",
+    "prepare": "simple-git-hooks"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm type:check",
