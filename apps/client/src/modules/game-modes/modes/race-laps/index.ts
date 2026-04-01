@@ -1,4 +1,5 @@
 import type {
+  entEntity,
   gameFxInstance,
   gameFxResource,
   Vector4,
@@ -6,6 +7,7 @@ import type {
 import { inject, injectable } from 'inversify';
 import { createEulerAngles, createVector4 } from '../../../../lib/vectors';
 import { mp } from '../../../../mp';
+import { server } from '../../../../rpc';
 import { browser } from '../../../../rpc/browser';
 import { CefService } from '../../../cef/cef.service';
 import { GHealthService } from '../../../game/health/health.service';
@@ -18,6 +20,7 @@ import type {
   RaceLapsCheckpointNode,
   RaceLapsMap,
   RaceLapsPrepareDTO,
+  RaceLapsRacerDTO,
   RaceLapsStartPointNode,
   RaceLapsTrackPath,
 } from './dto';
@@ -25,27 +28,6 @@ import type {
 class TrackPathNavigation {
   private trackData: RaceLapsTrackPath = [];
   private activeFx = new Map<number, gameFxInstance>();
-  private updateTick!: number;
-
-  private updateFxInstances() {
-    const playerPos = mp.game.GetPlayer().GetWorldPosition();
-    const SPAWN_DISTANCE = 70;
-
-    this.trackData.forEach((path, index) => {
-      const [x, y, z] = path.position;
-      const effectPos = createVector4(x, y, z, 1);
-      const distance = mp.game.Vector4.Distance(effectPos, playerPos);
-      const isSpawned = this.activeFx.has(index);
-
-      if (distance <= SPAWN_DISTANCE) {
-        if (!isSpawned) {
-          this.spawnEffect(index, path);
-        }
-      } else if (isSpawned) {
-        this.despawnEffect(index);
-      }
-    });
-  }
 
   private spawnEffect(index: number, path: RaceLapsTrackPath[number]) {
     const [x, y, z] = path.position;
@@ -79,15 +61,19 @@ class TrackPathNavigation {
 
   create(trackPath: RaceLapsTrackPath) {
     this.trackData = trackPath;
-    this.updateTick = mp.setTick(this.updateFxInstances.bind(this));
+
+    // Spawn every point in the path immediately
+    this.trackData.forEach((path, index) => {
+      this.spawnEffect(index, path);
+    });
   }
 
   destroy() {
+    // Clean up all active instances
     for (const index of this.activeFx.keys()) {
       this.despawnEffect(index);
     }
     this.trackData = [];
-    mp.clearTick(this.updateTick);
   }
 }
 
@@ -99,7 +85,11 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
   private vehicleId!: number;
   private startPoint!: RaceLapsStartPointNode;
 
-  private currentCheckpointIndex = 0;
+  private data: RaceLapsRacerDTO = {
+    currentCheckpointIndex: 0,
+    currentLap: 0,
+    finished: false,
+  };
 
   private initialPosition!: Vector4;
 
@@ -150,6 +140,15 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
     browser.navigate.trigger('/hud');
   }
 
+  updateRacerData(data: Partial<RaceLapsRacerDTO> = {}) {
+    this.data = { ...this.data, ...data };
+    browser.gameModes.raceLaps.updateData.trigger({
+      ...this.data,
+      totalCheckpoints: this.checkpoints.length,
+      totalLaps: this.options.laps,
+    });
+  }
+
   async prepare(data: RaceLapsPrepareDTO) {
     await this.teleportService.teleportAsync(
       ...data.startPoint.position,
@@ -169,6 +168,31 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
     this.vehicleId = data.vehicleId;
 
     this.navigation.create(this.trackPath);
+    this.updateRacerData(this.data);
+  }
+
+  private createCheckpoint() {
+    const currentCheckpointNode =
+      this.checkpoints[this.data.currentCheckpointIndex];
+
+    const onEnterCheckpoint = async (entity: entEntity) => {
+      if (entity.GetClassName() !== 'PlayerPuppet') {
+        return;
+      }
+
+      const nextData = await server.gameModes.raceLaps.processCheckpoint
+        .call()
+        .catch(() => null);
+      if (!nextData || nextData.finished) {
+        return;
+      }
+
+      this.updateRacerData(nextData);
+
+      this.createCheckpoint();
+    };
+
+    this.checkpoint.spawn(currentCheckpointNode, onEnterCheckpoint);
   }
 
   release() {
@@ -179,11 +203,7 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
       this.statusEffects.remove('GameplayRestriction.NoWeapons');
     }
 
-    const currentCheckpointNode = this.checkpoints[this.currentCheckpointIndex];
-
-    this.checkpoint.spawn(currentCheckpointNode, () => {
-      // this.currentCheckpointIndex++;
-    });
+    this.createCheckpoint();
   }
 
   startCountdown(startTimestamp: number) {

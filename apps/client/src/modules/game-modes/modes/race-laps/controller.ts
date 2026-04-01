@@ -10,7 +10,7 @@ import {
   type RpcActiveGameContext,
 } from '../../middleware/active-game.middleware';
 import type { RaceLaps } from '.';
-import { zRaceLapsPrepareDTO } from './dto';
+import { zRaceLapsPrepareDTO, zRaceLapsRacerDTO } from './dto';
 
 export const raceLapsContract = {
   prepare: r.contract
@@ -21,6 +21,9 @@ export const raceLapsContract = {
   startCountdown: r.contract
     .context<RpcActiveGameContext<RaceLaps>>()
     .input(z.number()),
+  updateRacerData: r.contract
+    .context<RpcActiveGameContext<RaceLaps>>()
+    .input(zRaceLapsRacerDTO),
 };
 
 type ContractInputs = InferRouterInputs<typeof raceLapsContract>;
@@ -49,6 +52,14 @@ export class RaceLapsController {
     context.mode.startCountdown(context.data);
   }
 
+  private async updateRacerData(
+    context: RpcActiveGameContext<RaceLaps, ContractInputs['updateRacerData']>,
+  ) {
+    context.data;
+
+    context.mode.updateRacerData(context.data);
+  }
+
   @postConstruct()
   private init() {
     r.implement(raceLapsContract, {
@@ -63,6 +74,10 @@ export class RaceLapsController {
       startCountdown: raceLapsContract.startCountdown.implement(
         this.activeGameMiddleware,
         this.startCountdown.bind(this),
+      ),
+      updateRacerData: raceLapsContract.updateRacerData.implement(
+        this.activeGameMiddleware,
+        this.updateRacerData.bind(this),
       ),
     });
   }

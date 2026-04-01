@@ -38,16 +38,14 @@ export class GObjectsService {
     }: SpawnLocalObjectOptions,
     onDestroy: OnObjectDestroyCallback = () => {},
   ) {
-    const pos =
-      typeof position === 'object'
-        ? (position as Vector3)
-        : createVector3(...(position as ServerVector3));
-    const rot =
-      typeof rotation === 'object'
-        ? (rotation as EulerAngles)
-        : createEulerAngles(
-            ...(rotation as [roll: number, pitch: number, yaw: number]),
-          );
+    const pos = Array.isArray(position)
+      ? createVector3(...(position as ServerVector3))
+      : position;
+    const rot = Array.isArray(rotation)
+      ? createEulerAngles(
+          ...(rotation as [roll: number, pitch: number, yaw: number]),
+        )
+      : (rotation as EulerAngles);
 
     const { x, y, z } = pos;
     const { roll, pitch, yaw } = rot;

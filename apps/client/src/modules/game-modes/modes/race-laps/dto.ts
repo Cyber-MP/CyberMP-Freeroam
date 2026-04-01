@@ -58,3 +58,11 @@ export const zRaceLapsPrepareDTO = z.object({
 });
 
 export type RaceLapsPrepareDTO = z.infer<typeof zRaceLapsPrepareDTO>;
+
+export const zRaceLapsRacerDTO = z.object({
+  currentCheckpointIndex: z.number(),
+  currentLap: z.number(),
+  finished: z.boolean(),
+});
+
+export type RaceLapsRacerDTO = z.infer<typeof zRaceLapsRacerDTO>;

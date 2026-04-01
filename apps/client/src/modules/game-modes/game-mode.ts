@@ -11,7 +11,7 @@ export abstract class BaseGameMode<
 > {
   protected options!: USchema['createOptions'];
   protected members!: Record<number, USchema['joinOptions']>;
-  protected match!: MatchDTO;
+  match!: MatchDTO;
 
   init(match: MatchDTO) {
     this.match = match;
