@@ -8,8 +8,12 @@ import { inject, injectable, postConstruct } from 'inversify';
 import z from 'zod';
 import { createEulerAngles, createVector4 } from '../../../../lib/vectors';
 import { mp } from '../../../../mp';
+import { browser } from '../../../../rpc/browser';
 import { ChatService } from '../../../chat/chat.service';
+import type { EntityLabel } from '../../../entity-labels/entity-label';
+import { EntityLabelsService } from '../../../entity-labels/entity-labels.service';
 import { GEntityService } from '../../../game/entity.service';
+import { GObjectsService } from '../../../game/objects.service';
 import type {
   RaceLapsCheckpointNode,
   RaceLapsMap,
@@ -75,11 +79,16 @@ export class RaceLapsMapBuilder {
   private currentMap: RaceLapsMap = { name: 'New Race', nodes: [] };
   private navigation = new TrackPathNavigation();
 
-  private objects = new Set<number>();
+  private entityLabels = new Set<EntityLabel>();
+
+  private readonly OBJECTS_GROUP = 'race-laps-map-builder';
 
   constructor(
     @inject(ChatService) private chatService: ChatService,
     @inject(GEntityService) private entityService: GEntityService,
+    @inject(GObjectsService) private objectsService: GObjectsService,
+    @inject(EntityLabelsService)
+    private entityLabelsService: EntityLabelsService,
   ) {}
 
   @postConstruct()
@@ -91,11 +100,13 @@ export class RaceLapsMapBuilder {
     // Initialize a new map
     this.chatService.addCommand({
       name: 'rl_new',
-      description: 'Start a new race map',
+      description: 'Start a new race laps map',
       args: z.tuple([z.string().meta({ title: 'name' })]),
       handler: (name) => {
         this.currentMap = { name, nodes: [] };
         this.navigation.destroy();
+        this.destroyEntityLabels();
+        this.objectsService.destroyGroup(this.OBJECTS_GROUP);
         this.chatService.sendMessage(`Started building map: ${name}`);
       },
     });
@@ -140,17 +151,20 @@ export class RaceLapsMapBuilder {
       description: 'Add a checkpoint (args: radius, direction)',
       args: z.tuple([
         z.coerce.number().default(5).meta({ title: 'radius' }),
-        // z.enum(['forward', 'left', 'right']).default('forward'),
+        z
+          .enum(['forward', 'left', 'right'])
+          .meta({ title: 'direction' })
+          .default('forward'),
       ]),
-      handler: (radius) => {
+      handler: (radius, direction) => {
         const node: RaceLapsCheckpointNode = {
           ...this.getCurrentNode('checkpoint'),
-          radius,
-          direction: 'forward',
+          radius: radius || 5,
+          direction: direction || 'forward',
         };
         this.addNode(node);
         this.chatService.sendMessage(
-          `Checkpoint added (Radius: ${radius}, Dir: ${'forward'})`,
+          `Checkpoint added (Radius: ${radius || 5}, Dir: ${direction || 'forward'})`,
         );
       },
     });
@@ -160,12 +174,23 @@ export class RaceLapsMapBuilder {
       name: 'rl_save',
       description: 'Print the map JSON to console',
       handler: () => {
+        browser.copyToClipboard.trigger(JSON.stringify(this.currentMap));
+
         console.log('--- RACE MAP EXPORT ---');
-        console.log(JSON.stringify(this.currentMap, null, 2));
+        console.log(JSON.stringify(this.currentMap));
         console.log('-----------------------');
-        this.chatService.sendMessage('Map data printed to console.');
+        this.chatService.sendMessage(
+          'Map data is printed to console and *copied to your clipboard*.',
+        );
       },
     });
+  }
+
+  private destroyEntityLabels() {
+    for (const label of this.entityLabels.values()) {
+      this.entityLabelsService.destroy(label);
+    }
+    this.entityLabels.clear();
   }
 
   private getCurrentNode(type: RaceLapsMapNode['type']): any {
@@ -185,7 +210,11 @@ export class RaceLapsMapBuilder {
   }
 
   private refresh() {
+    this.objectsService.destroyGroup(this.OBJECTS_GROUP);
+    this.destroyEntityLabels();
+
     this.generateCheckpoints();
+    this.generateStartPoints();
 
     const trackPath: RaceLapsTrackPath = this.generateTrackPath(
       this.currentMap.nodes,
@@ -195,12 +224,38 @@ export class RaceLapsMapBuilder {
     this.navigation.create(trackPath);
   }
 
-  private generateCheckpoints() {
-    for (const objId of this.objects.values()) {
-      mp.despawnLocalObject(objId);
-    }
-    this.objects.clear();
+  private async generateStartPoints() {
+    const startPoints = this.currentMap.nodes.filter(
+      (o) => o.type === 'start-point',
+    );
 
+    const startPointHash = 7454566152498118096n;
+
+    for (let i = 0; i < startPoints.length; i++) {
+      const startPoint = startPoints[i];
+
+      const objId = this.objectsService.create({
+        skinHash: startPointHash,
+        appHash: 0,
+        position: startPoint.position,
+        rotation: {
+          pitch: 0,
+          yaw: startPoint.yaw ?? 1,
+          roll: 0,
+        },
+        group: this.OBJECTS_GROUP,
+        streaming: false,
+      });
+      const entity = await this.entityService.waitForEntityToSpawn(objId);
+      if (!entity) continue;
+
+      this.entityLabels.add(
+        this.entityLabelsService.create(entity, `Start point #${i + 1}`, 22),
+      );
+    }
+  }
+
+  private async generateCheckpoints() {
     const checkpoints = this.currentMap.nodes.filter(
       (o) => o.type === 'checkpoint',
     );
@@ -209,17 +264,26 @@ export class RaceLapsMapBuilder {
       'base\\gameplay\\devices\\street_signs\\race_checkpoint\\race_checkpoint.ent',
     );
 
-    for (const checkpoint of checkpoints) {
-      this.objects.add(
-        mp.spawnLocalObject(
-          checkpointHash,
-          0,
-          ...checkpoint.position,
-          0,
-          0,
-          checkpoint.yaw ?? 1,
-          false,
-        ),
+    for (let i = 0; i < checkpoints.length; i++) {
+      const checkpoint = checkpoints[i];
+
+      const objId = this.objectsService.create({
+        skinHash: checkpointHash,
+        appHash: 0,
+        position: checkpoint.position,
+        rotation: {
+          pitch: 0,
+          yaw: checkpoint.yaw ?? 1,
+          roll: 0,
+        },
+        group: this.OBJECTS_GROUP,
+        streaming: false,
+      });
+      const entity = await this.entityService.waitForEntityToSpawn(objId);
+      if (!entity) continue;
+
+      this.entityLabels.add(
+        this.entityLabelsService.create(entity, `Checkpoint #${i + 1}`, 22),
       );
     }
   }
@@ -282,13 +346,6 @@ export class RaceLapsMapBuilder {
     });
 
     return path;
-  }
-
-  // Simple Euclidean distance helper
-  private getDistance(a: ServerVector3, b: ServerVector3): number {
-    return Math.sqrt(
-      (a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2 + (a[2] - b[2]) ** 2,
-    );
   }
 
   private lerpAngle(start: number, end: number, t: number): number {

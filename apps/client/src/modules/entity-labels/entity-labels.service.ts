@@ -41,6 +41,8 @@ export class EntityLabelsService {
     newLabel.create(entity, text, fontSize);
 
     this.labels.add(newLabel);
+
+    return newLabel;
   }
 
   destroy(label: EntityLabel) {
