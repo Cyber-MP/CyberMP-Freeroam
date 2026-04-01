@@ -55,6 +55,7 @@ class Racer {
   private trackPath: PathTransform[];
   private match: Match<RaceLaps>;
   private checkpoints: RaceLapsCheckpointNode[];
+  private startPoint!: RaceLapsStartPointNode;
 
   options: z.infer<typeof zJoinRaceLapsOptions>;
   index: number;
@@ -84,7 +85,7 @@ class Racer {
     const startPoints = this.map.nodes.filter((o) => o.type === 'start-point');
     const checkpoints = this.map.nodes.filter((o) => o.type === 'checkpoint');
 
-    const startPoint = (
+    this.startPoint = (
       startPoints.length
         ? (startPoints[this.index] ?? checkpoints[0])
         : checkpoints[0]
@@ -96,8 +97,8 @@ class Racer {
     this.vehicle = mp.vehicles.create({
       model: mp.hashes.tweakdbid(vehicleModel),
       appearance: mp.hashes.cname(vehicleAppearance),
-      position: startPoint.position,
-      yaw: startPoint.yaw,
+      position: this.startPoint.position,
+      yaw: this.startPoint.yaw,
       dimension: this.match.dimension,
       health: 800,
     });
@@ -106,13 +107,55 @@ class Racer {
       this.player,
       {
         map: structuredClone(this.map),
-        startPoint: structuredClone(startPoint),
+        startPoint: structuredClone(this.startPoint),
         trackPath: structuredClone(this.trackPath),
         vehicleId: this.vehicle.id,
       },
       {},
       { timeout: ms('15s') },
     );
+  }
+
+  async respawn() {
+    try {
+      const node =
+        this.currentCheckpointIndex === 0
+          ? this.startPoint
+          : this.checkpoints[this.currentCheckpointIndex - 1];
+      if (!node) {
+        return;
+      }
+
+      this.vehicle.destroy();
+
+      const [x, y, z] = node.position;
+
+      await client.game.teleport.teleportAsync.call(this.player, {
+        x,
+        y,
+        z,
+        w: node.yaw,
+      });
+
+      const [vehicleModel, vehicleAppearance] =
+        RaceLapsVehicleMap[this.options.vehicle];
+
+      this.vehicle = mp.vehicles.create({
+        model: mp.hashes.tweakdbid(vehicleModel),
+        appearance: mp.hashes.cname(vehicleAppearance),
+        position: node.position,
+        yaw: node.yaw,
+        dimension: this.match.dimension,
+        health: 800,
+      });
+
+      client.game.vehicles.requestSitInVehicle.trigger(
+        this.player,
+        this.vehicle.id,
+      );
+    } catch (e) {
+      console.log('respawne err', e);
+    }
   }
 
   processCheckpoint() {
@@ -323,6 +366,20 @@ export class RaceLaps extends BaseGameMode<
 
     racer.processCheckpoint();
     return racer.toDTO();
+  }
+
+  respawn(playerId: number) {
+    if (!this.released) {
+      return;
+    }
+
+    const racer = this.racers.get(playerId);
+
+    if (!racer) {
+      return;
+    }
+
+    return racer.respawn();
   }
 
   async startCountdown() {

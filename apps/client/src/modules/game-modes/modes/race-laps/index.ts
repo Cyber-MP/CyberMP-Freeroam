@@ -82,7 +82,6 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
   private trackPath!: RaceLapsTrackPath;
   private map!: RaceLapsMap;
   private checkpoints: RaceLapsCheckpointNode[] = [];
-  private vehicleId!: number;
   private startPoint!: RaceLapsStartPointNode;
 
   private data: RaceLapsRacerDTO = {
@@ -165,7 +164,6 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
     this.checkpoints = data.map.nodes.filter(
       (node): node is RaceLapsCheckpointNode => node.type === 'checkpoint',
     );
-    this.vehicleId = data.vehicleId;
 
     this.navigation.create(this.trackPath);
     this.updateRacerData(this.data);
@@ -196,6 +194,10 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
   }
 
   release() {
+    mp.events.addCommand('rl-respawn', () => {
+      server.gameModes.raceLaps.respawn.call();
+    });
+
     this.statusEffects.remove('GameplayRestriction.NoDriving');
 
     if (this.options.combat) {
