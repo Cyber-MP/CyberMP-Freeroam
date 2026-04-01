@@ -7,4 +7,36 @@ max_players = 20
 
 disable_VoIP_server = false
 
-resources = ['hotreload', 'freeroam', 'noclip']
+resources = ["hotreload", "freeroam", "noclip"]
+
+[core]
+nametags = true
+disable_switch_seats = true
+delete_map_objects = true
+default_gameplay_restrictions = true
+disable_drop_points = true
+disable_location_dependent_quests = true
+disable_garage = true
+files = [
+  "final.redscript",
+  "new_gamedef.archive",
+  "basegame_no_intro_videos.archive",
+  "CyberMP_PlayerModel.archive",
+  "flatline2dlods.archive",
+  "ReducedLoot.archive",
+  "ReducedLoot.archive.xl",
+  "ArchiveXL"
+]
+
+[core.overrides]
+change_player_on_death_logic = true
+disable_side_quests_notifications = true
+change_vehicles_logic = true
+disable_player_inventory_encumbrance = true
+player_extended_customization = true
+disable_time_skip = true
+disable_turrets = true
+disable_surveillance_cameras = true
+disable_vending_machines = true
+disable_generic_devices = true
+disable_no_combat = true
