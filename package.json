@@ -17,12 +17,17 @@
     "biome:format": "biome format --write ./apps",
     "biome:check": "biome check --write ./apps"
   },
+  "simple-git-hooks": {
+    "pre-commit": "pnpm type:check",
+    "pre-push": "pnpm type:check"
+  },
   "keywords": [],
   "author": "terminaate",
   "license": "MIT",
   "packageManager": "pnpm@10.28.2",
   "devDependencies": {
     "@biomejs/biome": "2.4.6",
+    "simple-git-hooks": "^2.13.1",
     "type-fest": "^5.4.4",
     "typescript": "^5.9.3"
   },
