@@ -3,9 +3,14 @@
 services:
   server:
     container_name: cybermp-freeroam
-    image: ghcr.io/cyber-mp/server:latest
-    stdin_open: true
-    tty: true
+    build:
+      context: .
+      dockerfile: Dockerfile
     environment:
       NODE_ENV: production
       IS_DOCKER: "true"
+    stdin_open: true
+    tty: true
+    ports:
+      - 2077:2077/tcp
+      - 2077:2077/udp
