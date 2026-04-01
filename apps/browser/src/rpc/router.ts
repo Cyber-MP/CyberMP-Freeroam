@@ -1,4 +1,5 @@
 import z from 'zod';
+import { copyToClipboard } from '@/lib/clipboard';
 import { keysContract } from '../keys';
 import { raceLapsContract } from '../routes/hud.game-modes/race-laps/-contract';
 import type { FileRoutesByFullPath } from '../routeTree.gen';
@@ -19,6 +20,10 @@ export const rpcRouter = {
   chat: chatContract,
   killFeed: killFeedContract,
   hud: hudContract,
+
+  copyToClipboard: r.procedure.input(z.string()).handler((c) => {
+    copyToClipboard(c.data);
+  }),
 
   navigate: r.procedure
     .input(z.union([z.string<keyof FileRoutesByFullPath>(), z.number()]))
