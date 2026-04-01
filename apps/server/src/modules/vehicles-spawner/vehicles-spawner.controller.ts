@@ -1,21 +1,25 @@
-import type { RpcServerContext } from '@cybermp/rpc-server';
+import { RpcApplyType, type RpcServerContext } from '@cybermp/rpc-server';
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
+import type { WritableDeep } from 'type-fest';
 import z from 'zod';
-import { r } from '../../rpc';
 import {
-  VEHICLES_SPAWNER_KEYS,
-  type VehiclesSpawnerKey,
-  VehiclesSpawnerService,
-} from './vehicles-spawner.service';
+  VEHICLES_DATA,
+  type VehicleModel,
+  zVehicle,
+} from '../../assets/vehicles';
 import { mp } from '../../mp';
-
-const zVehicleSpawnerKey = z.enum(VEHICLES_SPAWNER_KEYS);
+import { r } from '../../rpc';
+import { VehiclesSpawnerService } from './vehicles-spawner.service';
 
 export const vehiclesSpawnerContract = {
   spawnVehicle: r.contract
     .validate({ input: true })
-    .input(zVehicleSpawnerKey)
+    .input(zVehicle.shape.model)
+    .build(),
+  getAll: r.contract
+    .method(RpcApplyType.REGISTER)
+    .output(z.array(zVehicle))
     .build(),
 };
 
@@ -27,18 +31,23 @@ export class VehiclesSpawnerController {
     private vehiclesSpawnerService: VehiclesSpawnerService,
   ) {}
 
-  private spawnVehicle(context: RpcServerContext<VehiclesSpawnerKey>) {
+  private spawnVehicle(context: RpcServerContext<VehicleModel>) {
     this.vehiclesSpawnerService.spawnVehicle(context.player, context.data);
+  }
+
+  private getAll() {
+    return VEHICLES_DATA as WritableDeep<typeof VEHICLES_DATA>;
   }
 
   @postConstruct()
   private init() {
     r.implement(vehiclesSpawnerContract, {
       spawnVehicle: this.spawnVehicle.bind(this),
+      getAll: this.getAll.bind(this),
     });
-    
+
     mp.events.on('playerDisconnected', (playerId) => {
-      this.vehiclesSpawnerService.clearPlayerVehicles(playerId)
-    })
+      this.vehiclesSpawnerService.clearPlayerVehicles(playerId);
+    });
   }
 }
