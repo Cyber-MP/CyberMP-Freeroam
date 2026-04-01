@@ -1,5 +1,3 @@
-# CHANGE THIS TO PROD
-
 services:
   server:
     container_name: cybermp-freeroam

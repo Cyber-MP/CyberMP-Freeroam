@@ -1,0 +1,6 @@
+mp
+**/node_modules
+crashdumps
+cache
+**/dist
+.git
