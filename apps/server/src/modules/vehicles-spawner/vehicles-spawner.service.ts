@@ -1,9 +1,9 @@
 import type { MpPlayer } from '@cybermp/server-types';
 import { inject, injectable } from 'inversify';
-import { VEHICLES_DATA, type VehicleModel } from '../../assets/vehicles';
 import { mp } from '../../mp';
 import { client } from '../../rpc';
 import { MatchmakingService } from '../matchmaking/matchmaking.service';
+import { VEHICLES_DATA, type VehicleModel } from './vehicles';
 
 @injectable()
 export class VehiclesSpawnerService {

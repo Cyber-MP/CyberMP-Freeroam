@@ -1,19 +1,116 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useMemo } from 'react';
-import { VEHICLE_IMAGES } from '@/assets/vehicles';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { withDisabledDuringMatch } from '@/hocs/with-disabled-during-match';
 import { server, serverQuery } from '@/rpc';
+import { queryClient } from '@/tanstack-query';
 import type { ServerOutputs } from '../../../../client/src/rpc';
+import v_sport1_quadra_turbo_player from '../../assets/images/vehicles/v_sport1_quadra_turbo_player.webp?w=300&h=225&imagetools';
+import v_sport1_quadra_turbo_r_player from '../../assets/images/vehicles/v_sport1_quadra_turbo_r_player.webp?w=300&h=225&imagetools';
+import v_sport1_rayfield_aerondight_player from '../../assets/images/vehicles/v_sport1_rayfield_aerondight_player.webp?w=300&h=225&imagetools';
+import v_sport1_rayfield_caliburn_player from '../../assets/images/vehicles/v_sport1_rayfield_caliburn_player.webp?w=300&h=225&imagetools';
+import v_sport2_mizutani_shion_nomad_player from '../../assets/images/vehicles/v_sport2_mizutani_shion_nomad_player.webp?w=300&h=225&imagetools';
+import v_sport2_mizutani_shion_player from '../../assets/images/vehicles/v_sport2_mizutani_shion_player.webp?w=300&h=225&imagetools';
+import v_sport2_porsche_911turbo_cabrio_player from '../../assets/images/vehicles/v_sport2_porsche_911turbo_cabrio_player.webp?w=300&h=225&imagetools';
+import v_sport2_quadra_type66_02_player from '../../assets/images/vehicles/v_sport2_quadra_type66_02_player.webp?w=300&h=225&imagetools';
+import v_sport2_quadra_type66_base_player from '../../assets/images/vehicles/v_sport2_quadra_type66_base_player.webp?w=300&h=225&imagetools';
+import v_sport2_quadra_type66_nomad_player_03 from '../../assets/images/vehicles/v_sport2_quadra_type66_nomad_player_03.webp?w=300&h=225&imagetools';
+import v_sport2_quadra_type66_player from '../../assets/images/vehicles/v_sport2_quadra_type66_player.webp?w=300&h=225&imagetools';
+import v_sportbike1_yaiba_kusanagi_player from '../../assets/images/vehicles/v_sportbike1_yaiba_kusanagi_player.webp?w=300&h=225&imagetools';
+import v_sportbike1_yaiba_kusanagi_player_02 from '../../assets/images/vehicles/v_sportbike1_yaiba_kusanagi_player_02.webp?w=300&h=225&imagetools';
+import v_sportbike1_yaiba_kusanagi_player_03 from '../../assets/images/vehicles/v_sportbike1_yaiba_kusanagi_player_03.webp?w=300&h=225&imagetools';
+import v_sportbike2_arch_player from '../../assets/images/vehicles/v_sportbike2_arch_player.webp?w=300&h=225&imagetools';
+import v_sportbike2_arch_player_02 from '../../assets/images/vehicles/v_sportbike2_arch_player_02.webp?w=300&h=225&imagetools';
+import v_sportbike2_arch_player_03 from '../../assets/images/vehicles/v_sportbike2_arch_player_03.webp?w=300&h=225&imagetools';
+import v_sportbike2_arch_tyger_player from '../../assets/images/vehicles/v_sportbike2_arch_tyger_player.webp?w=300&h=225&imagetools';
+import v_sportbike3_brennan_apollo_nomad_player from '../../assets/images/vehicles/v_sportbike3_brennan_apollo_nomad_player.webp?w=300&h=225&imagetools';
+import v_sportbike3_brennan_apollo_player from '../../assets/images/vehicles/v_sportbike3_brennan_apollo_player.webp?w=300&h=225&imagetools';
+import v_sportbike3_brennan_apollo_player_02 from '../../assets/images/vehicles/v_sportbike3_brennan_apollo_player_02.webp?w=300&h=225&imagetools';
+import v_standard2_archer_bandit from '../../assets/images/vehicles/v_standard2_archer_bandit.webp?w=300&h=225&imagetools';
+import v_standard2_archer_quartz_base_player from '../../assets/images/vehicles/v_standard2_archer_quartz_base_player.webp?w=300&h=225&imagetools';
+import v_standard2_thorton_colby_gt_player from '../../assets/images/vehicles/v_standard2_thorton_colby_gt_player.webp?w=300&h=225&imagetools';
+import v_standard2_thorton_galena_nomad_player from '../../assets/images/vehicles/v_standard2_thorton_galena_nomad_player.webp?w=300&h=225&imagetools';
+import v_standard2_thorton_galena_player from '../../assets/images/vehicles/v_standard2_thorton_galena_player.webp?w=300&h=225&imagetools';
+import v_standard3_thorton_mackinaw_02_player from '../../assets/images/vehicles/v_standard3_thorton_mackinaw_02_player.webp?w=300&h=225&imagetools';
+import v_standard25_mahir_supron_player from '../../assets/images/vehicles/v_standard25_mahir_supron_player.webp?w=300&h=225&imagetools';
+import v_standard25_thorton_colby_nomad_player from '../../assets/images/vehicles/v_standard25_thorton_colby_nomad_player.webp?w=300&h=225&imagetools';
+import v_standard25_thorton_colby_pickup_player from '../../assets/images/vehicles/v_standard25_thorton_colby_pickup_player.webp?w=300&h=225&imagetools';
 
 type VehiclesData = ServerOutputs['vehiclesSpawner']['getAll'];
 
 type VehicleCategory = `${VehiclesData[number]['category']}` | 'all';
 
+const VEHICLE_IMAGES: Record<VehiclesData[number]['model'], string> = {
+  v_sport1_rayfield_aerondight_player,
+  v_sport1_rayfield_caliburn_player,
+  v_standard2_archer_bandit,
+  v_sport2_porsche_911turbo_cabrio_player,
+  v_sport1_quadra_turbo_player,
+  v_sport1_quadra_turbo_r_player,
+  v_sport2_mizutani_shion_player,
+  v_sport2_quadra_type66_02_player,
+  v_sport2_quadra_type66_base_player,
+  v_sport2_quadra_type66_player,
+  v_standard2_archer_quartz_base_player,
+  v_standard25_mahir_supron_player,
+  v_standard2_thorton_colby_gt_player,
+  v_standard2_thorton_galena_player,
+  v_sport2_mizutani_shion_nomad_player,
+  v_standard25_thorton_colby_pickup_player,
+  v_standard25_thorton_colby_nomad_player,
+  v_standard2_thorton_galena_nomad_player,
+  v_standard3_thorton_mackinaw_02_player,
+  v_sport2_quadra_type66_nomad_player_03,
+  v_sportbike2_arch_tyger_player,
+  v_sportbike2_arch_player_03,
+  v_sportbike2_arch_player_02,
+  v_sportbike2_arch_player,
+  v_sportbike1_yaiba_kusanagi_player_03,
+  v_sportbike1_yaiba_kusanagi_player,
+  v_sportbike1_yaiba_kusanagi_player_02,
+  v_sportbike3_brennan_apollo_player_02,
+  v_sportbike3_brennan_apollo_player,
+  v_sportbike3_brennan_apollo_nomad_player,
+};
+
 export const Route = createFileRoute('/hud/menu/')({
   component: withDisabledDuringMatch(RouteComponent),
+  pendingComponent: PendingComponent,
+  pendingMs: 500,
+  pendingMinMs: 300,
+  loader: async () => {
+    await queryClient.ensureQueryData(
+      serverQuery.vehiclesSpawner.getAll.queryOptions(),
+    );
+  },
 });
+
+function PendingComponent() {
+  return (
+    <div className="flex justify-center flex-wrap gap-12 gap-x-24 h-full w-full">
+      <Tabs defaultValue={'all' as VehicleCategory} className="w-full">
+        <div className="sticky top-0 flex gap-6 items-center z-50 pointer-events-none">
+          <TabsList>
+            <TabsTrigger value={'all' as VehicleCategory}>All</TabsTrigger>
+            <TabsTrigger value={'sport' as VehicleCategory}>Sport</TabsTrigger>
+            <TabsTrigger value={'street' as VehicleCategory}>
+              Street
+            </TabsTrigger>
+            <TabsTrigger value={'bikes' as VehicleCategory}>Bikes</TabsTrigger>
+            <TabsTrigger value={'offroad' as VehicleCategory}>
+              Offroad
+            </TabsTrigger>
+          </TabsList>
+        </div>
+        <TabsContent value={'all' as VehicleCategory}>
+          <Skeleton className="h-full" />
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+}
 
 function RouteComponent() {
   const { data: vehicles } = useSuspenseQuery(
@@ -45,15 +142,11 @@ function RouteComponent() {
         <div className="sticky top-0 flex gap-6 items-center z-50">
           <TabsList>
             <TabsTrigger value={'all' as VehicleCategory}>All</TabsTrigger>
-            <TabsTrigger value={'super' as VehicleCategory}>Super</TabsTrigger>
-            <TabsTrigger value={'sport' as VehicleCategory}>sport</TabsTrigger>
+            <TabsTrigger value={'sport' as VehicleCategory}>Sport</TabsTrigger>
             <TabsTrigger value={'street' as VehicleCategory}>
-              street
+              Street
             </TabsTrigger>
             <TabsTrigger value={'bikes' as VehicleCategory}>Bikes</TabsTrigger>
-            <TabsTrigger value={'muscle' as VehicleCategory}>
-              Muscle
-            </TabsTrigger>
             <TabsTrigger value={'offroad' as VehicleCategory}>
               Offroad
             </TabsTrigger>
@@ -61,9 +154,6 @@ function RouteComponent() {
         </div>
         <TabsContent value={'all' as VehicleCategory}>
           <ItemsContent vehicles={vehicles} />
-        </TabsContent>
-        <TabsContent value={'super' as VehicleCategory}>
-          <ItemsContent vehicles={categories.super} />
         </TabsContent>
         <TabsContent value={'sport' as VehicleCategory}>
           <ItemsContent vehicles={categories.sport} />
@@ -73,9 +163,6 @@ function RouteComponent() {
         </TabsContent>
         <TabsContent value={'bikes' as VehicleCategory}>
           <ItemsContent vehicles={categories.bikes} />
-        </TabsContent>
-        <TabsContent value={'muscle' as VehicleCategory}>
-          <ItemsContent vehicles={categories.muscle} />
         </TabsContent>
         <TabsContent value={'offroad' as VehicleCategory}>
           <ItemsContent vehicles={categories.offroad} />
@@ -105,7 +192,7 @@ function ItemsContent({ vehicles }: { vehicles: VehiclesData }) {
           <img
             src={VEHICLE_IMAGES[item.model] ?? undefined}
             alt="Item"
-            className="h-40 w-80 object-contain group-hover:drop-shadow-[0_0_25px_#FFFB4580]"
+            className="h-40 w-80 object-cover"
             draggable={false}
           />
 

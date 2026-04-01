@@ -3,13 +3,9 @@ import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
 import type { WritableDeep } from 'type-fest';
 import z from 'zod';
-import {
-  VEHICLES_DATA,
-  type VehicleModel,
-  zVehicle,
-} from '../../assets/vehicles';
 import { mp } from '../../mp';
 import { r } from '../../rpc';
+import { VEHICLES_DATA, type VehicleModel, zVehicle } from './vehicles';
 import { VehiclesSpawnerService } from './vehicles-spawner.service';
 
 export const vehiclesSpawnerContract = {
