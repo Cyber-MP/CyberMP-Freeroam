@@ -5,6 +5,7 @@ import z from 'zod';
 import { mp } from '../../mp';
 import { r } from '../../rpc';
 import {
+  type VehicleCategory,
   type VehicleModel,
   VehiclesRepository,
   zVehicle,
@@ -18,6 +19,11 @@ export const vehiclesSpawnerContract = {
     .build(),
   getAll: r.contract
     .method(RpcApplyType.REGISTER)
+    .output(z.array(zVehicle))
+    .build(),
+  getByCategory: r.contract
+    .method(RpcApplyType.REGISTER)
+    .input(zVehicle.shape.category)
     .output(z.array(zVehicle))
     .build(),
 };
@@ -40,11 +46,16 @@ export class VehiclesSpawnerController {
     return this.vehiclesRepository.getAll();
   }
 
+  private getVehicleByCategory(context: RpcServerContext<VehicleCategory>) {
+    return this.vehiclesRepository.getByCategory(context.data);
+  }
+
   @postConstruct()
   private init() {
     r.implement(vehiclesSpawnerContract, {
       spawnVehicle: this.spawnVehicle.bind(this),
       getAll: this.getAll.bind(this),
+      getByCategory: this.getVehicleByCategory.bind(this),
     });
 
     mp.events.on('playerDisconnected', (playerId) => {
