@@ -10,14 +10,14 @@ export enum VehicleCategory {
 export const VEHICLES_DATA = [
   {
     model: 'v_sport1_rayfield_aerondight_player',
-    name: 'Aerondight',
-    appearance: 'rayfield_aerondight_basic_player_01',
+    name: 'Rayfield Aerondight',
+    appearance: 'rayfield_aerondight__basic_player_01',
     category: VehicleCategory.SPORT,
   },
   {
     model: 'v_sport1_rayfield_caliburn_player',
-    name: 'Caliburn',
-    appearance: 'rayfield_caliburn_basic_player_01',
+    name: 'Rayfield Caliburn',
+    appearance: 'rayfield_caliburn__basic_player_01',
     category: VehicleCategory.SPORT,
   },
   {
@@ -53,19 +53,19 @@ export const VEHICLES_DATA = [
   {
     model: 'v_sport2_quadra_type66_02_player',
     name: 'Type66 Bullit',
-    appearance: 'quadra_type66_basic_bulleat',
+    appearance: 'quadra_type66__basic_bulleat',
     category: VehicleCategory.SPORT,
   },
   {
     model: 'v_sport2_quadra_type66_base_player',
     name: 'Quadra Type66 640 TS',
-    appearance: 'quadra_type66_basic_suburban_06',
+    appearance: 'quadra_type66__basic_suburban_06',
     category: VehicleCategory.SPORT,
   },
   {
     model: 'v_sport2_quadra_type66_player',
     name: 'Quadra Type66 Jen Rowley',
-    appearance: 'quadra_type66_basic_jen_rowley',
+    appearance: 'quadra_type66__basic_jen_rowley',
     category: VehicleCategory.SPORT,
   },
   {
@@ -83,7 +83,7 @@ export const VEHICLES_DATA = [
   {
     model: 'v_standard2_thorton_colby_gt_player',
     name: 'Thorton Colby CST40',
-    appearance: 'thorton_colby_basic_urban_01_1',
+    appearance: 'thorton_colby__basic_urban_01_1',
     category: VehicleCategory.STREET,
   },
   {
