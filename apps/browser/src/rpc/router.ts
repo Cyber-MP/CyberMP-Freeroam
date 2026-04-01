@@ -1,6 +1,6 @@
 import z from 'zod';
 import { keysContract } from '../keys';
-import { raceLapsContract } from '../routes/hud.race-laps/-contract';
+import { raceLapsContract } from '../routes/hud.game-modes/race-laps/-contract';
 import type { FileRoutesByFullPath } from '../routeTree.gen';
 import { chatContract } from '../store/chat';
 import { hintsContract } from '../store/hints';

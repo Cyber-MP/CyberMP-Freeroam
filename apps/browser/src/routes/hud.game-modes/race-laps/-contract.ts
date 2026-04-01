@@ -23,4 +23,6 @@ export const raceLapsContract = {
   setCountdownText: contract.input(z.string()).build(),
   updateData: contract.input(zRaceLapsRacerDTO).build(),
   updateRanks: contract.input(z.array(zRaceLapsRankDTO)).build(),
+  showRespawn: contract.input(z.number()).build(),
+  hideRespawn: contract.build(),
 };

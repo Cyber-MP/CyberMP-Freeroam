@@ -108,7 +108,7 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
   start() {
     this.healthService.set(this.healthService.getDefaultHealth());
 
-    this.cefService.setLoadingRedirect('/hud/race-laps');
+    this.cefService.setLoadingRedirect('/hud/game-modes/race-laps');
 
     this.initialPosition = mp.game.GetPlayer().GetWorldPosition();
 
@@ -154,8 +154,8 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
       data.startPoint.yaw,
     );
 
-    browser.hud.setGlobalPath.trigger('/hud/race-laps');
-    browser.navigate.trigger('/hud/race-laps');
+    browser.hud.setGlobalPath.trigger('/hud/game-modes/race-laps');
+    browser.navigate.trigger('/hud/game-modes/race-laps');
 
     this.vehiclesService.requestSitInVehicle(data.vehicleId);
 
