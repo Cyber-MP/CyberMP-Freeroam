@@ -1,6 +1,7 @@
 import { RpcApplyType, type RpcClientContext } from '@cybermp/rpc-client';
 import { contract, type InferRouterInputs } from '@cybermp/rpc-router/server';
-import { inject, postConstruct } from 'inversify';
+import { eager } from '@freeroam/inversify';
+import { inject, injectable, postConstruct } from 'inversify';
 import z from 'zod';
 import { r } from '../../../rpc';
 import { GTeleportService } from './teleport.service';
@@ -25,6 +26,8 @@ export const teleportContract = {
 
 type ContractInputs = InferRouterInputs<typeof teleportContract>;
 
+@eager()
+@injectable()
 export class GTeleportController {
   constructor(
     @inject(GTeleportService) private teleportService: GTeleportService,

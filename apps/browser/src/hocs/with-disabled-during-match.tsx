@@ -1,10 +1,11 @@
 import type { FC } from 'react';
 import { useActiveMatch } from '@/hooks/use-active-match';
+import { IS_MP_MOCKED } from '@/mp';
 
 export function withDisabledDuringMatch<T extends Record<string, any>>(
   WrappedComponent: FC<T>,
 ) {
-  if (window.MOCKED_MP) {
+  if (IS_MP_MOCKED) {
     return WrappedComponent;
   }
 

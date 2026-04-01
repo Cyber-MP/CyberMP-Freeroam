@@ -18,7 +18,15 @@ export class GHealthCommands {
   }
 
   private god() {
-    this.healthService.god(!this.healthService.isGod());
+    const state = this.healthService.isGod();
+
+    this.healthService.god(!state);
+
+    if (this.healthService.isGod()) {
+      this.chatService.sendMessage('God mode enabled');
+    } else {
+      this.chatService.sendMessage('God mode disabled');
+    }
   }
 
   private heal() {

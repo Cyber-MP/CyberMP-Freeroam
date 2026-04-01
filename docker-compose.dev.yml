@@ -1,6 +1,6 @@
 services:
   server:
-    container_name: cybermp-freeroam
+    container_name: cybermp-freeroam-dev
     image: ghcr.io/cyber-mp/server:latest
     stdin_open: true
     tty: true

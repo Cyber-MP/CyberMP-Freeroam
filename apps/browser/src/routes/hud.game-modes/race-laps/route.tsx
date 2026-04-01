@@ -1,7 +1,14 @@
 import type { RpcBrowserContext } from '@cybermp/rpc-browser';
 import { useImplement } from '@cybermp/rpc-router-react';
 import { createFileRoute } from '@tanstack/react-router';
-import { AnimatePresence, motion } from 'framer-motion';
+import {
+  AnimatePresence,
+  animate,
+  motion,
+  useAnimationControls,
+  useMotionValue,
+  useTransform,
+} from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { usePlayerId } from '@/hooks/use-player-id';
 import { r } from '@/rpc';
@@ -11,7 +18,7 @@ import {
   raceLapsContract,
 } from './-contract';
 
-export const Route = createFileRoute('/hud/race-laps')({
+export const Route = createFileRoute('/hud/game-modes/race-laps')({
   component: RouteComponent,
 });
 
@@ -88,14 +95,14 @@ const Ranks = () => {
           >
             <div
               className={`
-              px-3 py-2 font-black text-base
+              px-4 py-2 font-black text-base
               ${isUser ? 'bg-black text-yellow-400' : 'bg-muted text-muted-foreground'}
             `}
             >
               {pos}
             </div>
 
-            <div className="flex flex-col flex-1 px-3 py-1">
+            <div className="flex flex-col flex-1 px-4 py-1">
               <span
                 className={`text-sm font-bold ${isUser ? 'text-black' : 'text-secondary-foreground'}`}
               >
@@ -118,6 +125,7 @@ const Ranks = () => {
     </div>
   );
 };
+
 const Info = () => {
   const [data, setData] = useState<RaceLapsRacerDTO>({
     finished: false,
@@ -130,33 +138,33 @@ const Info = () => {
   useImplement(raceLapsContract.updateData, (c) => setData(c.data));
 
   return (
-    <div className="flex gap-4 absolute bottom-12 left-1/2 -translate-x-1/2 font-mono uppercase tracking-tighter select-none">
+    <div className="flex gap-4 font-mono uppercase tracking-tighter select-none">
       <div
         className={`
-        relative flex items-center
+        relative flex items-center h-14
         ${data.finished ? 'bg-yellow-400 text-black' : 'bg-black/80 text-secondary-foreground'}
       `}
       >
         <div
           className={`
-          px-3 py-2 flex items-baseline gap-1
+          px-4 py-2 flex items-baseline gap-1
           ${data.finished ? 'bg-black text-yellow-400' : 'bg-muted text-muted-foreground'}
         `}
         >
           <span
-            className={`text-xl font-black ${!data.finished && 'text-secondary-foreground'}`}
+            className={`text-xl ${!data.finished && 'text-secondary-foreground'}`}
           >
             {data.currentLap.toString().padStart(2, '0')}
           </span>
           <span className="text-xs opacity-50">/</span>
-          <span className="text-sm font-bold opacity-80">
+          <span className="text-sm opacity-80">
             {data.totalLaps.toString().padStart(2, '0')}
           </span>
         </div>
 
-        <div className="flex flex-col px-3 py-1 min-w-[90px]">
+        <div className="flex flex-col px-4 py-1 min-w-[90px]">
           <span
-            className={`text-xs font-bold ${data.finished ? 'text-black' : 'text-muted-foreground'}`}
+            className={`text-xs ${data.finished ? 'text-black' : 'text-muted-foreground'}`}
           >
             RACE_PROGRESS
           </span>
@@ -170,30 +178,30 @@ const Info = () => {
 
       <div
         className={`
-        relative flex items-center
+        relative flex items-center h-14
         ${data.finished ? 'bg-yellow-400 text-black' : 'bg-black/80 text-secondary-foreground'}
       `}
       >
         <div
           className={`
-          px-3 py-2 flex items-baseline gap-1
+          px-4 py-2 flex items-baseline gap-1
           ${data.finished ? 'bg-black text-yellow-400' : 'bg-muted text-muted-foreground'}
         `}
         >
           <span
-            className={`text-xl font-black ${!data.finished && 'text-secondary-foreground'}`}
+            className={`text-xl ${!data.finished && 'text-secondary-foreground'}`}
           >
             {(data.currentCheckpointIndex + 1).toString().padStart(2, '0')}
           </span>
           <span className="text-xs opacity-50">/</span>
-          <span className="text-sm font-bold opacity-80">
+          <span className="text-sm opacity-80">
             {data.totalCheckpoints.toString().padStart(2, '0')}
           </span>
         </div>
 
-        <div className="flex flex-col px-3 py-1 min-w-[100px]">
+        <div className="flex flex-col px-4 py-1 min-w-[100px]">
           <span
-            className={`text-xs font-bold ${data.finished ? 'text-black' : 'text-muted-foreground'}`}
+            className={`text-xs ${data.finished ? 'text-black' : 'text-muted-foreground'}`}
           >
             SECTOR_SYNC
           </span>
@@ -211,10 +219,84 @@ const Info = () => {
     </div>
   );
 };
+
+const Respawn = () => {
+  const [respawnDuration, setRespawnDuration] = useState<number | null>(null);
+
+  const controls = useAnimationControls();
+  const timeValue = useMotionValue(0);
+  const displayTime = useTransform(timeValue, (l) => l.toFixed(1));
+
+  useImplement(raceLapsContract.showRespawn, (c) => setRespawnDuration(c.data));
+  useImplement(raceLapsContract.hideRespawn, () => setRespawnDuration(null));
+
+  useEffect(() => {
+    if (!respawnDuration) {
+      return;
+    }
+
+    const durationInSeconds = respawnDuration / 1000;
+
+    timeValue.set(0);
+    controls.set({ width: '0%' });
+
+    animate(timeValue, durationInSeconds, {
+      duration: durationInSeconds,
+      ease: 'linear',
+    });
+
+    controls.start({
+      width: '100%',
+      transition: { duration: durationInSeconds, ease: 'linear' },
+    });
+  }, [respawnDuration]);
+
+  return (
+    <AnimatePresence>
+      {respawnDuration !== null && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ ease: 'linear', duration: 0.1 }}
+          className="flex flex-col font-mono uppercase tracking-tighter select-none w-64 h-14"
+        >
+          <div className="relative flex items-center border bg-black/80 border-red-900/50 text-red-500">
+            <motion.div className="px-8 py-2 text-xl bg-red-500/10 text-red-500 border-r border-red-900/50 text-center">
+              {displayTime}
+            </motion.div>
+
+            <div className="flex flex-col px-4 py-1 flex-1">
+              <span className="text-xs text-red-700">PROTOCOL_SYNC</span>
+              <span className="text-sm text-red-500 tracking-widest">
+                RESPAWNING...
+              </span>
+            </div>
+
+            <div className="absolute -top-1 -right-1 w-2 h-2 bg-black border-r border-t border-red-500" />
+          </div>
+
+          <div className="h-1.5 w-full bg-red-950/30 border-x border-b border-red-900/50 overflow-hidden">
+            <motion.div
+              className="h-full bg-red-500"
+              initial={{ width: 0 }}
+              animate={controls}
+            />
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+};
+
 function RouteComponent() {
   return (
     <div>
-      <Info />
+      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4">
+        <Respawn />
+        <Info />
+      </div>
+
       <Ranks />
       <Countdown />
     </div>
