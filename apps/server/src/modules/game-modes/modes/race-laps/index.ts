@@ -3,8 +3,10 @@ import { inject, injectable } from 'inversify';
 import ms from 'ms';
 import { sleep } from 'radash';
 import z from 'zod';
+import { distance3D } from '../../../../lib/math';
 import { mp } from '../../../../mp';
 import { client } from '../../../../rpc';
+import { browser } from '../../../../rpc/browser';
 import {
   type Match,
   zCreateMatchOptions,
@@ -17,6 +19,7 @@ import {
   type RaceLapsMap,
   RaceLapsMapName,
   type RaceLapsRacerDTO,
+  type RaceLapsRankDTO,
   type RaceLapsStartPointNode,
   RaceLapsVehicleClass,
   RaceLapsVehicleMap,
@@ -48,14 +51,14 @@ type RacerConstructorOptions = {
 };
 
 class Racer {
-  private options: z.infer<typeof zJoinRaceLapsOptions>;
-  private player: MpPlayer;
-  private index: number;
   private map: RaceLapsMap;
   private trackPath: PathTransform[];
   private match: Match<RaceLaps>;
   private checkpoints: RaceLapsCheckpointNode[];
 
+  options: z.infer<typeof zJoinRaceLapsOptions>;
+  index: number;
+  player: MpPlayer;
   vehicle!: MpVehicle;
   finished = false;
   currentCheckpointIndex = 0;
@@ -147,6 +150,90 @@ class Racer {
   }
 }
 
+class RanksTracker {
+  private interval?: ReturnType<typeof setInterval>;
+  private readonly UPDATE_RATE = 1000; // 1 second
+
+  constructor(
+    private readonly racers: Map<number, Racer>,
+    private readonly checkpoints: RaceLapsCheckpointNode[],
+  ) {}
+
+  create() {
+    if (this.interval) {
+      return;
+    }
+
+    this.interval = setInterval(() => {
+      this.broadcastRankings();
+    }, this.UPDATE_RATE);
+  }
+
+  /**
+   * Stops the loop and cleans up.
+   */
+  destroy() {
+    if (this.interval) {
+      clearInterval(this.interval);
+      this.interval = undefined;
+    }
+  }
+
+  private broadcastRankings() {
+    const ranks = this.calculateRankings().slice(0, 5);
+
+    // Broadcast to everyone in the match
+    for (const playerId of this.racers.keys()) {
+      browser.gameModes.raceLaps.updateRanks.trigger(playerId, ranks);
+    }
+  }
+
+  private calculateRankings(): RaceLapsRankDTO[] {
+    const totalCheckpoints = this.checkpoints.length;
+
+    const scores = Array.from(this.racers.values()).map((racer) => {
+      const playerPos = racer.player.position;
+
+      let progress =
+        racer.currentLap * totalCheckpoints + racer.currentCheckpointIndex;
+
+      if (racer.finished) {
+        progress += 100000;
+      } else {
+        const nextIdx = (racer.currentCheckpointIndex + 1) % totalCheckpoints;
+        const currentCp = this.checkpoints[racer.currentCheckpointIndex];
+        const nextCp = this.checkpoints[nextIdx];
+
+        if (currentCp && nextCp) {
+          const distToNext = distance3D(playerPos, nextCp.position);
+          const segmentDist = distance3D(currentCp.position, nextCp.position);
+
+          const segmentProgress =
+            segmentDist > 0
+              ? Math.max(0, Math.min(1, 1 - distToNext / segmentDist))
+              : 0;
+
+          progress += segmentProgress;
+        }
+      }
+
+      return {
+        playerId: racer.player.id,
+        playerNick: racer.player.nickname,
+        progress,
+      };
+    });
+
+    return scores
+      .sort((a, b) => b.progress - a.progress)
+      .map((item, index) => ({
+        playerId: item.playerId,
+        playerNick: item.playerNick,
+        position: index + 1,
+      }));
+  }
+}
+
 @injectable()
 export class RaceLaps extends BaseGameMode<
   typeof zCreateRaceLapsOptions,
@@ -159,12 +246,15 @@ export class RaceLaps extends BaseGameMode<
 
   private match!: Match<this>;
   private map!: RaceLapsMap;
+  private checkpoints!: RaceLapsCheckpointNode[];
   private trackPath!: PathTransform[];
 
   private racers = new Map<number, Racer>();
   private released = false;
 
   private readonly COUNTDOWN_TIME = ms('5s');
+
+  private ranksTracker!: RanksTracker;
 
   @inject(RaceLapsTrackCalculator)
   private trackCalculator!: RaceLapsTrackCalculator;
@@ -184,6 +274,10 @@ export class RaceLaps extends BaseGameMode<
     this.match = match;
     this.map = RaceLapsMaps.find((o) => o.name === this.match.options.map)!;
     this.trackPath = this.trackCalculator.getTrackPath(this.match.options.map)!;
+    this.checkpoints = this.map.nodes.filter(
+      (node): node is RaceLapsCheckpointNode => node.type === 'checkpoint',
+    );
+    this.ranksTracker = new RanksTracker(this.racers, this.checkpoints);
   }
 
   async start() {
@@ -205,6 +299,8 @@ export class RaceLaps extends BaseGameMode<
       }),
     );
 
+    this.ranksTracker.create();
+
     await this.startCountdown();
   }
 
@@ -215,11 +311,16 @@ export class RaceLaps extends BaseGameMode<
   }
 
   processCheckpoint(playerId: number) {
+    if (!this.released) {
+      return;
+    }
+
     const racer = this.racers.get(playerId);
 
     if (!racer) {
       return;
     }
+
     racer.processCheckpoint();
     return racer.toDTO();
   }
@@ -237,6 +338,8 @@ export class RaceLaps extends BaseGameMode<
   }
 
   end() {
+    this.ranksTracker.destroy();
+
     for (const racer of this.racers.values()) {
       racer.reset();
     }

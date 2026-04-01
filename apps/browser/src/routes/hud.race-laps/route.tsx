@@ -72,7 +72,7 @@ const Ranks = () => {
     <div className="flex flex-col gap-1 absolute right-12 bottom-12 w-80 font-mono text-xs uppercase tracking-tighter">
       {ranks.map((rank) => {
         const isUser = rank.playerId === playerId;
-        const pos = (rank.position + 1).toString().padStart(2, '0');
+        const pos = rank.position.toString().padStart(2, '0');
 
         return (
           <div

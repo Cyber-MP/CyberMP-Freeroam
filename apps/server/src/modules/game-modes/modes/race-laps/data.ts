@@ -82,6 +82,14 @@ export const zRaceLapsMap = z.object({
   ),
 });
 
+// TODO: maybe add current checkpoint index and current lap to rank
+export const zRaceLapsRankDTO = z.object({
+  playerId: z.number(),
+  playerNick: z.string(),
+  position: z.number(),
+});
+
+export type RaceLapsRankDTO = z.infer<typeof zRaceLapsRankDTO>;
 export type RaceLapsMap = z.infer<typeof zRaceLapsMap>;
 export type RaceLapsCheckpointNode = z.infer<typeof zRaceLapsCheckpointNode>;
 export type RaceLapsCheckpointDirection = RaceLapsCheckpointNode['direction'];
