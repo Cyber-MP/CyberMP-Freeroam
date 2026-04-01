@@ -21,8 +21,3 @@ declare module '*.svg?react' {
 
   export default ReactComponent;
 }
-
-// biome-ignore lint/correctness/noUnusedVariables: expanding window interface
-interface Window {
-  MOCKED_MP: boolean;
-}

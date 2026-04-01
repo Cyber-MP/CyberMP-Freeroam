@@ -1,6 +1,7 @@
 import { RpcBrowser } from '@cybermp/rpc-browser';
+import { IS_MP_MOCKED } from '../mp';
 
 export const rpc = new RpcBrowser({
   prefix: 'freeroam',
-  ...(window.MOCKED_MP ? { pendingTimeout: 500 } : {}),
+  ...(IS_MP_MOCKED ? { pendingTimeout: 500 } : {}),
 });

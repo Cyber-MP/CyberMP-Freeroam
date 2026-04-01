@@ -7,7 +7,8 @@
     "dev": "vite --host",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "type:check": "tsc -b"
   },
   "dependencies": {
     "@cybermp/rpc-browser": "0.1.0-rc.7",

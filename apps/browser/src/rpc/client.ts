@@ -8,6 +8,7 @@ import type {
   InferRouterOutputs,
 } from '@cybermp/rpc-router/server';
 import type { ClientRouter } from '../../../client/src/rpc/router';
+import { IS_MP_MOCKED } from '../mp';
 import { rpc } from './rpc';
 
 const createCallableProxy = () => {
@@ -51,7 +52,7 @@ const clientTrue = createRouterClient<
   MpEnv.CLIENT
 >({ rpc, target: MpEnv.CLIENT });
 
-export const client = window.MOCKED_MP ? clientMOCK : clientTrue;
+export const client = IS_MP_MOCKED ? clientMOCK : clientTrue;
 
 export type ClientOutputs = InferRouterOutputs<ClientRouter>;
 export type ClientInputs = InferRouterInputs<ClientRouter>;

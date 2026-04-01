@@ -1,6 +1,6 @@
 import z from 'zod';
-import { copyToClipboard } from '@/lib/clipboard';
 import { keysContract } from '../keys';
+import { copyToClipboard } from '../lib/clipboard';
 import { raceLapsContract } from '../routes/hud.game-modes/race-laps/-contract';
 import type { FileRoutesByFullPath } from '../routeTree.gen';
 import { chatContract } from '../store/chat';

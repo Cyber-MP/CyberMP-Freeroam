@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "dev": "cross-env NODE_ENV=development vite build --mode development --watch",
-    "build": "tsc && vite build"
+    "build": "tsc && vite build",
+    "type:check": "tsc -b"
   },
   "keywords": [],
   "license": "MIT",

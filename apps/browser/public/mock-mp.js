@@ -1,6 +1,7 @@
 // biome-ignore lint/style/noRestrictedGlobals: injecting global mock mp
 if (typeof mp === 'undefined') {
   window.mp = {
+    MOCKED: true,
     events: {
       on(...args) {
         console.log('MP.ON', ...args);
@@ -13,6 +14,4 @@ if (typeof mp === 'undefined') {
       },
     },
   };
-
-  window.MOCKED_MP = true;
 }
