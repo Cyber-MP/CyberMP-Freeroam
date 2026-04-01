@@ -144,19 +144,19 @@ const Info = () => {
         `}
         >
           <span
-            className={`text-xl font-black ${!data.finished && 'text-secondary-foreground'}`}
+            className={`text-xl ${!data.finished && 'text-secondary-foreground'}`}
           >
             {data.currentLap.toString().padStart(2, '0')}
           </span>
           <span className="text-xs opacity-50">/</span>
-          <span className="text-sm font-bold opacity-80">
+          <span className="text-sm opacity-80">
             {data.totalLaps.toString().padStart(2, '0')}
           </span>
         </div>
 
         <div className="flex flex-col px-3 py-1 min-w-[90px]">
           <span
-            className={`text-xs font-bold ${data.finished ? 'text-black' : 'text-muted-foreground'}`}
+            className={`text-xs ${data.finished ? 'text-black' : 'text-muted-foreground'}`}
           >
             RACE_PROGRESS
           </span>
@@ -181,19 +181,19 @@ const Info = () => {
         `}
         >
           <span
-            className={`text-xl font-black ${!data.finished && 'text-secondary-foreground'}`}
+            className={`text-xl ${!data.finished && 'text-secondary-foreground'}`}
           >
             {(data.currentCheckpointIndex + 1).toString().padStart(2, '0')}
           </span>
           <span className="text-xs opacity-50">/</span>
-          <span className="text-sm font-bold opacity-80">
+          <span className="text-sm opacity-80">
             {data.totalCheckpoints.toString().padStart(2, '0')}
           </span>
         </div>
 
         <div className="flex flex-col px-3 py-1 min-w-[100px]">
           <span
-            className={`text-xs font-bold ${data.finished ? 'text-black' : 'text-muted-foreground'}`}
+            className={`text-xs ${data.finished ? 'text-black' : 'text-muted-foreground'}`}
           >
             SECTOR_SYNC
           </span>
