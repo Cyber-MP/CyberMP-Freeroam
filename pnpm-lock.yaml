@@ -202,6 +202,9 @@ importers:
       inversify:
         specifier: ^7.11.0
         version: 7.11.0(reflect-metadata@0.2.2)
+      ms:
+        specifier: ^2.1.3
+        version: 2.1.3
       radash:
         specifier: ^12.1.1
         version: 12.1.1
@@ -215,6 +218,9 @@ importers:
       '@cybermp/client-types':
         specifier: ^2.0.3
         version: 2.0.3
+      '@types/ms':
+        specifier: ^2.1.0
+        version: 2.1.0
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3

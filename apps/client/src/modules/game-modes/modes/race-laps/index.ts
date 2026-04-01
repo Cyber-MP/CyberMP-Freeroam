@@ -1,3 +1,4 @@
+import { EInputAction, EInputKey } from '@cybermp/client-types/enums';
 import type {
   entEntity,
   gameFxInstance,
@@ -5,12 +6,14 @@ import type {
   Vector4,
 } from '@cybermp/client-types/game';
 import { inject, injectable } from 'inversify';
+import ms from 'ms';
 import { createEulerAngles, createVector4 } from '../../../../lib/vectors';
 import { mp } from '../../../../mp';
 import { server } from '../../../../rpc';
 import { browser } from '../../../../rpc/browser';
 import { CefService } from '../../../cef/cef.service';
 import { GHealthService } from '../../../game/health/health.service';
+import { GKeyboardService } from '../../../game/keyboard.service';
 import { GStatusEffectsService } from '../../../game/status-effects/status-effects.service';
 import { GTeleportService } from '../../../game/teleport/teleport.service';
 import { GVehiclesService } from '../../../game/vehicles/vehicles.service';
@@ -84,6 +87,11 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
   private checkpoints: RaceLapsCheckpointNode[] = [];
   private startPoint!: RaceLapsStartPointNode;
 
+  private readonly RESPAWN_DURATION = ms('1s');
+  private readonly RESPAWN_KEY = EInputKey.IK_F;
+  private respawnKeyHandler?: (action: EInputAction) => void;
+  private respawning = false;
+
   private data: RaceLapsRacerDTO = {
     currentCheckpointIndex: 0,
     currentLap: 0,
@@ -101,6 +109,7 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
     @inject(GHealthService) private healthService: GHealthService,
     @inject(GStatusEffectsService) private statusEffects: GStatusEffectsService,
     @inject(RaceLapsCheckpoint) private checkpoint: RaceLapsCheckpoint,
+    @inject(GKeyboardService) private keyboard: GKeyboardService,
   ) {
     super();
   }
@@ -134,6 +143,8 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
 
     this.statusEffects.remove('GameplayRestriction.NoCombat');
     this.statusEffects.remove('GameplayRestriction.NoWeapons');
+
+    this.unmountRespawnKey();
 
     browser.hud.setGlobalPath.trigger('/hud');
     browser.navigate.trigger('/hud');
@@ -193,10 +204,50 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
     this.checkpoint.spawn(currentCheckpointNode, onEnterCheckpoint);
   }
 
-  release() {
-    mp.events.addCommand('rl-respawn', () => {
-      server.gameModes.raceLaps.respawn.call();
+  private mountRespawnKey() {
+    browser.hints.add.trigger({
+      F: 'Respawn',
     });
+
+    let respawnTimer: ReturnType<typeof setTimeout>;
+
+    this.respawnKeyHandler = (action) => {
+      if (this.respawning) {
+        return;
+      }
+
+      if (action === EInputAction.IACT_Press) {
+        respawnTimer = setTimeout(() => {
+          this.respawning = true;
+
+          browser.gameModes.raceLaps.hideRespawn.trigger();
+
+          server.gameModes.raceLaps.respawn.call().finally(() => {
+            this.respawning = false;
+          });
+        }, this.RESPAWN_DURATION);
+
+        browser.gameModes.raceLaps.showRespawn.trigger(this.RESPAWN_DURATION);
+      } else if (action === EInputAction.IACT_Release) {
+        browser.gameModes.raceLaps.hideRespawn.trigger();
+
+        clearTimeout(respawnTimer);
+      }
+    };
+
+    this.keyboard.bindKey(this.RESPAWN_KEY, this.respawnKeyHandler);
+  }
+
+  private unmountRespawnKey() {
+    browser.hints.remove.trigger('F');
+
+    if (this.respawnKeyHandler) {
+      this.keyboard.unBindKey(this.RESPAWN_KEY, this.respawnKeyHandler);
+    }
+  }
+
+  release() {
+    this.mountRespawnKey();
 
     this.statusEffects.remove('GameplayRestriction.NoDriving');
 

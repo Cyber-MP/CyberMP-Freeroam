@@ -258,7 +258,7 @@ const Respawn = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ ease: 'linear' }}
+          transition={{ ease: 'linear', duration: 0.1 }}
           className="flex flex-col font-mono uppercase tracking-tighter select-none w-64 h-14"
         >
           <div className="relative flex items-center border bg-black/80 border-red-900/50 text-red-500">
