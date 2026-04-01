@@ -60,3 +60,9 @@ export const getAngleSumBetweenPositionAndVertices = (
   }
   return anglesum;
 };
+
+export const distance3D = (a: Vector3, b: Vector3): number => {
+  return Math.sqrt(
+    (a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2 + (a[2] - b[2]) ** 2,
+  );
+};
