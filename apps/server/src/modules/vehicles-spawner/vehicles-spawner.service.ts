@@ -3,7 +3,7 @@ import { inject, injectable } from 'inversify';
 import { mp } from '../../mp';
 import { client } from '../../rpc';
 import { MatchmakingService } from '../matchmaking/matchmaking.service';
-import { VEHICLES_DATA, type VehicleModel } from './vehicles';
+import { type VehicleModel, VehiclesRepository } from './vehicles.repository';
 
 @injectable()
 export class VehiclesSpawnerService {
@@ -11,6 +11,8 @@ export class VehiclesSpawnerService {
 
   constructor(
     @inject(MatchmakingService) private matchmakingService: MatchmakingService,
+
+    @inject(VehiclesRepository) private vehiclesRepository: VehiclesRepository,
   ) {}
 
   clearPlayerVehicles(playerId: number) {
@@ -26,17 +28,18 @@ export class VehiclesSpawnerService {
     vehicles.clear();
   }
 
-  spawnVehicle(player: MpPlayer, vehicleKey: VehicleModel) {
+  spawnVehicle(player: MpPlayer, vehicleModel: VehicleModel) {
     if (this.matchmakingService.isOnActiveMatch(player)) {
       return;
     }
 
-    const vehicle = VEHICLES_DATA.find((v) => v.model === vehicleKey);
+    const vehicle = this.vehiclesRepository.getByModel(vehicleModel);
+
     if (!vehicle) {
       return;
     }
 
-    const modelHash = mp.hashes.tweakdbid(`Vehicle.${vehicleKey}`);
+    const modelHash = mp.hashes.tweakdbid(`Vehicle.${vehicleModel}`);
     const appearanceHash = mp.hashes.cname(vehicle.appearance);
 
     if (player.vehicle) {

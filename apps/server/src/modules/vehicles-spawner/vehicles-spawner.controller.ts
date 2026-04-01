@@ -1,11 +1,14 @@
 import { RpcApplyType, type RpcServerContext } from '@cybermp/rpc-server';
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
-import type { WritableDeep } from 'type-fest';
 import z from 'zod';
 import { mp } from '../../mp';
 import { r } from '../../rpc';
-import { VEHICLES_DATA, type VehicleModel, zVehicle } from './vehicles';
+import {
+  type VehicleModel,
+  VehiclesRepository,
+  zVehicle,
+} from './vehicles.repository';
 import { VehiclesSpawnerService } from './vehicles-spawner.service';
 
 export const vehiclesSpawnerContract = {
@@ -25,6 +28,8 @@ export class VehiclesSpawnerController {
   constructor(
     @inject(VehiclesSpawnerService)
     private vehiclesSpawnerService: VehiclesSpawnerService,
+    @inject(VehiclesRepository)
+    private vehiclesRepository: VehiclesRepository,
   ) {}
 
   private spawnVehicle(context: RpcServerContext<VehicleModel>) {
@@ -32,7 +37,7 @@ export class VehiclesSpawnerController {
   }
 
   private getAll() {
-    return VEHICLES_DATA as WritableDeep<typeof VEHICLES_DATA>;
+    return this.vehiclesRepository.getAll();
   }
 
   @postConstruct()

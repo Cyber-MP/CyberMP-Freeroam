@@ -1,3 +1,5 @@
+import { injectable } from 'inversify';
+import type { WritableDeep } from 'type-fest';
 import z from 'zod';
 
 export enum VehicleCategory {
@@ -200,3 +202,22 @@ export const zVehicle = z.object({
 });
 
 export type VehicleModel = (typeof VEHICLE_MODELS)[number];
+
+@injectable()
+export class VehiclesRepository {
+  public getAll() {
+    return VEHICLES_DATA as WritableDeep<typeof VEHICLES_DATA>;
+  }
+
+  public getByModel(model: VehicleModel) {
+    return VEHICLES_DATA.find(
+      (vehicle) => vehicle.model === model,
+    ) as WritableDeep<(typeof VEHICLES_DATA)[number]>;
+  }
+
+  public getByCategory(category: VehicleCategory) {
+    return VEHICLES_DATA.filter(
+      (vehicle) => vehicle.category === category,
+    ) as WritableDeep<typeof VEHICLES_DATA>;
+  }
+}
