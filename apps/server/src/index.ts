@@ -8,6 +8,7 @@ import { LoggerModule } from './modules/logger/logger.module';
 import { LoggerService } from './modules/logger/logger.service';
 import { MatchmakingModule } from './modules/matchmaking/matchmaking.module';
 import { PolygonsModule } from './modules/polygons/polygons.module';
+import { TeleportModule } from './modules/teleport/teleport.module';
 import { TimeModule } from './modules/time/time.module';
 import { VehiclesSpawnerModule } from './modules/vehicles-spawner/vehicles-spawner.module';
 import { WeatherModule } from './modules/weather/weather.module';
@@ -25,6 +26,7 @@ const modules = [
   MatchmakingModule,
   GameModesModule,
   PolygonsModule,
+  TeleportModule,
 ];
 
 const coopWhen = async () => {

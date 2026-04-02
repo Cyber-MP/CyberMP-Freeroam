@@ -12,6 +12,7 @@ export const zWeatherState = z.enum(EWeatherState);
 export const weatherContract = {
   setServerWeather: contract.input(zWeatherState).build(),
   setClientWeather: contract.input(zWeatherState).build(),
+  resetToServer: contract.build(),
 };
 
 @eager()
@@ -27,11 +28,16 @@ export class WeatherController {
     this.weatherService.setClientWeather(c.data);
   }
 
+  private resetToServer() {
+    this.weatherService.resetToServer();
+  }
+
   @postConstruct()
   private init() {
     r.implement<typeof weatherContract>(weatherContract, {
       setServerWeather: this.setServerWeather.bind(this),
       setClientWeather: this.setClientWeather.bind(this),
+      resetToServer: this.resetToServer.bind(this),
     });
   }
 }

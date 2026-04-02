@@ -1,208 +1,188 @@
+import { useMutation } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
-import { type ChangeEvent, useState } from 'react';
-import { useMaskInput } from 'use-mask-input';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Field } from '@/components/ui/field';
-import { Input } from '@/components/ui/input';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { withDisabledDuringMatch } from '@/hocs/with-disabled-during-match';
-import { type ClientInputs, client, server } from '@/rpc';
+import { type ClientInputs, clientQuery, serverQuery } from '@/rpc';
 
 export const Route = createFileRoute('/hud/menu/world')({
   component: withDisabledDuringMatch(RouteComponent),
 });
 
-enum Category {
-  TIME = 'time',
-  WEATHER = 'weather',
-  TELEPORT_LOCATION = 'teleport-location',
-  TELEPORT_PLAYER = 'teleport-player',
-}
-
 function RouteComponent() {
   return (
-    <div className="flex justify-center flex-wrap gap-12 gap-x-24 h-full w-full">
-      <Tabs defaultValue={Category.TIME} className="w-full pb-4">
-        <div className="sticky top-0 flex gap-6 items-center z-50">
-          <TabsList>
-            <TabsTrigger value={Category.TIME}>Time</TabsTrigger>
-            <TabsTrigger value={Category.WEATHER}>Weather</TabsTrigger>
-            <TabsTrigger value={Category.TELEPORT_LOCATION}>
-              Location
-            </TabsTrigger>
-            <TabsTrigger value={Category.TELEPORT_PLAYER}>Player</TabsTrigger>
-          </TabsList>
-        </div>
-        <TabsContent value={Category.TIME}>
-          <TimeContent />
-        </TabsContent>
-        <TabsContent value={Category.WEATHER}>
-          <WeatherContent />
-        </TabsContent>
-        <TabsContent value={Category.TELEPORT_LOCATION}>
-          <LocationContent />
-        </TabsContent>
-        <TabsContent value={Category.TELEPORT_PLAYER}>
-          <PlayerContent />
-        </TabsContent>
-      </Tabs>
+    <div className="flex flex-col gap-12 h-full w-full">
+      <div className="grid grid-cols-2 gap-2">
+        <TimeContent />
+        <WeatherContent />
+        <PlayerContent />
+      </div>
     </div>
   );
 }
 
-enum Time {
-  MORNING = 'Morning',
-  AFTERNOON = 'Afternoon',
-  EVENING = 'Evening',
-  NIGHT = 'Night',
-}
-
-const TimeMap: Record<Time, [number, number]> = {
-  [Time.MORNING]: [8, 0],
-  [Time.AFTERNOON]: [12, 0],
-  [Time.EVENING]: [18, 0],
-  [Time.NIGHT]: [20, 0],
-};
-
 function TimeContent() {
-  const [localCustomTime, setLocalCustomTime] = useState<
-    [number, number] | null
-  >(null);
+  const [hours, setHours] = useState('0');
+  const [minutes, setMinutes] = useState('0');
+  const [changed, setChanged] = useState(false);
 
-  const localTimeRef = useMaskInput({
-    mask: 'datetime',
-    options: {
-      inputFormat: 'HH:mm',
-      outputFormat: 'HH:mm',
-      placeholder: '_',
-
-      onincomplete: () => setLocalCustomTime(null),
-
-      // @ts-expect-error `oncomplete` event dispatches an event of type `ChangeEvent<HTMLInputElement>`.
-      oncomplete: (event: ChangeEvent<HTMLInputElement>) => {
-        // yeah this is the way you get input value in this ass lib
-        setLocalCustomTime([
-          Number(event.target.value.slice(0, 2)),
-          Number(event.target.value.slice(3)),
-        ]);
+  const setLocalTimeMutation = useMutation(
+    clientQuery.time.setClientTime.triggerMutationOptions({
+      onSuccess: () => {
+        if (minutes !== '0' || hours !== '0') {
+          setChanged(true);
+        }
       },
-    },
-  });
+    }),
+  );
 
-  const setLocalTime = (time: [number, number] | null) => {
-    if (!time) return;
+  const resetToServerMutation = useMutation(
+    clientQuery.time.resetToServer.triggerMutationOptions({
+      onSuccess: () => {
+        setHours('0');
+        setMinutes('0');
+        setChanged(false);
+      },
+    }),
+  );
 
-    client.time.setClientTime.trigger({ hours: time[0], minutes: time[1] });
-  };
-
-  const syncWithServer = () => {
-    server.time.getCurrentTime.call().then((time) => {
-      client.time.setClientTime.trigger(time);
-    });
-  };
+  useEffect(() => {
+    setLocalTimeMutation.mutate([
+      { hours: Number(hours), minutes: Number(minutes) },
+    ]);
+  }, [hours, minutes]);
 
   return (
-    <div className="flex flex-col gap-1 w-full h-full">
-      <span className="italic">
-        {'>'} Change local time or sync with server time
-      </span>
+    <div className="flex flex-col gap-2">
+      <span className="italic">{'>'} Time</span>
 
-      <div className="grid grid-cols-4 gap-2 py-1">
-        {Object.entries(TimeMap).map(([key, time]) => (
-          <Button
-            key={key}
-            onClick={() => setLocalTime(time)}
-            className="text-black"
-          >
-            {key}
-          </Button>
-        ))}
-      </div>
+      <div className="flex flex-row gap-1 w-full">
+        <Select value={hours} onValueChange={setHours}>
+          <SelectTrigger>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent position="popper">
+            <SelectGroup className="max-h-60">
+              <SelectLabel>Hours</SelectLabel>
+              {Array.from({ length: 24 }, (_, i) => i).map((hour) => (
+                <SelectItem key={hour} value={hour.toString()}>
+                  {hour.toString().padStart(2, '0')}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
 
-      <div>
-        <Field orientation="horizontal">
-          <Button
-            disabled={!localCustomTime}
-            onClick={() => {
-              setLocalTime(localCustomTime);
-            }}
-            className="text-black"
-          >
-            Apply
-          </Button>
+        <Select value={minutes} onValueChange={setMinutes}>
+          <SelectTrigger>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent position="popper">
+            <SelectGroup className="max-h-60">
+              <SelectLabel>Minutes</SelectLabel>
+              {Array.from({ length: 60 }, (_, i) => i).map((minute) => (
+                <SelectItem key={minute} value={minute.toString()}>
+                  {minute.toString().padStart(2, '0')}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
 
-          <Input placeholder="HH:MM" ref={localTimeRef} className="h-9" />
-        </Field>
-      </div>
-
-      <div className="mt-10">
-        <Button onClick={syncWithServer} className="w-full text-black">
-          Sync with server
+        <Button
+          className="h-8"
+          variant="destructive"
+          disabled={!changed}
+          onClick={() => resetToServerMutation.mutate([])}
+        >
+          Reset
         </Button>
       </div>
     </div>
   );
 }
 
-type Weather = ClientInputs['weather']['setClientWeather'];
+type Weather = `${ClientInputs['weather']['setClientWeather']}`;
 
-const weatherMap = {
-  CLOUDY: { key: '24h_weather_cloudy', name: 'Cloudy' },
-  FOG: { key: '24h_weather_fog', name: 'Fog' },
-  SUNNY: { key: '24h_weather_sunny', name: 'Sunny' },
-  HEAVY_CLOUDS: { key: '24h_weather_heavy_clouds', name: 'Heavy Clouds' },
-  LIGHT_CLOUDS: { key: '24h_weather_light_clouds', name: 'Light Clouds' },
-  RAIN: { key: '24h_weather_rain', name: 'Rain' },
-  TOXIC_RAIN: { key: '24h_weather_toxic_rain', name: 'Toxic Rain' },
-  POLLUTION: { key: '24h_weather_pollution', name: 'Pollution' },
-  SANDSTORM: { key: '24h_weather_sandstorm', name: 'Sandstorm' },
-  DEEP_BLUE: { key: 'q302_deeb_blue', name: 'Deep Blue' },
-  LIGHT_RAIN: { key: 'q302_light_rain', name: 'Light Rain' },
-  SQUAT_MORNING: { key: 'q302_squat_morning', name: 'Squat Morning' },
-  EPILOGUE_CLOUDY_MORNING: {
-    key: 'q306_epilogue_cloudy_morning',
-    name: 'Epilogue Cloudy Morning',
-  },
-  RAINY_NIGHT: { key: 'q306_rainy_night', name: 'Rainy Night' },
-  COURIER_CLOUDS: { key: 'sa_courier_clouds', name: 'Courier Clouds' },
+const weatherMap: Record<Weather, string> = {
+  '24h_weather_cloudy': 'Cloudy',
+  '24h_weather_fog': 'Fog',
+  '24h_weather_sunny': 'Sunny',
+  '24h_weather_heavy_clouds': 'Heavy Clouds',
+  '24h_weather_light_clouds': 'Light Clouds',
+  '24h_weather_rain': 'Rain',
+  '24h_weather_toxic_rain': 'Toxic Rain',
+  '24h_weather_pollution': 'Pollution',
+  '24h_weather_sandstorm': 'Sandstorm',
+  q302_deeb_blue: 'Deep Blue',
+  q302_light_rain: 'Light Rain',
+  q302_squat_morning: 'Squat Morning',
+  q306_epilogue_cloudy_morning: 'Epilogue Cloudy Morning',
+  q306_rainy_night: 'Rainy Night',
+  sa_courier_clouds: 'Courier Clouds',
 } as const;
 
-type WeatherKey = keyof typeof weatherMap;
-
 function WeatherContent() {
-  const setWeather = (key: WeatherKey) => {
-    console.log(key);
+  const [changed, setChanged] = useState(false);
 
-    client.weather.setClientWeather.trigger(weatherMap[key].key as Weather);
-  };
+  const setWeatherMutation = useMutation(
+    clientQuery.weather.setClientWeather.triggerMutationOptions({
+      onSuccess: () => {
+        setChanged(true);
+      },
+    }),
+  );
 
-  const syncWithServer = () => {
-    server.weather.getCurrentWeather.call().then((weather) => {
-      client.weather.setClientWeather.trigger(weather);
-    });
-  };
+  const resetToServerMutation = useMutation(
+    clientQuery.weather.resetToServer.triggerMutationOptions({
+      onSuccess: () => {
+        setChanged(false);
+      },
+    }),
+  );
 
   return (
-    <div className="flex flex-col gap-1 w-full h-full">
-      <span className="italic">
-        {'>'} Change local weather or sync with server weather
-      </span>
+    <div className="flex flex-col gap-2">
+      <span className="italic">{'>'} Weather</span>
 
-      <div className="grid grid-cols-3 gap-2 py-1">
-        {Object.entries(weatherMap).map(([key, { name }]) => (
-          <Button
-            key={key}
-            onClick={() => setWeather(key as WeatherKey)}
-            className="text-black"
-          >
-            {name}
-          </Button>
-        ))}
-      </div>
+      <div className="flex flex-row gap-1 w-full">
+        <Select
+          defaultValue="24h_weather_cloudy"
+          onValueChange={(value) => setWeatherMutation.mutate([value as any])}
+        >
+          <SelectTrigger className="min-w-50">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent position="popper">
+            <SelectGroup className="max-h-60">
+              <SelectLabel>Weather</SelectLabel>
+              {Object.entries(weatherMap).map(([key, name]) => (
+                <SelectItem key={key} value={key}>
+                  {name}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
 
-      <div className="mt-10">
-        <Button onClick={syncWithServer} className="w-full text-black">
-          Sync with server
+        <Button
+          className="h-8"
+          variant="destructive"
+          disabled={!changed}
+          onClick={() => {
+            resetToServerMutation.mutate([]);
+          }}
+        >
+          Reset
         </Button>
       </div>
     </div>
@@ -214,5 +194,73 @@ function LocationContent() {
 }
 
 function PlayerContent() {
-  return <div></div>;
+  const [selected, setSelected] = useState<number | undefined>(undefined);
+
+  // OCK / MOCK / MOCK / MOCK /
+  // CK / MOCK / MOCK / MOCK / M
+  // K / MOCK / MOCK / MOCK / MO
+  //  / MOCK / MOCK / MOCK / MOC
+  // / MOCK / MOCK / MOCK / MOCK
+
+  // const { data: availablePlayers } = useSuspenseQuery(
+  //   serverQuery.teleport.getAvailablePlayers.queryOptions(),
+  // );
+
+  const availablePlayers = [
+    {
+      nickname: 'player 1',
+      id: 123,
+    },
+    {
+      nickname: 'player 2',
+      id: 456,
+    },
+    {
+      nickname: 'player 3',
+      id: 789,
+    },
+  ];
+  // OCK / MOCK / MOCK / MOCK /
+  // CK / MOCK / MOCK / MOCK / M
+  // K / MOCK / MOCK / MOCK / MO
+  //  / MOCK / MOCK / MOCK / MOC
+  // / MOCK / MOCK / MOCK / MOCK
+
+  const teleportMutation = useMutation(
+    serverQuery.teleport.teleportToPlayer.triggerMutationOptions(),
+  );
+
+  const handleTeleport = () => {
+    if (!selected) return;
+
+    teleportMutation.mutate([selected]);
+  };
+
+  return (
+    <div className="flex flex-col gap-2">
+      <span className="italic">{'>'} Teleport to player</span>
+
+      <div className="flex flex-row gap-1 w-full">
+        <Select onValueChange={(value) => setSelected(Number(value))}>
+          <SelectTrigger className="min-w-50">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent position="popper">
+            <SelectGroup className="max-h-60">
+              <SelectLabel>Player</SelectLabel>
+              {availablePlayers.map((player) => (
+                <SelectItem key={player.id} value={String(player.id)}>
+                  {player.nickname}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+
+        <Button className="h-8" disabled={!selected} onClick={handleTeleport}>
+          Teleport
+        </Button>
+      </div>
+    </div>
+  );
 }

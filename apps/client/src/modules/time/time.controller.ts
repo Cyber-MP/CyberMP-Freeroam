@@ -16,6 +16,7 @@ export type Time = z.infer<typeof zTime>;
 export const timeContract = {
   setServerTime: contract.input(zTime).build(),
   setClientTime: contract.input(zTime).build(),
+  resetToServer: contract.build(),
 };
 
 @eager()
@@ -31,11 +32,16 @@ export class TimeController {
     this.timeService.setClientTime(c.data);
   }
 
+  private resetToServer() {
+    this.timeService.resetToServer();
+  }
+
   @postConstruct()
   private init() {
     r.implement<typeof timeContract>(timeContract, {
       setServerTime: this.setServerTime.bind(this),
       setClientTime: this.setClientTime.bind(this),
+      resetToServer: this.resetToServer.bind(this),
     });
   }
 }

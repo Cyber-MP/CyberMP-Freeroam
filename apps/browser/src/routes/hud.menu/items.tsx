@@ -1,3 +1,4 @@
+import { useMutation } from '@tanstack/react-query';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { isHotkeyPressed } from 'react-hotkeys-hook';
 import Boots_03_old_01 from '#/images/clothes/Boots_03_old_01.webp?w=300&h=300&imagetools';
@@ -101,9 +102,8 @@ import Preset_Sword_Witcher from '#/images/weapons/Preset_Sword_Witcher.webp?w=3
 import Preset_Umbra_Bebe from '#/images/weapons/Preset_Umbra_Bebe.webp?w=300&h=150&imagetools';
 import Preset_VB_Axe from '#/images/weapons/Preset_VB_Axe.webp?w=300&h=150&imagetools';
 import w_melee_boss_hammer from '#/images/weapons/w_melee_boss_hammer.webp?w=300&h=150&imagetools';
-
 import { withDisabledDuringMatch } from '@/hocs/with-disabled-during-match';
-import { type ClientInputs, client } from '@/rpc';
+import { type ClientInputs, clientQuery } from '@/rpc';
 import {
   Tabs,
   TabsContent,
@@ -681,8 +681,12 @@ function RouteComponent() {
 function ItemsContent<T extends ItemCategory>({ value }: { value: T }) {
   const navigate = useNavigate();
 
+  const spawnItemMutation = useMutation(
+    clientQuery.itemSpawner.spawnItem.triggerMutationOptions(),
+  );
+
   const spawnItem = (key: Item['key']) => {
-    client.itemSpawner.spawnItem.trigger(key);
+    spawnItemMutation.mutate([key]);
 
     if (!isHotkeyPressed('shift')) {
       navigate({ to: '/hud' });

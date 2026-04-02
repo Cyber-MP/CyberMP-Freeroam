@@ -7,6 +7,7 @@ import type {
   InferRouterInputs,
   InferRouterOutputs,
 } from '@cybermp/rpc-router/server';
+import { createRouterClientQuery } from '@cybermp/rpc-router-tanstack-query';
 import type { ClientRouter } from '../../../client/src/rpc/router';
 import { IS_MP_MOCKED } from '../mp';
 import { rpc } from './rpc';
@@ -53,6 +54,8 @@ const clientTrue = createRouterClient<
 >({ rpc, target: MpEnv.CLIENT });
 
 export const client = IS_MP_MOCKED ? clientMOCK : clientTrue;
+
+export const clientQuery = createRouterClientQuery(client);
 
 export type ClientOutputs = InferRouterOutputs<ClientRouter>;
 export type ClientInputs = InferRouterInputs<ClientRouter>;
