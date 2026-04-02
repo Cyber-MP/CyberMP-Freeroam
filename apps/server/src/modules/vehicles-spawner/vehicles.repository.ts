@@ -31,7 +31,7 @@ export const VEHICLES_DATA = [
   {
     model: 'v_sport2_porsche_911turbo_cabrio_player',
     name: 'Porsche 911 Turbo Cabriolet 930',
-    appearance: 'porsche_911turbo_basic_cabrio_01',
+    appearance: 'porsche_911turbo__basic_cabrio_01',
     category: VehicleCategory.SPORT,
   },
   {
@@ -48,13 +48,13 @@ export const VEHICLES_DATA = [
   },
   {
     model: 'v_sport2_mizutani_shion_player',
-    name: 'Shion MZ2',
-    appearance: 'mizutani_shion_basic_player_01',
+    name: 'Mizutani Shion MZ2',
+    appearance: 'mizutani_shion__basic_player_01',
     category: VehicleCategory.SPORT,
   },
   {
     model: 'v_sport2_quadra_type66_02_player',
-    name: 'Type66 Bullit',
+    name: 'Quadra Type66 Bullit',
     appearance: 'quadra_type66__basic_bulleat',
     category: VehicleCategory.SPORT,
   },
@@ -91,7 +91,7 @@ export const VEHICLES_DATA = [
   {
     model: 'v_standard2_thorton_galena_player',
     name: 'Thorton Galena G240',
-    appearance: 'thorton_galena_basic_player_01',
+    appearance: 'thorton_galena__basic_player_01',
     category: VehicleCategory.STREET,
   },
   {
