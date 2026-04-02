@@ -1,251 +1,205 @@
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import aeroImg from '#/images/vehicles/aero.webp?w=300&h=150&imagetools';
-import alvaradoImg from '#/images/vehicles/alvarado.webp?w=300&h=150&imagetools';
-import archerImg from '#/images/vehicles/archer.webp?w=300&h=150&imagetools';
-import avengerImg from '#/images/vehicles/avenger.png?w=300&h=150&imagetools';
-import beastImg from '#/images/vehicles/beast.webp?w=300&h=150&imagetools';
-import bikeImg from '#/images/vehicles/bike.webp?w=300&h=150&imagetools';
-import butteImg from '#/images/vehicles/butte.webp?w=300&h=150&imagetools';
-import caliburnImg from '#/images/vehicles/caliburn.webp?w=300&h=150&imagetools';
-import chevalierImg from '#/images/vehicles/chevalier.webp?w=300&h=150&imagetools';
-import colbyImg from '#/images/vehicles/colby.webp?w=300&h=150&imagetools';
-import delamainImg from '#/images/vehicles/delamain.jpg?w=300&h=150&imagetools';
-import herreraImg from '#/images/vehicles/herrera.webp?w=300&h=150&imagetools';
-import mahirImg from '#/images/vehicles/mahir.webp?w=300&h=150&imagetools';
-import mordredImg from '#/images/vehicles/mordred.webp?w=300&h=150&imagetools';
-import nazareImg from '#/images/vehicles/nazare.jpg?w=300&h=150&imagetools';
-import policeImg from '#/images/vehicles/police.jpg?w=300&h=150&imagetools';
-import porscheImg from '#/images/vehicles/porsche.webp?w=300&h=150&imagetools';
-import porsche911Img from '#/images/vehicles/porsche911.webp?w=300&h=150&imagetools';
-import quadraImg from '#/images/vehicles/quadra.webp?w=300&h=150&imagetools';
-import shionImg from '#/images/vehicles/shion.webp?w=300&h=150&imagetools';
-import type66Img from '#/images/vehicles/type66.webp?w=300&h=150&imagetools';
-import yaibaImg from '#/images/vehicles/yaiba.webp?w=300&h=150&imagetools';
+import { useMemo } from 'react';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { withDisabledDuringMatch } from '@/hocs/with-disabled-during-match';
-import { type ServerInputs, server } from '@/rpc';
+import { server, serverQuery } from '@/rpc';
+import { queryClient } from '@/tanstack-query';
+import type { ServerOutputs } from '../../../../client/src/rpc';
+import v_sport1_quadra_turbo_player from '../../assets/images/vehicles/v_sport1_quadra_turbo_player.webp?w=300&h=225&imagetools';
+import v_sport1_quadra_turbo_r_player from '../../assets/images/vehicles/v_sport1_quadra_turbo_r_player.webp?w=300&h=225&imagetools';
+import v_sport1_rayfield_aerondight_player from '../../assets/images/vehicles/v_sport1_rayfield_aerondight_player.webp?w=300&h=225&imagetools';
+import v_sport1_rayfield_caliburn_player from '../../assets/images/vehicles/v_sport1_rayfield_caliburn_player.webp?w=300&h=225&imagetools';
+import v_sport2_mizutani_shion_nomad_player from '../../assets/images/vehicles/v_sport2_mizutani_shion_nomad_player.webp?w=300&h=225&imagetools';
+import v_sport2_mizutani_shion_player from '../../assets/images/vehicles/v_sport2_mizutani_shion_player.webp?w=300&h=225&imagetools';
+import v_sport2_porsche_911turbo_cabrio_player from '../../assets/images/vehicles/v_sport2_porsche_911turbo_cabrio_player.webp?w=300&h=225&imagetools';
+import v_sport2_quadra_type66_02_player from '../../assets/images/vehicles/v_sport2_quadra_type66_02_player.webp?w=300&h=225&imagetools';
+import v_sport2_quadra_type66_base_player from '../../assets/images/vehicles/v_sport2_quadra_type66_base_player.webp?w=300&h=225&imagetools';
+import v_sport2_quadra_type66_nomad_player_03 from '../../assets/images/vehicles/v_sport2_quadra_type66_nomad_player_03.webp?w=300&h=225&imagetools';
+import v_sport2_quadra_type66_player from '../../assets/images/vehicles/v_sport2_quadra_type66_player.webp?w=300&h=225&imagetools';
+import v_sportbike1_yaiba_kusanagi_player from '../../assets/images/vehicles/v_sportbike1_yaiba_kusanagi_player.webp?w=300&h=225&imagetools';
+import v_sportbike1_yaiba_kusanagi_player_02 from '../../assets/images/vehicles/v_sportbike1_yaiba_kusanagi_player_02.webp?w=300&h=225&imagetools';
+import v_sportbike1_yaiba_kusanagi_player_03 from '../../assets/images/vehicles/v_sportbike1_yaiba_kusanagi_player_03.webp?w=300&h=225&imagetools';
+import v_sportbike2_arch_player from '../../assets/images/vehicles/v_sportbike2_arch_player.webp?w=300&h=225&imagetools';
+import v_sportbike2_arch_player_02 from '../../assets/images/vehicles/v_sportbike2_arch_player_02.webp?w=300&h=225&imagetools';
+import v_sportbike2_arch_player_03 from '../../assets/images/vehicles/v_sportbike2_arch_player_03.webp?w=300&h=225&imagetools';
+import v_sportbike2_arch_tyger_player from '../../assets/images/vehicles/v_sportbike2_arch_tyger_player.webp?w=300&h=225&imagetools';
+import v_sportbike3_brennan_apollo_nomad_player from '../../assets/images/vehicles/v_sportbike3_brennan_apollo_nomad_player.webp?w=300&h=225&imagetools';
+import v_sportbike3_brennan_apollo_player from '../../assets/images/vehicles/v_sportbike3_brennan_apollo_player.webp?w=300&h=225&imagetools';
+import v_sportbike3_brennan_apollo_player_02 from '../../assets/images/vehicles/v_sportbike3_brennan_apollo_player_02.webp?w=300&h=225&imagetools';
+import v_standard2_archer_bandit from '../../assets/images/vehicles/v_standard2_archer_bandit.webp?w=300&h=225&imagetools';
+import v_standard2_archer_quartz_base_player from '../../assets/images/vehicles/v_standard2_archer_quartz_base_player.webp?w=300&h=225&imagetools';
+import v_standard2_thorton_colby_gt_player from '../../assets/images/vehicles/v_standard2_thorton_colby_gt_player.webp?w=300&h=225&imagetools';
+import v_standard2_thorton_galena_nomad_player from '../../assets/images/vehicles/v_standard2_thorton_galena_nomad_player.webp?w=300&h=225&imagetools';
+import v_standard2_thorton_galena_player from '../../assets/images/vehicles/v_standard2_thorton_galena_player.webp?w=300&h=225&imagetools';
+import v_standard3_thorton_mackinaw_02_player from '../../assets/images/vehicles/v_standard3_thorton_mackinaw_02_player.webp?w=300&h=225&imagetools';
+import v_standard25_mahir_supron_player from '../../assets/images/vehicles/v_standard25_mahir_supron_player.webp?w=300&h=225&imagetools';
+import v_standard25_thorton_colby_nomad_player from '../../assets/images/vehicles/v_standard25_thorton_colby_nomad_player.webp?w=300&h=225&imagetools';
+import v_standard25_thorton_colby_pickup_player from '../../assets/images/vehicles/v_standard25_thorton_colby_pickup_player.webp?w=300&h=225&imagetools';
 
-//import hellhoundImg from "#/images/vehicles/hellhound.png?w=300&h=150&imagetools";
+type Vehicles = ServerOutputs['vehiclesSpawner']['getAll'];
 
-type VehicleInfo = {
-  key: ServerInputs['vehiclesSpawner']['spawnVehicle'];
-  name: string;
-  image?: any;
+type Vehicle = Vehicles[number];
+
+type VehicleCategory = `${Vehicle['category']}` | 'all';
+
+const VEHICLE_IMAGES: Record<Vehicle['model'], string> = {
+  v_sport1_rayfield_aerondight_player,
+  v_sport1_rayfield_caliburn_player,
+  v_standard2_archer_bandit,
+  v_sport2_porsche_911turbo_cabrio_player,
+  v_sport1_quadra_turbo_player,
+  v_sport1_quadra_turbo_r_player,
+  v_sport2_mizutani_shion_player,
+  v_sport2_quadra_type66_02_player,
+  v_sport2_quadra_type66_base_player,
+  v_sport2_quadra_type66_player,
+  v_standard2_archer_quartz_base_player,
+  v_standard25_mahir_supron_player,
+  v_standard2_thorton_colby_gt_player,
+  v_standard2_thorton_galena_player,
+  v_sport2_mizutani_shion_nomad_player,
+  v_standard25_thorton_colby_pickup_player,
+  v_standard25_thorton_colby_nomad_player,
+  v_standard2_thorton_galena_nomad_player,
+  v_standard3_thorton_mackinaw_02_player,
+  v_sport2_quadra_type66_nomad_player_03,
+  v_sportbike2_arch_tyger_player,
+  v_sportbike2_arch_player_03,
+  v_sportbike2_arch_player_02,
+  v_sportbike2_arch_player,
+  v_sportbike1_yaiba_kusanagi_player_03,
+  v_sportbike1_yaiba_kusanagi_player,
+  v_sportbike1_yaiba_kusanagi_player_02,
+  v_sportbike3_brennan_apollo_player_02,
+  v_sportbike3_brennan_apollo_player,
+  v_sportbike3_brennan_apollo_nomad_player,
 };
-
-type VehicleKey = ServerInputs['vehiclesSpawner']['spawnVehicle'];
-
-const VehiclesInfo: VehicleInfo[] = [
-  {
-    key: 'herrera',
-    name: 'Herrera Outlaw “Weiler”',
-    image: herreraImg,
-  },
-  {
-    key: 'archer',
-    name: 'Archer Quartz Ec-L R275',
-    image: archerImg,
-  },
-  {
-    key: 'mahir',
-    name: 'Mahir Supron “Trailbruiser”',
-    image: mahirImg,
-  },
-  {
-    key: 'beast',
-    name: 'Thorton Mackinaw "Beast"',
-    image: beastImg,
-  },
-  {
-    key: 'chevalier',
-    name: 'Chevillion Emperor 620 Ragnar',
-    image: chevalierImg,
-  },
-  {
-    key: 'aero',
-    name: 'Rayfield Aerondight "Guinevere"',
-    image: aeroImg,
-  },
-  {
-    key: 'quadra',
-    name: 'Quadra Type-66',
-    image: quadraImg,
-  },
-  {
-    key: 'bike',
-    name: 'Yaiba Kusanagi Ct-3x',
-    image: bikeImg,
-  },
-  {
-    key: 'type66',
-    name: 'Quadra Type-66 "Javelina"',
-    image: type66Img,
-  },
-  // {
-  //   key: "sidewinter",
-  //   name: "Archer Quartz “Sidewinder”",
-  //   image: sidewinderImg,
-  // },
-  // {
-  //   key: "locust",
-  //   name: 'Thorton Galena "Locust"',
-  //   image: locustImg,
-  // },
-  {
-    key: 'colby',
-    name: 'Thorton Colby "Little Mule"',
-    image: colbyImg,
-  },
-  {
-    key: 'shion',
-    name: 'Mizutani Shion "Bonewrecker"',
-    image: shionImg,
-  },
-  {
-    key: 'mordred',
-    name: 'Rayfield Caliburn "Mordred"',
-    image: mordredImg,
-  },
-  {
-    key: 'caliburn',
-    name: 'Rayfield Caliburn',
-    image: caliburnImg,
-  },
-  {
-    key: 'porsche',
-    name: 'Porsche 911 Turbo Cabriolet',
-    image: porscheImg,
-  },
-
-  {
-    key: 'porsche911',
-    name: 'Porsche 911 Turbo',
-    image: porsche911Img,
-  },
-  {
-    key: 'yaiba',
-    name: 'Yaiba ARV-Q340 Semimaru',
-    image: yaibaImg,
-  },
-  {
-    key: 'alvarado',
-    name: 'Villefort Alvarado "Vato"',
-    image: alvaradoImg,
-  },
-  // {
-  //   key: "thorton",
-  //   name: 'Thorton Mackinaw "Demiurge"',
-  //   image: thortonImg,
-  // },
-  {
-    key: 'butte',
-    name: 'Thorton Colby CX410 Butte',
-    image: butteImg,
-  },
-  {
-    key: 'nazare',
-    name: 'Arch Nazare "Itsumade"',
-    image: nazareImg,
-  },
-  // {
-  //   key: "terrier",
-  //   name: "Shion Mz2",
-  //   image: terrierImg,
-  // },
-  {
-    key: 'avenger',
-    name: 'Type-66 Avenger',
-    image: avengerImg,
-  },
-  {
-    key: 'delamain',
-    name: 'Villefort Cortes Delamain No.21',
-    image: delamainImg,
-  },
-  // {
-  //   key: "kamaz",
-  //   name: 'Kaukaz Bratsk',
-  //   image: kamazImg,
-  // },
-  // {
-  //   key: "begemot",
-  //   name: 'Militech behemoth',
-  //   image: begemotImg,
-  // },
-  {
-    key: 'police',
-    name: 'Police Vehicle',
-    image: policeImg,
-  },
-  // {
-  //   key: "hellhound",
-  //   name: 'Militech Hellhounde',
-  //   image: hellhoundImg,
-  // },
-  // {
-  //   key: "av_maxtac",
-  //   name: "Maxtac AV",
-  //   image: avMaxtacImg,
-  // },
-  // {
-  //   key: "av_rayfield",
-  //   name: "Rayfield AV",
-  //   image: avRayfieldImg,
-  // },
-  // {
-  //   key: "av_trauma",
-  //   name: "Trauma team AV",
-  //   image: avTraumaImg,
-  // },
-  // {
-  //   key: "av_militech",
-  //   name: "Militech AV",
-  //   image: avMilitechImg,
-  // },
-  // {
-  //   key: "heli_1",
-  //   name: "Helicopter 1",
-  //   image: heli1Img,
-  // },
-  // {
-  //   key: "heli_2",
-  //   name: "Helicopter 2",
-  //   image: heli2Img,
-  // },
-];
 
 export const Route = createFileRoute('/hud/menu/')({
   component: withDisabledDuringMatch(RouteComponent),
+  pendingComponent: PendingComponent,
+  pendingMs: 500,
+  pendingMinMs: 300,
+  loader: async () => {
+    await queryClient.ensureQueryData(
+      serverQuery.vehiclesSpawner.getAll.queryOptions(),
+    );
+  },
 });
 
+function PendingComponent() {
+  return (
+    <div className="flex justify-center flex-wrap gap-12 gap-x-24 h-full w-full">
+      <Tabs defaultValue={'all' as VehicleCategory} className="w-full">
+        <div className="sticky top-0 flex gap-6 items-center z-50 pointer-events-none">
+          <TabsList>
+            <TabsTrigger value={'all' as VehicleCategory}>All</TabsTrigger>
+            <TabsTrigger value={'sport' as VehicleCategory}>Sport</TabsTrigger>
+            <TabsTrigger value={'street' as VehicleCategory}>
+              Street
+            </TabsTrigger>
+            <TabsTrigger value={'bikes' as VehicleCategory}>Bikes</TabsTrigger>
+            <TabsTrigger value={'offroad' as VehicleCategory}>
+              Offroad
+            </TabsTrigger>
+          </TabsList>
+        </div>
+        <TabsContent value={'all' as VehicleCategory}>
+          <Skeleton className="h-full" />
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+}
+
 function RouteComponent() {
+  const { data: vehicles } = useSuspenseQuery(
+    serverQuery.vehiclesSpawner.getAll.queryOptions(),
+  );
+
+  const categories = useMemo(() => {
+    return (
+      vehicles.reduce<Record<VehicleCategory, Vehicles>>(
+        (acc, vehicle) => {
+          const category = vehicle.category as VehicleCategory;
+
+          if (!acc[category]) {
+            acc[category] = [];
+          }
+
+          acc[category].push(vehicle);
+
+          return acc;
+        },
+        {} as Record<VehicleCategory, Vehicles>,
+      ) || []
+    );
+  }, [vehicles]);
+
+  return (
+    <div className="flex justify-center flex-wrap gap-12 gap-x-24 h-full w-full">
+      <Tabs defaultValue={'all' as VehicleCategory} className="w-full pb-4">
+        <div className="sticky top-0 flex gap-6 items-center z-50">
+          <TabsList>
+            <TabsTrigger value={'all' as VehicleCategory}>All</TabsTrigger>
+            <TabsTrigger value={'sport' as VehicleCategory}>Sport</TabsTrigger>
+            <TabsTrigger value={'street' as VehicleCategory}>
+              Street
+            </TabsTrigger>
+            <TabsTrigger value={'bikes' as VehicleCategory}>Bikes</TabsTrigger>
+            <TabsTrigger value={'offroad' as VehicleCategory}>
+              Offroad
+            </TabsTrigger>
+          </TabsList>
+        </div>
+        <TabsContent value={'all' as VehicleCategory}>
+          <ItemsContent vehicles={vehicles} />
+        </TabsContent>
+        <TabsContent value={'sport' as VehicleCategory}>
+          <ItemsContent vehicles={categories.sport} />
+        </TabsContent>
+        <TabsContent value={'street' as VehicleCategory}>
+          <ItemsContent vehicles={categories.street} />
+        </TabsContent>
+        <TabsContent value={'bikes' as VehicleCategory}>
+          <ItemsContent vehicles={categories.bikes} />
+        </TabsContent>
+        <TabsContent value={'offroad' as VehicleCategory}>
+          <ItemsContent vehicles={categories.offroad} />
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+}
+
+function ItemsContent({ vehicles }: { vehicles: Vehicles }) {
   const navigate = useNavigate();
 
-  const close = () => {
+  const spawnVehicle = (key: Vehicle['model']) => {
+    server.vehiclesSpawner.spawnVehicle.trigger(key);
+
     navigate({ to: '/hud' });
   };
 
-  const spawnVehicle = (key: VehicleKey) => {
-    server.vehiclesSpawner.spawnVehicle.trigger(key);
-    close();
-  };
-
   return (
-    <div className="flex items-center justify-center flex-wrap gap-12 gap-x-24 h-full w-full">
-      {VehiclesInfo.map((vehicle, index) => (
+    <div className="grid grid-cols-3 gap-4">
+      {vehicles.map((item) => (
         <div
-          // biome-ignore lint/suspicious/noArrayIndexKey: vehicles data is static
-          key={index}
-          onClick={() => spawnVehicle(vehicle.key)}
-          className="group flex cursor-pointer flex-col items-center gap-y-2.5"
+          key={item.model}
+          className="flex flex-col justify-between items-center w-full bg-[#85858520] hover:bg-[#85858540] transition-colors duration-150 group cursor-pointer border-2 border-transparent hover:border-primary"
+          onClick={() => spawnVehicle(item.model)}
         >
           <img
-            src={vehicle.image}
-            alt="Vehicle"
-            className="h-40 w-80 border-2 border-transparent object-cover transition-colors duration-300 group-hover:border-primary"
+            src={VEHICLE_IMAGES[item.model] ?? undefined}
+            alt="Item"
+            className="h-40 w-80 object-cover"
+            draggable={false}
           />
 
-          <span className="text-sm font-semibold text-muted-foreground transition-colors group-hover:text-primary">
-            {vehicle.name}
+          <span className="text-[#aaa] group-hover:text-white bg-muted w-full text-center text-xs p-1 truncate">
+            {item.name}
           </span>
         </div>
       ))}

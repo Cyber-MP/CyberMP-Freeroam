@@ -1,11 +1,11 @@
 import { RiGamepadLine, RiUserLine } from '@remixicon/react';
-import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { useMatchRoute } from '@tanstack/react-router';
 import { motion } from 'framer-motion';
+import { usePlayerId } from '@/hooks/use-player-id';
 import { isMatchMember, type Match } from '@/lib/match';
 import { serverQuery } from '@/rpc';
 import { CardAction, CardHeader, CardTitle } from '../ui/card';
-import { usePlayerId } from '@/hooks/use-player-id';
 
 export const LobbyMatch = () => {
   const { data: matches } = useSuspenseQuery<Match[]>(
