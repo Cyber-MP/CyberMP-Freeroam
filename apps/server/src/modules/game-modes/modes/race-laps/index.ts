@@ -2,6 +2,7 @@ import type { MpPlayer, MpVehicle } from '@cybermp/server-types';
 import { inject, injectable } from 'inversify';
 import ms from 'ms';
 import { sleep } from 'radash';
+import type { WritableDeep } from 'type-fest';
 import z from 'zod';
 import { distance3D } from '../../../../lib/math';
 import { mp } from '../../../../mp';
@@ -12,17 +13,18 @@ import {
   zCreateMatchOptions,
   zJoinMatchOptions,
 } from '../../../matchmaking/match';
+import {
+  VEHICLES_DATA,
+  type VehicleData,
+} from '../../../vehicles-spawner/vehicles.repository';
 import { BaseGameMode, GameModeName } from '../../game-mode';
 import {
   type RaceLapsCheckpointNode,
-  RaceLapsClassVehicleMap,
   type RaceLapsMap,
   RaceLapsMapName,
   type RaceLapsRacerDTO,
   type RaceLapsRankDTO,
   type RaceLapsStartPointNode,
-  RaceLapsVehicleClass,
-  RaceLapsVehicleMap,
   zRaceLapsRacerDTO,
 } from './data';
 import { RaceLapsMaps } from './maps';
@@ -33,13 +35,13 @@ import {
 
 export const zCreateRaceLapsOptions = zCreateMatchOptions.extend({
   map: z.enum(RaceLapsMapName),
-  vehicleClass: z.enum(RaceLapsVehicleClass),
+  vehicleClass: z.enum(['all', ...VEHICLES_DATA.map((o) => o.category)]),
   laps: z.number().min(1).max(10),
   combat: z.boolean().default(false).optional(),
 });
 
 export const zJoinRaceLapsOptions = zJoinMatchOptions.extend({
-  vehicle: z.enum(Object.values(RaceLapsClassVehicleMap).flat()),
+  vehicle: z.enum(VEHICLES_DATA.map((o) => o.name)),
 });
 
 type RacerConstructorOptions = {
@@ -58,6 +60,7 @@ class Racer {
   private startPoint!: RaceLapsStartPointNode;
 
   options: z.infer<typeof zJoinRaceLapsOptions>;
+  private vehicleData: VehicleData;
   index: number;
   player: MpPlayer;
   vehicle!: MpVehicle;
@@ -77,6 +80,10 @@ class Racer {
 
     // biome-ignore lint/style/noNonNullAssertion: Player is obviously present
     this.options = opts.match.members.get(opts.player)!;
+
+    this.vehicleData = VEHICLES_DATA.find(
+      (o) => o.name === this.options.vehicle,
+    )!;
   }
 
   async prepare() {
@@ -91,11 +98,11 @@ class Racer {
         : checkpoints[0]
     ) as RaceLapsStartPointNode;
 
-    const [vehicleModel, vehicleAppearance] =
-      RaceLapsVehicleMap[this.options.vehicle];
+    const { model: vehicleModel, appearance: vehicleAppearance } =
+      this.vehicleData;
 
     this.vehicle = mp.vehicles.create({
-      model: mp.hashes.tweakdbid(vehicleModel),
+      model: mp.hashes.tweakdbid(`Vehicle.${vehicleModel}`),
       appearance: mp.hashes.cname(vehicleAppearance),
       position: this.startPoint.position,
       yaw: this.startPoint.yaw,
@@ -117,45 +124,41 @@ class Racer {
   }
 
   async respawn() {
-    try {
-      const node =
-        this.currentCheckpointIndex === 0
-          ? this.startPoint
-          : this.checkpoints[this.currentCheckpointIndex - 1];
-      if (!node) {
-        return;
-      }
-
-      this.vehicle.destroy();
-
-      const [x, y, z] = node.position;
-
-      await client.game.teleport.teleportAsync.call(this.player, {
-        x,
-        y,
-        z,
-        w: node.yaw,
-      });
-
-      const [vehicleModel, vehicleAppearance] =
-        RaceLapsVehicleMap[this.options.vehicle];
-
-      this.vehicle = mp.vehicles.create({
-        model: mp.hashes.tweakdbid(vehicleModel),
-        appearance: mp.hashes.cname(vehicleAppearance),
-        position: node.position,
-        yaw: node.yaw,
-        dimension: this.match.dimension,
-        health: 800,
-      });
-
-      client.game.vehicles.requestSitInVehicle.trigger(
-        this.player,
-        this.vehicle.id,
-      );
-    } catch (e) {
-      console.log('respawne err', e);
+    const node =
+      this.currentCheckpointIndex === 0
+        ? this.startPoint
+        : this.checkpoints[this.currentCheckpointIndex - 1];
+    if (!node) {
+      return;
     }
+
+    this.vehicle.destroy();
+
+    const [x, y, z] = node.position;
+
+    await client.game.teleport.teleportAsync.call(this.player, {
+      x,
+      y,
+      z,
+      w: node.yaw,
+    });
+
+    const { model: vehicleModel, appearance: vehicleAppearance } =
+      this.vehicleData;
+
+    this.vehicle = mp.vehicles.create({
+      model: mp.hashes.tweakdbid(`Vehicle.${vehicleModel}`),
+      appearance: mp.hashes.cname(vehicleAppearance),
+      position: node.position,
+      yaw: node.yaw,
+      dimension: this.match.dimension,
+      health: 800,
+    });
+
+    client.game.vehicles.requestSitInVehicle.trigger(
+      this.player,
+      this.vehicle.id,
+    );
   }
 
   processCheckpoint() {
@@ -305,11 +308,15 @@ export class RaceLaps extends BaseGameMode<
   override getJoinSchema(
     createOptions: z.infer<typeof zCreateRaceLapsOptions>,
   ): typeof zJoinRaceLapsOptions {
+    let vehicles = VEHICLES_DATA.filter(
+      (o) => o.category === createOptions.vehicleClass,
+    );
+    if (!vehicles.length) {
+      vehicles = VEHICLES_DATA as WritableDeep<typeof VEHICLES_DATA>;
+    }
+
     return this.JOIN_OPTIONS_SCHEMA.extend({
-      vehicle: z.enum(
-        RaceLapsClassVehicleMap[createOptions.vehicleClass] ??
-          Object.values(RaceLapsClassVehicleMap).flat(),
-      ),
+      vehicle: z.enum(vehicles.map((o) => o.name)),
     });
   }
 

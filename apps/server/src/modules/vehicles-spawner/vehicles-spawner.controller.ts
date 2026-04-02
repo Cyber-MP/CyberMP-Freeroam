@@ -8,23 +8,23 @@ import {
   type VehicleCategory,
   type VehicleModel,
   VehiclesRepository,
-  zVehicle,
+  zVehicleData,
 } from './vehicles.repository';
 import { VehiclesSpawnerService } from './vehicles-spawner.service';
 
 export const vehiclesSpawnerContract = {
   spawnVehicle: r.contract
     .validate({ input: true })
-    .input(zVehicle.shape.model)
+    .input(zVehicleData.shape.model)
     .build(),
   getAll: r.contract
     .method(RpcApplyType.REGISTER)
-    .output(z.array(zVehicle))
+    .output(z.array(zVehicleData))
     .build(),
   getByCategory: r.contract
     .method(RpcApplyType.REGISTER)
-    .input(zVehicle.shape.category)
-    .output(z.array(zVehicle))
+    .input(zVehicleData.shape.category)
+    .output(z.array(zVehicleData))
     .build(),
 };
 
