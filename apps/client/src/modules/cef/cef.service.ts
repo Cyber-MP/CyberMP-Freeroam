@@ -44,7 +44,7 @@ export class CefService {
       if (import.meta.env.DEV) {
         mp.cef.setUrl('http://localhost:5173');
       } else {
-        mp.cef.setUrl('./browser/index.html');
+        mp.cef.setUrl('cefview://freeroam/browser/index.html');
       }
 
       this.loadingService.subscribeOnStateChange(this.loadingHandler);
