@@ -15,6 +15,16 @@ import { mp } from './mp';
 import { r, rpc } from './rpc';
 import { router } from './rpc/router';
 
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Promise Rejection:', reason);
+  console.error('At promise:', promise);
+});
+
+process.on('uncaughtException', (error) => {
+  console.error('Uncaught Exception:', error);
+  console.error('Stack:', error.stack);
+});
+
 const modules = [
   LoggerModule,
   ChatModule,
@@ -35,6 +45,16 @@ const coopWhen = async () => {
 
     const loggerMiddleware = container.get(LoggerMiddleware).middleware;
     rpc.use(loggerMiddleware);
+    rpc.use(async (c, next) => {
+      try {
+        const res = await next();
+
+        return res;
+      } catch (e) {
+        console.log('Error in', c.packet.method, e);
+        throw e;
+      }
+    });
 
     const loggerService = container.get(LoggerService);
 
