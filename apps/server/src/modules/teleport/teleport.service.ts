@@ -1,3 +1,4 @@
+import { RpcError } from '@cybermp/rpc-server';
 import type { MpPlayer } from '@cybermp/server-types';
 import { inject, injectable } from 'inversify';
 import { mp } from '../../mp';
@@ -23,6 +24,16 @@ export class TeleportService {
 
   public teleportToPlayer(playerFrom: MpPlayer, playerTo: MpPlayer) {
     playerFrom.dimension = playerTo.dimension;
+
+    if (
+      this.matchmakingService.isOnActiveMatch(playerFrom) ||
+      this.matchmakingService.isOnActiveMatch(playerTo)
+    ) {
+      throw RpcError.invalidData({
+        message:
+          'Teleport is not allowed while one of the players is on an active match',
+      });
+    }
 
     client.game.teleport.teleport.trigger(playerFrom, playerTo.position);
   }

@@ -1,4 +1,4 @@
-import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -11,9 +11,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Skeleton } from '@/components/ui/skeleton';
 import { withDisabledDuringMatch } from '@/hocs/with-disabled-during-match';
 import { type ClientInputs, client, clientQuery, serverQuery } from '@/rpc';
-
 import akulov_penthouse from '../../assets/images/locations/Akulov_penthouse.webp?w=300&h=225&imagetools';
 import clouds from '../../assets/images/locations/clouds.webp?w=300&h=225&imagetools';
 import dennys_estate_front from '../../assets/images/locations/dennys_estate_front.webp?w=300&h=225&imagetools';
@@ -205,9 +205,9 @@ function WeatherContent() {
 }
 
 function PlayerContent() {
-  const [selected, setSelected] = useState<number | undefined>(undefined);
+  const [selected, setSelected] = useState<number>();
 
-  const { data: availablePlayers } = useSuspenseQuery(
+  const { data: availablePlayers, isLoading } = useQuery(
     serverQuery.teleport.getAvailablePlayers.queryOptions(),
   );
 
@@ -216,10 +216,27 @@ function PlayerContent() {
   );
 
   const handleTeleport = () => {
-    if (!selected) return;
+    if (!selected) {
+      return;
+    }
 
     teleportMutation.mutate([selected]);
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col gap-2">
+        <span className="text-xs font-black uppercase tracking-wider">
+          Teleport to player
+        </span>
+
+        <div className="flex flex-row gap-1 w-full">
+          <Skeleton className="h-8 w-50" />
+          <Skeleton className="h-8 w-28" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-2">
@@ -235,7 +252,7 @@ function PlayerContent() {
           <SelectContent position="popper">
             <SelectGroup className="max-h-60">
               <SelectLabel>Player</SelectLabel>
-              {availablePlayers.map((player) => (
+              {availablePlayers?.map((player) => (
                 <SelectItem key={player.id} value={String(player.id)}>
                   {player.nickname}
                 </SelectItem>
