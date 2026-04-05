@@ -1,5 +1,5 @@
 import { EWeatherState } from '@cybermp/client-types/enums';
-import type { RpcClientContext } from '@cybermp/rpc-client';
+import { RpcApplyType, type RpcClientContext } from '@cybermp/rpc-client';
 import { contract } from '@cybermp/rpc-router/server';
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
@@ -13,6 +13,10 @@ export const weatherContract = {
   setServerWeather: contract.input(zWeatherState).build(),
   setClientWeather: contract.input(zWeatherState).build(),
   resetToServer: contract.build(),
+  getClientWeather: contract
+    .method(RpcApplyType.REGISTER)
+    .output(z.union([zWeatherState, z.null()]))
+    .build(),
 };
 
 @eager()
@@ -32,12 +36,17 @@ export class WeatherController {
     this.weatherService.resetToServer();
   }
 
+  private getClientWeather() {
+    return this.weatherService.getClientWeather();
+  }
+
   @postConstruct()
   private init() {
     r.implement<typeof weatherContract>(weatherContract, {
       setServerWeather: this.setServerWeather.bind(this),
       setClientWeather: this.setClientWeather.bind(this),
       resetToServer: this.resetToServer.bind(this),
+      getClientWeather: this.getClientWeather.bind(this),
     });
   }
 }

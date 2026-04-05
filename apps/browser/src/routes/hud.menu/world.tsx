@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Select,
@@ -13,7 +13,9 @@ import {
 } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { withDisabledDuringMatch } from '@/hocs/with-disabled-during-match';
+import { IS_MP_MOCKED } from '@/mp';
 import { type ClientInputs, client, clientQuery, serverQuery } from '@/rpc';
+import { queryClient } from '@/tanstack-query';
 import akulov_penthouse from '../../assets/images/locations/Akulov_penthouse.webp?w=300&h=225&imagetools';
 import clouds from '../../assets/images/locations/clouds.webp?w=300&h=225&imagetools';
 import dennys_estate_front from '../../assets/images/locations/dennys_estate_front.webp?w=300&h=225&imagetools';
@@ -28,7 +30,69 @@ import peralezes_apt from '../../assets/images/locations/peralezes_apt.webp?w=30
 
 export const Route = createFileRoute('/hud/menu/world')({
   component: withDisabledDuringMatch(RouteComponent),
+  pendingComponent: PendingComponent,
+  pendingMs: 500,
+  pendingMinMs: 300,
+  loader: async () => {
+    await queryClient.ensureQueryData(
+      clientQuery.time.getClientTime.queryOptions({
+        ...(IS_MP_MOCKED
+          ? {
+              queryFn: () =>
+                new Promise((resolve) => {
+                  setTimeout(() => {
+                    resolve(null);
+                  }, 1000);
+                }),
+            }
+          : {}),
+      }),
+    );
+
+    await queryClient.ensureQueryData(
+      clientQuery.weather.getClientWeather.queryOptions({
+        ...(IS_MP_MOCKED
+          ? {
+              queryFn: () =>
+                new Promise((resolve) => {
+                  setTimeout(() => {
+                    resolve(null);
+                  }, 1000);
+                }),
+            }
+          : {}),
+      }),
+    );
+
+    await queryClient.ensureQueryData(
+      serverQuery.teleport.getAvailablePlayers.queryOptions({
+        ...(IS_MP_MOCKED
+          ? {
+              queryFn: () =>
+                new Promise((resolve) => {
+                  setTimeout(() => {
+                    resolve([]);
+                  }, 1000);
+                }),
+            }
+          : {}),
+      }),
+    );
+  },
 });
+
+function PendingComponent() {
+  return (
+    <div className="flex flex-col gap-12 w-full">
+      <div className="grid grid-cols-2 gap-2">
+        <Skeleton className="h-12 w-48" />
+        <Skeleton className="h-12 w-70" />
+      </div>
+      <Skeleton className="h-14 w-80" />
+      <Skeleton className="h-100 w-full" />
+    </div>
+  );
+}
 
 function RouteComponent() {
   return (
@@ -44,42 +108,45 @@ function RouteComponent() {
 }
 
 function TimeContent() {
-  const [hours, setHours] = useState('0');
-  const [minutes, setMinutes] = useState('0');
-  const [changed, setChanged] = useState(false);
-
-  const setLocalTimeMutation = useMutation(
-    clientQuery.time.setClientTime.triggerMutationOptions({
-      onSuccess: () => {
-        if (minutes !== '0' || hours !== '0') {
-          setChanged(true);
-        }
-      },
+  const { data: time, refetch } = useQuery(
+    clientQuery.time.getClientTime.queryOptions({
+      refetchInterval: 500,
     }),
   );
 
   const resetToServerMutation = useMutation(
     clientQuery.time.resetToServer.triggerMutationOptions({
       onSuccess: () => {
-        setHours('0');
-        setMinutes('0');
-        setChanged(false);
+        refetch();
       },
     }),
   );
 
-  useEffect(() => {
-    setLocalTimeMutation.mutate([
-      { hours: Number(hours), minutes: Number(minutes) },
-    ]);
-  }, [hours, minutes]);
+  const setLocalTimeMutation = useMutation(
+    clientQuery.time.setClientTime.triggerMutationOptions({
+      onSuccess: () => {
+        refetch();
+      },
+    }),
+  );
+
+  const onHoursChange = (value: string) => {
+    setLocalTimeMutation.mutate([{ hours: Number(value) }]);
+  };
+
+  const onMinutesChange = (value: string) => {
+    setLocalTimeMutation.mutate([{ minutes: Number(value) }]);
+  };
 
   return (
     <div className="flex flex-col gap-2">
       <span className="text-xs font-black uppercase tracking-wider">Time</span>
 
       <div className="flex flex-row gap-1 w-full">
-        <Select value={hours} onValueChange={setHours}>
+        <Select
+          value={String(time?.hours) ?? '0'}
+          onValueChange={onHoursChange}
+        >
           <SelectTrigger>
             <SelectValue />
           </SelectTrigger>
@@ -95,7 +162,10 @@ function TimeContent() {
           </SelectContent>
         </Select>
 
-        <Select value={minutes} onValueChange={setMinutes}>
+        <Select
+          value={String(time?.minutes) ?? '0'}
+          onValueChange={onMinutesChange}
+        >
           <SelectTrigger>
             <SelectValue />
           </SelectTrigger>
@@ -114,7 +184,7 @@ function TimeContent() {
         <Button
           className="h-8"
           variant="destructive"
-          disabled={!changed}
+          disabled={!time}
           onClick={() => resetToServerMutation.mutate([])}
         >
           Reset
@@ -145,12 +215,16 @@ const WEATHER_MAP: Record<Weather, string> = {
 } as const;
 
 function WeatherContent() {
-  const [changed, setChanged] = useState(false);
+  const { data: weather, refetch } = useQuery(
+    clientQuery.weather.getClientWeather.queryOptions({
+      refetchInterval: 500,
+    }),
+  );
 
   const setWeatherMutation = useMutation(
     clientQuery.weather.setClientWeather.triggerMutationOptions({
       onSuccess: () => {
-        setChanged(true);
+        refetch();
       },
     }),
   );
@@ -158,7 +232,7 @@ function WeatherContent() {
   const resetToServerMutation = useMutation(
     clientQuery.weather.resetToServer.triggerMutationOptions({
       onSuccess: () => {
-        setChanged(false);
+        refetch();
       },
     }),
   );
@@ -171,7 +245,7 @@ function WeatherContent() {
 
       <div className="flex flex-row gap-1 w-full">
         <Select
-          defaultValue="24h_weather_cloudy"
+          value={weather ?? '24h_weather_cloudy'}
           onValueChange={(value) => setWeatherMutation.mutate([value as any])}
         >
           <SelectTrigger className="min-w-50">
@@ -192,7 +266,7 @@ function WeatherContent() {
         <Button
           className="h-8"
           variant="destructive"
-          disabled={!changed}
+          disabled={!weather}
           onClick={() => {
             resetToServerMutation.mutate([]);
           }}
@@ -207,8 +281,8 @@ function WeatherContent() {
 function PlayerContent() {
   const [selected, setSelected] = useState<number>();
 
-  const { data: availablePlayers, isLoading } = useQuery(
-    serverQuery.teleport.getAvailablePlayers.queryOptions(),
+  const { data: availablePlayers } = useQuery(
+    serverQuery.teleport.getAvailablePlayers.queryOptions({}),
   );
 
   const teleportMutation = useMutation(
@@ -222,21 +296,6 @@ function PlayerContent() {
 
     teleportMutation.mutate([selected]);
   };
-
-  if (isLoading) {
-    return (
-      <div className="flex flex-col gap-2">
-        <span className="text-xs font-black uppercase tracking-wider">
-          Teleport to player
-        </span>
-
-        <div className="flex flex-row gap-1 w-full">
-          <Skeleton className="h-8 w-50" />
-          <Skeleton className="h-8 w-28" />
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="flex flex-col gap-2">

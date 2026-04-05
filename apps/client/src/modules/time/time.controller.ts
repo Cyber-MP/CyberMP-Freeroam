@@ -1,4 +1,4 @@
-import type { RpcClientContext } from '@cybermp/rpc-client';
+import { RpcApplyType, type RpcClientContext } from '@cybermp/rpc-client';
 import { contract } from '@cybermp/rpc-router/server';
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
@@ -15,8 +15,12 @@ export type Time = z.infer<typeof zTime>;
 
 export const timeContract = {
   setServerTime: contract.input(zTime).build(),
-  setClientTime: contract.input(zTime).build(),
+  setClientTime: contract.input(zTime.partial()).build(),
   resetToServer: contract.build(),
+  getClientTime: contract
+    .method(RpcApplyType.REGISTER)
+    .output(z.union([zTime, z.null()]))
+    .build(),
 };
 
 @eager()
@@ -28,12 +32,16 @@ export class TimeController {
     this.timeService.setServerTime(c.data);
   }
 
-  private setClientTime(c: RpcClientContext<Time>) {
+  private setClientTime(c: RpcClientContext<Partial<Time>>) {
     this.timeService.setClientTime(c.data);
   }
 
   private resetToServer() {
     this.timeService.resetToServer();
+  }
+
+  private getClientTime() {
+    return this.timeService.getClientTime();
   }
 
   @postConstruct()
@@ -42,6 +50,7 @@ export class TimeController {
       setServerTime: this.setServerTime.bind(this),
       setClientTime: this.setClientTime.bind(this),
       resetToServer: this.resetToServer.bind(this),
+      getClientTime: this.getClientTime.bind(this),
     });
   }
 }
