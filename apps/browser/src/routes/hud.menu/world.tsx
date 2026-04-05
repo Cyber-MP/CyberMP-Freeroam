@@ -342,17 +342,17 @@ const LOCATIONS: Location[] = [
   },
   {
     name: 'Clouds',
-    positon: { x: -625.404236, y: 794.564392, z: 132.252228 },
+    positon: { x: -668.209655, y: 812.008666, z: 128.273162 },
     image: clouds,
   },
   {
     name: "Denny's Estate Backyard",
-    positon: { x: 486.977325, y: 1291.791016, z: 234.458664 },
+    positon: { x: 513.234375, y: 1245.329101, z: 229.350189 },
     image: dennys_estate_front,
   },
   {
     name: 'Grand Imperial Mall',
-    positon: { x: -2278.209473, y: -1992.328613, z: 20.570023 },
+    positon: { x: -2329.752197, y: -2044.204101, z: 17.158584 },
     image: grand_imperial_mall,
   },
   {
@@ -382,7 +382,7 @@ const LOCATIONS: Location[] = [
   },
   {
     name: 'Nomad V',
-    positon: { x: -3235.881592, y: -6146.751465, z: 96.834175 },
+    positon: { x: -4010.653076, y: -6490.26416, z: 75.700607 },
     image: nomad_v,
   },
   {
