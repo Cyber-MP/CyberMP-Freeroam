@@ -93,9 +93,9 @@ export class RaceLapsMapBuilder {
 
   @postConstruct()
   private init() {
-    if (!import.meta.env.DEV) {
-      return;
-    }
+    // if (!import.meta.env.DEV) {
+    //   return;
+    // }
 
     // Initialize a new map
     this.chatService.addCommand({
