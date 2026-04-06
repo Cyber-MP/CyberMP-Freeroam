@@ -7,7 +7,7 @@ import { mp } from '../../mp';
 import { r } from '../../rpc';
 import { TeleportService } from './teleport.service';
 
-export const zAvailbalePlayer = z.object({
+export const zAvailablePlayer = z.object({
   nickname: z.string(),
   id: z.number(),
 });
@@ -15,7 +15,7 @@ export const zAvailbalePlayer = z.object({
 export const teleportContract = {
   getAvailablePlayers: r.contract
     .method(RpcApplyType.REGISTER)
-    .output(z.array(zAvailbalePlayer))
+    .output(z.array(zAvailablePlayer))
     .build(),
   teleportToPlayer: r.contract
     .validate({ input: true })

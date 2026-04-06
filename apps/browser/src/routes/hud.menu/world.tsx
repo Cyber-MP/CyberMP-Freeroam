@@ -143,10 +143,7 @@ function TimeContent() {
       <span className="text-xs font-black uppercase tracking-wider">Time</span>
 
       <div className="flex flex-row gap-1 w-full">
-        <Select
-          value={String(time?.hours) ?? '0'}
-          onValueChange={onHoursChange}
-        >
+        <Select value={String(time?.hours ?? 0)} onValueChange={onHoursChange}>
           <SelectTrigger>
             <SelectValue />
           </SelectTrigger>
@@ -163,7 +160,7 @@ function TimeContent() {
         </Select>
 
         <Select
-          value={String(time?.minutes) ?? '0'}
+          value={String(time?.minutes ?? 0)}
           onValueChange={onMinutesChange}
         >
           <SelectTrigger>
@@ -282,7 +279,7 @@ function PlayerContent() {
   const [selected, setSelected] = useState<number>();
 
   const { data: availablePlayers } = useQuery(
-    serverQuery.teleport.getAvailablePlayers.queryOptions({}),
+    serverQuery.teleport.getAvailablePlayers.queryOptions(),
   );
 
   const teleportMutation = useMutation(

@@ -19,10 +19,13 @@ export class TimeService {
   }
 
   setClientTime(time: Partial<Time> | null) {
-    this.clientTime = {
-      hours: time?.hours ?? this.clientTime?.hours ?? 0,
-      minutes: time?.minutes ?? this.clientTime?.minutes ?? 0,
-    };
+    this.clientTime =
+      time === null
+        ? null
+        : {
+            hours: time?.hours ?? this.clientTime?.hours ?? 0,
+            minutes: time?.minutes ?? this.clientTime?.minutes ?? 0,
+          };
 
     if (this.clientTime) {
       this.apply(this.clientTime);
