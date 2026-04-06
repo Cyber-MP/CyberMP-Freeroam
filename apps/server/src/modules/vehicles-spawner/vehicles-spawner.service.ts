@@ -91,6 +91,6 @@ export class VehiclesSpawnerService {
       this.playersVehiclesMap.set(player.id, new Set([newVehicle.id]));
     }
 
-    client.game.vehicles.requestSitInVehicle.trigger(player, newVehicle.id);
+    // client.game.vehicles.requestSitInVehicle.trigger(player, newVehicle.id);
   }
 }
