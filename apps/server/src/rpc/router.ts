@@ -4,6 +4,7 @@ import { chatContract } from '../modules/chat/chat.controller';
 import { gameModesContract } from '../modules/game-modes/game-modes.controller';
 import { loggerContract } from '../modules/logger/logger.controller';
 import { matchmakingContract } from '../modules/matchmaking/matchmaking.controller';
+import { teleportContract } from '../modules/teleport/teleport.controller';
 import { timeContract } from '../modules/time/time.controller';
 import { vehiclesSpawnerContract } from '../modules/vehicles-spawner/vehicles-spawner.controller';
 import { weatherContract } from '../modules/weather/weather.controller';
@@ -36,6 +37,7 @@ export const router = {
   time: timeContract,
   logger: loggerContract,
   chat: chatContract,
+  teleport: teleportContract,
 };
 
 export type ServerRouter = typeof router;

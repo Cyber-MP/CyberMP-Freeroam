@@ -80,6 +80,10 @@ export class WeatherService {
     this.fetchServerWeather();
   }
 
+  getClientWeather(): EWeatherState | null {
+    return this.clientWeather;
+  }
+
   @postConstruct()
   private init() {
     mp.game.onGameLoaded(this.onGameLoaded.bind(this));

@@ -1,10 +1,10 @@
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useMemo } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { withDisabledDuringMatch } from '@/hocs/with-disabled-during-match';
-import { server, serverQuery } from '@/rpc';
+import { serverQuery } from '@/rpc';
 import { queryClient } from '@/tanstack-query';
 import type { ServerOutputs } from '../../../../client/src/rpc';
 import v_sport1_quadra_turbo_player from '../../assets/images/vehicles/v_sport1_quadra_turbo_player.webp?w=300&h=225&imagetools';
@@ -177,8 +177,12 @@ function RouteComponent() {
 function ItemsContent({ vehicles }: { vehicles: Vehicles }) {
   const navigate = useNavigate();
 
+  const spawnVehicleMutation = useMutation(
+    serverQuery.vehiclesSpawner.spawnVehicle.triggerMutationOptions(),
+  );
+
   const spawnVehicle = (key: Vehicle['model']) => {
-    server.vehiclesSpawner.spawnVehicle.trigger(key);
+    spawnVehicleMutation.mutate([key]);
 
     navigate({ to: '/hud' });
   };

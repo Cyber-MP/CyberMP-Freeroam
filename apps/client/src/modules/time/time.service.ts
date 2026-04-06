@@ -18,8 +18,14 @@ export class TimeService {
     this.logger.setContext('TimeService');
   }
 
-  setClientTime(time: Time | null) {
-    this.clientTime = time;
+  setClientTime(time: Partial<Time> | null) {
+    this.clientTime =
+      time === null
+        ? null
+        : {
+            hours: time?.hours ?? this.clientTime?.hours ?? 0,
+            minutes: time?.minutes ?? this.clientTime?.minutes ?? 0,
+          };
 
     if (this.clientTime) {
       this.apply(this.clientTime);
@@ -67,6 +73,10 @@ export class TimeService {
     } catch (e) {
       this.logger.error('Failed to fetch server time with error', e);
     }
+  }
+
+  getClientTime(): Time | null {
+    return this.clientTime;
   }
 
   @postConstruct()
