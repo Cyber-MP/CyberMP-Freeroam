@@ -20,6 +20,7 @@ import {
 import { BaseGameMode, GameModeName } from '../../game-mode';
 import {
   type RaceLapsCheckpointNode,
+  type RaceLapsFinishedRacer,
   type RaceLapsMap,
   RaceLapsMapName,
   type RaceLapsRacerDTO,
@@ -36,7 +37,7 @@ import {
 export const zCreateRaceLapsOptions = zCreateMatchOptions.extend({
   map: z.enum(RaceLapsMapName),
   vehicleClass: z.enum(['all', ...VEHICLES_DATA.map((o) => o.category)]),
-  laps: z.number().min(1).max(10),
+  laps: z.number().min(0).max(10).meta({ default: 0 }),
   combat: z.boolean().default(false).optional(),
 });
 
@@ -65,6 +66,7 @@ class Racer {
   player: MpPlayer;
   vehicle!: MpVehicle;
   finished = false;
+  finishTimestamp: number | null = null;
   currentCheckpointIndex = 0;
   currentLap = 0;
 
@@ -171,6 +173,7 @@ class Racer {
     if (this.currentCheckpointIndex >= totalCheckpoints - 1) {
       if (this.currentLap >= this.match.options.laps) {
         this.finished = true;
+        this.finishTimestamp = Date.now();
       } else {
         this.currentLap++;
         this.currentCheckpointIndex = 0;
@@ -188,7 +191,7 @@ class Racer {
     });
   }
 
-  reset() {
+  reset(results = false) {
     this.vehicle.destroy();
     this.player.dimension = 0;
 
@@ -266,10 +269,13 @@ class RanksTracker {
       const normalizedProgress =
         absoluteProgress / (totalLaps * totalCheckpoints);
 
-      return { racer, normalizedProgress, absoluteProgress };
+      return {
+        racer,
+        progress: normalizedProgress + (racer.finished ? 10000 : 0),
+      };
     });
 
-    racersProgress.sort((a, b) => b.normalizedProgress - a.normalizedProgress);
+    racersProgress.sort((a, b) => b.progress - a.progress);
 
     return racersProgress.map(({ racer }, i) => ({
       playerId: racer.player.id,
@@ -298,8 +304,12 @@ export class RaceLaps extends BaseGameMode<
 
   private racers = new Map<number, Racer>();
   private released = false;
+  private releaseTimestamp: number | null = 0;
 
   private readonly COUNTDOWN_TIME = ms('5s');
+  private readonly FORCE_FINISH_TIME = ms('5m');
+
+  private finishTimeout: ReturnType<typeof setTimeout> | null = null;
 
   private ranksTracker!: RanksTracker;
 
@@ -361,8 +371,7 @@ export class RaceLaps extends BaseGameMode<
 
   release() {
     this.released = true;
-
-    // race started
+    this.releaseTimestamp = Date.now();
   }
 
   processCheckpoint(playerId: number) {
@@ -377,6 +386,11 @@ export class RaceLaps extends BaseGameMode<
     }
 
     racer.processCheckpoint();
+
+    if (racer.finished) {
+      return this.onRacerFinish(racer);
+    }
+
     return racer.toDTO();
   }
 
@@ -407,13 +421,68 @@ export class RaceLaps extends BaseGameMode<
   }
 
   end() {
+    if (this.finishTimeout) {
+      clearTimeout(this.finishTimeout);
+    }
+
     this.ranksTracker.destroy();
 
+    const finalResults: RaceLapsFinishedRacer[] = Array.from(
+      this.racers.values(),
+    )
+      .map((racer) => {
+        const isFinished = racer.finished && racer.finishTimestamp !== null;
+        const raceTime = isFinished
+          ? racer.finishTimestamp! - this.releaseTimestamp!
+          : 0;
+
+        return {
+          playerNick: racer.player.nickname,
+          lap: racer.currentLap,
+          checkpoint: racer.currentCheckpointIndex + 1,
+          time: raceTime,
+          finished: racer.finished,
+        };
+      })
+      .sort((a, b) => {
+        if (a.finished && b.finished) return a.time - b.time;
+        if (a.finished) return -1;
+        if (b.finished) return 1;
+
+        if (a.lap !== b.lap) return b.lap - a.lap;
+        return b.checkpoint - a.checkpoint;
+      });
+
     for (const racer of this.racers.values()) {
+      browser.gameModes.raceLaps.results.trigger(racer.player, finalResults);
       racer.reset();
     }
 
     this.racers.clear();
+  }
+
+  private onRacerFinish(racer: Racer) {
+    const activeRacers = [...this.racers.values()].filter((r) => !r.finished);
+
+    if (activeRacers.length === 0) {
+      this.match.end();
+      return;
+    }
+
+    if (this.finishTimeout) {
+      return;
+    }
+
+    this.finishTimeout = setTimeout(() => {
+      this.match.end();
+    }, this.FORCE_FINISH_TIME);
+
+    for (const playerId of this.racers.keys()) {
+      browser.gameModes.raceLaps.forceFinishTimer.trigger(
+        playerId,
+        this.FORCE_FINISH_TIME,
+      );
+    }
   }
 
   onPlayerLeave(playerId: number): void {

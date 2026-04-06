@@ -117,7 +117,7 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
   start() {
     this.healthService.set(this.healthService.getDefaultHealth());
 
-    this.cefService.setLoadingRedirect('/hud/game-modes/race-laps');
+    this.cefService.setLoadingRedirect('/hud/game-modes/race-laps/');
 
     this.initialPosition = mp.game.GetPlayer().GetWorldPosition();
 
@@ -133,7 +133,10 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
     this.navigation.destroy();
     this.checkpoint.destroy();
 
-    this.cefService.setLoadingRedirect(null);
+    this.cefService.setLoadingRedirect(
+      '/hud/game-modes/race-laps/results',
+      true,
+    );
 
     this.teleportService.teleport(this.initialPosition);
 
@@ -147,7 +150,7 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
     this.unmountRespawnKey();
 
     browser.hud.setGlobalPath.trigger('/hud');
-    browser.navigate.trigger('/hud');
+    browser.navigate.trigger('/hud/game-modes/race-laps/results');
   }
 
   updateRacerData(data: Partial<RaceLapsRacerDTO> = {}) {
@@ -155,7 +158,7 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
     browser.gameModes.raceLaps.updateData.trigger({
       ...this.data,
       totalCheckpoints: this.checkpoints.length,
-      totalLaps: this.options.laps,
+      totalLaps: this.options.laps ?? 0,
     });
   }
 
@@ -165,8 +168,8 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
       data.startPoint.yaw,
     );
 
-    browser.hud.setGlobalPath.trigger('/hud/game-modes/race-laps');
-    browser.navigate.trigger('/hud/game-modes/race-laps');
+    browser.hud.setGlobalPath.trigger('/hud/game-modes/race-laps/');
+    browser.navigate.trigger('/hud/game-modes/race-laps/');
 
     this.vehiclesService.requestSitInVehicle(data.vehicleId);
 
@@ -175,6 +178,7 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
     this.checkpoints = data.map.nodes.filter(
       (node): node is RaceLapsCheckpointNode => node.type === 'checkpoint',
     );
+    this.startPoint = data.startPoint;
 
     this.navigation.create(this.trackPath);
     this.updateRacerData(this.data);
@@ -192,16 +196,25 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
       const nextData = await server.gameModes.raceLaps.processCheckpoint
         .call()
         .catch(() => null);
-      if (!nextData || nextData.finished) {
+      if (!nextData) {
         return;
       }
 
       this.updateRacerData(nextData);
 
-      this.createCheckpoint();
+      if (nextData.finished) {
+        this.checkpoint.destroy();
+        this.onFinish();
+      } else {
+        this.createCheckpoint();
+      }
     };
 
     this.checkpoint.spawn(currentCheckpointNode, onEnterCheckpoint);
+  }
+
+  private onFinish() {
+    // TODO: add here spectating logic or smth
   }
 
   private mountRespawnKey() {
