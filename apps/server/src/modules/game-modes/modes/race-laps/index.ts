@@ -57,10 +57,10 @@ class Racer {
   private trackPath: PathTransform[];
   private match: Match<RaceLaps>;
   private checkpoints: RaceLapsCheckpointNode[];
-  private startPoint!: RaceLapsStartPointNode;
 
   options: z.infer<typeof zJoinRaceLapsOptions>;
   private vehicleData: VehicleData;
+  startPoint!: RaceLapsStartPointNode;
   index: number;
   player: MpPlayer;
   vehicle!: MpVehicle;
@@ -198,11 +198,12 @@ class Racer {
 
 class RanksTracker {
   private interval?: ReturnType<typeof setInterval>;
-  private readonly UPDATE_RATE = 1000; // 1 second
+  private readonly UPDATE_RATE = 100;
 
   constructor(
     private readonly racers: Map<number, Racer>,
     private readonly checkpoints: RaceLapsCheckpointNode[],
+    private readonly totalLaps: number,
   ) {}
 
   create() {
@@ -215,9 +216,6 @@ class RanksTracker {
     }, this.UPDATE_RATE);
   }
 
-  /**
-   * Stops the loop and cleans up.
-   */
   destroy() {
     if (this.interval) {
       clearInterval(this.interval);
@@ -228,7 +226,6 @@ class RanksTracker {
   private broadcastRankings() {
     const ranks = this.calculateRankings().slice(0, 5);
 
-    // Broadcast to everyone in the match
     for (const playerId of this.racers.keys()) {
       browser.gameModes.raceLaps.updateRanks.trigger(playerId, ranks);
     }
@@ -236,47 +233,51 @@ class RanksTracker {
 
   private calculateRankings(): RaceLapsRankDTO[] {
     const totalCheckpoints = this.checkpoints.length;
+    const totalLaps = this.totalLaps;
 
-    const scores = Array.from(this.racers.values()).map((racer) => {
+    const racersProgress = Array.from(this.racers.values()).map((racer) => {
+      const currentCheckpointPosition =
+        this.checkpoints[racer.currentCheckpointIndex]?.position ??
+        racer.startPoint?.position;
+
+      const nextCheckpointIndex =
+        (racer.currentCheckpointIndex + 1) % totalCheckpoints;
+      const nextCheckpoint = this.checkpoints[nextCheckpointIndex];
+      const nextCheckpointPosition =
+        nextCheckpoint?.position ?? currentCheckpointPosition;
+
       const playerPos = racer.player.position;
 
-      let progress =
-        racer.currentLap * totalCheckpoints + racer.currentCheckpointIndex;
+      const segmentDist = distance3D(
+        currentCheckpointPosition,
+        nextCheckpointPosition,
+      );
+      const playerDist = distance3D(playerPos, nextCheckpointPosition);
+      const segmentFraction = Math.max(
+        0,
+        Math.min(1, 1 - playerDist / segmentDist),
+      );
 
-      if (racer.finished) {
-        progress += 100000;
-      } else {
-        const nextIdx = (racer.currentCheckpointIndex + 1) % totalCheckpoints;
-        const currentCp = this.checkpoints[racer.currentCheckpointIndex];
-        const nextCp = this.checkpoints[nextIdx];
+      const absoluteProgress =
+        (racer.currentLap - 1) * totalCheckpoints +
+        racer.currentCheckpointIndex +
+        segmentFraction;
 
-        if (currentCp && nextCp) {
-          const distToNext = distance3D(playerPos, nextCp.position);
-          const segmentDist = distance3D(currentCp.position, nextCp.position);
+      const normalizedProgress =
+        absoluteProgress / (totalLaps * totalCheckpoints);
 
-          const segmentProgress =
-            segmentDist > 0
-              ? Math.max(0, Math.min(1, 1 - distToNext / segmentDist))
-              : 0;
-
-          progress += segmentProgress;
-        }
-      }
-
-      return {
-        playerId: racer.player.id,
-        playerNick: racer.player.nickname,
-        progress,
-      };
+      return { racer, normalizedProgress, absoluteProgress };
     });
 
-    return scores
-      .sort((a, b) => b.progress - a.progress)
-      .map((item, index) => ({
-        playerId: item.playerId,
-        playerNick: item.playerNick,
-        position: index + 1,
-      }));
+    racersProgress.sort((a, b) => b.normalizedProgress - a.normalizedProgress);
+
+    return racersProgress.map(({ racer }, i) => ({
+      playerId: racer.player.id,
+      position: i + 1,
+      playerNick: racer.player.nickname,
+      checkpoint: racer.currentCheckpointIndex + 1,
+      lap: racer.currentLap,
+    }));
   }
 }
 
@@ -327,7 +328,11 @@ export class RaceLaps extends BaseGameMode<
     this.checkpoints = this.map.nodes.filter(
       (node): node is RaceLapsCheckpointNode => node.type === 'checkpoint',
     );
-    this.ranksTracker = new RanksTracker(this.racers, this.checkpoints);
+    this.ranksTracker = new RanksTracker(
+      this.racers,
+      this.checkpoints,
+      this.match.options.laps,
+    );
   }
 
   async start() {

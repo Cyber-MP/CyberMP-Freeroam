@@ -75,6 +75,8 @@ const Ranks = () => {
 
   useImplement(raceLapsContract.updateRanks, (c) => setRanks(c.data));
 
+  console.log('ranks', JSON.stringify(ranks));
+
   return (
     <div className="flex flex-col gap-1 absolute right-12 bottom-12 w-80 font-mono text-xs uppercase tracking-tighter">
       {ranks.map((rank) => {
@@ -112,7 +114,8 @@ const Ranks = () => {
               <div
                 className={`text-xs flex gap-2 ${isUser ? 'text-black/60' : 'text-muted-foreground'}`}
               >
-                <span>ID: {rank.playerId}</span>
+                <span>Checkpoint: {rank.checkpoint}</span>
+                <span>Lap: {rank.lap}</span>
               </div>
             </div>
 
