@@ -12,11 +12,19 @@ import {
 } from './vehicles.repository';
 import { VehiclesSpawnerService } from './vehicles-spawner.service';
 
+const zVehicleRaw = z.object({
+  model: z.string(),
+  appearance: z.string(),
+});
+
+type VehicleRaw = z.infer<typeof zVehicleRaw>;
+
 export const vehiclesSpawnerContract = {
-  spawnVehicle: r.contract
+  spawnVehicleFromList: r.contract
     .validate({ input: true })
     .input(zVehicleData.shape.model)
     .build(),
+  spawnVehicle: r.contract.validate({ input: true }).input(zVehicleRaw).build(),
   getAll: r.contract
     .method(RpcApplyType.REGISTER)
     .output(z.array(zVehicleData))
@@ -38,8 +46,19 @@ export class VehiclesSpawnerController {
     private vehiclesRepository: VehiclesRepository,
   ) {}
 
-  private spawnVehicle(context: RpcServerContext<VehicleModel>) {
-    this.vehiclesSpawnerService.spawnVehicle(context.player, context.data);
+  private spawnVehicleFromList(context: RpcServerContext<VehicleModel>) {
+    this.vehiclesSpawnerService.spawnVehicleFromList(
+      context.player,
+      context.data,
+    );
+  }
+
+  private spawnVehicle(context: RpcServerContext<VehicleRaw>) {
+    this.vehiclesSpawnerService.spawnVehicle(
+      context.player,
+      context.data.model,
+      context.data.appearance,
+    );
   }
 
   private getAll() {
@@ -53,6 +72,7 @@ export class VehiclesSpawnerController {
   @postConstruct()
   private init() {
     r.implement(vehiclesSpawnerContract, {
+      spawnVehicleFromList: this.spawnVehicleFromList.bind(this),
       spawnVehicle: this.spawnVehicle.bind(this),
       getAll: this.getAll.bind(this),
       getByCategory: this.getVehicleByCategory.bind(this),

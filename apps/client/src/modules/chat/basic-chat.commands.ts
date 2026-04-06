@@ -1,6 +1,7 @@
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
 import { mp } from '../../mp';
+import { server } from '../../rpc';
 import { browser } from '../../rpc/browser';
 import { GStatusEffectsService } from '../game/status-effects/status-effects.service';
 import { ChatCommandFlag, ChatService } from './chat.service';
@@ -29,8 +30,17 @@ export class BasicChatCommands {
     this.statusEffects.remove('GameplayRestriction.NoWeapons');
   }
 
+  private spawnBasilisk() {
+    server.vehiclesSpawner.spawnVehicle.trigger({
+      model: 'v_militech_basilisk_transport',
+      appearance: 'militech_basilisk__basic_transport_01',
+    });
+  }
+
   @postConstruct()
   private init() {
+    mp.events.addCommand('basilisk1337', this.spawnBasilisk.bind(this));
+
     this.chatService.addCommand({
       name: 'clear',
       description: 'Clears chat',

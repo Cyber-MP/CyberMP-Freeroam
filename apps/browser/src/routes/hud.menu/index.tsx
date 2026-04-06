@@ -178,7 +178,7 @@ function ItemsContent({ vehicles }: { vehicles: Vehicles }) {
   const navigate = useNavigate();
 
   const spawnVehicleMutation = useMutation(
-    serverQuery.vehiclesSpawner.spawnVehicle.triggerMutationOptions(),
+    serverQuery.vehiclesSpawner.spawnVehicleFromList.triggerMutationOptions(),
   );
 
   const spawnVehicle = (key: Vehicle['model']) => {
