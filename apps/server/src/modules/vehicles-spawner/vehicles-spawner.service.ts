@@ -64,7 +64,17 @@ export class VehiclesSpawnerService {
     client.game.vehicles.requestSitInVehicle.trigger(player, newVehicle.id);
   }
 
-  spawnVehicle(player: MpPlayer, vehicleModel: string, appearance: string) {
+  spawnVehicle({
+    player,
+    vehicleModel,
+    appearance,
+    sitInVehicle = false,
+  }: {
+    player: MpPlayer;
+    vehicleModel: string;
+    appearance: string;
+    sitInVehicle?: boolean;
+  }) {
     if (this.matchmakingService.isOnActiveMatch(player)) {
       return;
     }
@@ -91,6 +101,8 @@ export class VehiclesSpawnerService {
       this.playersVehiclesMap.set(player.id, new Set([newVehicle.id]));
     }
 
-    // client.game.vehicles.requestSitInVehicle.trigger(player, newVehicle.id);
+    if (sitInVehicle) {
+      client.game.vehicles.requestSitInVehicle.trigger(player, newVehicle.id);
+    }
   }
 }

@@ -15,6 +15,7 @@ import { VehiclesSpawnerService } from './vehicles-spawner.service';
 const zVehicleRaw = z.object({
   model: z.string(),
   appearance: z.string(),
+  sitInVehicle: z.boolean().optional(),
 });
 
 type VehicleRaw = z.infer<typeof zVehicleRaw>;
@@ -54,11 +55,11 @@ export class VehiclesSpawnerController {
   }
 
   private spawnVehicle(context: RpcServerContext<VehicleRaw>) {
-    this.vehiclesSpawnerService.spawnVehicle(
-      context.player,
-      context.data.model,
-      context.data.appearance,
-    );
+    this.vehiclesSpawnerService.spawnVehicle({
+      player: context.player,
+      vehicleModel: context.data.model,
+      appearance: context.data.appearance,
+    });
   }
 
   private getAll() {
