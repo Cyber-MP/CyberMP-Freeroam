@@ -1,6 +1,5 @@
 services:
   server:
-    container_name: cybermp-freeroam
     build:
       context: .
       dockerfile: Dockerfile
