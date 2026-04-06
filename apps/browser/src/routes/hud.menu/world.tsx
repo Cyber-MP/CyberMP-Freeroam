@@ -16,7 +16,7 @@ import { withDisabledDuringMatch } from '@/hocs/with-disabled-during-match';
 import { IS_MP_MOCKED } from '@/mp';
 import { type ClientInputs, client, clientQuery, serverQuery } from '@/rpc';
 import { queryClient } from '@/tanstack-query';
-import akulov_penthouse from '../../assets/images/locations/Akulov_penthouse.webp?w=300&h=225&imagetools';
+import akulov_penthouse from '../../assets/images/locations/akulov_penthouse.webp?w=300&h=225&imagetools';
 import clouds from '../../assets/images/locations/clouds.webp?w=300&h=225&imagetools';
 import dennys_estate_front from '../../assets/images/locations/dennys_estate_front.webp?w=300&h=225&imagetools';
 import grand_imperial_mall from '../../assets/images/locations/grand_imperial_mall.webp?w=300&h=225&imagetools';
