@@ -52,7 +52,52 @@ import GrenadeFragLegendaryPlus from '#/images/consumables/GrenadeFragLegendaryP
 import GrenadeOzobsNose from '#/images/consumables/GrenadeOzobsNose.webp?w=300&h=300&fit=contain&imagetools';
 import HealthBooster from '#/images/consumables/HealthBooster.webp?w=300&h=300&imagetools';
 import OxyBooster from '#/images/consumables/OxyBooster.webp?w=300&h=300&imagetools';
+import AdvancedBerserkC1MK4PlusPlus from '#/images/implants/AdvancedBerserkC1MK4PlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedBerserkC2MK4PlusPlus from '#/images/implants/AdvancedBerserkC2MK4PlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedBerserkC3MK5PlusPlus from '#/images/implants/AdvancedBerserkC3MK5PlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedBerserkC4MK5PlusPlus from '#/images/implants/AdvancedBerserkC4MK5PlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedBioConductorsLegendary_PlusPlus from '#/images/implants/AdvancedBioConductorsLegendary_PlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedBiomonitorLegendaryPlusPlus from '#/images/implants/AdvancedBiomonitorLegendaryPlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedBloodDepleterLegendaryPlusPlus from '#/images/implants/AdvancedBloodDepleterLegendaryPlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedBloodPumpLegendaryPlusPlus from '#/images/implants/AdvancedBloodPumpLegendaryPlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedBoneMarrowCellsLegendaryPlusPlus from '#/images/implants/AdvancedBoneMarrowCellsLegendaryPlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedBoostedTendonsLegendaryPlusPlus from '#/images/implants/AdvancedBoostedTendonsLegendaryPlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedBoringPlatingLegendaryPlusPlus from '#/images/implants/AdvancedBoringPlatingLegendaryPlusPlus.webp?w=300&h=300&imagetools';
 import AdvancedCamilloRamManagerLegendaryPlusPlus from '#/images/implants/AdvancedCamilloRamManagerLegendaryPlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedCatchMeIfYouCanLegendaryPlusPlus from '#/images/implants/AdvancedCatchMeIfYouCanLegendaryPlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedCatPawsLegendaryPlusPlus from '#/images/implants/AdvancedCatPawsLegendaryPlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedChargeSystemLegendaryPlusPlus from '#/images/implants/AdvancedChargeSystemLegendaryPlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedCyberRotorsLegendaryPlusPlus from '#/images/implants/AdvancedCyberRotorsLegendaryPlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedDischargeConnectorLegendaryPlusPlus from '#/images/implants/AdvancedDischargeConnectorLegendaryPlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedElectroshockMechanismLegendaryPlusPlus from '#/images/implants/AdvancedElectroshockMechanismLegendaryPlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedEndoskeletonLegendaryPlusPlus from '#/images/implants/AdvancedEndoskeletonLegendaryPlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedHealOnKillLegendaryPlusPlus from '#/images/implants/AdvancedHealOnKillLegendaryPlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedJenkinsTendonsLegendaryPlusPlus from '#/images/implants/AdvancedJenkinsTendonsLegendaryPlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedJointLockLegendaryPlusPlus from '#/images/implants/AdvancedJointLockLegendaryPlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedKiroshiOpticsBareLegendaryPlusPlus from '#/images/implants/AdvancedKiroshiOpticsBareLegendaryPlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedKnifeSharpenerLegendaryPlusPlus from '#/images/implants/AdvancedKnifeSharpenerLegendaryPlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedMantisBladesLegendaryPlusPlus from '#/images/implants/AdvancedMantisBladesLegendaryPlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedMicroGeneratorLegendaryPlusPlus from '#/images/implants/AdvancedMicroGeneratorLegendaryPlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedNanoWiresLegendaryPlusPlus from '#/images/implants/AdvancedNanoWiresLegendaryPlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedNeoFiberLegendaryPlusPlus from '#/images/implants/AdvancedNeoFiberLegendaryPlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedOilDispenserLegendaryPlusPlus from '#/images/implants/AdvancedOilDispenserLegendaryPlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedPainDistributorLegendaryPlusPlus from '#/images/implants/AdvancedPainDistributorLegendaryPlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedPainReductorLegendaryPlusPlus from '#/images/implants/AdvancedPainReductorLegendaryPlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedPowerGripLegendaryPlusPlus from '#/images/implants/AdvancedPowerGripLegendaryPlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedProjectileLauncherLegendaryPlusPlus from '#/images/implants/AdvancedProjectileLauncherLegendaryPlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedProximityReducerLegendaryPlusPlus from '#/images/implants/AdvancedProximityReducerLegendaryPlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedRapidMuscleNurishLegendaryPlusPlus from '#/images/implants/AdvancedRapidMuscleNurishLegendaryPlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedReinforcedMusclesLegendaryPlusPlus from '#/images/implants/AdvancedReinforcedMusclesLegendaryPlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedSecondHeartLegendaryPlusPlus from '#/images/implants/AdvancedSecondHeartLegendaryPlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedShockAbsorberLegendaryPlusPlus from '#/images/implants/AdvancedShockAbsorberLegendaryPlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedSmartLinkLegendaryPlusPlus from '#/images/implants/AdvancedSmartLinkLegendaryPlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedStaminaRegenBoosterLegendaryPlusPlus from '#/images/implants/AdvancedStaminaRegenBoosterLegendaryPlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedStrongArmsLegendaryPlusPlus from '#/images/implants/AdvancedStrongArmsLegendaryPlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedSubdermalCoProcessorLegendaryPlusPlus from '#/images/implants/AdvancedSubdermalCoProcessorLegendaryPlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedT1000LegendaryPlusPlus from '#/images/implants/AdvancedT1000LegendaryPlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedTitaniumInfusedBonesLegendaryPlusPlus from '#/images/implants/AdvancedTitaniumInfusedBonesLegendaryPlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedTyrosineInjectorLegendaryPlusPlus from '#/images/implants/AdvancedTyrosineInjectorLegendaryPlusPlus.webp?w=300&h=300&imagetools';
+import AdvancedWeirdTankyPlatingLegendaryPlusPlus from '#/images/implants/AdvancedWeirdTankyPlatingLegendaryPlusPlus.webp?w=300&h=300&imagetools';
 import Legendary_Zhuo_Eight_Star from '#/images/weapons/Legendary_Zhuo_Eight_Star.webp?w=300&h=150&imagetools';
 import Preset_Achilles_Collectible from '#/images/weapons/Preset_Achilles_Collectible.webp?w=300&h=150&imagetools';
 import Preset_Ajax_Amazon from '#/images/weapons/Preset_Ajax_Amazon.webp?w=300&h=150&imagetools';
@@ -75,6 +120,7 @@ import Preset_Sword_Witcher from '#/images/weapons/Preset_Sword_Witcher.webp?w=3
 import Preset_Umbra_Bebe from '#/images/weapons/Preset_Umbra_Bebe.webp?w=300&h=150&imagetools';
 import Preset_VB_Axe from '#/images/weapons/Preset_VB_Axe.webp?w=300&h=150&imagetools';
 import w_melee_boss_hammer from '#/images/weapons/w_melee_boss_hammer.webp?w=300&h=150&imagetools';
+
 import { withDisabledDuringMatch } from '@/hocs/with-disabled-during-match';
 import { type ClientInputs, clientQuery } from '@/rpc';
 import {
@@ -269,8 +315,233 @@ const DATA: Record<ItemCategory, Item[]> = {
   [ItemCategory.IMPLANTS]: [
     {
       key: 'AdvancedCamilloRamManagerLegendaryPlusPlus',
-      name: 'RAM Reallocator',
+      name: 'Camillo RAM Manager',
       image: AdvancedCamilloRamManagerLegendaryPlusPlus,
+    },
+    {
+      key: 'AdvancedBioConductorsLegendary_PlusPlus',
+      name: 'Bioconductor',
+      image: AdvancedBioConductorsLegendary_PlusPlus,
+    },
+    {
+      key: 'AdvancedSubdermalCoProcessorLegendaryPlusPlus',
+      name: 'Newton Module',
+      image: AdvancedSubdermalCoProcessorLegendaryPlusPlus,
+    },
+    {
+      key: 'AdvancedStrongArmsLegendaryPlusPlus',
+      name: 'Gorilla Arms',
+      image: AdvancedStrongArmsLegendaryPlusPlus,
+    },
+    {
+      key: 'AdvancedMantisBladesLegendaryPlusPlus',
+      name: 'Mantis Blades',
+      image: AdvancedMantisBladesLegendaryPlusPlus,
+    },
+    {
+      key: 'AdvancedNanoWiresLegendaryPlusPlus',
+      name: 'Monowire',
+      image: AdvancedNanoWiresLegendaryPlusPlus,
+    },
+    {
+      key: 'AdvancedProjectileLauncherLegendaryPlusPlus',
+      name: 'Projectile Launch System',
+      image: AdvancedProjectileLauncherLegendaryPlusPlus,
+    },
+    {
+      key: 'AdvancedKiroshiOpticsBareLegendaryPlusPlus',
+      name: 'Basic Kiroshi Optics',
+      image: AdvancedKiroshiOpticsBareLegendaryPlusPlus,
+    },
+    {
+      key: 'AdvancedT1000LegendaryPlusPlus',
+      name: 'Para Bellum',
+      image: AdvancedT1000LegendaryPlusPlus,
+    },
+    {
+      key: 'AdvancedEndoskeletonLegendaryPlusPlus',
+      name: 'Epimorphic Skeleton',
+      image: AdvancedEndoskeletonLegendaryPlusPlus,
+    },
+    {
+      key: 'AdvancedBoneMarrowCellsLegendaryPlusPlus',
+      name: 'Kinetic Frame',
+      image: AdvancedBoneMarrowCellsLegendaryPlusPlus,
+    },
+    {
+      key: 'AdvancedRapidMuscleNurishLegendaryPlusPlus',
+      name: 'Scarab',
+      image: AdvancedRapidMuscleNurishLegendaryPlusPlus,
+    },
+    {
+      key: 'AdvancedTitaniumInfusedBonesLegendaryPlusPlus',
+      name: 'Titanium Bones',
+      image: AdvancedTitaniumInfusedBonesLegendaryPlusPlus,
+    },
+    {
+      key: 'AdvancedPainDistributorLegendaryPlusPlus',
+      name: 'Universal Booster',
+      image: AdvancedPainDistributorLegendaryPlusPlus,
+    },
+    {
+      key: 'AdvancedSmartLinkLegendaryPlusPlus',
+      name: 'Smart Link',
+      image: AdvancedSmartLinkLegendaryPlusPlus,
+    },
+    {
+      key: 'AdvancedPowerGripLegendaryPlusPlus',
+      name: 'Ballistic Coprocessor',
+      image: AdvancedPowerGripLegendaryPlusPlus,
+    },
+    {
+      key: 'AdvancedKnifeSharpenerLegendaryPlusPlus',
+      name: 'Handle Wrap',
+      image: AdvancedKnifeSharpenerLegendaryPlusPlus,
+    },
+    {
+      key: 'AdvancedMicroGeneratorLegendaryPlusPlus',
+      name: 'Microgenerator',
+      image: AdvancedMicroGeneratorLegendaryPlusPlus,
+    },
+    {
+      key: 'AdvancedJointLockLegendaryPlusPlus',
+      name: 'Shock Absorber',
+      image: AdvancedJointLockLegendaryPlusPlus,
+    },
+    {
+      key: 'AdvancedNeoFiberLegendaryPlusPlus',
+      name: 'NeoFiber',
+      image: AdvancedNeoFiberLegendaryPlusPlus,
+    },
+    {
+      key: 'AdvancedTyrosineInjectorLegendaryPlusPlus',
+      name: 'Tyrosine Injector',
+      image: AdvancedTyrosineInjectorLegendaryPlusPlus,
+    },
+    {
+      key: 'AdvancedOilDispenserLegendaryPlusPlus',
+      name: 'Stabber',
+      image: AdvancedOilDispenserLegendaryPlusPlus,
+    },
+    {
+      key: 'AdvancedCatchMeIfYouCanLegendaryPlusPlus',
+      name: 'ThreatEvac',
+      image: AdvancedCatchMeIfYouCanLegendaryPlusPlus,
+    },
+    {
+      key: 'AdvancedSecondHeartLegendaryPlusPlus',
+      name: 'Second Heart',
+      image: AdvancedSecondHeartLegendaryPlusPlus,
+    },
+    {
+      key: 'AdvancedCyberRotorsLegendaryPlusPlus',
+      name: 'Microrotors',
+      image: AdvancedCyberRotorsLegendaryPlusPlus,
+    },
+    {
+      key: 'AdvancedHealOnKillLegendaryPlusPlus',
+      name: 'Heal-On-Kill',
+      image: AdvancedHealOnKillLegendaryPlusPlus,
+    },
+    {
+      key: 'AdvancedDischargeConnectorLegendaryPlusPlus',
+      name: 'Feedback Circuit',
+      image: AdvancedDischargeConnectorLegendaryPlusPlus,
+    },
+    {
+      key: 'AdvancedShockAbsorberLegendaryPlusPlus',
+      name: 'Clutch Padding',
+      image: AdvancedShockAbsorberLegendaryPlusPlus,
+    },
+    {
+      key: 'AdvancedBloodPumpLegendaryPlusPlus',
+      name: 'Blood Pump',
+      image: AdvancedBloodPumpLegendaryPlusPlus,
+    },
+    {
+      key: 'AdvancedBiomonitorLegendaryPlusPlus',
+      name: 'Biomonitor',
+      image: AdvancedBiomonitorLegendaryPlusPlus,
+    },
+    {
+      key: 'AdvancedStaminaRegenBoosterLegendaryPlusPlus',
+      name: 'Adrenaline Booster',
+      image: AdvancedStaminaRegenBoosterLegendaryPlusPlus,
+    },
+    {
+      key: 'AdvancedBoringPlatingLegendaryPlusPlus',
+      name: 'Subdermal Armor',
+      image: AdvancedBoringPlatingLegendaryPlusPlus,
+    },
+    {
+      key: 'AdvancedElectroshockMechanismLegendaryPlusPlus',
+      name: 'Shock-n-Awe',
+      image: AdvancedElectroshockMechanismLegendaryPlusPlus,
+    },
+    {
+      key: 'AdvancedChargeSystemLegendaryPlusPlus',
+      name: 'RangeGuard',
+      image: AdvancedChargeSystemLegendaryPlusPlus,
+    },
+    {
+      key: 'AdvancedProximityReducerLegendaryPlusPlus',
+      name: 'ProxiShield',
+      image: AdvancedProximityReducerLegendaryPlusPlus,
+    },
+    {
+      key: 'AdvancedBloodDepleterLegendaryPlusPlus',
+      name: 'Painducer',
+      image: AdvancedBloodDepleterLegendaryPlusPlus,
+    },
+    {
+      key: 'AdvancedPainReductorLegendaryPlusPlus',
+      name: 'Pain Editor',
+      image: AdvancedPainReductorLegendaryPlusPlus,
+    },
+    {
+      key: 'AdvancedWeirdTankyPlatingLegendaryPlusPlus',
+      name: 'Carapace',
+      image: AdvancedWeirdTankyPlatingLegendaryPlusPlus,
+    },
+    {
+      key: 'AdvancedBoostedTendonsLegendaryPlusPlus',
+      name: 'Reinforced Tendons',
+      image: AdvancedBoostedTendonsLegendaryPlusPlus,
+    },
+    {
+      key: 'AdvancedCatPawsLegendaryPlusPlus',
+      name: 'Lynx Paws',
+      image: AdvancedCatPawsLegendaryPlusPlus,
+    },
+    {
+      key: 'AdvancedJenkinsTendonsLegendaryPlusPlus',
+      name: "Jenkins' Tendons",
+      image: AdvancedJenkinsTendonsLegendaryPlusPlus,
+    },
+    {
+      key: 'AdvancedReinforcedMusclesLegendaryPlusPlus',
+      name: 'Fortified Ankles',
+      image: AdvancedReinforcedMusclesLegendaryPlusPlus,
+    },
+    {
+      key: 'AdvancedBerserkC3MK5PlusPlus',
+      name: 'Zetatech Berserk',
+      image: AdvancedBerserkC3MK5PlusPlus,
+    },
+    {
+      key: 'AdvancedBerserkC1MK4PlusPlus',
+      name: 'Moore Tech Berserk',
+      image: AdvancedBerserkC1MK4PlusPlus,
+    },
+    {
+      key: 'AdvancedBerserkC4MK5PlusPlus',
+      name: 'Militech Berserk',
+      image: AdvancedBerserkC4MK5PlusPlus,
+    },
+    {
+      key: 'AdvancedBerserkC2MK4PlusPlus',
+      name: 'BioDyne Berserk',
+      image: AdvancedBerserkC2MK4PlusPlus,
     },
   ],
   [ItemCategory.CLOTHES]: [
