@@ -100,7 +100,6 @@ import AdvancedTyrosineInjectorLegendaryPlus from '#/images/implants/AdvancedTyr
 import AdvancedWeirdTankyPlatingLegendaryPlus from '#/images/implants/AdvancedWeirdTankyPlatingLegendaryPlus.webp?w=300&h=300&imagetools';
 import Legendary_Ajax_Moron from '#/images/weapons/Legendary_Ajax_Moron.webp?w=300&h=150&imagetools';
 import Legendary_Zhuo_Eight_Star from '#/images/weapons/Legendary_Zhuo_Eight_Star.webp?w=300&h=150&imagetools';
-import Preset_Borg4a_HauntedGun from '#/images/weapons/Preset_Borg4a_HauntedGun.webp?w=300&h=150&imagetools';
 import Preset_Carnage_Edgerunners from '#/images/weapons/Preset_Carnage_Edgerunners.webp?w=300&h=150&imagetools';
 import Preset_Dian_Yinglong from '#/images/weapons/Preset_Dian_Yinglong.webp?w=300&h=150&imagetools';
 import Preset_Dildo_Stout from '#/images/weapons/Preset_Dildo_Stout.webp?w=300&h=150&imagetools';
@@ -116,6 +115,7 @@ import Preset_Masamune_Rogue from '#/images/weapons/Preset_Masamune_Rogue.webp?w
 import Preset_Neurotoxin_Knife_Iconic from '#/images/weapons/Preset_Neurotoxin_Knife_Iconic.webp?w=300&h=150&imagetools';
 import Preset_Nue_Maiko from '#/images/weapons/Preset_Nue_Maiko.webp?w=300&h=150&imagetools';
 import Preset_Overture_Cassidy from '#/images/weapons/Preset_Overture_Cassidy.webp?w=300&h=150&imagetools';
+import Preset_Saratoga_Raffen from '#/images/weapons/Preset_Saratoga_Raffen.webp?w=300&h=150&imagetools';
 import Preset_Senkoh_Default from '#/images/weapons/Preset_Senkoh_Default.webp?w=300&h=150&imagetools';
 import Preset_Silverhand_3516 from '#/images/weapons/Preset_Silverhand_3516.webp?w=300&h=150&imagetools';
 import Preset_Tactician_Dino from '#/images/weapons/Preset_Tactician_Dino.webp?w=300&h=150&imagetools';
@@ -185,10 +185,11 @@ const DATA: Record<ItemCategory, Item[]> = {
       name: 'Satori',
       image: Preset_Katana_Saburo,
     },
+
     {
-      key: 'Preset_Borg4a_HauntedGun',
-      name: 'Erebus',
-      image: Preset_Borg4a_HauntedGun,
+      key: 'Preset_Saratoga_Raffen',
+      name: 'Problem Solver',
+      image: Preset_Saratoga_Raffen,
     },
     {
       key: 'Preset_Overture_Cassidy',

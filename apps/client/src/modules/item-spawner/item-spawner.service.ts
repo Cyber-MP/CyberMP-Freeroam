@@ -19,7 +19,6 @@ export const ITEM_SPAWNER_KEYS = [
   'Preset_Silverhand_3516',
   'Preset_Yukimura_Default',
   'Preset_Senkoh_Default',
-  'Preset_Borg4a_HauntedGun',
   'Preset_Tactician_Dino',
   'Preset_Masamune_Rogue',
   'Legendary_Ajax_Moron',
@@ -27,6 +26,7 @@ export const ITEM_SPAWNER_KEYS = [
   'Preset_Kolac_Tiny_Mike',
   'Preset_Grad_Buck',
   'Preset_Katana_GoG',
+  'Preset_Saratoga_Raffen',
   // implants
   'AdvancedCamilloRamManagerLegendaryPlus',
   'AdvancedBioConductorsLegendaryPlus',
