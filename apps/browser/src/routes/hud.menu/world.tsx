@@ -17,6 +17,7 @@ import { IS_MP_MOCKED } from '@/mp';
 import { type ClientInputs, client, clientQuery, serverQuery } from '@/rpc';
 import { queryClient } from '@/tanstack-query';
 import akulov_penthouse from '../../assets/images/locations/akulov_penthouse.webp?w=300&h=225&imagetools';
+import aldecaldo_camp from '../../assets/images/locations/aldecaldo_camp.webp?w=300&h=225&imagetools';
 import clouds from '../../assets/images/locations/clouds.webp?w=300&h=225&imagetools';
 import dennys_estate_front from '../../assets/images/locations/dennys_estate_front.webp?w=300&h=225&imagetools';
 import grand_imperial_mall from '../../assets/images/locations/grand_imperial_mall.webp?w=300&h=225&imagetools';
@@ -27,6 +28,8 @@ import konpecki_tower from '../../assets/images/locations/konpecki_tower.webp?w=
 import konpeki_tower_penthouse from '../../assets/images/locations/konpeki_tower_penthouse.webp?w=300&h=225&imagetools';
 import nomad_v from '../../assets/images/locations/nomad_v.webp?w=300&h=225&imagetools';
 import peralezes_apt from '../../assets/images/locations/peralezes_apt.webp?w=300&h=225&imagetools';
+
+import v_house from '../../assets/images/locations/v_house.webp?w=300&h=225&imagetools';
 
 export const Route = createFileRoute('/hud/menu/world')({
   component: withDisabledDuringMatch(RouteComponent),
@@ -333,6 +336,11 @@ type Location = {
 
 const LOCATIONS: Location[] = [
   {
+    name: 'V house',
+    positon: { x: -1385.604736, y: 1269.950927, z: 123.064895 },
+    image: v_house,
+  },
+  {
     name: 'Akulov penthouse',
     positon: { x: -1218.135986, y: 1409.63501, z: 113.524445 },
     image: akulov_penthouse,
@@ -351,6 +359,11 @@ const LOCATIONS: Location[] = [
     name: 'Grand Imperial Mall',
     positon: { x: -2329.752197, y: -2044.204101, z: 17.158584 },
     image: grand_imperial_mall,
+  },
+  {
+    name: 'Aldecaldo camp',
+    positon: { x: 3419.127685, y: -344.287872, z: 134.445632 },
+    image: aldecaldo_camp,
   },
   {
     name: 'Gutierrez Apt',

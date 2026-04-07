@@ -35,6 +35,18 @@ export const VEHICLES_DATA = [
     category: VehicleCategory.SPORT,
   },
   {
+    model: 'v_sport2_porsche_911turbo_player',
+    name: 'Porsche 911 Turbo',
+    appearance: 'porsche_911turbo__basic_johnny',
+    category: VehicleCategory.SPORT,
+  },
+  {
+    model: 'v_sport1_herrera_outlaw_player',
+    name: 'Herrera Outlaw',
+    appearance: 'herrera_outlaw__basic_player_01',
+    category: VehicleCategory.SPORT,
+  },
+  {
     model: 'v_sport1_quadra_turbo_player',
     name: 'Quadra Turbo-R 740',
     appearance: 'quadra_turbo_basic_player_02',
@@ -50,6 +62,12 @@ export const VEHICLES_DATA = [
     model: 'v_sport2_mizutani_shion_player',
     name: 'Mizutani Shion MZ2',
     appearance: 'mizutani_shion__basic_player_01',
+    category: VehicleCategory.SPORT,
+  },
+  {
+    model: 'v_sport2_villefort_alvarado_player',
+    name: 'Villefort Alvarado V4F',
+    appearance: 'villefort_alvarado__basic_player_01',
     category: VehicleCategory.SPORT,
   },
   {

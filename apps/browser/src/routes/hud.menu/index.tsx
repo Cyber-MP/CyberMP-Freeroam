@@ -7,6 +7,7 @@ import { withDisabledDuringMatch } from '@/hocs/with-disabled-during-match';
 import { serverQuery } from '@/rpc';
 import { queryClient } from '@/tanstack-query';
 import type { ServerOutputs } from '../../../../client/src/rpc';
+import v_sport1_herrera_outlaw_player from '../../assets/images/vehicles/v_sport1_herrera_outlaw_player.webp?w=300&h=225&imagetools';
 import v_sport1_quadra_turbo_player from '../../assets/images/vehicles/v_sport1_quadra_turbo_player.webp?w=300&h=225&imagetools';
 import v_sport1_quadra_turbo_r_player from '../../assets/images/vehicles/v_sport1_quadra_turbo_r_player.webp?w=300&h=225&imagetools';
 import v_sport1_rayfield_aerondight_player from '../../assets/images/vehicles/v_sport1_rayfield_aerondight_player.webp?w=300&h=225&imagetools';
@@ -14,10 +15,12 @@ import v_sport1_rayfield_caliburn_player from '../../assets/images/vehicles/v_sp
 import v_sport2_mizutani_shion_nomad_player from '../../assets/images/vehicles/v_sport2_mizutani_shion_nomad_player.webp?w=300&h=225&imagetools';
 import v_sport2_mizutani_shion_player from '../../assets/images/vehicles/v_sport2_mizutani_shion_player.webp?w=300&h=225&imagetools';
 import v_sport2_porsche_911turbo_cabrio_player from '../../assets/images/vehicles/v_sport2_porsche_911turbo_cabrio_player.webp?w=300&h=225&imagetools';
+import v_sport2_porsche_911turbo_player from '../../assets/images/vehicles/v_sport2_porsche_911turbo_player.webp?w=300&h=225&imagetools';
 import v_sport2_quadra_type66_02_player from '../../assets/images/vehicles/v_sport2_quadra_type66_02_player.webp?w=300&h=225&imagetools';
 import v_sport2_quadra_type66_base_player from '../../assets/images/vehicles/v_sport2_quadra_type66_base_player.webp?w=300&h=225&imagetools';
 import v_sport2_quadra_type66_nomad_player_03 from '../../assets/images/vehicles/v_sport2_quadra_type66_nomad_player_03.webp?w=300&h=225&imagetools';
 import v_sport2_quadra_type66_player from '../../assets/images/vehicles/v_sport2_quadra_type66_player.webp?w=300&h=225&imagetools';
+import v_sport2_villefort_alvarado_player from '../../assets/images/vehicles/v_sport2_villefort_alvarado_player.webp?w=300&h=225&imagetools';
 import v_sportbike1_yaiba_kusanagi_player from '../../assets/images/vehicles/v_sportbike1_yaiba_kusanagi_player.webp?w=300&h=225&imagetools';
 import v_sportbike1_yaiba_kusanagi_player_02 from '../../assets/images/vehicles/v_sportbike1_yaiba_kusanagi_player_02.webp?w=300&h=225&imagetools';
 import v_sportbike1_yaiba_kusanagi_player_03 from '../../assets/images/vehicles/v_sportbike1_yaiba_kusanagi_player_03.webp?w=300&h=225&imagetools';
@@ -75,6 +78,9 @@ const VEHICLE_IMAGES: Record<Vehicle['model'], string> = {
   v_sportbike3_brennan_apollo_player_02,
   v_sportbike3_brennan_apollo_player,
   v_sportbike3_brennan_apollo_nomad_player,
+  v_sport1_herrera_outlaw_player,
+  v_sport2_porsche_911turbo_player,
+  v_sport2_villefort_alvarado_player,
 };
 
 export const Route = createFileRoute('/hud/menu/')({
