@@ -1,14 +1,11 @@
 import type { gameCameraComponent } from '@cybermp/client-types/game';
 import { inject, injectable } from 'inversify';
-import { throttle } from 'radash';
 import { createVector4 } from '../../lib/vectors';
 import { mp } from '../../mp';
 import { server } from '../../rpc';
 import { GEntityService } from '../game/entity.service';
 import { GPlayerService } from '../game/player.service';
 import { GTeleportService } from '../game/teleport/teleport.service';
-
-const throttleLog = throttle({ interval: 1000 }, console.log);
 
 @injectable()
 export class SpectatingService {
@@ -24,69 +21,50 @@ export class SpectatingService {
 
   private async spectateTick() {
     if (!this.spectatedPlayerId) {
-      throttleLog('no spectated player');
       return;
     }
 
     const targetPosition = await this.getPlayerPosition(this.spectatedPlayerId);
     if (!targetPosition) {
-      throttleLog('no target position');
       return this.unspectate();
     }
 
     this.teleportService.teleport(targetPosition);
 
-    const targetPlayerGameId = mp.getStreamedPlayers().find((gameId) => {
-      return mp.getPlayerNetworkIdByGameId(gameId) === this.spectatedPlayerId;
-    });
+    const targetPlayerGameId = mp.getPlayerGameIdByNetworkId(
+      this.spectatedPlayerId,
+    );
     if (!targetPlayerGameId) {
-      throttleLog('no spectated player game id');
       return;
     }
 
     const targetPlayerEntity = this.entityService.findById(targetPlayerGameId);
     if (!targetPlayerEntity) {
-      throttleLog('no spectated player entity found');
       return;
     }
 
     if (this.cameraComponent) {
-      throttleLog('camera component already exists so skip finding for it');
       return;
     }
-
-    console.log(
-      targetPlayerEntity
-        .GetComponents()
-        .filter((o) => o.GetClassName().toLowerCase().includes('camera')),
-    );
 
     const candidateComponent =
       targetPlayerEntity.FindComponentByName('spectateCamera');
     if (!candidateComponent) {
-      throttleLog('no spectate camera component found');
       return;
     }
 
     this.cameraComponent = candidateComponent as gameCameraComponent;
     this.cameraComponent.Activate();
-    throttleLog('activated spectate camera');
   }
 
-  private getPlayerPositionFromPool(playerId: number) {
-    const players = mp.getStreamedPlayers();
-
-    for (const candidateGameId of players) {
-      const candidateId = mp.getPlayerNetworkIdByGameId(candidateGameId);
-      if (candidateId !== playerId) {
-        continue;
-      }
-
-      const entity = this.entityService.findById(candidateGameId);
-      return entity.GetWorldPosition();
+  private getPlayerPositionFromPool(targetId: number) {
+    const targetGameId = mp.getPlayerGameIdByNetworkId(targetId);
+    if (!targetGameId) {
+      return null;
     }
 
-    return null;
+    const targetEntity = this.entityService.findById(targetGameId);
+    return targetEntity?.GetWorldPosition() ?? null;
   }
 
   private async getPlayerPositionFromServer(playerId: number) {
