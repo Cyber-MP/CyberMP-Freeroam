@@ -40,6 +40,10 @@ declare module '@cybermp/client-types/game' {
     GetComponents(): entIComponent[];
   }
 
+  export interface entEntity {
+    GetComponents(): entIComponent[];
+  }
+
   export class inkLayerWrapper {
     GetLayerName(): string;
     GetVirtualWindow(): inkVirtualWindow;

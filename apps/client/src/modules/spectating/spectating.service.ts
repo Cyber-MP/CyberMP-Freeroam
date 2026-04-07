@@ -40,30 +40,37 @@ export class SpectatingService {
       return mp.getPlayerNetworkIdByGameId(gameId) === this.spectatedPlayerId;
     });
     if (!targetPlayerGameId) {
-      throttleLog('no spectated player game id')
+      throttleLog('no spectated player game id');
       return;
     }
 
     const targetPlayerEntity = this.entityService.findById(targetPlayerGameId);
     if (!targetPlayerEntity) {
-      throttleLog('no spectated player entity found')
+      throttleLog('no spectated player entity found');
       return;
     }
 
     if (this.cameraComponent) {
-      throttleLog('camera component already exists so skip finding for it')
+      throttleLog('camera component already exists so skip finding for it');
       return;
     }
 
-    const candidateComponent = targetPlayerEntity.FindComponentByName('spectateCamera');
+    console.log(
+      targetPlayerEntity
+        .GetComponents()
+        .filter((o) => o.GetClassName().toLowerCase().includes('camera')),
+    );
+
+    const candidateComponent =
+      targetPlayerEntity.FindComponentByName('spectateCamera');
     if (!candidateComponent) {
-      throttleLog('no spectate camera component found')
+      throttleLog('no spectate camera component found');
       return;
     }
 
     this.cameraComponent = candidateComponent as gameCameraComponent;
     this.cameraComponent.Activate();
-    throttleLog('activated spectate camera')
+    throttleLog('activated spectate camera');
   }
 
   private getPlayerPositionFromPool(playerId: number) {
