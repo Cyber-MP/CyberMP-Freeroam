@@ -16,6 +16,7 @@ import { PolygonsModule } from './modules/polygons/polygons.module';
 import { SessionInterceptor } from './modules/session/session.interceptor';
 import { SessionModule } from './modules/session/session.module';
 import { SpawnModule } from './modules/spawn/spawn.module';
+import { SpectatingModule } from './modules/spectating/spectating.module';
 import { TimeModule } from './modules/time/time.module';
 import { WeatherModule } from './modules/weather/weather.module';
 import { mp } from './mp';
@@ -36,6 +37,7 @@ const modules: ContainerModule[] = [
   MappingModule,
   EntityLabelsModule,
   PolygonsModule,
+  SpectatingModule,
 ];
 
 const coopWhen = async () => {

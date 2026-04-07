@@ -31,10 +31,12 @@ export const router = {
     .output(z.number())
     .handler((c) => c.player.id),
   getPlayerPosition: r.procedure
-    .input(z.number().transform((v) => mp.players.at(v)))
-    .output(zVector3)
+    .method(RpcApplyType.REGISTER)
+    .input(z.number().transform((v) => mp.players.at(v) ?? null))
+    .validate({ input: true })
+    .output(z.union([zVector3, z.null()]))
     .handler((c) => {
-      return c.data.position;
+      return c.data?.position ?? null;
     }),
 
   matchmaking: matchmakingContract,
