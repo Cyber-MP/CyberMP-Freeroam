@@ -1,5 +1,6 @@
 import { RpcApplyType } from '@cybermp/rpc-server';
 import z from 'zod';
+import { zVector3 } from '../lib/vectors';
 import { chatContract } from '../modules/chat/chat.controller';
 import { gameModesContract } from '../modules/game-modes/game-modes.controller';
 import { loggerContract } from '../modules/logger/logger.controller';
@@ -29,6 +30,12 @@ export const router = {
     .method(RpcApplyType.REGISTER)
     .output(z.number())
     .handler((c) => c.player.id),
+  getPlayerPosition: r.procedure
+    .input(z.number().transform((v) => mp.players.at(v)))
+    .output(zVector3)
+    .handler((c) => {
+      return c.data.position;
+    }),
 
   matchmaking: matchmakingContract,
   gameModes: gameModesContract,
