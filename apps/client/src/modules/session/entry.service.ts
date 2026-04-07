@@ -57,14 +57,6 @@ export class EntryService {
     mp.game.onGameLoaded(() => {
       this.onGameLoaded().catch(this.logger.error);
     });
-
-    mp.events.addCommand('freeze', () => {
-      this.playerService.freeze(true);
-    });
-
-    mp.events.addCommand('unfreeze', () => {
-      this.playerService.freeze(false);
-    });
   }
 
   public enter() {
