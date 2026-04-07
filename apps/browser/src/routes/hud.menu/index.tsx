@@ -12,6 +12,7 @@ import v_sport1_quadra_turbo_player from '../../assets/images/vehicles/v_sport1_
 import v_sport1_quadra_turbo_r_player from '../../assets/images/vehicles/v_sport1_quadra_turbo_r_player.webp?w=300&h=225&imagetools';
 import v_sport1_rayfield_aerondight_player from '../../assets/images/vehicles/v_sport1_rayfield_aerondight_player.webp?w=300&h=225&imagetools';
 import v_sport1_rayfield_caliburn_player from '../../assets/images/vehicles/v_sport1_rayfield_caliburn_player.webp?w=300&h=225&imagetools';
+import v_sport1_yaiba_semimaru_player from '../../assets/images/vehicles/v_sport1_yaiba_semimaru_player.webp?w=300&h=225&imagetools';
 import v_sport2_mizutani_shion_nomad_player from '../../assets/images/vehicles/v_sport2_mizutani_shion_nomad_player.webp?w=300&h=225&imagetools';
 import v_sport2_mizutani_shion_player from '../../assets/images/vehicles/v_sport2_mizutani_shion_player.webp?w=300&h=225&imagetools';
 import v_sport2_porsche_911turbo_cabrio_player from '../../assets/images/vehicles/v_sport2_porsche_911turbo_cabrio_player.webp?w=300&h=225&imagetools';
@@ -81,6 +82,7 @@ const VEHICLE_IMAGES: Record<Vehicle['model'], string> = {
   v_sport1_herrera_outlaw_player,
   v_sport2_porsche_911turbo_player,
   v_sport2_villefort_alvarado_player,
+  v_sport1_yaiba_semimaru_player,
 };
 
 export const Route = createFileRoute('/hud/menu/')({

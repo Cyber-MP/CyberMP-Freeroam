@@ -71,6 +71,12 @@ export const VEHICLES_DATA = [
     category: VehicleCategory.SPORT,
   },
   {
+    model: 'v_sport1_yaiba_semimaru_player',
+    name: 'Yaiba Semimaru',
+    appearance: 'yaiba_semimaru_basic_urban_01',
+    category: VehicleCategory.SPORT,
+  },
+  {
     model: 'v_sport2_quadra_type66_02_player',
     name: 'Quadra Type66 Bullit',
     appearance: 'quadra_type66__basic_bulleat',
