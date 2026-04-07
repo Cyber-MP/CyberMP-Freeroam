@@ -98,16 +98,28 @@ import AdvancedT1000LegendaryPlus from '#/images/implants/AdvancedT1000Legendary
 import AdvancedTitaniumInfusedBonesLegendaryPlus from '#/images/implants/AdvancedTitaniumInfusedBonesLegendaryPlus.webp?w=300&h=300&imagetools';
 import AdvancedTyrosineInjectorLegendaryPlus from '#/images/implants/AdvancedTyrosineInjectorLegendaryPlus.webp?w=300&h=300&imagetools';
 import AdvancedWeirdTankyPlatingLegendaryPlus from '#/images/implants/AdvancedWeirdTankyPlatingLegendaryPlus.webp?w=300&h=300&imagetools';
+import Legendary_Ajax_Moron from '#/images/weapons/Legendary_Ajax_Moron.webp?w=300&h=150&imagetools';
 import Legendary_Zhuo_Eight_Star from '#/images/weapons/Legendary_Zhuo_Eight_Star.webp?w=300&h=150&imagetools';
+import Preset_Borg4a_HauntedGun from '#/images/weapons/Preset_Borg4a_HauntedGun.webp?w=300&h=150&imagetools';
 import Preset_Carnage_Edgerunners from '#/images/weapons/Preset_Carnage_Edgerunners.webp?w=300&h=150&imagetools';
 import Preset_Dian_Yinglong from '#/images/weapons/Preset_Dian_Yinglong.webp?w=300&h=150&imagetools';
 import Preset_Dildo_Stout from '#/images/weapons/Preset_Dildo_Stout.webp?w=300&h=150&imagetools';
 import Preset_Fanged_Axe_Default from '#/images/weapons/Preset_Fanged_Axe_Default.webp?w=300&h=150&imagetools';
+import Preset_Grad_Buck from '#/images/weapons/Preset_Grad_Buck.webp?w=300&h=150&imagetools';
 import Preset_Katana_Cocktail from '#/images/weapons/Preset_Katana_Cocktail.webp?w=300&h=150&imagetools';
+import Preset_Katana_GoG from '#/images/weapons/Preset_Katana_GoG.webp?w=300&h=150&imagetools';
 import Preset_Katana_Saburo from '#/images/weapons/Preset_Katana_Saburo.webp?w=300&h=150&imagetools';
+import Preset_Kolac_Tiny_Mike from '#/images/weapons/Preset_Kolac_Tiny_Mike.webp?w=300&h=150&imagetools';
 import Preset_Lexington_Toygun from '#/images/weapons/Preset_Lexington_Toygun.webp?w=300&h=150&imagetools';
+import Preset_MA70_Default from '#/images/weapons/Preset_MA70_Default.webp?w=300&h=150&imagetools';
+import Preset_Masamune_Rogue from '#/images/weapons/Preset_Masamune_Rogue.webp?w=300&h=150&imagetools';
 import Preset_Neurotoxin_Knife_Iconic from '#/images/weapons/Preset_Neurotoxin_Knife_Iconic.webp?w=300&h=150&imagetools';
+import Preset_Nue_Maiko from '#/images/weapons/Preset_Nue_Maiko.webp?w=300&h=150&imagetools';
 import Preset_Overture_Cassidy from '#/images/weapons/Preset_Overture_Cassidy.webp?w=300&h=150&imagetools';
+import Preset_Senkoh_Default from '#/images/weapons/Preset_Senkoh_Default.webp?w=300&h=150&imagetools';
+import Preset_Silverhand_3516 from '#/images/weapons/Preset_Silverhand_3516.webp?w=300&h=150&imagetools';
+import Preset_Tactician_Dino from '#/images/weapons/Preset_Tactician_Dino.webp?w=300&h=150&imagetools';
+import Preset_Yukimura_Default from '#/images/weapons/Preset_Yukimura_Default.webp?w=300&h=150&imagetools';
 import w_melee_boss_hammer from '#/images/weapons/w_melee_boss_hammer.webp?w=300&h=150&imagetools';
 
 import { withDisabledDuringMatch } from '@/hocs/with-disabled-during-match';
@@ -144,6 +156,26 @@ const DATA: Record<ItemCategory, Item[]> = {
       image: Preset_Lexington_Toygun,
     },
     {
+      key: 'Preset_Silverhand_3516',
+      name: '3516',
+      image: Preset_Silverhand_3516,
+    },
+    {
+      key: 'Preset_Nue_Maiko',
+      name: 'Death and Taxes',
+      image: Preset_Nue_Maiko,
+    },
+    {
+      key: 'Preset_Yukimura_Default',
+      name: 'HJKE-11 Yukimura',
+      image: Preset_Yukimura_Default,
+    },
+    {
+      key: 'Preset_Senkoh_Default',
+      name: 'Senkoh LX',
+      image: Preset_Senkoh_Default,
+    },
+    {
       key: 'Preset_Fanged_Axe_Default',
       name: 'Claw',
       image: Preset_Fanged_Axe_Default,
@@ -152,6 +184,11 @@ const DATA: Record<ItemCategory, Item[]> = {
       key: 'Preset_Katana_Saburo',
       name: 'Satori',
       image: Preset_Katana_Saburo,
+    },
+    {
+      key: 'Preset_Borg4a_HauntedGun',
+      name: 'Erebus',
+      image: Preset_Borg4a_HauntedGun,
     },
     {
       key: 'Preset_Overture_Cassidy',
@@ -164,9 +201,19 @@ const DATA: Record<ItemCategory, Item[]> = {
       image: Legendary_Zhuo_Eight_Star,
     },
     {
+      key: 'Preset_Tactician_Dino',
+      name: 'Bloody Maria',
+      image: Preset_Tactician_Dino,
+    },
+    {
       key: 'Preset_Neurotoxin_Knife_Iconic',
       name: 'Blue Fang',
       image: Preset_Neurotoxin_Knife_Iconic,
+    },
+    {
+      key: 'Preset_Katana_GoG',
+      name: 'Black Unicorn',
+      image: Preset_Katana_GoG,
     },
     {
       key: 'Preset_Katana_Cocktail',
@@ -177,6 +224,16 @@ const DATA: Record<ItemCategory, Item[]> = {
       key: 'Preset_Carnage_Edgerunners',
       name: 'Guts',
       image: Preset_Carnage_Edgerunners,
+    },
+    {
+      key: 'Preset_Masamune_Rogue',
+      name: 'Prejudice',
+      image: Preset_Masamune_Rogue,
+    },
+    {
+      key: 'Legendary_Ajax_Moron',
+      name: 'Moron Labe',
+      image: Legendary_Ajax_Moron,
     },
     {
       key: 'Preset_Dian_Yinglong',
@@ -192,6 +249,21 @@ const DATA: Record<ItemCategory, Item[]> = {
       key: 'Preset_Dildo_Stout',
       name: 'Sir John Phallustiff',
       image: Preset_Dildo_Stout,
+    },
+    {
+      key: 'Preset_MA70_Default',
+      name: 'MA70 HB',
+      image: Preset_MA70_Default,
+    },
+    {
+      key: 'Preset_Kolac_Tiny_Mike',
+      name: 'Hypercritical',
+      image: Preset_Kolac_Tiny_Mike,
+    },
+    {
+      key: 'Preset_Grad_Buck',
+      name: "O'Five",
+      image: Preset_Grad_Buck,
     },
   ],
   [ItemCategory.CONSUMABLES]: [
