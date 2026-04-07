@@ -99,26 +99,15 @@ import AdvancedTitaniumInfusedBonesLegendaryPlus from '#/images/implants/Advance
 import AdvancedTyrosineInjectorLegendaryPlus from '#/images/implants/AdvancedTyrosineInjectorLegendaryPlus.webp?w=300&h=300&imagetools';
 import AdvancedWeirdTankyPlatingLegendaryPlus from '#/images/implants/AdvancedWeirdTankyPlatingLegendaryPlus.webp?w=300&h=300&imagetools';
 import Legendary_Zhuo_Eight_Star from '#/images/weapons/Legendary_Zhuo_Eight_Star.webp?w=300&h=150&imagetools';
-import Preset_Achilles_Collectible from '#/images/weapons/Preset_Achilles_Collectible.webp?w=300&h=150&imagetools';
-import Preset_Ajax_Amazon from '#/images/weapons/Preset_Ajax_Amazon.webp?w=300&h=150&imagetools';
-import Preset_Baseball_Bat_Malina from '#/images/weapons/Preset_Baseball_Bat_Malina.webp?w=300&h=150&imagetools';
-import Preset_Baton_Murphy from '#/images/weapons/Preset_Baton_Murphy.webp?w=300&h=150&imagetools';
 import Preset_Carnage_Edgerunners from '#/images/weapons/Preset_Carnage_Edgerunners.webp?w=300&h=150&imagetools';
-import Preset_Crusher_Amazon from '#/images/weapons/Preset_Crusher_Amazon.webp?w=300&h=150&imagetools';
 import Preset_Dian_Yinglong from '#/images/weapons/Preset_Dian_Yinglong.webp?w=300&h=150&imagetools';
 import Preset_Dildo_Stout from '#/images/weapons/Preset_Dildo_Stout.webp?w=300&h=150&imagetools';
 import Preset_Fanged_Axe_Default from '#/images/weapons/Preset_Fanged_Axe_Default.webp?w=300&h=150&imagetools';
-import Preset_Grad_AirDrop from '#/images/weapons/Preset_Grad_AirDrop.webp?w=300&h=150&imagetools';
 import Preset_Katana_Cocktail from '#/images/weapons/Preset_Katana_Cocktail.webp?w=300&h=150&imagetools';
 import Preset_Katana_Saburo from '#/images/weapons/Preset_Katana_Saburo.webp?w=300&h=150&imagetools';
-import Preset_Kenshin_Spy from '#/images/weapons/Preset_Kenshin_Spy.webp?w=300&h=150&imagetools';
 import Preset_Lexington_Toygun from '#/images/weapons/Preset_Lexington_Toygun.webp?w=300&h=150&imagetools';
 import Preset_Neurotoxin_Knife_Iconic from '#/images/weapons/Preset_Neurotoxin_Knife_Iconic.webp?w=300&h=150&imagetools';
 import Preset_Overture_Cassidy from '#/images/weapons/Preset_Overture_Cassidy.webp?w=300&h=150&imagetools';
-import Preset_Pozhar_AirDrop from '#/images/weapons/Preset_Pozhar_AirDrop.webp?w=300&h=150&imagetools';
-import Preset_Sword_Witcher from '#/images/weapons/Preset_Sword_Witcher.webp?w=300&h=150&imagetools';
-import Preset_Umbra_Bebe from '#/images/weapons/Preset_Umbra_Bebe.webp?w=300&h=150&imagetools';
-import Preset_VB_Axe from '#/images/weapons/Preset_VB_Axe.webp?w=300&h=150&imagetools';
 import w_melee_boss_hammer from '#/images/weapons/w_melee_boss_hammer.webp?w=300&h=150&imagetools';
 
 import { withDisabledDuringMatch } from '@/hocs/with-disabled-during-match';
@@ -165,34 +154,9 @@ const DATA: Record<ItemCategory, Item[]> = {
       image: Preset_Katana_Saburo,
     },
     {
-      key: 'Preset_Achilles_Collectible',
-      name: 'Achilles x-MOD2',
-      image: Preset_Achilles_Collectible,
-    },
-    {
-      key: 'Preset_VB_Axe',
-      name: 'Agaou',
-      image: Preset_VB_Axe,
-    },
-    {
-      key: 'Preset_Pozhar_AirDrop',
-      name: 'Alabai',
-      image: Preset_Pozhar_AirDrop,
-    },
-    {
-      key: 'Preset_Kenshin_Spy',
-      name: 'Ambition',
-      image: Preset_Kenshin_Spy,
-    },
-    {
       key: 'Preset_Overture_Cassidy',
       name: 'Amnesty',
       image: Preset_Overture_Cassidy,
-    },
-    {
-      key: 'Preset_Crusher_Amazon',
-      name: 'Amstaff',
-      image: Preset_Crusher_Amazon,
     },
     {
       key: 'Legendary_Zhuo_Eight_Star',
@@ -200,24 +164,9 @@ const DATA: Record<ItemCategory, Item[]> = {
       image: Legendary_Zhuo_Eight_Star,
     },
     {
-      key: 'Preset_Baseball_Bat_Malina',
-      name: 'Baby Boomer',
-      image: Preset_Baseball_Bat_Malina,
-    },
-    {
       key: 'Preset_Neurotoxin_Knife_Iconic',
       name: 'Blue Fang',
       image: Preset_Neurotoxin_Knife_Iconic,
-    },
-    {
-      key: 'Preset_Grad_AirDrop',
-      name: 'Borzaya',
-      image: Preset_Grad_AirDrop,
-    },
-    {
-      key: 'Preset_Umbra_Bebe',
-      name: 'Carmen',
-      image: Preset_Umbra_Bebe,
     },
     {
       key: 'Preset_Katana_Cocktail',
@@ -230,16 +179,6 @@ const DATA: Record<ItemCategory, Item[]> = {
       image: Preset_Carnage_Edgerunners,
     },
     {
-      key: 'Preset_Sword_Witcher',
-      name: 'Gwynbleidd',
-      image: Preset_Sword_Witcher,
-    },
-    {
-      key: 'Preset_Baton_Murphy',
-      name: "Murphy's Law",
-      image: Preset_Baton_Murphy,
-    },
-    {
       key: 'Preset_Dian_Yinglong',
       name: 'Yinglong',
       image: Preset_Dian_Yinglong,
@@ -248,11 +187,6 @@ const DATA: Record<ItemCategory, Item[]> = {
       key: 'w_melee_boss_hammer',
       name: "Sasquatch's Hammer",
       image: w_melee_boss_hammer,
-    },
-    {
-      key: 'Preset_Ajax_Amazon',
-      name: 'Pit Bull',
-      image: Preset_Ajax_Amazon,
     },
     {
       key: 'Preset_Dildo_Stout',
