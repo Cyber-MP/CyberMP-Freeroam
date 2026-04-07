@@ -1,5 +1,12 @@
 import { cva } from 'class-variance-authority';
-import { type ChangeEvent, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  type ChangeEvent,
+  Fragment,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { type Snapshot, useSnapshot } from 'valtio';
 import {
@@ -321,7 +328,8 @@ const ChatInput = () => {
   );
 };
 
-const INACTIVE_TIME = 10_000;
+// const INACTIVE_TIME = 10_000;
+const INACTIVE_TIME = 3_000;
 
 const chatContainerVariants = cva(
   'fixed left-0 top-[10vh] outline-none transition-opacity h-[25vh] w-[35vw] max-w-[700px]',
@@ -337,7 +345,7 @@ const chatContainerVariants = cva(
 );
 
 export const Chat = () => {
-  const { visibility } = useSnapshot(chatState);
+  const { visibility, messages } = useSnapshot(chatState);
 
   useEffect(() => {
     if (visibility !== ChatVisibility.INACTIVE) {
@@ -350,7 +358,7 @@ export const Chat = () => {
     );
 
     return () => clearTimeout(t);
-  }, [visibility]);
+  }, [visibility, messages]);
 
   const ref = useHotkeys<HTMLDivElement>(
     'esc',
@@ -373,14 +381,17 @@ export const Chat = () => {
   );
 
   return (
-    <div
-      ref={ref}
-      onClick={() => setChatVisibility(ChatVisibility.ACTIVE)}
-      onBlur={() => setChatVisibility(ChatVisibility.INACTIVE)}
-      className={chatContainerVariants({ visibility })}
-    >
-      <ChatMessages />
-      <ChatInput />
-    </div>
+    <Fragment>
+      <div
+        ref={ref}
+        onClick={() => setChatVisibility(ChatVisibility.ACTIVE)}
+        onBlur={() => setChatVisibility(ChatVisibility.INACTIVE)}
+        className={chatContainerVariants({ visibility })}
+      >
+        <ChatMessages />
+        <ChatInput />
+      </div>
+      {JSON.stringify(visibility)}
+    </Fragment>
   );
 };
