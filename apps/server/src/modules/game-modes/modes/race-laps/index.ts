@@ -20,6 +20,7 @@ import {
 import { BaseGameMode, GameModeName } from '../../game-mode';
 import {
   type RaceLapsCheckpointNode,
+  type RaceLapsFinishedRacer,
   type RaceLapsMap,
   RaceLapsMapName,
   type RaceLapsRacerDTO,
@@ -36,7 +37,7 @@ import {
 export const zCreateRaceLapsOptions = zCreateMatchOptions.extend({
   map: z.enum(RaceLapsMapName),
   vehicleClass: z.enum(['all', ...VEHICLES_DATA.map((o) => o.category)]),
-  laps: z.number().min(1).max(10),
+  laps: z.number().min(0).max(10).meta({ default: 0 }),
   combat: z.boolean().default(false).optional(),
 });
 
@@ -57,14 +58,15 @@ class Racer {
   private trackPath: PathTransform[];
   private match: Match<RaceLaps>;
   private checkpoints: RaceLapsCheckpointNode[];
-  private startPoint!: RaceLapsStartPointNode;
 
   options: z.infer<typeof zJoinRaceLapsOptions>;
   private vehicleData: VehicleData;
+  startPoint!: RaceLapsStartPointNode;
   index: number;
   player: MpPlayer;
   vehicle!: MpVehicle;
   finished = false;
+  finishTimestamp: number | null = null;
   currentCheckpointIndex = 0;
   currentLap = 0;
 
@@ -171,6 +173,7 @@ class Racer {
     if (this.currentCheckpointIndex >= totalCheckpoints - 1) {
       if (this.currentLap >= this.match.options.laps) {
         this.finished = true;
+        this.finishTimestamp = Date.now();
       } else {
         this.currentLap++;
         this.currentCheckpointIndex = 0;
@@ -198,11 +201,12 @@ class Racer {
 
 class RanksTracker {
   private interval?: ReturnType<typeof setInterval>;
-  private readonly UPDATE_RATE = 1000; // 1 second
+  private readonly UPDATE_RATE = 100;
 
   constructor(
     private readonly racers: Map<number, Racer>,
     private readonly checkpoints: RaceLapsCheckpointNode[],
+    private readonly totalLaps: number,
   ) {}
 
   create() {
@@ -215,9 +219,6 @@ class RanksTracker {
     }, this.UPDATE_RATE);
   }
 
-  /**
-   * Stops the loop and cleans up.
-   */
   destroy() {
     if (this.interval) {
       clearInterval(this.interval);
@@ -228,7 +229,6 @@ class RanksTracker {
   private broadcastRankings() {
     const ranks = this.calculateRankings().slice(0, 5);
 
-    // Broadcast to everyone in the match
     for (const playerId of this.racers.keys()) {
       browser.gameModes.raceLaps.updateRanks.trigger(playerId, ranks);
     }
@@ -236,47 +236,54 @@ class RanksTracker {
 
   private calculateRankings(): RaceLapsRankDTO[] {
     const totalCheckpoints = this.checkpoints.length;
+    const totalLaps = this.totalLaps;
 
-    const scores = Array.from(this.racers.values()).map((racer) => {
+    const racersProgress = Array.from(this.racers.values()).map((racer) => {
+      const currentCheckpointPosition =
+        this.checkpoints[racer.currentCheckpointIndex]?.position ??
+        racer.startPoint?.position;
+
+      const nextCheckpointIndex =
+        (racer.currentCheckpointIndex + 1) % totalCheckpoints;
+      const nextCheckpoint = this.checkpoints[nextCheckpointIndex];
+      const nextCheckpointPosition =
+        nextCheckpoint?.position ?? currentCheckpointPosition;
+
       const playerPos = racer.player.position;
 
-      let progress =
-        racer.currentLap * totalCheckpoints + racer.currentCheckpointIndex;
+      const segmentDist = distance3D(
+        currentCheckpointPosition,
+        nextCheckpointPosition,
+      );
+      const playerDist = distance3D(playerPos, nextCheckpointPosition);
+      const segmentFraction = Math.max(
+        0,
+        Math.min(1, 1 - playerDist / segmentDist),
+      );
 
-      if (racer.finished) {
-        progress += 100000;
-      } else {
-        const nextIdx = (racer.currentCheckpointIndex + 1) % totalCheckpoints;
-        const currentCp = this.checkpoints[racer.currentCheckpointIndex];
-        const nextCp = this.checkpoints[nextIdx];
+      const absoluteProgress =
+        racer.currentLap * totalCheckpoints +
+        racer.currentCheckpointIndex +
+        segmentFraction;
 
-        if (currentCp && nextCp) {
-          const distToNext = distance3D(playerPos, nextCp.position);
-          const segmentDist = distance3D(currentCp.position, nextCp.position);
-
-          const segmentProgress =
-            segmentDist > 0
-              ? Math.max(0, Math.min(1, 1 - distToNext / segmentDist))
-              : 0;
-
-          progress += segmentProgress;
-        }
-      }
+      const normalizedProgress =
+        absoluteProgress / (totalLaps * totalCheckpoints);
 
       return {
-        playerId: racer.player.id,
-        playerNick: racer.player.nickname,
-        progress,
+        racer,
+        progress: normalizedProgress + (racer.finished ? 10000 : 0),
       };
     });
 
-    return scores
-      .sort((a, b) => b.progress - a.progress)
-      .map((item, index) => ({
-        playerId: item.playerId,
-        playerNick: item.playerNick,
-        position: index + 1,
-      }));
+    racersProgress.sort((a, b) => b.progress - a.progress);
+
+    return racersProgress.map(({ racer }, i) => ({
+      playerId: racer.player.id,
+      position: i + 1,
+      playerNick: racer.player.nickname,
+      checkpoint: racer.currentCheckpointIndex + 1,
+      lap: racer.currentLap,
+    }));
   }
 }
 
@@ -297,8 +304,12 @@ export class RaceLaps extends BaseGameMode<
 
   private racers = new Map<number, Racer>();
   private released = false;
+  private releaseTimestamp: number | null = 0;
 
   private readonly COUNTDOWN_TIME = ms('5s');
+  private readonly FORCE_FINISH_TIME = ms('5m');
+
+  private finishTimeout: ReturnType<typeof setTimeout> | null = null;
 
   private ranksTracker!: RanksTracker;
 
@@ -327,7 +338,11 @@ export class RaceLaps extends BaseGameMode<
     this.checkpoints = this.map.nodes.filter(
       (node): node is RaceLapsCheckpointNode => node.type === 'checkpoint',
     );
-    this.ranksTracker = new RanksTracker(this.racers, this.checkpoints);
+    this.ranksTracker = new RanksTracker(
+      this.racers,
+      this.checkpoints,
+      this.match.options.laps,
+    );
   }
 
   async start() {
@@ -356,8 +371,7 @@ export class RaceLaps extends BaseGameMode<
 
   release() {
     this.released = true;
-
-    // race started
+    this.releaseTimestamp = Date.now();
   }
 
   processCheckpoint(playerId: number) {
@@ -372,6 +386,11 @@ export class RaceLaps extends BaseGameMode<
     }
 
     racer.processCheckpoint();
+
+    if (racer.finished) {
+      this.onRacerFinish(racer);
+    }
+
     return racer.toDTO();
   }
 
@@ -402,13 +421,68 @@ export class RaceLaps extends BaseGameMode<
   }
 
   end() {
+    if (this.finishTimeout) {
+      clearTimeout(this.finishTimeout);
+    }
+
     this.ranksTracker.destroy();
 
+    const finalResults: RaceLapsFinishedRacer[] = Array.from(
+      this.racers.values(),
+    )
+      .map((racer) => {
+        const isFinished = racer.finished && racer.finishTimestamp !== null;
+        const raceTime = isFinished
+          ? racer.finishTimestamp! - this.releaseTimestamp!
+          : 0;
+
+        return {
+          playerNick: racer.player.nickname,
+          lap: racer.currentLap,
+          checkpoint: racer.currentCheckpointIndex + 1,
+          time: raceTime,
+          finished: racer.finished,
+        };
+      })
+      .sort((a, b) => {
+        if (a.finished && b.finished) return a.time - b.time;
+        if (a.finished) return -1;
+        if (b.finished) return 1;
+
+        if (a.lap !== b.lap) return b.lap - a.lap;
+        return b.checkpoint - a.checkpoint;
+      });
+
     for (const racer of this.racers.values()) {
+      browser.gameModes.raceLaps.results.trigger(racer.player, finalResults);
       racer.reset();
     }
 
     this.racers.clear();
+  }
+
+  private onRacerFinish(racer: Racer) {
+    const activeRacers = [...this.racers.values()].filter((r) => !r.finished);
+
+    if (activeRacers.length === 0) {
+      this.match.end();
+      return;
+    }
+
+    if (this.finishTimeout) {
+      return;
+    }
+
+    this.finishTimeout = setTimeout(() => {
+      this.match.end();
+    }, this.FORCE_FINISH_TIME);
+
+    for (const playerId of this.racers.keys()) {
+      browser.gameModes.raceLaps.forceFinishTimer.trigger(
+        playerId,
+        this.FORCE_FINISH_TIME,
+      );
+    }
   }
 
   onPlayerLeave(playerId: number): void {

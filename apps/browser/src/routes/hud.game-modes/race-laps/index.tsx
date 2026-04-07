@@ -10,6 +10,7 @@ import {
   useTransform,
 } from 'framer-motion';
 import { useEffect, useState } from 'react';
+import { useCountdown } from 'usehooks-ts';
 import { usePlayerId } from '@/hooks/use-player-id';
 import { r } from '@/rpc';
 import {
@@ -18,7 +19,7 @@ import {
   raceLapsContract,
 } from './-contract';
 
-export const Route = createFileRoute('/hud/game-modes/race-laps')({
+export const Route = createFileRoute('/hud/game-modes/race-laps/')({
   component: RouteComponent,
 });
 
@@ -112,7 +113,8 @@ const Ranks = () => {
               <div
                 className={`text-xs flex gap-2 ${isUser ? 'text-black/60' : 'text-muted-foreground'}`}
               >
-                <span>ID: {rank.playerId}</span>
+                <span>Checkpoint: {rank.checkpoint}</span>
+                <span>Lap: {rank.lap}</span>
               </div>
             </div>
 
@@ -289,12 +291,39 @@ const Respawn = () => {
   );
 };
 
+const formatTime = (ms: number) => {
+  const totalSeconds = Math.floor(ms / 1000);
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+
+  const paddedMinutes = String(minutes).padStart(2, '0');
+  const paddedSeconds = String(seconds).padStart(2, '0');
+
+  return `${paddedMinutes}:${paddedSeconds}`;
+};
+
+const ForceFinishTimer = () => {
+  const [finishTime, setFinishTime] = useState<number>();
+  const [count] = useCountdown({
+    countStart: finishTime ?? 0,
+  });
+
+  useImplement(raceLapsContract.forceFinishTimer, (c) => setFinishTime(c.data));
+
+  if (!finishTime) {
+    return null;
+  }
+
+  return <div>FORCE FINISH TIMER - {formatTime(count)}</div>;
+};
+
 function RouteComponent() {
   return (
     <div>
       <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4">
         <Respawn />
         <Info />
+        <ForceFinishTimer />
       </div>
 
       <Ranks />

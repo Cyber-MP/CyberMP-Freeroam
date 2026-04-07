@@ -8,10 +8,15 @@ import { GLoadingScreenService } from '../game/loading-screen.service';
 
 // TODO: when open any ingame menu hide cef
 
+type LoadingRedirect = {
+  path: BrowserInputs['navigate'];
+  once: boolean;
+};
+
 @eager()
 @injectable()
 export class CefService {
-  loadingRedirect: BrowserInputs['navigate'] = '/hud';
+  loadingRedirect: LoadingRedirect = { path: '/hud', once: false };
 
   constructor(
     @inject(GLoadingScreenService)
@@ -20,8 +25,8 @@ export class CefService {
     private keyboard: GKeyboardService,
   ) {}
 
-  setLoadingRedirect(value: BrowserInputs['navigate'] | null) {
-    this.loadingRedirect = value ?? '/hud';
+  setLoadingRedirect(value: BrowserInputs['navigate'] | null, once = false) {
+    this.loadingRedirect = { path: value ?? '/hud', once };
   }
 
   private loadingHandler = async (state: ELoadingScreenState) => {
@@ -35,7 +40,10 @@ export class CefService {
 
     await this.loadingService.waitForLoadingScreenToHide();
 
-    browser.navigate.trigger(this.loadingRedirect ?? '/hud');
+    browser.navigate.trigger(this.loadingRedirect.path ?? '/hud');
+    if (this.loadingRedirect.once) {
+      this.loadingRedirect = { path: '/hud', once: false };
+    }
   };
 
   @postConstruct()
