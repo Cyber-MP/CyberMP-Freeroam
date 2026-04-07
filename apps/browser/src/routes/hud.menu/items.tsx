@@ -56,7 +56,7 @@ import AdvancedBerserkC1MK4PlusPlus from '#/images/implants/AdvancedBerserkC1MK4
 import AdvancedBerserkC2MK4PlusPlus from '#/images/implants/AdvancedBerserkC2MK4PlusPlus.webp?w=300&h=300&imagetools';
 import AdvancedBerserkC3MK5PlusPlus from '#/images/implants/AdvancedBerserkC3MK5PlusPlus.webp?w=300&h=300&imagetools';
 import AdvancedBerserkC4MK5PlusPlus from '#/images/implants/AdvancedBerserkC4MK5PlusPlus.webp?w=300&h=300&imagetools';
-import AdvancedBioConductorsLegendary_Plus from '#/images/implants/AdvancedBioConductorsLegendary_Plus.webp?w=300&h=300&imagetools';
+import AdvancedBioConductorsLegendaryPlus from '#/images/implants/AdvancedBioConductorsLegendaryPlus.webp?w=300&h=300&imagetools';
 import AdvancedBiomonitorLegendaryPlusPlus from '#/images/implants/AdvancedBiomonitorLegendaryPlusPlus.webp?w=300&h=300&imagetools';
 import AdvancedBloodDepleterLegendaryPlusPlus from '#/images/implants/AdvancedBloodDepleterLegendaryPlusPlus.webp?w=300&h=300&imagetools';
 import AdvancedBloodPumpLegendaryPlusPlus from '#/images/implants/AdvancedBloodPumpLegendaryPlusPlus.webp?w=300&h=300&imagetools';
@@ -319,9 +319,9 @@ const DATA: Record<ItemCategory, Item[]> = {
       image: AdvancedCamilloRamManagerLegendaryPlusPlus,
     },
     {
-      key: 'AdvancedBioConductorsLegendary_Plus',
+      key: 'AdvancedBioConductorsLegendaryPlus',
       name: 'Bioconductor',
-      image: AdvancedBioConductorsLegendary_Plus,
+      image: AdvancedBioConductorsLegendaryPlus,
     },
     {
       key: 'AdvancedSubdermalCoProcessorLegendaryPlusPlus',

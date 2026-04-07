@@ -28,7 +28,7 @@ export const ITEM_SPAWNER_KEYS = [
   'Preset_Dildo_Stout',
   // implants
   'AdvancedCamilloRamManagerLegendaryPlusPlus',
-  'AdvancedBioConductorsLegendary_Plus',
+  'AdvancedBioConductorsLegendaryPlus',
   'AdvancedSubdermalCoProcessorLegendaryPlusPlus',
   'AdvancedStrongArmsLegendaryPlusPlus',
   'AdvancedMantisBladesLegendaryPlusPlus',
