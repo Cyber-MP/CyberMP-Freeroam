@@ -40,6 +40,8 @@ export const chatState = proxy<ChatState>({
 });
 
 subscribe(chatState.messages, () => {
+  console.log('new chat message', chatState.messages.at(-1));
+
   if (chatState.visibility === ChatVisibility.HIDDEN) {
     setChatVisibility(ChatVisibility.INACTIVE, false);
   }
