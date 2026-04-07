@@ -16,7 +16,7 @@ export class SpectatingCommands {
   private init() {
     this.chatService.addCommand({
       name: 'spectate',
-      args: z.tuple([z.number().meta({ title: 'player id' })]),
+      args: z.tuple([z.coerce.number().meta({ title: 'player id' })]),
       handler: (playerId) => {
         this.spectatingService.spectate(playerId);
       },
