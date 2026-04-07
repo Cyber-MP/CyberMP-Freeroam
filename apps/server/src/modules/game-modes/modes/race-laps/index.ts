@@ -191,7 +191,7 @@ class Racer {
     });
   }
 
-  reset(results = false) {
+  reset() {
     this.vehicle.destroy();
     this.player.dimension = 0;
 
@@ -262,7 +262,7 @@ class RanksTracker {
       );
 
       const absoluteProgress =
-        (racer.currentLap - 1) * totalCheckpoints +
+        racer.currentLap * totalCheckpoints +
         racer.currentCheckpointIndex +
         segmentFraction;
 
@@ -388,7 +388,7 @@ export class RaceLaps extends BaseGameMode<
     racer.processCheckpoint();
 
     if (racer.finished) {
-      return this.onRacerFinish(racer);
+      this.onRacerFinish(racer);
     }
 
     return racer.toDTO();

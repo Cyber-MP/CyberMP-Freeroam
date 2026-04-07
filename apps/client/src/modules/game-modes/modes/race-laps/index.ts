@@ -100,6 +100,8 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
 
   private initialPosition!: Vector4;
 
+  private countDownInterval: ReturnType<typeof setInterval> | undefined;
+
   private navigation = new TrackPathNavigation();
 
   constructor(
@@ -130,6 +132,10 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
   }
 
   end() {
+    if (this.countDownInterval) {
+      clearInterval(this.countDownInterval);
+    }
+
     this.navigation.destroy();
     this.checkpoint.destroy();
 
@@ -200,12 +206,13 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
         return;
       }
 
+      console.log(nextData);
+
       this.updateRacerData(nextData);
 
-      if (nextData.finished) {
-        this.checkpoint.destroy();
-        this.onFinish();
-      } else {
+      this.checkpoint.destroy();
+
+      if (!nextData.finished) {
         this.createCheckpoint();
       }
     };
@@ -273,7 +280,7 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
   }
 
   startCountdown(startTimestamp: number) {
-    const checkInterval = setInterval(() => {
+    this.countDownInterval = setInterval(() => {
       const currentTime = Date.now();
       const remaining = Math.ceil((startTimestamp - currentTime) / 1000);
 
@@ -281,7 +288,7 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
         browser.gameModes.raceLaps.setCountdownText.trigger('GO!');
 
         this.release();
-        clearInterval(checkInterval);
+        clearInterval(this.countDownInterval);
       } else {
         browser.gameModes.raceLaps.setCountdownText.trigger(String(remaining));
       }
@@ -289,6 +296,8 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
   }
 
   reset() {
+    console.log('RESETING PLAYER RACE');
+
     this.end();
   }
 }

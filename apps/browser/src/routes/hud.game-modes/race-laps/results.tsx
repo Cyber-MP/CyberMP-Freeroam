@@ -14,6 +14,10 @@ function RouteComponent() {
     resultsStore.results = [];
   });
 
+  if (!results.length) {
+    return null;
+  }
+
   return (
     <div>
       Hello "/hud/game-modes/race-laps/results"! {JSON.stringify(results)}

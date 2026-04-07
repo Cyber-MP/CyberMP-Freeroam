@@ -94,7 +94,6 @@ export const killFeedState = proxy(new killFeedStore());
 
 export const killFeedContract = {
   registerKill: procedure.input(zKillListItem).handler((c) => {
-    console.log('INCMOING KILL');
     killFeedState.registerKill(c.data);
   }),
 };
