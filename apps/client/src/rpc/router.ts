@@ -1,3 +1,5 @@
+import { RpcApplyType } from '@cybermp/rpc-client';
+import z from 'zod';
 import { cefContract } from '../modules/cef/cef.controller';
 import { chatContract } from '../modules/chat/chat.controller';
 import { healthContract } from '../modules/game/health/health.controller';
@@ -10,6 +12,8 @@ import { sessionContract } from '../modules/session/session.controller';
 import { spawnContract } from '../modules/spawn/spawn.controller';
 import { timeContract } from '../modules/time/time.controller';
 import { weatherContract } from '../modules/weather/weather.controller';
+import { mp } from '../mp';
+import { r } from './rpc-router';
 
 export const router = {
   game: {
@@ -26,6 +30,12 @@ export const router = {
   cef: cefContract,
   chat: chatContract,
   itemSpawner: itemSpawnerContract,
+  getPlayerId: r.procedure
+    .method(RpcApplyType.REGISTER)
+    .output(z.number())
+    .handler(() => {
+      return mp.getPlayerServerId(1);
+    }),
 };
 
 export type ClientRouter = typeof router;
