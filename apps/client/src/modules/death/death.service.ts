@@ -39,13 +39,9 @@ export class DeathService {
   }
 
   private onDeath() {
-    console.log('ON DEATH 1', this.dead);
-
     if (this.dead) {
       return;
     }
-
-    console.log('ON DEATH 2', this.dead);
 
     const event = new DeathEvent();
 
@@ -53,8 +49,6 @@ export class DeathService {
     if (event.prevented) {
       return;
     }
-
-    console.log('ON DEATH 3', this.dead);
 
     this.dead = true;
     this.statusEffects.add('GameplayRestriction.NoCameraControl');
