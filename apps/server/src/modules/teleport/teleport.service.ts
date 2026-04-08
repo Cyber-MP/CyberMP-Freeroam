@@ -1,6 +1,7 @@
 import { RpcError } from '@cybermp/rpc-server';
 import type { MpPlayer } from '@cybermp/server-types';
 import { inject, injectable } from 'inversify';
+import { mp } from '../../mp';
 import { client } from '../../rpc';
 import { MatchmakingService } from '../matchmaking/matchmaking.service';
 
@@ -12,15 +13,9 @@ export class TeleportService {
 
   public getAvailablePlayers() {
     try {
-      // @ts-expect-error
-      const x = internalMp.getPlayers();
-
-      console.log('AP1', JSON.stringify(x));
-
-      const players = x.filter(
-        // @ts-expect-error
-        (player) => !this.matchmakingService.isOnActiveMatch(player),
-      ) as MpPlayer[];
+      const players = mp.players
+        .toArray()
+        .filter((player) => !this.matchmakingService.isOnActiveMatch(player));
 
       console.log('AP2', JSON.stringify(players));
 
