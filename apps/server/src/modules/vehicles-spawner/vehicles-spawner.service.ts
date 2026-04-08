@@ -69,11 +69,13 @@ export class VehiclesSpawnerService {
     vehicleModel,
     appearance,
     sitInVehicle = false,
+    health = 500,
   }: {
     player: MpPlayer;
     vehicleModel: string;
     appearance: string;
     sitInVehicle?: boolean;
+    health?: number;
   }) {
     if (this.matchmakingService.isOnActiveMatch(player)) {
       return;
@@ -92,7 +94,7 @@ export class VehiclesSpawnerService {
       position: player.position,
       yaw: player.yaw,
       dimension: player.dimension,
-      health: 500,
+      health,
     });
 
     if (this.playersVehiclesMap.has(player.id)) {

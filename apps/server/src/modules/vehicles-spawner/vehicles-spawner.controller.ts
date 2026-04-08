@@ -16,6 +16,7 @@ const zVehicleRaw = z.object({
   model: z.string(),
   appearance: z.string(),
   sitInVehicle: z.boolean().optional(),
+  health: z.number().optional(),
 });
 
 type VehicleRaw = z.infer<typeof zVehicleRaw>;

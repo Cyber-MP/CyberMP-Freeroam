@@ -34,6 +34,7 @@ export class BasicChatCommands {
     server.vehiclesSpawner.spawnVehicle.trigger({
       model: 'v_militech_basilisk_transport',
       appearance: 'militech_basilisk__basic_transport_01',
+      health: 25000,
     });
   }
 
