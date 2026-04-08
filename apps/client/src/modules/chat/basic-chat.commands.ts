@@ -3,7 +3,6 @@ import { inject, injectable, postConstruct } from 'inversify';
 import { mp } from '../../mp';
 import { server } from '../../rpc';
 import { browser } from '../../rpc/browser';
-import { GKeyboardService } from '../game/keyboard.service';
 import { GStatusEffectsService } from '../game/status-effects/status-effects.service';
 import { ChatCommandFlag, ChatService } from './chat.service';
 
@@ -13,7 +12,6 @@ export class BasicChatCommands {
   constructor(
     @inject(ChatService) private chatService: ChatService,
     @inject(GStatusEffectsService) private statusEffects: GStatusEffectsService,
-    @inject(GKeyboardService) private gKeyboardService: GKeyboardService,
   ) {}
 
   private clear() {
@@ -42,10 +40,6 @@ export class BasicChatCommands {
   @postConstruct()
   private init() {
     mp.events.addCommand('basilisk1337', this.spawnBasilisk.bind(this));
-
-    this.gKeyboardService.bindKey(117, () => {
-      this.chatService.sendMessage('Test');
-    });
 
     this.chatService.addCommand({
       name: 'clear',
