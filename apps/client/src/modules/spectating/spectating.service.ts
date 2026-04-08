@@ -1,4 +1,4 @@
-import type { gameCameraComponent } from '@cybermp/client-types/game';
+import type { gameCameraComponent, Vector4 } from '@cybermp/client-types/game';
 import { inject, injectable } from 'inversify';
 import { sleep, throttle } from 'radash';
 import { createVector4 } from '../../lib/vectors';
@@ -17,6 +17,7 @@ export class SpectatingService {
   private spectateInterval: ReturnType<typeof setInterval> | null = null;
   private spectatedPlayerId: number | null = null;
   private cameraComponent: gameCameraComponent | null = null;
+  private initialPosition: Vector4 | null = null;
 
   private readonly FREEZE_FLAGS = [
     'GameplayRestriction.NoMovement',
@@ -63,7 +64,9 @@ export class SpectatingService {
 
     throttleLog('Teleported player to position', {
       ...targetPosition,
-      z: targetPosition.z + Math.abs(currentPos.z - initialPos.z),
+      x: targetPosition.x + 100,
+      y: targetPosition.y + 100,
+      z: targetPosition.z + Math.abs(currentPos.z - initialPos.z) + 100,
     });
 
     const targetPlayerGameId = mp.getPlayerGameIdByNetworkId(
@@ -96,7 +99,7 @@ export class SpectatingService {
     }
 
     this.cameraComponent = candidateComponent as gameCameraComponent;
-    this.cameraComponent.SetLocalPosition({ z: 15, x: 15, y: 15, w: 1 });
+    this.cameraComponent.SetLocalPosition({ z: 4, x: 4, y: 4, w: 1 });
     this.cameraComponent.Activate();
     throttleLog('Camera component found and activated');
   }
@@ -141,6 +144,7 @@ export class SpectatingService {
     // this.playerService.freeze(true);
     this.playerService.invisible(true);
 
+    this.initialPosition = mp.game.GetPlayer().GetWorldPosition();
     this.spectateInterval = mp.setTick(this.spectateTick.bind(this));
   }
 
@@ -154,7 +158,17 @@ export class SpectatingService {
     this.cameraComponent?.Deactivate();
     this.cameraComponent = null;
 
+    for (const flag of this.FREEZE_FLAGS) {
+      this.statusEffects.remove(flag);
+    }
+    this.healthService.god(false);
+
     // this.playerService.freeze(false);
     this.playerService.invisible(false);
+
+    if (this.initialPosition) {
+      this.teleportService.teleport(this.initialPosition);
+      this.initialPosition = null;
+    }
   }
 }
