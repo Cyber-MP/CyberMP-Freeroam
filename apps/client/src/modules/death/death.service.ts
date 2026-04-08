@@ -39,6 +39,8 @@ export class DeathService {
   }
 
   private onDeath() {
+    console.log('ON DEATH');
+
     const event = new DeathEvent();
 
     this.deathObserver.notify(event);
