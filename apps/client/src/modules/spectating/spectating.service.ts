@@ -1,11 +1,13 @@
 import type { gameCameraComponent } from '@cybermp/client-types/game';
 import { inject, injectable } from 'inversify';
-import { throttle } from 'radash';
+import { sleep, throttle } from 'radash';
 import { createVector4 } from '../../lib/vectors';
 import { mp } from '../../mp';
 import { server } from '../../rpc';
 import { GEntityService } from '../game/entity.service';
+import { GHealthService } from '../game/health/health.service';
 import { GPlayerService } from '../game/player.service';
+import { GStatusEffectsService } from '../game/status-effects/status-effects.service';
 import { GTeleportService } from '../game/teleport/teleport.service';
 
 const throttleLog = throttle({ interval: 1000 }, console.log);
@@ -16,10 +18,18 @@ export class SpectatingService {
   private spectatedPlayerId: number | null = null;
   private cameraComponent: gameCameraComponent | null = null;
 
+  private readonly FREEZE_FLAGS = [
+    'GameplayRestriction.NoMovement',
+    'GameplayRestriction.NoCombat',
+    'GameplayRestriction.NoWeapons',
+  ] as const;
+
   constructor(
     @inject(GEntityService) private entityService: GEntityService,
-    @inject(GPlayerService) private playerService: GPlayerService,
+    @inject(GHealthService) private healthService: GHealthService,
+    @inject(GStatusEffectsService) private statusEffects: GStatusEffectsService,
     @inject(GTeleportService) private teleportService: GTeleportService,
+    @inject(GPlayerService) private playerService: GPlayerService,
   ) {}
 
   private async spectateTick() {
@@ -34,8 +44,27 @@ export class SpectatingService {
       return this.unspectate();
     }
 
-    this.teleportService.teleport(targetPosition);
-    throttleLog('Teleported player to position', targetPosition);
+    const localPlayer = mp.game.GetPlayer();
+    const initialPos = localPlayer.GetWorldPosition();
+
+    for (const flag of this.FREEZE_FLAGS) {
+      this.statusEffects.add(flag);
+    }
+    this.healthService.god(true);
+
+    await sleep(100);
+
+    const currentPos = localPlayer.GetWorldPosition();
+
+    this.teleportService.teleport({
+      ...targetPosition,
+      z: targetPosition.z + Math.abs(currentPos.z - initialPos.z),
+    });
+
+    throttleLog('Teleported player to position', {
+      ...targetPosition,
+      z: targetPosition.z + Math.abs(currentPos.z - initialPos.z),
+    });
 
     const targetPlayerGameId = mp.getPlayerGameIdByNetworkId(
       this.spectatedPlayerId,
@@ -67,6 +96,7 @@ export class SpectatingService {
     }
 
     this.cameraComponent = candidateComponent as gameCameraComponent;
+    this.cameraComponent.SetLocalPosition({ z: 15, x: 15, y: 15, w: 1 });
     this.cameraComponent.Activate();
     throttleLog('Camera component found and activated');
   }
@@ -108,15 +138,15 @@ export class SpectatingService {
     this.unspectate();
 
     this.spectatedPlayerId = playerId;
-    this.playerService.freeze(true);
+    // this.playerService.freeze(true);
     this.playerService.invisible(true);
 
-    this.spectateInterval = setInterval(this.spectateTick.bind(this), 100);
+    this.spectateInterval = mp.setTick(this.spectateTick.bind(this));
   }
 
   unspectate() {
     if (this.spectateInterval) {
-      clearInterval(this.spectateInterval);
+      mp.clearTick(this.spectateInterval);
     }
     this.spectateInterval = null;
     this.spectatedPlayerId = null;
@@ -124,7 +154,7 @@ export class SpectatingService {
     this.cameraComponent?.Deactivate();
     this.cameraComponent = null;
 
-    this.playerService.freeze(false);
+    // this.playerService.freeze(false);
     this.playerService.invisible(false);
   }
 }

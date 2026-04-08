@@ -12,7 +12,7 @@ export class GPlayerService {
     'GameplayRestriction.NoMovement',
     'GameplayRestriction.NoCombat',
     'GameplayRestriction.NoWeapons',
-  ];
+  ] as const;
 
   constructor(
     @inject(GHealthService) private readonly healthService: GHealthService,
@@ -25,8 +25,9 @@ export class GPlayerService {
       if (
         !component.IsA('entIVisualComponent') ||
         component.GetName().toLowerCase().includes('light')
-      )
+      ) {
         continue;
+      }
 
       component.Toggle(!value);
     }
