@@ -38,48 +38,15 @@ export const Route = createFileRoute('/hud/menu/world')({
   pendingMinMs: 300,
   loader: async () => {
     await queryClient.ensureQueryData(
-      clientQuery.time.getClientTime.queryOptions({
-        ...(IS_MP_MOCKED
-          ? {
-              queryFn: () =>
-                new Promise((resolve) => {
-                  setTimeout(() => {
-                    resolve(null);
-                  }, 1000);
-                }),
-            }
-          : {}),
-      }),
+      clientQuery.time.getClientTime.queryOptions(),
     );
 
     await queryClient.ensureQueryData(
-      clientQuery.weather.getClientWeather.queryOptions({
-        ...(IS_MP_MOCKED
-          ? {
-              queryFn: () =>
-                new Promise((resolve) => {
-                  setTimeout(() => {
-                    resolve(null);
-                  }, 1000);
-                }),
-            }
-          : {}),
-      }),
+      clientQuery.weather.getClientWeather.queryOptions(),
     );
 
     await queryClient.ensureQueryData(
-      serverQuery.teleport.getAvailablePlayers.queryOptions({
-        ...(IS_MP_MOCKED
-          ? {
-              queryFn: () =>
-                new Promise((resolve) => {
-                  setTimeout(() => {
-                    resolve([]);
-                  }, 1000);
-                }),
-            }
-          : {}),
-      }),
+      serverQuery.teleport.getAvailablePlayers.queryOptions(),
     );
   },
 });
@@ -296,6 +263,8 @@ function PlayerContent() {
 
     teleportMutation.mutate([selected]);
   };
+
+  console.log('IS_MP_MOCKED', IS_MP_MOCKED);
 
   return (
     <div className="flex flex-col gap-2">
