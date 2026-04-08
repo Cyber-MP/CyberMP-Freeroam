@@ -337,7 +337,7 @@ const chatContainerVariants = cva(
 );
 
 export const Chat = () => {
-  const { visibility } = useSnapshot(chatState);
+  const { visibility, messages } = useSnapshot(chatState);
 
   useEffect(() => {
     if (visibility !== ChatVisibility.INACTIVE) {
@@ -350,7 +350,7 @@ export const Chat = () => {
     );
 
     return () => clearTimeout(t);
-  }, [visibility]);
+  }, [visibility, messages]);
 
   const ref = useHotkeys<HTMLDivElement>(
     'esc',
