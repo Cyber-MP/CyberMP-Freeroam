@@ -16,6 +16,8 @@ export class TeleportService {
       .toArray()
       .filter((player) => this.matchmakingService.isOnActiveMatch(player));
 
+    console.log(JSON.stringify(players));
+
     return players.map((player) => ({
       nickname: player.nickname,
       id: player.id,
