@@ -1,5 +1,5 @@
 import { procedure } from '@cybermp/rpc-router/server';
-import { proxy, type Snapshot, subscribe } from 'valtio';
+import { proxy, type Snapshot } from 'valtio';
 import z from 'zod';
 import type { JSONSchema } from 'zod/v4/core';
 import { client, server } from '../rpc';
@@ -39,13 +39,13 @@ export const chatState = proxy<ChatState>({
   visibility: ChatVisibility.HIDDEN,
 });
 
-subscribe(chatState.messages, () => {
-  console.log('new chat message', chatState.messages.at(-1));
+// subscribe(chatState.messages, () => {
+//   console.log('new chat message', chatState.messages.at(-1));
 
-  if (chatState.visibility === ChatVisibility.HIDDEN) {
-    setChatVisibility(ChatVisibility.INACTIVE, false);
-  }
-});
+//   if (chatState.visibility === ChatVisibility.HIDDEN) {
+//     setChatVisibility(ChatVisibility.INACTIVE, false);
+//   }
+// });
 
 const fetchServerCommands = async () => {
   const commands = await server.chat.getCommandsMeta.call();
@@ -108,7 +108,13 @@ export const postChatMessage = (content: string) => {
 };
 
 const addChatMessage = (message: ChatMessage) => {
+  console.log('new chat message', chatState.messages.at(-1));
+
   chatState.messages = [...chatState.messages, message];
+
+  if (chatState.visibility === ChatVisibility.HIDDEN) {
+    setChatVisibility(ChatVisibility.INACTIVE, false);
+  }
 };
 
 export const clearChat = () => {
