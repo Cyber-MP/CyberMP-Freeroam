@@ -2,6 +2,7 @@ import { cva } from 'class-variance-authority';
 import { type ChangeEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { type Snapshot, useSnapshot } from 'valtio';
+import { cn } from '@/lib/utils';
 import {
   type ChatCommand,
   ChatVisibility,
@@ -14,7 +15,7 @@ import {
 } from '@/store/chat';
 
 const ChatMessages = () => {
-  const { messages } = useSnapshot(chatState);
+  const { messages, visibility } = useSnapshot(chatState);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -28,7 +29,10 @@ const ChatMessages = () => {
   return (
     <div
       ref={messagesContainerRef}
-      className="w-full outline-none border-none h-full px-2 pb-2 overflow-y-auto overflow-x-hidden gap-1 flex flex-col"
+      className={cn(
+        'w-full outline-none border-none h-full px-2 pb-2 overflow-y-auto overflow-x-hidden gap-1 flex flex-col',
+        visibility === ChatVisibility.INACTIVE && 'no-scrollbar',
+      )}
     >
       {messages.map((message) => (
         <div
