@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Select,
@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { withDisabledDuringMatch } from '@/hocs/with-disabled-during-match';
-import { IS_MP_MOCKED } from '@/mp';
+import { usePlayerId } from '@/hooks/use-player-id';
 import { type ClientInputs, client, clientQuery, serverQuery } from '@/rpc';
 import { queryClient } from '@/tanstack-query';
 import akulov_penthouse from '../../assets/images/locations/akulov_penthouse.webp?w=300&h=225&imagetools';
@@ -28,7 +28,6 @@ import konpecki_tower from '../../assets/images/locations/konpecki_tower.webp?w=
 import konpeki_tower_penthouse from '../../assets/images/locations/konpeki_tower_penthouse.webp?w=300&h=225&imagetools';
 import nomad_v from '../../assets/images/locations/nomad_v.webp?w=300&h=225&imagetools';
 import peralezes_apt from '../../assets/images/locations/peralezes_apt.webp?w=300&h=225&imagetools';
-
 import v_house from '../../assets/images/locations/v_house.webp?w=300&h=225&imagetools';
 
 export const Route = createFileRoute('/hud/menu/world')({
@@ -248,9 +247,19 @@ function WeatherContent() {
 function PlayerContent() {
   const [selected, setSelected] = useState<number>();
 
-  const { data: availablePlayers } = useQuery(
+  const playerId = usePlayerId();
+
+  const { data: availablePlayersRaw } = useQuery(
     serverQuery.teleport.getAvailablePlayers.queryOptions(),
   );
+
+  const availablePlayers = useMemo(() => {
+    if (!availablePlayersRaw || !playerId) {
+      return [];
+    }
+
+    return availablePlayersRaw.filter((player) => player.id === playerId);
+  }, [availablePlayersRaw, playerId]);
 
   const teleportMutation = useMutation(
     serverQuery.teleport.teleportToPlayer.triggerMutationOptions(),
@@ -263,8 +272,6 @@ function PlayerContent() {
 
     teleportMutation.mutate([selected]);
   };
-
-  console.log('IS_MP_MOCKED', IS_MP_MOCKED);
 
   return (
     <div className="flex flex-col gap-2">

@@ -12,22 +12,14 @@ export class TeleportService {
   ) {}
 
   public getAvailablePlayers() {
-    try {
-      const players = mp.players
-        .toArray()
-        .filter((player) => !this.matchmakingService.isOnActiveMatch(player));
+    const players = mp.players
+      .toArray()
+      .filter((player) => !this.matchmakingService.isOnActiveMatch(player));
 
-      console.log('AP2', JSON.stringify(players));
-
-      return players.map((player) => ({
-        nickname: player.nickname,
-        id: player.id,
-      }));
-    } catch (err) {
-      console.log('available players error', err);
-
-      return [];
-    }
+    return players.map((player) => ({
+      nickname: player.nickname,
+      id: player.id,
+    }));
   }
 
   public teleportToPlayer(playerFrom: MpPlayer, playerTo: MpPlayer) {
