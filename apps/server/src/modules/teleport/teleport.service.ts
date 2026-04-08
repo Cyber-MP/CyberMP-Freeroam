@@ -17,9 +17,9 @@ export class TeleportService {
 
       console.log('AP1', JSON.stringify(x));
 
-      // @ts-expect-error
-      const players = x.filter((player) =>
-        this.matchmakingService.isOnActiveMatch(player),
+      const players = x.filter(
+        // @ts-expect-error
+        (player) => !this.matchmakingService.isOnActiveMatch(player),
       ) as MpPlayer[];
 
       console.log('AP2', JSON.stringify(players));
