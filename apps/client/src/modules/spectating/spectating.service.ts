@@ -29,7 +29,7 @@ export class SpectatingService {
       return this.unspectate();
     }
 
-    this.teleportService.teleport(targetPosition);
+    await this.teleportService.teleportAsync(targetPosition);
 
     const targetPlayerGameId = mp.getPlayerGameIdByNetworkId(
       this.spectatedPlayerId,
@@ -44,6 +44,7 @@ export class SpectatingService {
     }
 
     if (this.cameraComponent) {
+      this.cameraComponent.Activate();
       return;
     }
 

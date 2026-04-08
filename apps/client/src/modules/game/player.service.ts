@@ -45,9 +45,14 @@ export class GPlayerService {
 
     await sleep(100);
 
+    const curPos = player.GetWorldPosition();
+
     mp.game.ScriptGameInstance.GetTeleportationFacility().Teleport(
       player,
-      { ...pos, z: pos.z + Math.abs(player.GetWorldPosition().z - pos.z) },
+      {
+        ...curPos,
+        z: pos.z + Math.abs(player.GetWorldPosition().z - pos.z),
+      },
       mp.game.Quaternion.ToEulerAngles(player.GetWorldOrientation()),
     );
   }
