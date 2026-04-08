@@ -12,6 +12,8 @@ export class TeleportService {
   ) {}
 
   public getAvailablePlayers() {
+    console.log(JSON.stringify(mp.players.toArray()));
+
     const players = mp.players
       .toArray()
       .filter((player) => this.matchmakingService.isOnActiveMatch(player));
