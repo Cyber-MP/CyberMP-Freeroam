@@ -63,7 +63,7 @@ function RouteComponent() {
   return (
     <div className="fixed inset-0 flex flex-col items-center justify-center bg-[#00000060]  text-white font-serif p-4">
       {/* Background Overlay */}
-      <div className="absolute inset-0 z-[-1] backdrop-grayscale bg-[#00000040]" />
+      <div className="absolute inset-0 z-[-1] bg-[#00000040]" />
 
       {/* Death Message */}
       <div className="text-center mb-12 animate-in fade-in zoom-in duration-1000">
