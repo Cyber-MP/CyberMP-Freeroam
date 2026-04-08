@@ -39,7 +39,7 @@ export class DeathService {
   }
 
   private onDeath() {
-    console.log('ON DEATH');
+    console.log('ON DEATH', console.log(this.dead));
 
     const event = new DeathEvent();
 
