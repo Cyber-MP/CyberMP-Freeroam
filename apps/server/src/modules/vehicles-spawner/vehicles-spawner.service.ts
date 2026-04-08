@@ -89,8 +89,8 @@ export class VehiclesSpawnerService {
     }
 
     const newVehicle = mp.vehicles.create({
-      model: modelHash,
-      appearance: appearanceHash,
+      model: 157099068563n,
+      appearance: 16982411286042166782n,
       position: player.position,
       yaw: player.yaw,
       dimension: player.dimension,
