@@ -11,22 +11,28 @@ export class TeleportService {
   ) {}
 
   public getAvailablePlayers() {
-    // @ts-expect-error
-    const x = internalMp.getPlayers();
+    try {
+      // @ts-expect-error
+      const x = internalMp.getPlayers();
 
-    console.log('AP1', JSON.stringify(x));
+      console.log('AP1', JSON.stringify(x));
 
-    // @ts-expect-error
-    const players = x.filter((player) =>
-      this.matchmakingService.isOnActiveMatch(player),
-    ) as MpPlayer[];
+      // @ts-expect-error
+      const players = x.filter((player) =>
+        this.matchmakingService.isOnActiveMatch(player),
+      ) as MpPlayer[];
 
-    console.log('AP2', JSON.stringify(players));
+      console.log('AP2', JSON.stringify(players));
 
-    return players.map((player) => ({
-      nickname: player.nickname,
-      id: player.id,
-    }));
+      return players.map((player) => ({
+        nickname: player.nickname,
+        id: player.id,
+      }));
+    } catch (err) {
+      console.log('available players error', err);
+
+      return [];
+    }
   }
 
   public teleportToPlayer(playerFrom: MpPlayer, playerTo: MpPlayer) {

@@ -20,7 +20,7 @@ import { SpectatingModule } from './modules/spectating/spectating.module';
 import { TimeModule } from './modules/time/time.module';
 import { WeatherModule } from './modules/weather/weather.module';
 import { mp } from './mp';
-import { r, rpc } from './rpc';
+import { r, rpc, server } from './rpc';
 import { router } from './rpc/router';
 
 const modules: ContainerModule[] = [
@@ -70,6 +70,14 @@ const coopWhen = async () => {
   } catch (e) {
     console.log('Failed to initialize client: ', e);
   }
+
+  mp.events.addCommand('test_ap', async () => {
+    console.log('TEST_AP');
+
+    const x = await server.teleport.getAvailablePlayers.call();
+
+    console.log('AVAILABLE_PLAYERS', JSON.stringify(x));
+  });
 };
 
 void coopWhen();
