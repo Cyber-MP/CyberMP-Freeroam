@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useFocus } from '@/hooks/use-focus';
 import { client } from '@/rpc';
@@ -55,6 +55,10 @@ function RouteComponent() {
     client.spawn.spawnOnLocation.trigger();
     navigate({ to: '/hud' });
   };
+
+  const [randomNumber] = useState(Math.random());
+
+  console.log("RERENDER '/death'", randomNumber);
 
   return (
     <div className="fixed inset-0 flex flex-col items-center justify-center bg-[#00000060]  text-white font-serif p-4">
