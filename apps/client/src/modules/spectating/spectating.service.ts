@@ -61,19 +61,21 @@ export class SpectatingService {
 
     const currentPos = localPlayer.GetWorldPosition();
 
-    if (!this.loadingScreenService.isState(ELoadingScreenState.Hidden)) {
+    if (
+      this.loadingScreenService.getCurrentState() !== ELoadingScreenState.Hidden
+    ) {
       this.teleportService.teleport({
         ...targetPosition,
-        x: targetPosition.x + 100,
-        y: targetPosition.y + 100,
+        x: targetPosition.x,
+        y: targetPosition.y,
         z: targetPosition.z + Math.abs(currentPos.z - initialPos.z) + 100,
       });
     }
 
     throttleLog('Teleported player to position', {
       ...targetPosition,
-      x: targetPosition.x + 100,
-      y: targetPosition.y + 100,
+      x: targetPosition.x,
+      y: targetPosition.y,
       z: targetPosition.z + Math.abs(currentPos.z - initialPos.z) + 100,
     });
 
@@ -107,7 +109,7 @@ export class SpectatingService {
     }
 
     this.cameraComponent = candidateComponent as gameCameraComponent;
-    this.cameraComponent.SetLocalPosition({ z: 4, x: 4, y: 4, w: 1 });
+    this.cameraComponent.SetLocalPosition({ z: 2, x: 2, y: 0, w: 1 });
     this.cameraComponent.Activate();
     throttleLog('Camera component found and activated');
   }
