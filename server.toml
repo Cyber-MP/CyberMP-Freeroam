@@ -9,6 +9,8 @@ disable_VoIP_server = false
 
 resources = ["hotreload", "freeroam", "noclip"]
 
+ep2_dlc_enabled = false
+
 [core]
 nametags = true
 disable_switch_seats = true
