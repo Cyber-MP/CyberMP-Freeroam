@@ -1,3 +1,5 @@
+console.log('Global mp', window.mp);
+
 // biome-ignore lint/style/noRestrictedGlobals: injecting global mock mp
 if (typeof mp === 'undefined') {
   console.log('Mocking mp since mp is undefined', window.mp);
