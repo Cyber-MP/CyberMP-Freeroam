@@ -258,7 +258,7 @@ function PlayerContent() {
       return [];
     }
 
-    return availablePlayersRaw.filter((player) => player.id === playerId);
+    return availablePlayersRaw.filter((player) => player.id !== playerId);
   }, [availablePlayersRaw, playerId]);
 
   const teleportMutation = useMutation(
