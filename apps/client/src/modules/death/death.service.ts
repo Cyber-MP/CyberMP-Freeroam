@@ -30,7 +30,7 @@ export class DeathService {
 
   private onGameLoaded() {
     setInterval(() => {
-      if (this.healthService.get() <= 0) {
+      if (this.healthService.get() <= 0 && !this.dead) {
         this.onDeath();
       } else if (this.dead) {
         this.onRevive();
