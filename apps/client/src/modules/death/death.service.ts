@@ -30,7 +30,7 @@ export class DeathService {
 
   private onGameLoaded() {
     setInterval(() => {
-      if (this.healthService.get() <= 0 && !this.dead) {
+      if (this.healthService.get() <= 0) {
         this.onDeath();
       } else if (this.dead) {
         this.onRevive();
@@ -39,7 +39,13 @@ export class DeathService {
   }
 
   private onDeath() {
-    console.log('ON DEATH', console.log(this.dead));
+    console.log('ON DEATH 1', this.dead);
+
+    if (this.dead) {
+      return;
+    }
+
+    console.log('ON DEATH 2', this.dead);
 
     const event = new DeathEvent();
 
@@ -47,6 +53,8 @@ export class DeathService {
     if (event.prevented) {
       return;
     }
+
+    console.log('ON DEATH 3', this.dead);
 
     this.dead = true;
     this.statusEffects.add('GameplayRestriction.NoCameraControl');
