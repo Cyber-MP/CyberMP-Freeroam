@@ -1,3 +1,4 @@
+import { ELoadingScreenState } from '@cybermp/client-types/enums';
 import type { gameCameraComponent, Vector4 } from '@cybermp/client-types/game';
 import { inject, injectable } from 'inversify';
 import { sleep, throttle } from 'radash';
@@ -6,6 +7,7 @@ import { mp } from '../../mp';
 import { server } from '../../rpc';
 import { GEntityService } from '../game/entity.service';
 import { GHealthService } from '../game/health/health.service';
+import { GLoadingScreenService } from '../game/loading-screen.service';
 import { GPlayerService } from '../game/player.service';
 import { GStatusEffectsService } from '../game/status-effects/status-effects.service';
 import { GTeleportService } from '../game/teleport/teleport.service';
@@ -31,6 +33,8 @@ export class SpectatingService {
     @inject(GStatusEffectsService) private statusEffects: GStatusEffectsService,
     @inject(GTeleportService) private teleportService: GTeleportService,
     @inject(GPlayerService) private playerService: GPlayerService,
+    @inject(GLoadingScreenService)
+    private loadingScreenService: GLoadingScreenService,
   ) {}
 
   private async spectateTick() {
@@ -57,10 +61,14 @@ export class SpectatingService {
 
     const currentPos = localPlayer.GetWorldPosition();
 
-    this.teleportService.teleport({
-      ...targetPosition,
-      z: targetPosition.z + Math.abs(currentPos.z - initialPos.z),
-    });
+    if (!this.loadingScreenService.isState(ELoadingScreenState.Hidden)) {
+      this.teleportService.teleport({
+        ...targetPosition,
+        x: targetPosition.x + 100,
+        y: targetPosition.y + 100,
+        z: targetPosition.z + Math.abs(currentPos.z - initialPos.z) + 100,
+      });
+    }
 
     throttleLog('Teleported player to position', {
       ...targetPosition,
