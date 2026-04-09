@@ -1,7 +1,4 @@
-import {
-  gamedataProficiencyType,
-  telemetryLevelGainReason,
-} from '@cybermp/client-types/enums';
+import { gamedataProficiencyType } from '@cybermp/client-types/enums';
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
 import { mp } from '../../mp';
@@ -55,22 +52,17 @@ export class BasicChatCommands {
 
       console.log('LEVELUP: Creating AddExperience request...');
       const addExpRequest = new mp.game.AddExperience();
-      
-      addExpRequest.Set(
-        player,
-        50000,
-        gamedataProficiencyType.Level,
-        false,
-      );
+
+      addExpRequest.Set(player, 120000, gamedataProficiencyType.Level, false);
 
       console.log('LEVELUP: Queueing request via ScriptGameInstance...');
       const queued = mp.game.ScriptGameInstance.QueueScriptableSystemRequest(
         'PlayerDevelopmentSystem',
         addExpRequest,
       );
-      
+
       console.log('LEVELUP: Queued result:', queued);
-      
+
       if (queued) {
         console.log('LEVELUP: Success!');
       } else {
@@ -78,6 +70,51 @@ export class BasicChatCommands {
       }
     } catch (err) {
       console.log('LEVELUP ERROR', err);
+    }
+  }
+
+  private levelUpSkills() {
+    try {
+      console.log('SKILLS: Getting player object...');
+      const player = mp.game.GetPlayerObject();
+
+      if (!player) {
+        console.log('SKILLS ERROR: Player is null');
+        return;
+      }
+
+      // Список всех навыков для прокачки
+      const skills = [
+        { name: 'Headhunter', type: gamedataProficiencyType.ColdBlood },
+        { name: 'Netrunner', type: gamedataProficiencyType.Hacking },
+        { name: 'Shinobi', type: gamedataProficiencyType.Stealth },
+        { name: 'Solo', type: gamedataProficiencyType.Assault },
+        { name: 'Engineer', type: gamedataProficiencyType.Engineering },
+      ];
+
+      console.log('SKILLS: Leveling up all skills...');
+
+      for (const skill of skills) {
+        console.log(`SKILLS: Leveling up ${skill.name}...`);
+
+        const addExpRequest = new mp.game.AddExperience();
+        addExpRequest.Set(player, 50000, skill.type, false);
+
+        const queued = mp.game.ScriptGameInstance.QueueScriptableSystemRequest(
+          'PlayerDevelopmentSystem',
+          addExpRequest,
+        );
+
+        if (queued) {
+          console.log(`SKILLS: ${skill.name} - Success!`);
+        } else {
+          console.log(`SKILLS: ${skill.name} - Failed to queue request`);
+        }
+      }
+
+      console.log('SKILLS: All skills level up complete!');
+    } catch (err) {
+      console.log('SKILLS ERROR', err);
     }
   }
 
@@ -108,6 +145,12 @@ export class BasicChatCommands {
       name: 'levelup',
       description: 'Levels up...',
       handler: this.levelUp.bind(this),
+    });
+
+    this.chatService.addCommand({
+      name: 'levelupskills',
+      description: 'Levels up all skills',
+      handler: this.levelUpSkills.bind(this),
     });
   }
 }
