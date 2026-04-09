@@ -43,17 +43,21 @@ export class BasicChatCommands {
   }
 
   private levelUp() {
-    // const player = mp.game.GetPlayerObject();
+    try {
+      // const player = mp.game.GetPlayerObject();
 
-    const x =
-      new mp.game.PlayerDevelopmentDataManager().GetPlayerDevelopmentData();
+      const x =
+        new mp.game.PlayerDevelopmentDataManager().GetPlayerDevelopmentData();
 
-    x.AddExperience(
-      50000,
-      gamedataProficiencyType.Level,
-      telemetryLevelGainReason.Ignore,
-      false,
-    );
+      x.AddExperience(
+        50000,
+        gamedataProficiencyType.Level,
+        telemetryLevelGainReason.Ignore,
+        false,
+      );
+    } catch (err) {
+      console.log('LEVELUP ERROR', err);
+    }
   }
 
   @postConstruct()
