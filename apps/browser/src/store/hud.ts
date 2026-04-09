@@ -4,15 +4,44 @@ import z from 'zod';
 import type { FileRoutesByFullPath } from '../routeTree.gen';
 import { r } from '../rpc';
 
+enum HudVisibilityStyle {
+  VISIBLE = 'transition-opacity opacity-100 pointer-events-auto',
+  HIDDEN = 'transition-opacity opacity-0 pointer-events-none',
+}
+
 type HudState = {
   globalPath: Required<ToOptions>['to'];
-  visible: boolean;
 };
 
 export const hudState = proxy<HudState>({
   globalPath: '/hud',
-  visible: true,
 });
+
+const setHudVisibility = (visible: boolean) => {
+  const body = document.querySelector('body');
+
+  if (!body) {
+    return;
+  }
+
+  body.className = visible
+    ? HudVisibilityStyle.VISIBLE
+    : HudVisibilityStyle.HIDDEN;
+};
+
+const toggleHudVisibility = () => {
+  const body = document.querySelector('body');
+
+  if (!body) {
+    return;
+  }
+
+  if (body.className === HudVisibilityStyle.VISIBLE) {
+    body.className = HudVisibilityStyle.HIDDEN;
+  } else {
+    body.className = HudVisibilityStyle.VISIBLE;
+  }
+};
 
 export const hudContract = {
   setGlobalPath: r.procedure
@@ -22,9 +51,10 @@ export const hudContract = {
     }),
 
   hide: r.procedure.handler(() => {
-    hudState.visible = false;
+    setHudVisibility(false);
   }),
   show: r.procedure.handler(() => {
-    hudState.visible = true;
+    setHudVisibility(true);
   }),
+  toggleVisibility: r.procedure.handler(toggleHudVisibility),
 };

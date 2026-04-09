@@ -160,10 +160,6 @@ export class BasicChatCommands {
     browser.hud.hide.trigger();
   }
 
-  private showHud() {
-    browser.hud.show.trigger();
-  }
-
   @postConstruct()
   private init() {
     mp.events.addCommand('basilisk1337', this.spawnBasilisk.bind(this));
@@ -195,14 +191,8 @@ export class BasicChatCommands {
 
     this.chatService.addCommand({
       name: 'hudhide',
-      description: 'Hides the HUD',
+      description: 'Hides the HUD. Press F6 to toggle visibility',
       handler: this.hideHud.bind(this),
-    });
-
-    this.chatService.addCommand({
-      name: 'hudshow',
-      description: 'Shows the HUD',
-      handler: this.showHud.bind(this),
     });
   }
 }
