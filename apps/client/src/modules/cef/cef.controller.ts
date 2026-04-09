@@ -1,3 +1,4 @@
+import { EInputAction } from '@cybermp/client-types/enums';
 import { RpcApplyType, type RpcClientContext } from '@cybermp/rpc-client';
 import { contract, type InferRouterInputs } from '@cybermp/rpc-router/server';
 import { eager } from '@freeroam/inversify';
@@ -21,8 +22,10 @@ type ContractInputs = InferRouterInputs<typeof cefContract>;
 export class CefController {
   constructor(@inject(GKeyboardService) private keyboard: GKeyboardService) {}
 
-  private toggleHudVisibility() {
-    browser.hud.toggleVisibility.trigger();
+  private toggleHudVisibility(action: EInputAction) {
+    if (action === EInputAction.IACT_Release) {
+      browser.hud.toggleVisibility.trigger();
+    }
   }
 
   @postConstruct()
