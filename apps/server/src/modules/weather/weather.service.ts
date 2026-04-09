@@ -1,10 +1,8 @@
 import { eager } from '@freeroam/inversify';
-import { inject, injectable } from 'inversify';
+import { inject, injectable, postConstruct } from 'inversify';
 import z from 'zod';
 import { client } from '../../rpc';
 import { LoggerService } from '../logger/logger.service';
-
-// TODO: add weather progression so it would applying randomly over time
 
 export enum EWeatherState {
   SUNNY = '24h_weather_sunny',
@@ -30,6 +28,11 @@ export const zWeatherState = z.enum(EWeatherState);
 @injectable()
 export class WeatherService {
   private weather: EWeatherState = EWeatherState.SUNNY;
+  private frozen: boolean = false;
+  private timeoutId: ReturnType<typeof setTimeout> | null = null;
+
+  private readonly TICK_RATE_RANGE: [number, number] = [1_000, 10_000]; // TEST
+  // private readonly TICK_RATE_RANGE: [number, number] = [60_000, 1200_000]; // minute ... 20 minutes
 
   getWeather() {
     return this.weather;
@@ -51,6 +54,55 @@ export class WeatherService {
     }
 
     this.weather = newWeather.data;
+
+    this.sync();
+  }
+
+  setFrozen(freeze: boolean) {
+    this.frozen = freeze;
+  }
+
+  isFrozen() {
+    return this.frozen === true;
+  }
+
+  private getTickRate() {
+    return (
+      Math.floor(
+        Math.random() * (this.TICK_RATE_RANGE[1] - this.TICK_RATE_RANGE[0] + 1),
+      ) + this.TICK_RATE_RANGE[0]
+    );
+  }
+
+  private startTimeout() {
+    this.timeoutId = setTimeout(() => {
+      if (!this.frozen) {
+        this.tick();
+      }
+
+      this.startTimeout();
+    }, this.getTickRate());
+  }
+
+  @postConstruct()
+  private init() {
+    this.startTimeout();
+  }
+
+  private destroy() {
+    if (this.timeoutId) {
+      clearTimeout(this.timeoutId);
+      this.timeoutId = null;
+    }
+  }
+
+  private tick() {
+    console.log('SERVER WEATHER TICK');
+
+    const weatherValues = Object.values(EWeatherState);
+
+    this.weather =
+      weatherValues[Math.floor(Math.random() * weatherValues.length)];
 
     this.sync();
   }
