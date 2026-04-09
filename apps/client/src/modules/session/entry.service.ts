@@ -7,8 +7,8 @@ import { mp } from '../../mp';
 import { browser } from '../../rpc/browser';
 import { CefService } from '../cef/cef.service';
 import { GCameraService } from '../game/camera.service';
+import { GHealthService } from '../game/health/health.service';
 import { GHudService } from '../game/hud.service';
-import { GKeyboardService } from '../game/keyboard.service';
 import { GLoadingScreenService } from '../game/loading-screen.service';
 import { GPlayerService } from '../game/player.service';
 import { GStatusEffectsService } from '../game/status-effects/status-effects.service';
@@ -40,7 +40,7 @@ export class EntryService {
   constructor(
     @inject(GLoadingScreenService)
     private readonly loadingScreen: GLoadingScreenService,
-    @inject(GKeyboardService) private readonly keyboard: GKeyboardService,
+    @inject(GHealthService) private readonly health: GHealthService,
     @inject(GHudService) private readonly hud: GHudService,
     @inject(GStatusEffectsService)
     private readonly statusEffects: GStatusEffectsService,
@@ -135,5 +135,7 @@ export class EntryService {
         this.statusEffects.remove(effect);
       }
     });
+
+    this.health.god(active);
   }
 }
