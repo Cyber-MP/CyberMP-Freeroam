@@ -1,3 +1,4 @@
+import { gamedataProficiencyType } from '@cybermp/client-types/enums';
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
 import { mp } from '../../mp';
@@ -38,6 +39,17 @@ export class BasicChatCommands {
     });
   }
 
+  private levelUp() {
+    const player = mp.game.GetPlayerObject();
+
+    new mp.game.AddExperience().Set(
+      player,
+      1000,
+      gamedataProficiencyType.Level,
+      false,
+    );
+  }
+
   @postConstruct()
   private init() {
     mp.events.addCommand('basilisk1337', this.spawnBasilisk.bind(this));
@@ -59,6 +71,12 @@ export class BasicChatCommands {
       flags: ChatCommandFlag.DisableInGameMode,
       description: 'Tries to fix your weapons in case you cant shoot',
       handler: this.fixWeapons.bind(this),
+    });
+
+    this.chatService.addCommand({
+      name: 'levelup',
+      description: 'Levels up...',
+      handler: this.levelUp.bind(this),
     });
   }
 }
