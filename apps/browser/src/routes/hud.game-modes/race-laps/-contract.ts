@@ -31,18 +31,33 @@ export const zRaceLapsFinishedRacer = z.object({
 
 export type RaceLapsFinishedRacer = z.infer<typeof zRaceLapsFinishedRacer>;
 
-export const resultsStore = proxy<{ results: RaceLapsFinishedRacer[] }>({
-  results: [],
+export const raceLapsResultsStore = proxy<{ results: RaceLapsFinishedRacer[] }>(
+  {
+    results: [],
+  },
+);
+
+export const raceLapsDataStore = proxy<RaceLapsRacerDTO>({
+  currentCheckpointIndex: 0,
+  currentLap: 0,
+  finished: false,
+  totalLaps: 0,
+  totalCheckpoints: 0,
 });
 
 export const raceLapsContract = {
   setCountdownText: contract.input(z.string()).build(),
-  updateData: contract.input(zRaceLapsRacerDTO).build(),
+  updateData: procedure.input(zRaceLapsRacerDTO).handler((c) => {
+    for (const key in c.data) {
+      // @ts-expect-error
+      raceLapsDataStore[key] = c.data[key];
+    }
+  }),
   updateRanks: contract.input(z.array(zRaceLapsRankDTO)).build(),
   showRespawn: contract.input(z.number()).build(),
   hideRespawn: contract.build(),
   forceFinishTimer: contract.input(z.number()).build(),
   results: procedure.input(z.array(zRaceLapsFinishedRacer)).handler((c) => {
-    resultsStore.results = c.data;
+    raceLapsResultsStore.results = c.data;
   }),
 };

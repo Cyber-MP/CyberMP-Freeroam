@@ -65,14 +65,12 @@ class TrackPathNavigation {
   create(trackPath: RaceLapsTrackPath) {
     this.trackData = trackPath;
 
-    // Spawn every point in the path immediately
     this.trackData.forEach((path, index) => {
       this.spawnEffect(index, path);
     });
   }
 
   destroy() {
-    // Clean up all active instances
     for (const index of this.activeFx.keys()) {
       this.despawnEffect(index);
     }
@@ -206,8 +204,6 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
         return;
       }
 
-      console.log(nextData);
-
       this.updateRacerData(nextData);
 
       this.checkpoint.destroy();
@@ -224,6 +220,20 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
     // TODO: add here spectating logic or smth
   }
 
+  private respawn() {
+    if (this.respawning || this.data.finished) {
+      return;
+    }
+
+    this.respawning = true;
+
+    browser.gameModes.raceLaps.hideRespawn.trigger();
+
+    server.gameModes.raceLaps.respawn.call().finally(() => {
+      this.respawning = false;
+    });
+  }
+
   private mountRespawnKey() {
     browser.hints.add.trigger({
       F: 'Respawn',
@@ -232,19 +242,13 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
     let respawnTimer: ReturnType<typeof setTimeout>;
 
     this.respawnKeyHandler = (action) => {
-      if (this.respawning) {
+      if (this.respawning || this.data.finished) {
         return;
       }
 
       if (action === EInputAction.IACT_Press) {
         respawnTimer = setTimeout(() => {
-          this.respawning = true;
-
-          browser.gameModes.raceLaps.hideRespawn.trigger();
-
-          server.gameModes.raceLaps.respawn.call().finally(() => {
-            this.respawning = false;
-          });
+          this.respawn();
         }, this.RESPAWN_DURATION);
 
         browser.gameModes.raceLaps.showRespawn.trigger(this.RESPAWN_DURATION);

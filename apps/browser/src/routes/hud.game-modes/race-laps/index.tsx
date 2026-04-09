@@ -11,25 +11,28 @@ import {
 } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { useCountdown } from 'usehooks-ts';
+import { proxy, useSnapshot } from 'valtio';
 import { usePlayerId } from '@/hooks/use-player-id';
 import { r } from '@/rpc';
 import {
-  type RaceLapsRacerDTO,
   type RaceLapsRankDTO,
   raceLapsContract,
+  raceLapsDataStore,
 } from './-contract';
 
 export const Route = createFileRoute('/hud/game-modes/race-laps/')({
   component: RouteComponent,
 });
 
-const Countdown = () => {
+const ReleaseCountdown = () => {
   const [state, setState] = useState('');
 
   useEffect(() => {
     let clearTimeoutId: number | null;
 
     const handler = ({ data: val }: RpcBrowserContext<string>) => {
+      forceFinishState.time = null;
+
       setState(val);
 
       if (clearTimeoutId) {
@@ -129,15 +132,7 @@ const Ranks = () => {
 };
 
 const Info = () => {
-  const [data, setData] = useState<RaceLapsRacerDTO>({
-    finished: false,
-    currentCheckpointIndex: 0,
-    currentLap: 0,
-    totalLaps: 0,
-    totalCheckpoints: 0,
-  });
-
-  useImplement(raceLapsContract.updateData, (c) => setData(c.data));
+  const data = useSnapshot(raceLapsDataStore);
 
   return (
     <div className="flex gap-4 font-mono uppercase tracking-tighter select-none">
@@ -302,19 +297,38 @@ const formatTime = (ms: number) => {
   return `${paddedMinutes}:${paddedSeconds}`;
 };
 
+const forceFinishState = proxy<{ time: null | number }>({ time: null });
+
 const ForceFinishTimer = () => {
-  const [finishTime, setFinishTime] = useState<number>();
-  const [count] = useCountdown({
-    countStart: finishTime ?? 0,
+  const { time: finishTime } = useSnapshot(forceFinishState);
+
+  console.log('rendered', finishTime);
+
+  const [count, { startCountdown }] = useCountdown({
+    countStart: finishTime ? finishTime / 1000 : 0,
   });
 
-  useImplement(raceLapsContract.forceFinishTimer, (c) => setFinishTime(c.data));
+  useImplement(raceLapsContract.forceFinishTimer, (c) => {
+    forceFinishState.time = c.data;
+
+    console.log('INCOMING FINISH TIME', c.data);
+  });
+
+  useEffect(() => {
+    if (finishTime) {
+      startCountdown();
+    }
+  }, [finishTime, startCountdown]);
 
   if (!finishTime) {
     return null;
   }
 
-  return <div>FORCE FINISH TIMER - {formatTime(count)}</div>;
+  return (
+    <div>
+      FORCE FINISH TIMER - {formatTime(count)} {count} {finishTime}
+    </div>
+  );
 };
 
 function RouteComponent() {
@@ -327,7 +341,7 @@ function RouteComponent() {
       </div>
 
       <Ranks />
-      <Countdown />
+      <ReleaseCountdown />
     </div>
   );
 }
