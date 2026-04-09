@@ -31,8 +31,7 @@ export class WeatherService {
   private frozen: boolean = false;
   private timeoutId: ReturnType<typeof setTimeout> | null = null;
 
-  private readonly TICK_RATE_RANGE: [number, number] = [1_000, 10_000]; // TEST
-  // private readonly TICK_RATE_RANGE: [number, number] = [60_000, 1200_000]; // minute ... 20 minutes
+  private readonly TICK_RATE_RANGE: [number, number] = [60_000, 1200_000]; // minute ... 20 minutes
 
   getWeather() {
     return this.weather;
@@ -97,8 +96,6 @@ export class WeatherService {
   }
 
   private tick() {
-    console.log('SERVER WEATHER TICK');
-
     const weatherValues = Object.values(EWeatherState);
 
     this.weather =
