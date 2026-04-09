@@ -44,26 +44,42 @@ export class BasicChatCommands {
 
   private levelUp() {
     try {
+      console.log('LEVELUP: Getting player object...');
       const player = mp.game.GetPlayerObject();
+      console.log('LEVELUP: Player object:', player);
 
-      const devSystem = mp.game.PlayerDevelopmentSystem.GetInstance(player);
-
-      if (devSystem) {
-        const devData = mp.game.PlayerDevelopmentSystem.GetData(player);
-
-        if (devData) {
-          devData.AddExperience(
-            50000,
-            gamedataProficiencyType.Level,
-            telemetryLevelGainReason.Ignore,
-            false,
-          );
-        } else {
-          console.log('LEVELUP ERROR: Could not get PlayerDevelopmentData');
-        }
-      } else {
-        console.log('LEVELUP ERROR: Could not get PlayerDevelopmentSystem');
+      if (!player) {
+        console.log('LEVELUP ERROR: Player is null');
+        return;
       }
+
+      console.log('LEVELUP: Getting PlayerDevelopmentSystem...');
+      const devSystem = mp.game.PlayerDevelopmentSystem.GetInstance(player);
+      console.log('LEVELUP: DevSystem:', devSystem);
+
+      if (!devSystem) {
+        console.log('LEVELUP ERROR: Could not get PlayerDevelopmentSystem');
+        return;
+      }
+
+      console.log('LEVELUP: Getting PlayerDevelopmentData...');
+      const devData = mp.game.PlayerDevelopmentSystem.GetData(player);
+      console.log('LEVELUP: DevData:', devData);
+
+      if (!devData) {
+        console.log('LEVELUP ERROR: Could not get PlayerDevelopmentData');
+        return;
+      }
+
+      console.log('LEVELUP: Adding experience...');
+      devData.AddExperience(
+        50000,
+        gamedataProficiencyType.Level,
+        telemetryLevelGainReason.Ignore,
+        false,
+      );
+      
+      console.log('LEVELUP: Success!');
     } catch (err) {
       console.log('LEVELUP ERROR', err);
     }
