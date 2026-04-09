@@ -4,11 +4,6 @@ import z from 'zod';
 import type { FileRoutesByFullPath } from '../routeTree.gen';
 import { r } from '../rpc';
 
-enum HudVisibilityStyle {
-  VISIBLE = 'transition-opacity opacity-100 pointer-events-auto',
-  HIDDEN = 'transition-opacity opacity-0 pointer-events-none',
-}
-
 type HudState = {
   globalPath: Required<ToOptions>['to'];
 };
@@ -18,28 +13,14 @@ export const hudState = proxy<HudState>({
 });
 
 const setHudVisibility = (visible: boolean) => {
-  const body = document.querySelector('body');
-
-  if (!body) {
-    return;
-  }
-
-  body.className = visible
-    ? HudVisibilityStyle.VISIBLE
-    : HudVisibilityStyle.HIDDEN;
+  document.body.dataset.visible = visible ? 'true' : 'false';
 };
 
 const toggleHudVisibility = () => {
-  const body = document.querySelector('body');
-
-  if (!body) {
-    return;
-  }
-
-  if (body.className === HudVisibilityStyle.VISIBLE) {
-    body.className = HudVisibilityStyle.HIDDEN;
+  if (document.body.dataset.visible === 'true') {
+    document.body.dataset.visible = 'hidden';
   } else {
-    body.className = HudVisibilityStyle.VISIBLE;
+    document.body.dataset.visible = 'true';
   }
 };
 

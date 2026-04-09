@@ -154,7 +154,11 @@
     }
 
     body {
-        @apply bg-transparent text-foreground text-base;
+        @apply bg-transparent text-foreground text-base transition-opacity;
+
+        [data-visible="false"] {
+            @apply opacity-0 pointer-events-none;
+        }
     }
 
     ::-webkit-scrollbar {
