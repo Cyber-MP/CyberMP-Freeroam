@@ -1,4 +1,7 @@
-import { gamedataProficiencyType } from '@cybermp/client-types/enums';
+import {
+  gamedataProficiencyType,
+  telemetryLevelGainReason,
+} from '@cybermp/client-types/enums';
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
 import { mp } from '../../mp';
@@ -83,7 +86,6 @@ export class BasicChatCommands {
         return;
       }
 
-      // Список всех навыков для прокачки
       const skills = [
         { name: 'Headhunter', type: gamedataProficiencyType.ColdBlood },
         { name: 'Netrunner', type: gamedataProficiencyType.Hacking },
@@ -97,17 +99,21 @@ export class BasicChatCommands {
       for (const skill of skills) {
         console.log(`SKILLS: Leveling up ${skill.name}...`);
 
-        // Используем questLevelUpProficiency для мгновенного повышения уровня
-        const levelUpRequest = new mp.game.questLevelUpProficiency();
-        levelUpRequest.Set(player, skill.type);
+        const setLevelRequest = new mp.game.SetProficiencyLevel();
+        setLevelRequest.Set(
+          player,
+          20,
+          skill.type,
+          telemetryLevelGainReason.Ignore,
+        );
 
         const queued = mp.game.ScriptGameInstance.QueueScriptableSystemRequest(
           'PlayerDevelopmentSystem',
-          levelUpRequest,
+          setLevelRequest,
         );
 
         if (queued) {
-          console.log(`SKILLS: ${skill.name} - Success!`);
+          console.log(`SKILLS: ${skill.name} - Set to level 20!`);
         } else {
           console.log(`SKILLS: ${skill.name} - Failed to queue request`);
         }
