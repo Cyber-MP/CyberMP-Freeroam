@@ -69,6 +69,7 @@ export const zRaceLapsPathPointNode = zRaceLapsBaseNode.extend({
 export enum RaceLapsMapName {
   TEST = 'test',
   HEYWOOD = 'heywood',
+  PETROCHEM = 'petrochem',
 }
 
 export const zRaceLapsMap = z.object({

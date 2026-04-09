@@ -464,10 +464,10 @@ export class RaceLaps extends BaseGameMode<
   private onRacerFinish(racer: Racer) {
     const activeRacers = [...this.racers.values()].filter((r) => !r.finished);
 
-    if (activeRacers.length === 0) {
-      this.match.end();
-      return;
-    }
+    // if (activeRacers.length === 0) {
+    //   this.match.end();
+    //   return;
+    // }
 
     if (this.finishTimeout) {
       return;
