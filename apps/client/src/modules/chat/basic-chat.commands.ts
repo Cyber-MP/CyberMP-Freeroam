@@ -1,9 +1,15 @@
-import { gamedataProficiencyType } from '@cybermp/client-types/enums';
+import {
+  gamedataDevelopmentPointType,
+  gamedataNewPerkType,
+  gamedataStatType,
+} from '@cybermp/client-types/enums';
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
+import { sleep } from 'radash';
 import { mp } from '../../mp';
 import { server } from '../../rpc';
 import { browser } from '../../rpc/browser';
+import { GMenusService } from '../game/menus.service';
 import { GStatusEffectsService } from '../game/status-effects/status-effects.service';
 import { ChatCommandFlag, ChatService } from './chat.service';
 
@@ -13,6 +19,7 @@ export class BasicChatCommands {
   constructor(
     @inject(ChatService) private chatService: ChatService,
     @inject(GStatusEffectsService) private statusEffects: GStatusEffectsService,
+    @inject(GMenusService) private menusService: GMenusService,
   ) {}
 
   private clear() {
@@ -39,17 +46,114 @@ export class BasicChatCommands {
     });
   }
 
-  private levelUp() {
+  private async levelUp() {
+    const arrData = [
+      'Strength',
+      'Reflexes',
+      'TechnicalAbility',
+      'Cool',
+      'Intelligence',
+    ];
+
     const player = mp.game.GetPlayerObject();
 
-    const addExpRequest = new mp.game.AddExperience();
+    const closeHub = new mp.game.ForceCloseHubMenuEvent();
+    const startHub = new mp.game.StartHubMenuEvent();
+    const userData = new mp.game.PerkUserData();
 
-    addExpRequest.Set(player, 120000, gamedataProficiencyType.Level, false);
+    const globalMenuScenario = this.menusService.globalMenuScenario;
 
-    mp.game.ScriptGameInstance.QueueScriptableSystemRequest(
-      'PlayerDevelopmentSystem',
-      addExpRequest,
+    userData.statType = gamedataStatType.Reflexes;
+
+    startHub.SetStartMenu('new_perks', 'ico_character', userData);
+
+    mp.game.ScriptGameInstance.GetUISystem().QueueEvent(startHub);
+
+    await sleep(50);
+
+    for (let i = 0; i < arrData.length; i++) {
+      const request1 = new mp.game.SetAttribute();
+      request1.Set(player, 20, arrData[i] as any);
+      mp.game.ScriptGameInstance.GetScriptableSystemsContainer()
+        .Get('PlayerDevelopmentSystem')
+        .QueueRequest(request1);
+    }
+
+    const devPointsRequest = new mp.game.questAddDevelopmentPointsRequest();
+
+    devPointsRequest.Set(
+      mp.game.GetPlayerObject(),
+      2000,
+      gamedataDevelopmentPointType.Primary,
     );
+
+    mp.game.ScriptGameInstance.GetScriptableSystemsContainer()
+      .Get('PlayerDevelopmentSystem')
+      .QueueRequest(devPointsRequest);
+
+    await sleep(100);
+
+    if (globalMenuScenario) {
+      for (let k = 0; k < 2; k++) {
+        userData.statType = gamedataStatType.Cool;
+        globalMenuScenario.SwitchMenu('new_perks', userData);
+
+        await sleep(150);
+
+        userData.statType = gamedataStatType.TechnicalAbility;
+        globalMenuScenario.SwitchMenu('new_perks', userData);
+
+        await sleep(150);
+
+        userData.statType = gamedataStatType.Strength;
+        globalMenuScenario.SwitchMenu('new_perks', userData);
+
+        await sleep(150);
+
+        userData.statType = gamedataStatType.Intelligence;
+        globalMenuScenario.SwitchMenu('new_perks', userData);
+
+        await sleep(150);
+
+        userData.statType = gamedataStatType.Espionage;
+        globalMenuScenario.SwitchMenu('new_perks', userData);
+
+        await sleep(150);
+
+        userData.statType = gamedataStatType.Reflexes;
+        globalMenuScenario.SwitchMenu('new_perks', userData);
+
+        await sleep(150);
+
+        for (let j = 0; j < 5; j++) {
+          for (let i = 0; i < gamedataNewPerkType.Count; i++) {
+            const buyPerkRequest = new mp.game.BuyNewPerk();
+            buyPerkRequest.Set(player, i);
+            mp.game.ScriptGameInstance.GetScriptableSystemsContainer()
+              .Get('PlayerDevelopmentSystem')
+              .QueueRequest(buyPerkRequest);
+
+            await sleep(2);
+          }
+        }
+
+        await sleep(100);
+
+        mp.game.ScriptGameInstance.GetUISystem().QueueEvent(closeHub);
+      }
+
+      await sleep(100);
+
+      mp.game.ScriptGameInstance.GetUISystem().QueueEvent(startHub);
+
+      await sleep(100);
+
+      mp.game.ScriptGameInstance.GetUISystem().QueueEvent(closeHub);
+    } else {
+      this.chatService.sendMessage(
+        'Command not applied, try run it one more time!',
+      );
+    }
   }
 
   @postConstruct()

@@ -1,5 +1,6 @@
 import type {
   gameuiInGameMenuGameController,
+  MenuScenario_HubMenu,
   MenuScenario_PauseMenu,
   SettingsMainGameController,
 } from '@cybermp/client-types/game';
@@ -15,6 +16,8 @@ export class GMenusService {
   gameuiInGameMenuGameController: gameuiInGameMenuGameController | null = null;
 
   private SettingsMainGameController: SettingsMainGameController | null = null;
+
+  public globalMenuScenario: MenuScenario_HubMenu | null = null;
 
   @postConstruct()
   private init() {
@@ -45,6 +48,10 @@ export class GMenusService {
 
       mp.game.observe('MenuScenario_PauseMenu', 'OnEnterScenario', (self) => {
         this.MenuScenario_PauseMenu = self;
+      });
+
+      mp.game.observe('MenuScenario_HubMenu', 'OnEnterScenario', (self) => {
+        this.globalMenuScenario = self;
       });
     });
   }
