@@ -1,7 +1,4 @@
-import {
-  gamedataProficiencyType,
-  telemetryLevelGainReason,
-} from '@cybermp/client-types/enums';
+import { gamedataProficiencyType } from '@cybermp/client-types/enums';
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
 import { mp } from '../../mp';
@@ -44,17 +41,13 @@ export class BasicChatCommands {
 
   private levelUp() {
     try {
-      // const player = mp.game.GetPlayerObject();
+      const player = mp.game.GetPlayerObject();
 
-      const x =
-        new mp.game.PlayerDevelopmentDataManager().GetPlayerDevelopmentData();
+      const addExpRequest = new mp.game.AddExperience();
 
-      x.AddExperience(
-        50000,
-        gamedataProficiencyType.Level,
-        telemetryLevelGainReason.Ignore,
-        false,
-      );
+      addExpRequest.Set(player, 50000, gamedataProficiencyType.Level, false);
+
+      mp.game.PreventionSystem.QueueRequest(addExpRequest, 0);
     } catch (err) {
       console.log('LEVELUP ERROR', err);
     }
