@@ -38,7 +38,7 @@ export class GHealthCommands {
     this.chatService.addCommand({
       name: 'killme',
       description: 'You should.. NOW and give somebody else...',
-      flags: ChatCommandFlag.DisableInGameMode,
+      // flags: ChatCommandFlag.DisableInGameMode,
       handler: this.killme.bind(this),
     });
     this.chatService.addCommand({

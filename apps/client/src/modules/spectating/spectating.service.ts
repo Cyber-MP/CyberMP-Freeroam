@@ -58,7 +58,6 @@ export class SpectatingService {
         y: targetPos.y + 35,
       });
 
-      // Handle Camera Logic
       if (!this.cameraComponent) {
         this.setupCamera(this.spectatedPlayerId);
       } else {
@@ -110,7 +109,6 @@ export class SpectatingService {
 
     this.spectatedPlayerId = playerId;
     this.initialPosition = mp.game.GetPlayer().GetWorldPosition();
-    console.log('SETTED INITIAL POSTION AT', this.initialPosition);
 
     this.applySpectatorState(true);
     this.spectateTickId = mp.setTick(() => this.onTick());
@@ -152,7 +150,6 @@ export class SpectatingService {
 
     setTimeout(() => {
       if (this.initialPosition) {
-        console.log('RESTORING INITIAL POSITION', this.initialPosition);
         this.teleport.teleport(this.initialPosition);
         this.initialPosition = null;
       }

@@ -7,7 +7,7 @@ import { GHealthService } from '../game/health/health.service';
 import { GHudService } from '../game/hud.service';
 import { GStatusEffectsService } from '../game/status-effects/status-effects.service';
 
-class DeathEvent {
+export class DeathEvent {
   prevented = false;
 
   preventDefault() {
@@ -15,7 +15,7 @@ class DeathEvent {
   }
 }
 
-type OnDeathCallback = (event: DeathEvent) => void;
+export type OnDeathCallback = (event: DeathEvent) => void;
 
 export class DeathService {
   private deathObserver = new Observer<OnDeathCallback>();

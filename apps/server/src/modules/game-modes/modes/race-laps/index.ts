@@ -141,7 +141,7 @@ class Racer {
     await client.game.teleport.teleportAsync.call(this.player, {
       x,
       y,
-      z,
+      z: z + 2,
       w: node.yaw,
     });
 
