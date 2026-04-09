@@ -97,12 +97,13 @@ export class BasicChatCommands {
       for (const skill of skills) {
         console.log(`SKILLS: Leveling up ${skill.name}...`);
 
-        const addExpRequest = new mp.game.AddExperience();
-        addExpRequest.Set(player, 50000, skill.type, false);
+        // Используем questLevelUpProficiency для мгновенного повышения уровня
+        const levelUpRequest = new mp.game.questLevelUpProficiency();
+        levelUpRequest.Set(player, skill.type);
 
         const queued = mp.game.ScriptGameInstance.QueueScriptableSystemRequest(
           'PlayerDevelopmentSystem',
-          addExpRequest,
+          levelUpRequest,
         );
 
         if (queued) {
