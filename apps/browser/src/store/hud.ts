@@ -13,12 +13,12 @@ export const hudState = proxy<HudState>({
 });
 
 const setHudVisibility = (visible: boolean) => {
-  document.body.dataset.visible = visible ? 'true' : 'false';
+  document.body.dataset.visible = visible.toString();
 };
 
 const toggleHudVisibility = () => {
   if (document.body.dataset.visible === 'true') {
-    document.body.dataset.visible = 'hidden';
+    document.body.dataset.visible = 'false';
   } else {
     document.body.dataset.visible = 'true';
   }
