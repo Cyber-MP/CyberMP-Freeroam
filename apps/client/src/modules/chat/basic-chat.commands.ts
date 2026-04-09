@@ -53,33 +53,29 @@ export class BasicChatCommands {
         return;
       }
 
-      console.log('LEVELUP: Getting PlayerDevelopmentSystem...');
-      const devSystem = mp.game.PlayerDevelopmentSystem.GetInstance(player);
-      console.log('LEVELUP: DevSystem:', devSystem);
-
-      if (!devSystem) {
-        console.log('LEVELUP ERROR: Could not get PlayerDevelopmentSystem');
-        return;
-      }
-
-      console.log('LEVELUP: Getting PlayerDevelopmentData...');
-      const devData = mp.game.PlayerDevelopmentSystem.GetData(player);
-      console.log('LEVELUP: DevData:', devData);
-
-      if (!devData) {
-        console.log('LEVELUP ERROR: Could not get PlayerDevelopmentData');
-        return;
-      }
-
-      console.log('LEVELUP: Adding experience...');
-      devData.AddExperience(
+      console.log('LEVELUP: Creating AddExperience request...');
+      const addExpRequest = new mp.game.AddExperience();
+      
+      addExpRequest.Set(
+        player,
         50000,
         gamedataProficiencyType.Level,
-        telemetryLevelGainReason.Ignore,
         false,
       );
+
+      console.log('LEVELUP: Queueing request via ScriptGameInstance...');
+      const queued = mp.game.ScriptGameInstance.QueueScriptableSystemRequest(
+        'PlayerDevelopmentSystem',
+        addExpRequest,
+      );
       
-      console.log('LEVELUP: Success!');
+      console.log('LEVELUP: Queued result:', queued);
+      
+      if (queued) {
+        console.log('LEVELUP: Success!');
+      } else {
+        console.log('LEVELUP ERROR: Failed to queue request');
+      }
     } catch (err) {
       console.log('LEVELUP ERROR', err);
     }
