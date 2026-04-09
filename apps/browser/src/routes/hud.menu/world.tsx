@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
@@ -246,6 +246,7 @@ function WeatherContent() {
 
 function PlayerContent() {
   const [selected, setSelected] = useState<number>();
+  const navigate = useNavigate();
 
   const playerId = usePlayerId();
 
@@ -271,6 +272,7 @@ function PlayerContent() {
     }
 
     teleportMutation.mutate([selected]);
+    navigate({ to: '/hud' });
   };
 
   return (
@@ -379,8 +381,11 @@ const LOCATIONS: Location[] = [
 ];
 
 function LocationContent() {
+  const navigate = useNavigate();
+
   const teleport = (position: Location['positon']) => {
     client.game.teleport.teleport.trigger(position);
+    navigate({ to: '/hud' });
   };
 
   return (

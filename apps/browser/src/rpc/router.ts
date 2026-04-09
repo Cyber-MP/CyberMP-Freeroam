@@ -1,4 +1,5 @@
 import z from 'zod';
+import { globalLoadingOverlay } from '../components/global-loading-overlay/contract';
 import { keysContract } from '../keys';
 import { copyToClipboard } from '../lib/clipboard';
 import { raceLapsContract } from '../routes/hud.game-modes/race-laps/-contract';
@@ -20,6 +21,7 @@ export const rpcRouter = {
   chat: chatContract,
   killFeed: killFeedContract,
   hud: hudContract,
+  loadingOverlay: globalLoadingOverlay,
 
   copyToClipboard: r.procedure.input(z.string()).handler((c) => {
     copyToClipboard(c.data);

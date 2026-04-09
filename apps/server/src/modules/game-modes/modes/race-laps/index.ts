@@ -106,10 +106,14 @@ class Racer {
     this.vehicle = mp.vehicles.create({
       model: mp.hashes.tweakdbid(`Vehicle.${vehicleModel}`),
       appearance: mp.hashes.cname(vehicleAppearance),
-      position: this.startPoint.position,
+      position: [
+        this.startPoint.position[0],
+        this.startPoint.position[1],
+        this.startPoint.position[2] + 3,
+      ],
       yaw: this.startPoint.yaw,
       dimension: this.match.dimension,
-      health: 800,
+      health: 1300,
     });
 
     await client.gameModes.raceLaps.prepare.call(
@@ -141,7 +145,7 @@ class Racer {
     await client.game.teleport.teleportAsync.call(this.player, {
       x,
       y,
-      z: z + 2,
+      z,
       w: node.yaw,
     });
 
@@ -151,10 +155,10 @@ class Racer {
     this.vehicle = mp.vehicles.create({
       model: mp.hashes.tweakdbid(`Vehicle.${vehicleModel}`),
       appearance: mp.hashes.cname(vehicleAppearance),
-      position: node.position,
+      position: [node.position[0], node.position[1], node.position[2] + 3],
       yaw: node.yaw,
       dimension: this.match.dimension,
-      health: 800,
+      health: 1300,
     });
 
     client.game.vehicles.requestSitInVehicle.trigger(
@@ -308,7 +312,7 @@ export class RaceLaps extends BaseGameMode<
   private releaseTimestamp: number | null = 0;
 
   private readonly COUNTDOWN_TIME = ms('5s');
-  private readonly FORCE_FINISH_TIME = ms('30s');
+  private readonly FORCE_FINISH_TIME = ms('5m');
 
   private finishTimeout: ReturnType<typeof setTimeout> | null = null;
 

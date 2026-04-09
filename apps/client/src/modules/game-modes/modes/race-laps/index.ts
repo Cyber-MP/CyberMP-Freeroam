@@ -132,8 +132,6 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
     this.healthService.set(this.healthService.getDefaultHealth());
     this.mountDeathHandler();
 
-    this.cefService.setLoadingRedirect('/hud/game-modes/race-laps/');
-
     this.initialPosition = mp.game.GetPlayer().GetWorldPosition();
 
     this.statusEffectsService.add('GameplayRestriction.VehicleCombatBlockExit');
@@ -156,10 +154,10 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
     this.navigation.destroy();
     this.checkpoint.destroy();
 
-    this.cefService.setLoadingRedirect(
-      this.results ? '/hud/game-modes/race-laps/results' : '/hud',
-      !!this.results,
-    );
+    // this.cefService.setLoadingRedirect(
+    //   this.results ? '/hud/game-modes/race-laps/results' : '/hud',
+    //   !!this.results,
+    // );
 
     this.teleportService.teleport(this.initialPosition);
 

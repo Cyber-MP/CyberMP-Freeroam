@@ -2,32 +2,19 @@ import { ELoadingScreenState } from '@cybermp/client-types/enums';
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
 import { mp } from '../../mp';
-import { type BrowserInputs, browser } from '../../rpc/browser';
+import { browser } from '../../rpc/browser';
 import { GKeyboardService } from '../game/keyboard.service';
 import { GLoadingScreenService } from '../game/loading-screen.service';
-
-// TODO: when open any ingame menu hide cef
-
-type LoadingRedirect = {
-  path: BrowserInputs['navigate'];
-  once: boolean;
-};
 
 @eager()
 @injectable()
 export class CefService {
-  loadingRedirect: LoadingRedirect = { path: '/hud', once: false };
-
   constructor(
     @inject(GLoadingScreenService)
     private loadingService: GLoadingScreenService,
     @inject(GKeyboardService)
     private keyboard: GKeyboardService,
   ) {}
-
-  setLoadingRedirect(value: BrowserInputs['navigate'] | null, once = false) {
-    this.loadingRedirect = { path: value ?? '/hud', once };
-  }
 
   private loadingHandler = async (state: ELoadingScreenState) => {
     if (state !== ELoadingScreenState.Started) {
@@ -36,14 +23,11 @@ export class CefService {
 
     mp.cef.setFocus(false, false);
 
-    browser.navigate.trigger('/loading');
+    browser.loadingOverlay.show.trigger();
 
     await this.loadingService.waitForLoadingScreenToHide();
 
-    browser.navigate.trigger(this.loadingRedirect.path ?? '/hud');
-    if (this.loadingRedirect.once) {
-      this.loadingRedirect = { path: '/hud', once: false };
-    }
+    browser.loadingOverlay.hide.trigger();
   };
 
   @postConstruct()
