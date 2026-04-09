@@ -31,7 +31,7 @@ const ReleaseCountdown = () => {
     let clearTimeoutId: number | null;
 
     const handler = ({ data: val }: RpcBrowserContext<string>) => {
-      forceFinishState.time = null;
+      forceFinishState.timestamp = null;
 
       setState(val);
 
@@ -297,36 +297,50 @@ const formatTime = (ms: number) => {
   return `${paddedMinutes}:${paddedSeconds}`;
 };
 
-const forceFinishState = proxy<{ time: null | number }>({ time: null });
+const forceFinishState = proxy<{ timestamp: null | number }>({
+  timestamp: null,
+});
 
 const ForceFinishTimer = () => {
-  const { time: finishTime } = useSnapshot(forceFinishState);
+  const { timestamp: finishTimestamp } = useSnapshot(forceFinishState);
 
-  console.log('rendered', finishTime);
+  const seconds = Math.floor(
+    ((finishTimestamp ?? Date.now()) - Date.now()) / 1000,
+  );
 
-  const [count, { startCountdown }] = useCountdown({
-    countStart: finishTime ? finishTime / 1000 : 0,
+  const [count, { resetCountdown, startCountdown }] = useCountdown({
+    countStart: seconds,
+    intervalMs: 1000,
   });
 
   useImplement(raceLapsContract.forceFinishTimer, (c) => {
-    forceFinishState.time = c.data;
-
-    console.log('INCOMING FINISH TIME', c.data);
+    forceFinishState.timestamp = c.data;
   });
 
   useEffect(() => {
-    if (finishTime) {
-      startCountdown();
-    }
-  }, [finishTime, startCountdown]);
+    resetCountdown();
+    startCountdown();
+  }, [finishTimestamp]);
 
-  if (!finishTime) {
+  if (!finishTimestamp) {
     return null;
   }
 
   return (
-    <div>
-      FORCE FINISH TIMER - {formatTime(count)} {count} {finishTime}
+    <div className="flex flex-col font-mono uppercase tracking-tighter select-none w-64">
+      <div className="relative flex items-center border bg-black/80 border-amber-900/50 text-amber-400">
+        <div className="px-4 py-2 text-xl bg-amber-500/10 text-amber-400 border-r border-amber-900/50">
+          {formatTime(count * 1000)}
+        </div>
+
+        <div className="flex flex-col px-4 py-1 flex-1">
+          <span className="text-sm text-amber-400 tracking-widest">
+            FORCE_FINISH
+          </span>
+        </div>
+
+        <div className="absolute -top-1 -right-1 w-2 h-2 bg-black border-r border-t border-amber-400" />
+      </div>
     </div>
   );
 };

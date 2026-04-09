@@ -480,7 +480,7 @@ export class RaceLaps extends BaseGameMode<
     for (const playerId of this.racers.keys()) {
       browser.gameModes.raceLaps.forceFinishTimer.trigger(
         playerId,
-        this.FORCE_FINISH_TIME,
+        Date.now() + this.FORCE_FINISH_TIME,
       );
     }
   }
