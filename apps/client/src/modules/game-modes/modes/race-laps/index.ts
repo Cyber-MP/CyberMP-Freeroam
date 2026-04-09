@@ -27,9 +27,11 @@ import { BaseGameMode } from '../../game-mode';
 import { RaceLapsCheckpoint } from './checkpoint';
 import type {
   RaceLapsCheckpointNode,
+  RaceLapsFinishedRacer,
   RaceLapsMap,
   RaceLapsPrepareDTO,
   RaceLapsRacerDTO,
+  RaceLapsRankDTO,
   RaceLapsStartPointNode,
   RaceLapsTrackPath,
 } from './dto';
@@ -107,6 +109,8 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
   private countDownInterval: ReturnType<typeof setInterval> | undefined;
   private vehicleCheckInterval: ReturnType<typeof setInterval> | undefined;
 
+  private results: RaceLapsFinishedRacer[] | null = null;
+
   private navigation = new TrackPathNavigation();
 
   constructor(
@@ -153,8 +157,8 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
     this.checkpoint.destroy();
 
     this.cefService.setLoadingRedirect(
-      '/hud/game-modes/race-laps/results',
-      true,
+      this.results ? '/hud/game-modes/race-laps/results' : '/hud',
+      !!this.results,
     );
 
     this.teleportService.teleport(this.initialPosition);
@@ -169,7 +173,10 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
     this.statusEffectsService.remove('GameplayRestriction.NoWeapons');
 
     browser.hud.setGlobalPath.trigger('/hud');
-    browser.navigate.trigger('/hud/game-modes/race-laps/results');
+
+    browser.navigate.trigger(
+      this.results ? '/hud/game-modes/race-laps/results' : '/hud',
+    );
   }
 
   updateRacerData(data: Partial<RaceLapsRacerDTO> = {}) {
@@ -179,6 +186,16 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
       totalCheckpoints: this.checkpoints.length,
       totalLaps: this.options.laps ?? 0,
     });
+  }
+
+  updateRanks(ranks: RaceLapsRankDTO[]) {
+    browser.gameModes.raceLaps.updateRanks.trigger(ranks);
+  }
+
+  setResults(results: RaceLapsFinishedRacer[]) {
+    this.results = results;
+
+    browser.gameModes.raceLaps.setResults.trigger(results);
   }
 
   async prepare(data: RaceLapsPrepareDTO) {

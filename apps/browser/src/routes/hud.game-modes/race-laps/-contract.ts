@@ -18,6 +18,7 @@ export const zRaceLapsRankDTO = z.object({
   position: z.number(),
   lap: z.number(),
   checkpoint: z.number(),
+  finished: z.boolean(),
 });
 
 export type RaceLapsRankDTO = z.infer<typeof zRaceLapsRankDTO>;
@@ -57,7 +58,7 @@ export const raceLapsContract = {
   showRespawn: contract.input(z.number()).build(),
   hideRespawn: contract.build(),
   forceFinishTimer: contract.input(z.number()).build(),
-  results: procedure.input(z.array(zRaceLapsFinishedRacer)).handler((c) => {
+  setResults: procedure.input(z.array(zRaceLapsFinishedRacer)).handler((c) => {
     raceLapsResultsStore.results = c.data;
   }),
 };

@@ -85,6 +85,7 @@ export class EntryService {
     this.hud.hide();
     this.cefService.setLoadingRedirect('/entry');
     browser.hud.setGlobalPath.trigger('/entry');
+    console.log("IM SETTING THISS SHIT RIGHT WHY IS THIS NOT WORKING")
 
     setTimeout(() => this.toggleEntryRestrictions(true), 0);
 

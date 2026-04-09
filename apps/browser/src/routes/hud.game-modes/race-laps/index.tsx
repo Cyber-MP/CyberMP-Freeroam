@@ -82,7 +82,7 @@ const Ranks = () => {
   return (
     <div className="flex flex-col gap-1 absolute right-12 bottom-12 w-80 font-mono text-xs uppercase tracking-tighter">
       {ranks.map((rank) => {
-        const isUser = rank.playerId === playerId;
+        const active = rank.playerId === playerId || rank.finished;
         const pos = rank.position.toString().padStart(2, '0');
 
         return (
@@ -91,7 +91,7 @@ const Ranks = () => {
             className={`
               relative flex items-center border
               ${
-                isUser
+                active
                   ? 'bg-yellow-400 border-yellow-400 text-black'
                   : 'bg-black/80 border-cyan-900/50 text-cyan-400/70'
               }
@@ -100,7 +100,7 @@ const Ranks = () => {
             <div
               className={`
               px-4 py-2 font-black text-base
-              ${isUser ? 'bg-black text-yellow-400' : 'bg-muted text-muted-foreground'}
+              ${active ? 'bg-black text-yellow-400' : 'bg-muted text-muted-foreground'}
             `}
             >
               {pos}
@@ -108,20 +108,20 @@ const Ranks = () => {
 
             <div className="flex flex-col flex-1 px-4 py-1">
               <span
-                className={`text-sm font-bold ${isUser ? 'text-black' : 'text-secondary-foreground'}`}
+                className={`text-sm font-bold ${active ? 'text-black' : 'text-secondary-foreground'}`}
               >
                 {rank.playerNick}
               </span>
 
               <div
-                className={`text-xs flex gap-2 ${isUser ? 'text-black/60' : 'text-muted-foreground'}`}
+                className={`text-xs flex gap-2 ${active ? 'text-black/60' : 'text-muted-foreground'}`}
               >
                 <span>Checkpoint: {rank.checkpoint}</span>
                 <span>Lap: {rank.lap}</span>
               </div>
             </div>
 
-            {isUser && (
+            {active && (
               <div className="absolute -top-1 -right-1 w-2 h-2 bg-black border-r border-t border-yellow-400" />
             )}
           </div>
@@ -301,6 +301,7 @@ const forceFinishState = proxy<{ timestamp: null | number }>({
   timestamp: null,
 });
 
+// TODO: add red outline if count <= 60
 const ForceFinishTimer = () => {
   const { timestamp: finishTimestamp } = useSnapshot(forceFinishState);
 
@@ -326,20 +327,34 @@ const ForceFinishTimer = () => {
     return null;
   }
 
+  const danger = count <= 60;
+
   return (
     <div className="flex flex-col font-mono uppercase tracking-tighter select-none w-64">
-      <div className="relative flex items-center border bg-black/80 border-amber-900/50 text-amber-400">
-        <div className="px-4 py-2 text-xl bg-amber-500/10 text-amber-400 border-r border-amber-900/50">
-          {formatTime(count * 1000)}
+      <div
+        className={`relative flex items-center border bg-black/80 ${
+          danger
+            ? 'border-red-900/50 text-red-500'
+            : 'border-amber-900/50 text-amber-400'
+        }`}
+      >
+        <div
+          className={`px-4 py-2 text-xl border-r ${
+            danger
+              ? 'bg-red-500/10 text-red-500 border-red-900/50'
+              : 'bg-amber-500/10 text-amber-400 border-amber-900/50'
+          }`}
+        >
+          {formatTime(Math.max(count, 0) * 1000)}
         </div>
 
         <div className="flex flex-col px-4 py-1 flex-1">
-          <span className="text-sm text-amber-400 tracking-widest">
-            FORCE_FINISH
-          </span>
+          <span className="text-sm tracking-widest">FORCE_FINISH</span>
         </div>
 
-        <div className="absolute -top-1 -right-1 w-2 h-2 bg-black border-r border-t border-amber-400" />
+        <div
+          className={`absolute -top-1 -right-1 w-2 h-2 bg-black border-r border-t ${danger ? 'border-red-500' : 'border-amber-400'}`}
+        />
       </div>
     </div>
   );

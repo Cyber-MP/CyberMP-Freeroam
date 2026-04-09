@@ -90,6 +90,7 @@ export const zRaceLapsRankDTO = z.object({
   position: z.number(),
   lap: z.number(),
   checkpoint: z.number(),
+  finished: z.boolean(),
 });
 
 export const zRaceLapsFinishedRacer = z.object({
