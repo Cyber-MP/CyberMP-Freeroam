@@ -141,7 +141,7 @@ class Racer {
     await client.game.teleport.teleportAsync.call(this.player, {
       x,
       y,
-      z,
+      z: z + 2,
       w: node.yaw,
     });
 
@@ -227,10 +227,10 @@ class RanksTracker {
   }
 
   private broadcastRankings() {
-    const ranks = this.calculateRankings().slice(0, 5);
+    const ranks = this.calculateRankings();
 
     for (const playerId of this.racers.keys()) {
-      browser.gameModes.raceLaps.updateRanks.trigger(playerId, ranks);
+      client.gameModes.raceLaps.updateRanks.trigger(playerId, ranks);
     }
   }
 
@@ -283,6 +283,7 @@ class RanksTracker {
       playerNick: racer.player.nickname,
       checkpoint: racer.currentCheckpointIndex + 1,
       lap: racer.currentLap,
+      finished: racer.finished,
     }));
   }
 }
@@ -307,7 +308,7 @@ export class RaceLaps extends BaseGameMode<
   private releaseTimestamp: number | null = 0;
 
   private readonly COUNTDOWN_TIME = ms('5s');
-  private readonly FORCE_FINISH_TIME = ms('5m');
+  private readonly FORCE_FINISH_TIME = ms('30s');
 
   private finishTimeout: ReturnType<typeof setTimeout> | null = null;
 
@@ -420,7 +421,7 @@ export class RaceLaps extends BaseGameMode<
     this.release();
   }
 
-  end() {
+  async end() {
     if (this.finishTimeout) {
       clearTimeout(this.finishTimeout);
     }
@@ -454,7 +455,11 @@ export class RaceLaps extends BaseGameMode<
       });
 
     for (const racer of this.racers.values()) {
-      browser.gameModes.raceLaps.results.trigger(racer.player, finalResults);
+      await client.gameModes.raceLaps.setResults.call(
+        racer.player,
+        finalResults,
+      );
+
       racer.reset();
     }
 
@@ -480,7 +485,7 @@ export class RaceLaps extends BaseGameMode<
     for (const playerId of this.racers.keys()) {
       browser.gameModes.raceLaps.forceFinishTimer.trigger(
         playerId,
-        this.FORCE_FINISH_TIME,
+        Date.now() + this.FORCE_FINISH_TIME,
       );
     }
   }

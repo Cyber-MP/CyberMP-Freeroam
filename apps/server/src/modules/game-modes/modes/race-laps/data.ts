@@ -69,6 +69,7 @@ export const zRaceLapsPathPointNode = zRaceLapsBaseNode.extend({
 export enum RaceLapsMapName {
   TEST = 'test',
   HEYWOOD = 'heywood',
+  PETROCHEM = 'petrochem',
 }
 
 export const zRaceLapsMap = z.object({
@@ -89,6 +90,7 @@ export const zRaceLapsRankDTO = z.object({
   position: z.number(),
   lap: z.number(),
   checkpoint: z.number(),
+  finished: z.boolean(),
 });
 
 export const zRaceLapsFinishedRacer = z.object({

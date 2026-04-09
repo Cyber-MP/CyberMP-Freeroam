@@ -14,9 +14,11 @@ export class GHealthService {
 
   god(value: boolean) {
     if (value) {
-      this.set(99999999);
+      this.setMax(99999999);
+      this.setCurrent(99999999);
     } else {
-      this.set(this.DEFAULT_HEALTH);
+      this.setCurrent(this.DEFAULT_HEALTH);
+      this.setMax(this.DEFAULT_HEALTH);
     }
 
     this.godMode = value;

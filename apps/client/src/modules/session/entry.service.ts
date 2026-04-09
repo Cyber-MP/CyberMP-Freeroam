@@ -66,6 +66,7 @@ export class EntryService {
     this.isEntered = true;
 
     this.logger.info('Exiting entry screen and restoring gameplay state');
+    this.toggleEntryRestrictions(false);
 
     this.playerService.invisible(false);
     this.hud.show();
@@ -75,8 +76,7 @@ export class EntryService {
       this.cameraEntity = null;
     }
 
-    this.toggleEntryRestrictions(false);
-
+    browser.hud.setGlobalPath.trigger('/hud');
     this.cefService.setLoadingRedirect('/hud');
     browser.navigate.trigger('/hud');
   }
@@ -84,6 +84,8 @@ export class EntryService {
   private async onGameLoaded() {
     this.hud.hide();
     this.cefService.setLoadingRedirect('/entry');
+    browser.hud.setGlobalPath.trigger('/entry');
+    console.log("IM SETTING THISS SHIT RIGHT WHY IS THIS NOT WORKING")
 
     setTimeout(() => this.toggleEntryRestrictions(true), 0);
 

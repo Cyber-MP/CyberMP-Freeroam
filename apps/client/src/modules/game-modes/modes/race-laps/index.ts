@@ -12,18 +12,26 @@ import { mp } from '../../../../mp';
 import { server } from '../../../../rpc';
 import { browser } from '../../../../rpc/browser';
 import { CefService } from '../../../cef/cef.service';
+import {
+  type DeathEvent,
+  DeathService,
+  type OnDeathCallback,
+} from '../../../death/death.service';
 import { GHealthService } from '../../../game/health/health.service';
 import { GKeyboardService } from '../../../game/keyboard.service';
 import { GStatusEffectsService } from '../../../game/status-effects/status-effects.service';
 import { GTeleportService } from '../../../game/teleport/teleport.service';
 import { GVehiclesService } from '../../../game/vehicles/vehicles.service';
+import { SpawnService } from '../../../spawn/spawn.service';
 import { BaseGameMode } from '../../game-mode';
 import { RaceLapsCheckpoint } from './checkpoint';
 import type {
   RaceLapsCheckpointNode,
+  RaceLapsFinishedRacer,
   RaceLapsMap,
   RaceLapsPrepareDTO,
   RaceLapsRacerDTO,
+  RaceLapsRankDTO,
   RaceLapsStartPointNode,
   RaceLapsTrackPath,
 } from './dto';
@@ -65,14 +73,12 @@ class TrackPathNavigation {
   create(trackPath: RaceLapsTrackPath) {
     this.trackData = trackPath;
 
-    // Spawn every point in the path immediately
     this.trackData.forEach((path, index) => {
       this.spawnEffect(index, path);
     });
   }
 
   destroy() {
-    // Clean up all active instances
     for (const index of this.activeFx.keys()) {
       this.despawnEffect(index);
     }
@@ -101,6 +107,9 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
   private initialPosition!: Vector4;
 
   private countDownInterval: ReturnType<typeof setInterval> | undefined;
+  private vehicleCheckInterval: ReturnType<typeof setInterval> | undefined;
+
+  private results: RaceLapsFinishedRacer[] | null = null;
 
   private navigation = new TrackPathNavigation();
 
@@ -109,29 +118,37 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
     @inject(GVehiclesService) private vehiclesService: GVehiclesService,
     @inject(GTeleportService) private teleportService: GTeleportService,
     @inject(GHealthService) private healthService: GHealthService,
-    @inject(GStatusEffectsService) private statusEffects: GStatusEffectsService,
+    @inject(GStatusEffectsService)
+    private statusEffectsService: GStatusEffectsService,
     @inject(RaceLapsCheckpoint) private checkpoint: RaceLapsCheckpoint,
-    @inject(GKeyboardService) private keyboard: GKeyboardService,
+    @inject(GKeyboardService) private keyboardService: GKeyboardService,
+    @inject(DeathService) private deathService: DeathService,
+    @inject(SpawnService) private spawnService: SpawnService,
   ) {
     super();
   }
 
   start() {
     this.healthService.set(this.healthService.getDefaultHealth());
+    this.mountDeathHandler();
 
     this.cefService.setLoadingRedirect('/hud/game-modes/race-laps/');
 
     this.initialPosition = mp.game.GetPlayer().GetWorldPosition();
 
-    this.statusEffects.add('GameplayRestriction.VehicleCombatBlockExit');
-    this.statusEffects.add('GameplayRestriction.NoDriving');
-    this.statusEffects.add('GameplayRestriction.NoMovement');
+    this.statusEffectsService.add('GameplayRestriction.VehicleCombatBlockExit');
+    this.statusEffectsService.add('GameplayRestriction.NoDriving');
+    this.statusEffectsService.add('GameplayRestriction.NoMovement');
 
-    this.statusEffects.add('GameplayRestriction.NoCombat');
-    this.statusEffects.add('GameplayRestriction.NoWeapons');
+    this.statusEffectsService.add('GameplayRestriction.NoCombat');
+    this.statusEffectsService.add('GameplayRestriction.NoWeapons');
   }
 
   end() {
+    this.unmountVehicleCheckInterval();
+    this.unmountDeathHandler();
+    this.unmountRespawnKey();
+
     if (this.countDownInterval) {
       clearInterval(this.countDownInterval);
     }
@@ -140,23 +157,26 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
     this.checkpoint.destroy();
 
     this.cefService.setLoadingRedirect(
-      '/hud/game-modes/race-laps/results',
-      true,
+      this.results ? '/hud/game-modes/race-laps/results' : '/hud',
+      !!this.results,
     );
 
     this.teleportService.teleport(this.initialPosition);
 
-    this.statusEffects.remove('GameplayRestriction.VehicleCombatBlockExit');
-    this.statusEffects.remove('GameplayRestriction.NoDriving');
-    this.statusEffects.remove('GameplayRestriction.NoMovement');
+    this.statusEffectsService.remove(
+      'GameplayRestriction.VehicleCombatBlockExit',
+    );
+    this.statusEffectsService.remove('GameplayRestriction.NoDriving');
+    this.statusEffectsService.remove('GameplayRestriction.NoMovement');
 
-    this.statusEffects.remove('GameplayRestriction.NoCombat');
-    this.statusEffects.remove('GameplayRestriction.NoWeapons');
-
-    this.unmountRespawnKey();
+    this.statusEffectsService.remove('GameplayRestriction.NoCombat');
+    this.statusEffectsService.remove('GameplayRestriction.NoWeapons');
 
     browser.hud.setGlobalPath.trigger('/hud');
-    browser.navigate.trigger('/hud/game-modes/race-laps/results');
+
+    browser.navigate.trigger(
+      this.results ? '/hud/game-modes/race-laps/results' : '/hud',
+    );
   }
 
   updateRacerData(data: Partial<RaceLapsRacerDTO> = {}) {
@@ -166,6 +186,16 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
       totalCheckpoints: this.checkpoints.length,
       totalLaps: this.options.laps ?? 0,
     });
+  }
+
+  updateRanks(ranks: RaceLapsRankDTO[]) {
+    browser.gameModes.raceLaps.updateRanks.trigger(ranks);
+  }
+
+  setResults(results: RaceLapsFinishedRacer[]) {
+    this.results = results;
+
+    browser.gameModes.raceLaps.setResults.trigger(results);
   }
 
   async prepare(data: RaceLapsPrepareDTO) {
@@ -206,8 +236,6 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
         return;
       }
 
-      console.log(nextData);
-
       this.updateRacerData(nextData);
 
       this.checkpoint.destroy();
@@ -224,6 +252,20 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
     // TODO: add here spectating logic or smth
   }
 
+  private respawn() {
+    if (this.respawning || this.data.finished) {
+      return;
+    }
+
+    this.respawning = true;
+
+    browser.gameModes.raceLaps.hideRespawn.trigger();
+
+    server.gameModes.raceLaps.respawn.call().finally(() => {
+      this.respawning = false;
+    });
+  }
+
   private mountRespawnKey() {
     browser.hints.add.trigger({
       F: 'Respawn',
@@ -232,19 +274,13 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
     let respawnTimer: ReturnType<typeof setTimeout>;
 
     this.respawnKeyHandler = (action) => {
-      if (this.respawning) {
+      if (this.respawning || this.data.finished) {
         return;
       }
 
       if (action === EInputAction.IACT_Press) {
         respawnTimer = setTimeout(() => {
-          this.respawning = true;
-
-          browser.gameModes.raceLaps.hideRespawn.trigger();
-
-          server.gameModes.raceLaps.respawn.call().finally(() => {
-            this.respawning = false;
-          });
+          this.respawn();
         }, this.RESPAWN_DURATION);
 
         browser.gameModes.raceLaps.showRespawn.trigger(this.RESPAWN_DURATION);
@@ -255,31 +291,74 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
       }
     };
 
-    this.keyboard.bindKey(this.RESPAWN_KEY, this.respawnKeyHandler);
+    this.keyboardService.bindKey(this.RESPAWN_KEY, this.respawnKeyHandler);
   }
 
   private unmountRespawnKey() {
     browser.hints.remove.trigger('F');
 
     if (this.respawnKeyHandler) {
-      this.keyboard.unBindKey(this.RESPAWN_KEY, this.respawnKeyHandler);
+      this.keyboardService.unBindKey(this.RESPAWN_KEY, this.respawnKeyHandler);
     }
+  }
+
+  private mountVehicleCheckInterval() {
+    this.vehicleCheckInterval = setInterval(() => {
+      const mountedVehicle = mp.game.GetMountedVehicle(
+        mp.game.GetPlayerObject(),
+      );
+      if (!mountedVehicle) {
+        this.respawn();
+      }
+    }, 1000);
+  }
+
+  private unmountVehicleCheckInterval() {
+    if (this.vehicleCheckInterval) {
+      clearInterval(this.vehicleCheckInterval);
+      this.vehicleCheckInterval = undefined;
+    }
+  }
+
+  private deathHandler: OnDeathCallback = (event: DeathEvent) => {
+    event.preventDefault();
+    this.spawnService.spawn({
+      position: mp.game.GetPlayer().GetWorldPosition(),
+    });
+
+    this.respawn();
+  };
+
+  private mountDeathHandler() {
+    this.deathService.subscribe(this.deathHandler);
+  }
+
+  private unmountDeathHandler() {
+    this.deathService.unsubscribe(this.deathHandler);
   }
 
   release() {
     this.mountRespawnKey();
+    this.mountVehicleCheckInterval();
 
-    this.statusEffects.remove('GameplayRestriction.NoDriving');
+    this.statusEffectsService.remove('GameplayRestriction.NoDriving');
 
     if (this.options.combat) {
-      this.statusEffects.remove('GameplayRestriction.NoCombat');
-      this.statusEffects.remove('GameplayRestriction.NoWeapons');
+      this.statusEffectsService.remove('GameplayRestriction.NoCombat');
+      this.statusEffectsService.remove('GameplayRestriction.NoWeapons');
     }
 
     this.createCheckpoint();
   }
 
   startCountdown(startTimestamp: number) {
+    const mountedVehicle = mp.game.GetMountedVehicle(mp.game.GetPlayerObject());
+    if (mountedVehicle) {
+      mountedVehicle.ForceBrakesFor(
+        Math.ceil((startTimestamp - Date.now()) / 1000),
+      );
+    }
+
     this.countDownInterval = setInterval(() => {
       const currentTime = Date.now();
       const remaining = Math.ceil((startTimestamp - currentTime) / 1000);
@@ -296,8 +375,6 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
   }
 
   reset() {
-    console.log('RESETING PLAYER RACE');
-
     this.end();
   }
 }
