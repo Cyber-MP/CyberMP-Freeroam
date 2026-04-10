@@ -57,29 +57,57 @@ export class GMenusService {
 
       //
 
-      mp.game.observe('MenuScenario_BaseMenu', 'CloseMenu', () => {
-        console.log('CloseMenu');
+      // mp.game.observe('MenuScenario_BaseMenu', 'CloseMenu', () => {
+      //   console.log('CloseMenu');
+
+      //   this.showBrowser();
+      // });
+
+      // mp.game.observe('MenuScenario_BaseMenu', 'OpenMenu', () => {
+      //   console.log('OpenMenu');
+
+      //   this.hideBrowser();
+      // });
+
+      // mp.game.observe('MenuScenario_BaseMenu', 'CloseSubMenu', () => {
+      //   console.log('CloseSubMenu');
+
+      //   this.showBrowser();
+      // });
+
+      // mp.game.observe('MenuScenario_BaseMenu', 'OpenSubMenu', () => {
+      //   console.log('OpenSubMenu');
+
+      //   this.hideBrowser();
+      // });
+
+      // mp.game.observe('inkMenuScenario', 'OnInitialize', () => {
+      //   console.log('menu scenario created');
+
+      //   this.hideBrowser();
+      // });
+
+      // mp.game.observe('inkMenuScenario', 'OnUninitialize', () => {
+      //   console.log('menu scenario destroyed');
+
+      //   this.showBrowser();
+      // });
+
+      mp.game.observe('gameuiInGameMenuGameController', 'OnInitialize', () => {
+        console.log('menu opened');
 
         this.hideBrowser();
       });
 
-      mp.game.observe('MenuScenario_BaseMenu', 'OpenMenu', () => {
-        console.log('OpenMenu');
+      mp.game.observe(
+        'gameuiInGameMenuGameController',
+        'OnUninitialize',
+        () => {
+          console.log('menu closed');
 
-        this.showBrowser();
-      });
-
-      mp.game.observe('MenuScenario_BaseMenu', 'CloseSubMenu', () => {
-        console.log('CloseSubMenu');
-
-        this.hideBrowser();
-      });
-
-      mp.game.observe('MenuScenario_BaseMenu', 'OpenSubMenu', () => {
-        console.log('OpenSubMenu');
-
-        this.hideBrowser();
-      });
+          this.showBrowser();
+        },
+      );
     });
   }
 
