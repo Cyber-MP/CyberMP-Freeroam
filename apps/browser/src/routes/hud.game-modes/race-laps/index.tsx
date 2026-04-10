@@ -17,7 +17,7 @@ import { r } from '@/rpc';
 import {
   type RaceLapsRankDTO,
   raceLapsContract,
-  raceLapsDataStore,
+  raceLapsDataState,
 } from './-contract';
 
 export const Route = createFileRoute('/hud/game-modes/race-laps/')({
@@ -132,7 +132,7 @@ const Ranks = () => {
 };
 
 const Info = () => {
-  const data = useSnapshot(raceLapsDataStore);
+  const data = useSnapshot(raceLapsDataState);
 
   return (
     <div className="flex gap-4 font-mono uppercase tracking-tighter select-none">

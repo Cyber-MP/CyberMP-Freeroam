@@ -13,7 +13,7 @@ export class CefService {
     @inject(GLoadingScreenService)
     private loadingService: GLoadingScreenService,
     @inject(GKeyboardService)
-    private keyboard: GKeyboardService,
+    private keyboardService: GKeyboardService,
   ) {}
 
   private loadingHandler = async (state: ELoadingScreenState) => {
@@ -39,9 +39,11 @@ export class CefService {
         mp.cef.setUrl('cefview://freeroam/browser/index.html');
       }
 
+      browser.loadingOverlay.hide.trigger();
+
       this.loadingService.subscribeOnStateChange(this.loadingHandler);
 
-      this.keyboard.subscribe((key, action) => {
+      this.keyboardService.subscribe((key, action) => {
         if (mp.cef.isInFocus()) {
           return;
         }

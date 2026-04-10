@@ -1,16 +1,12 @@
-import { useImplement } from '@cybermp/rpc-router-react';
-import { useState } from 'react';
-import { Logo } from '../ui/logo';
-import { Spinner } from '../ui/spinner';
-import { globalLoadingOverlay } from './contract';
+import { useSnapshot } from 'valtio';
+import { loadingOverlayState } from '@/store/loading-overlay';
+import { Logo } from './ui/logo';
+import { Spinner } from './ui/spinner';
 
-export const GlobalLoadingOverlay = () => {
-  const [state, setState] = useState(false);
+export const LoadingOverlay = () => {
+  const { visible } = useSnapshot(loadingOverlayState);
 
-  useImplement(globalLoadingOverlay.show, () => setState(true));
-  useImplement(globalLoadingOverlay.hide, () => setState(false));
-
-  if (!state) {
+  if (!visible) {
     return null;
   }
 

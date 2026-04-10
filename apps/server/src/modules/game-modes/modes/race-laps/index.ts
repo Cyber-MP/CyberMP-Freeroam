@@ -425,7 +425,7 @@ export class RaceLaps extends BaseGameMode<
     this.release();
   }
 
-  async end() {
+  end() {
     if (this.finishTimeout) {
       clearTimeout(this.finishTimeout);
     }
@@ -459,12 +459,7 @@ export class RaceLaps extends BaseGameMode<
       });
 
     for (const racer of this.racers.values()) {
-      await client.gameModes.raceLaps.setResults.call(
-        racer.player,
-        finalResults,
-      );
-
-      racer.reset();
+      browser.gameModes.raceLaps.setResults.trigger(racer.player, finalResults);
     }
 
     this.racers.clear();

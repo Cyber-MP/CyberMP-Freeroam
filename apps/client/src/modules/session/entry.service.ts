@@ -94,8 +94,9 @@ export class EntryService {
 
     this.playerService.invisible(true);
 
-    browser.navigate.trigger('/entry');
-    console.log('IM SETTING THISS SHIT RIGHT WHY IS THIS NOT WORKING');
+    setTimeout(() => {
+      browser.navigate.trigger('/entry');
+    });
 
     this.logger.info('Fully initialized entry service, spawn player and etc ');
   }

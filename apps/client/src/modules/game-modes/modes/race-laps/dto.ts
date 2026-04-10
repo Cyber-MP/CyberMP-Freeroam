@@ -77,12 +77,3 @@ export const zRaceLapsRankDTO = z.object({
 });
 
 export type RaceLapsRankDTO = z.infer<typeof zRaceLapsRankDTO>;
-
-export const zRaceLapsFinishedRacer = z.object({
-  playerNick: z.string(),
-  lap: z.number(),
-  checkpoint: z.number(),
-  time: z.number(),
-});
-
-export type RaceLapsFinishedRacer = z.infer<typeof zRaceLapsFinishedRacer>;
