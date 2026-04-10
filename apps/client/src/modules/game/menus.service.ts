@@ -55,66 +55,30 @@ export class GMenusService {
         this.globalMenuScenario = self;
       });
 
-      //
+      // HIDE BROWSER
 
-      // mp.game.observe('MenuScenario_BaseMenu', 'CloseMenu', () => {
-      //   console.log('CloseMenu');
-
-      //   this.showBrowser();
-      // });
-
-      // mp.game.observe('MenuScenario_BaseMenu', 'OpenMenu', () => {
-      //   console.log('OpenMenu');
-
-      //   this.hideBrowser();
-      // });
-
-      // mp.game.observe('MenuScenario_BaseMenu', 'CloseSubMenu', () => {
-      //   console.log('CloseSubMenu');
-
-      //   this.showBrowser();
-      // });
-
-      // mp.game.observe('MenuScenario_BaseMenu', 'OpenSubMenu', () => {
-      //   console.log('OpenSubMenu');
-
-      //   this.hideBrowser();
-      // });
-
-      // mp.game.observe('inkMenuScenario', 'OnInitialize', () => {
-      //   console.log('menu scenario created');
-
-      //   this.hideBrowser();
-      // });
-
-      // mp.game.observe('inkMenuScenario', 'OnUninitialize', () => {
-      //   console.log('menu scenario destroyed');
-
-      //   this.showBrowser();
-      // });
-
-      mp.game.observe('inkMenuLayer', 'PushMenu', () => {
-        console.log('inkMenuLayer PushMenu');
+      mp.game.observe('SettingsMainGameController', 'OnMenuChanged', () => {
+        console.log('SettingsMainGameController OnMenuChanged');
 
         this.hideBrowser();
       });
 
-      mp.game.observe('inkMenuLayer', 'PopMenu', () => {
-        console.log('inkMenuLayer PopMenu');
+      mp.game.observe('SettingsMainGameController', 'RequestClose', () => {
+        console.log('SettingsMainGameController RequestClose');
 
         this.showBrowser();
       });
 
-      mp.game.observe('inkMenuLayer', 'PushMenuInternal', () => {
-        console.log('inkMenuLayer PushMenuInternal');
+      mp.game.observe('MenuScenario_PauseMenu', 'OnSwitchToSettings', () => {
+        console.log('MenuScenario_PauseMenu OnSwitchToSettings');
 
         this.hideBrowser();
       });
 
-      mp.game.observe('inkMenuLayer', 'PopMenuInternal', () => {
-        console.log('inkMenuLayer PopMenuInternal');
+      mp.game.observe('MenuScenario_PauseMenu', 'OnEnterScenario', () => {
+        console.log('MenuScenario_PauseMenu OnEnterScenario');
 
-        this.showBrowser();
+        this.hideBrowser();
       });
     });
   }
