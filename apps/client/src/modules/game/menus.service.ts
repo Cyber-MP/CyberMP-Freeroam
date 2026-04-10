@@ -23,8 +23,11 @@ export class GMenusService {
   @postConstruct()
   private init() {
     mp.game.onGameLoaded(() => {
+      // open settings & switch between categories
       mp.game.observe('SettingsMainGameController', 'OnMenuChanged', (self) => {
         this.SettingsMainGameController = self;
+
+        this.hideBrowser();
       });
 
       mp.game.observe(
@@ -55,73 +58,44 @@ export class GMenusService {
         this.globalMenuScenario = self;
       });
 
-      // HIDE BROWSER
-
-      // open settings & switch between categories
-      mp.game.observe('SettingsMainGameController', 'OnMenuChanged', () => {
-        console.log('SettingsMainGameController OnMenuChanged');
-
-        this.hideBrowser();
-      });
-
-      // exit game settings
-      mp.game.observe('SettingsMainGameController', 'RequestClose', () => {
-        console.log('SettingsMainGameController RequestClose');
-
-        this.showBrowser();
-      });
-
       // open game settings from pause menu
-      mp.game.observe('MenuScenario_PauseMenu', 'OnSwitchToSettings', () => {
-        console.log('MenuScenario_PauseMenu OnSwitchToSettings');
-
-        this.hideBrowser();
-      });
+      mp.game.observe(
+        'MenuScenario_PauseMenu',
+        'OnSwitchToSettings',
+        this.hideBrowser,
+      );
 
       // open pause menu
-      mp.game.observe('MenuScenario_PauseMenu', 'OnEnterScenario', () => {
-        console.log('MenuScenario_PauseMenu OnEnterScenario');
-
-        this.hideBrowser();
-      });
+      mp.game.observe(
+        'MenuScenario_PauseMenu',
+        'OnEnterScenario',
+        this.hideBrowser,
+      );
 
       // close pause menu
-      mp.game.observe('MenuScenario_PauseMenu', 'OnLeaveScenario', () => {
-        console.log('MenuScenario_PauseMenu OnLeaveScenario');
-
-        this.showBrowser();
-      });
+      mp.game.observe(
+        'MenuScenario_PauseMenu',
+        'OnLeaveScenario',
+        this.showBrowser,
+      );
 
       // leave from category in hub menu
-      mp.game.observe('MenuScenario_HubMenu', 'OnCloseHubMenu', () => {
-        console.log('MenuScenario_HubMenu OnCloseHubMenu');
+      mp.game.observe(
+        'MenuScenario_HubMenu',
+        'OnCloseHubMenu',
+        this.hideBrowser,
+      );
 
-        this.hideBrowser();
-      });
-
-      mp.game.observe('MenuScenario_HubMenu', 'OnOpenMenu', () => {
-        console.log('MenuScenario_HubMenu OnOpenMenu');
-
-        this.hideBrowser();
-      });
-
-      mp.game.observe('MenuScenario_HubMenu', 'OnEnterScenario', () => {
-        console.log('MenuScenario_HubMenu OnOpenMenu');
-
-        this.hideBrowser();
-      });
+      // hotkeys for hub menu
+      mp.game.observe('MenuScenario_HubMenu', 'OnOpenMenu', this.hideBrowser);
     });
   }
 
   private hideBrowser() {
-    console.log('HIDE BROWSER');
-
     browser.hide.trigger();
   }
 
   private showBrowser() {
-    console.log('SHOW BROWSER');
-
     browser.show.trigger();
   }
 
