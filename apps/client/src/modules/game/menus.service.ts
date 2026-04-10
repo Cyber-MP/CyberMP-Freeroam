@@ -55,12 +55,30 @@ export class GMenusService {
         this.globalMenuScenario = self;
       });
 
+      //
+
       mp.game.observe('MenuScenario_BaseMenu', 'CloseMenu', () => {
+        console.log('CloseMenu');
+
         this.hideBrowser();
       });
 
       mp.game.observe('MenuScenario_BaseMenu', 'OpenMenu', () => {
+        console.log('OpenMenu');
+
         this.showBrowser();
+      });
+
+      mp.game.observe('MenuScenario_BaseMenu', 'CloseSubMenu', () => {
+        console.log('CloseSubMenu');
+
+        this.hideBrowser();
+      });
+
+      mp.game.observe('MenuScenario_BaseMenu', 'OpenSubMenu', () => {
+        console.log('OpenSubMenu');
+
+        this.hideBrowser();
       });
     });
   }
