@@ -7,7 +7,6 @@ import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
 import { sleep } from 'radash';
 import { mp } from '../../mp';
-import { server } from '../../rpc';
 import { browser } from '../../rpc/browser';
 import { GMenusService } from '../game/menus.service';
 import { GStatusEffectsService } from '../game/status-effects/status-effects.service';
@@ -38,14 +37,6 @@ export class BasicChatCommands {
   private fixWeapons() {
     this.statusEffects.remove('GameplayRestriction.NoCombat');
     this.statusEffects.remove('GameplayRestriction.NoWeapons');
-  }
-
-  private spawnBasilisk() {
-    server.vehiclesSpawner.spawnVehicle.trigger({
-      model: 'v_militech_basilisk_militech',
-      appearance: 'militech_basilisk__basic_militech_01',
-      health: 25000,
-    });
   }
 
   private async levelUp() {
@@ -174,8 +165,6 @@ export class BasicChatCommands {
 
   @postConstruct()
   private init() {
-    mp.events.addCommand('basilisk1337', this.spawnBasilisk.bind(this));
-
     this.chatService.addCommand({
       name: 'clear',
       description: 'Clears chat',

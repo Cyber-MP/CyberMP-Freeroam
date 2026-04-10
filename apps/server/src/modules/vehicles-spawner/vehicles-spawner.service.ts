@@ -1,4 +1,4 @@
-import type { MpPlayer } from '@cybermp/server-types';
+import type { GameHash, MpPlayer } from '@cybermp/server-types';
 import { inject, injectable } from 'inversify';
 import { mp } from '../../mp';
 import { client } from '../../rpc';
@@ -42,6 +42,27 @@ export class VehiclesSpawnerService {
     const modelHash = mp.hashes.tweakdbid(`Vehicle.${vehicleModel}`);
     const appearanceHash = mp.hashes.cname(vehicle.appearance);
 
+    this.spawnVehicle({
+      player,
+      modelHash,
+      appearanceHash,
+      health: 1000,
+    });
+  }
+
+  spawnVehicle({
+    player,
+    modelHash,
+    appearanceHash,
+    sitInVehicle = false,
+    health = 1000,
+  }: {
+    player: MpPlayer;
+    modelHash: GameHash;
+    appearanceHash: GameHash;
+    sitInVehicle?: boolean;
+    health?: number;
+  }) {
     if (player.vehicle) {
       player.vehicle.destroy();
     }
@@ -49,48 +70,6 @@ export class VehiclesSpawnerService {
     const newVehicle = mp.vehicles.create({
       model: modelHash,
       appearance: appearanceHash,
-      position: player.position,
-      yaw: player.yaw,
-      dimension: player.dimension,
-      health: 500,
-    });
-
-    if (this.playersVehiclesMap.has(player.id)) {
-      this.playersVehiclesMap.get(player.id)?.add(newVehicle.id);
-    } else {
-      this.playersVehiclesMap.set(player.id, new Set([newVehicle.id]));
-    }
-
-    client.game.vehicles.requestSitInVehicle.trigger(player, newVehicle.id);
-  }
-
-  spawnVehicle({
-    player,
-    vehicleModel,
-    appearance,
-    sitInVehicle = false,
-    health = 500,
-  }: {
-    player: MpPlayer;
-    vehicleModel: string;
-    appearance: string;
-    sitInVehicle?: boolean;
-    health?: number;
-  }) {
-    if (this.matchmakingService.isOnActiveMatch(player)) {
-      return;
-    }
-
-    const modelHash = mp.hashes.tweakdbid(`Vehicle.${vehicleModel}`);
-    const appearanceHash = mp.hashes.cname(appearance);
-
-    if (player.vehicle) {
-      player.vehicle.destroy();
-    }
-
-    const newVehicle = mp.vehicles.create({
-      model: 157099068563n,
-      appearance: 16982411286042166782n,
       position: player.position,
       yaw: player.yaw,
       dimension: player.dimension,
