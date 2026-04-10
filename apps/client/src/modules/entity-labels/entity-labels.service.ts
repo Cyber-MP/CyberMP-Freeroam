@@ -22,7 +22,9 @@ export class EntityLabelsService {
 
   @postConstruct()
   private init() {
-    this.updateTick = mp.setTick(() => this.onTick());
+    mp.game.onGameLoaded(() => {
+      this.updateTick = mp.setTick(() => this.onTick());
+    });
   }
 
   @preDestroy()
