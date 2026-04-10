@@ -89,14 +89,21 @@ const CommandSuggestions = ({
     });
   }, [selectedSuggestionIndex]);
 
+  useEffect(() => {
+    if (selectedSuggestionIndex > suggestions.length - 1) {
+      setSelectedSuggestionIndex(0);
+    }
+  }, [selectedSuggestionIndex, suggestions.length]);
+
   useHotkeys(
     'enter',
     () => {
-      const currentSuggestion = suggestions[selectedSuggestionIndex];
+      const currentSuggestion = suggestions[selectedSuggestionIndex ?? 0];
 
       onSuggestionSelected(currentSuggestion, currentArgumentIndex);
     },
     {
+      preventDefault: true,
       enableOnFormTags: true,
       enableOnContentEditable: true,
     },
@@ -230,8 +237,8 @@ const ChatInput = () => {
     inputHistoryIndexRef.current = null;
   };
 
-  const onSubmit = (e: any) => {
-    e.preventDefault();
+  const onSubmit = (e?: any) => {
+    e?.preventDefault();
     const inputTrimmed = input.trim();
 
     if (!inputTrimmed) {
@@ -311,6 +318,10 @@ const ChatInput = () => {
       }
     } else {
       setInput(`/${suggestion.name}${args.length ? ' ' : ''}`);
+    }
+
+    if (inputCommand === suggestion?.name) {
+      onSubmit();
     }
   };
 
