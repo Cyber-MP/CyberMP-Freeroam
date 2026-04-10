@@ -16,6 +16,8 @@ import { ChatCommandFlag, ChatService } from './chat.service';
 @eager()
 @injectable()
 export class BasicChatCommands {
+  private isLevelupProcess = false;
+
   constructor(
     @inject(ChatService) private chatService: ChatService,
     @inject(GStatusEffectsService) private statusEffects: GStatusEffectsService,
@@ -47,53 +49,65 @@ export class BasicChatCommands {
   }
 
   private async levelUp() {
-    const arrData = [
-      'Strength',
-      'Reflexes',
-      'TechnicalAbility',
-      'Cool',
-      'Intelligence',
-    ];
+    if (this.isLevelupProcess) {
+      this.chatService.sendMessage('Command is already in progress');
 
-    const player = mp.game.GetPlayerObject();
-
-    const closeHub = new mp.game.ForceCloseHubMenuEvent();
-    const startHub = new mp.game.StartHubMenuEvent();
-    const userData = new mp.game.PerkUserData();
-
-    const globalMenuScenario = this.menusService.globalMenuScenario;
-
-    userData.statType = gamedataStatType.Reflexes;
-
-    startHub.SetStartMenu('new_perks', 'ico_character', userData);
-
-    mp.game.ScriptGameInstance.GetUISystem().QueueEvent(startHub);
-
-    await sleep(50);
-
-    for (let i = 0; i < arrData.length; i++) {
-      const request1 = new mp.game.SetAttribute();
-      request1.Set(player, 20, arrData[i] as any);
-      mp.game.ScriptGameInstance.GetScriptableSystemsContainer()
-        .Get('PlayerDevelopmentSystem')
-        .QueueRequest(request1);
+      return;
     }
 
-    const devPointsRequest = new mp.game.questAddDevelopmentPointsRequest();
+    this.isLevelupProcess = true;
 
-    devPointsRequest.Set(
-      mp.game.GetPlayerObject(),
-      2000,
-      gamedataDevelopmentPointType.Primary,
-    );
+    try {
+      const arrData = [
+        'Strength',
+        'Reflexes',
+        'TechnicalAbility',
+        'Cool',
+        'Intelligence',
+      ];
 
-    mp.game.ScriptGameInstance.GetScriptableSystemsContainer()
-      .Get('PlayerDevelopmentSystem')
-      .QueueRequest(devPointsRequest);
+      const player = mp.game.GetPlayerObject();
 
-    await sleep(100);
+      const closeHub = new mp.game.ForceCloseHubMenuEvent();
+      const startHub = new mp.game.StartHubMenuEvent();
+      const userData = new mp.game.PerkUserData();
 
-    if (globalMenuScenario) {
+      const globalMenuScenario = this.menusService.globalMenuScenario;
+
+      userData.statType = gamedataStatType.Reflexes;
+
+      startHub.SetStartMenu('new_perks', 'ico_character', userData);
+
+      mp.game.ScriptGameInstance.GetUISystem().QueueEvent(startHub);
+
+      await sleep(50);
+
+      for (let i = 0; i < arrData.length; i++) {
+        const request1 = new mp.game.SetAttribute();
+        request1.Set(player, 20, arrData[i] as any);
+        mp.game.ScriptGameInstance.GetScriptableSystemsContainer()
+          .Get('PlayerDevelopmentSystem')
+          .QueueRequest(request1);
+      }
+
+      const devPointsRequest = new mp.game.questAddDevelopmentPointsRequest();
+
+      devPointsRequest.Set(
+        mp.game.GetPlayerObject(),
+        2000,
+        gamedataDevelopmentPointType.Primary,
+      );
+
+      mp.game.ScriptGameInstance.GetScriptableSystemsContainer()
+        .Get('PlayerDevelopmentSystem')
+        .QueueRequest(devPointsRequest);
+
+      await sleep(100);
+
+      if (!globalMenuScenario) {
+        throw new Error();
+      }
+
       for (let k = 0; k < 2; k++) {
         userData.statType = gamedataStatType.Cool;
         globalMenuScenario.SwitchMenu('new_perks', userData);
@@ -149,10 +163,12 @@ export class BasicChatCommands {
       await sleep(100);
 
       mp.game.ScriptGameInstance.GetUISystem().QueueEvent(closeHub);
-    } else {
+    } catch {
       this.chatService.sendMessage(
         'Command not applied, try run it one more time!',
       );
+    } finally {
+      this.isLevelupProcess = false;
     }
   }
 
