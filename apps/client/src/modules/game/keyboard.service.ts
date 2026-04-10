@@ -64,7 +64,7 @@ export class GKeyboardService {
     }
   }
 
-  unBindKey(key: CyberEnums.EInputKey, callback: BindCallback) {
+  unbindKey(key: CyberEnums.EInputKey, callback: BindCallback) {
     const callbacks = this.binds.get(key);
     if (!callbacks || !callbacks.size) {
       return;

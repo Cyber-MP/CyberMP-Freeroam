@@ -104,7 +104,11 @@ export class SpectatingService {
   }
 
   spectate(playerId: number) {
-    if (this.spectatedPlayerId === playerId) return;
+    const localPlayerId = mp.getPlayerServerId(1);
+    if (this.spectatedPlayerId === playerId || playerId === localPlayerId) {
+      return;
+    }
+
     this.unspectate();
 
     this.spectatedPlayerId = playerId;
@@ -159,6 +163,10 @@ export class SpectatingService {
   @preDestroy()
   private destroy() {
     this.unspectate();
+  }
+
+  get isSpectating() {
+    return this.spectatedPlayerId !== null;
   }
 
   getSpectatedPlayerId() {

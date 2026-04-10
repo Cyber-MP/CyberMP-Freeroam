@@ -130,6 +130,10 @@ class Racer {
   }
 
   async respawn() {
+    if (this.finished) {
+      return;
+    }
+
     const node =
       this.currentCheckpointIndex === 0
         ? this.startPoint
@@ -468,6 +472,8 @@ export class RaceLaps extends BaseGameMode<
 
   private onRacerFinish(racer: Racer) {
     const activeRacers = [...this.racers.values()].filter((r) => !r.finished);
+
+    racer.vehicle.destroy();
 
     if (activeRacers.length === 0) {
       this.match.end();
