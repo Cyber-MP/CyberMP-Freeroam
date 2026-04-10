@@ -1,12 +1,18 @@
-import type { gameCameraComponent, Vector4 } from '@cybermp/client-types/game';
+import { ELoadingScreenState } from '@cybermp/client-types/enums';
+import type {
+  gameCameraComponent,
+  gameObject,
+  Vector4,
+} from '@cybermp/client-types/game';
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, preDestroy } from 'inversify';
-import { sleep, throttle } from 'radash';
+import { isEqual, throttle } from 'radash';
 import { createVector4 } from '../../lib/vectors';
 import { mp } from '../../mp';
 import { server } from '../../rpc';
 import { GEntityService } from '../game/entity.service';
 import { GHealthService } from '../game/health/health.service';
+import { GLoadingScreenService } from '../game/loading-screen.service';
 import { GPlayerService } from '../game/player.service';
 import { GStatusEffectsService } from '../game/status-effects/status-effects.service';
 import { GTeleportService } from '../game/teleport/teleport.service';
@@ -16,10 +22,9 @@ const logger = throttle({ interval: 1000 }, console.log);
 @eager()
 @injectable()
 export class SpectatingService {
-  private spectateTickId: number | null = null;
+  private spectateIntervalId: ReturnType<typeof setInterval> | null = null;
   private spectatedPlayerId: number | null = null;
   private cameraComponent: gameCameraComponent | null = null;
-  private isProcessingTick = false;
 
   private readonly FREEZE_FLAGS = [
     'GameplayRestriction.NoMovement',
@@ -32,52 +37,77 @@ export class SpectatingService {
     @inject(GHealthService) private health: GHealthService,
     @inject(GStatusEffectsService) private status: GStatusEffectsService,
     @inject(GTeleportService) private teleport: GTeleportService,
+    @inject(GLoadingScreenService) private loading: GLoadingScreenService,
     @inject(GPlayerService) private player: GPlayerService,
   ) {}
 
   private async onTick() {
-    if (this.isProcessingTick || !this.spectatedPlayerId) return;
+    if (!this.spectatedPlayerId) {
+      this.unspectate();
+      return;
+    }
 
-    this.isProcessingTick = true;
+    const targetPos = await this.getPlayerPosition(this.spectatedPlayerId);
 
-    try {
-      const targetPos = await this.getPlayerPosition(this.spectatedPlayerId);
+    if (!targetPos) {
+      logger('Spectate target lost, stopping...');
+      this.unspectate();
+      return;
+    }
 
-      if (!targetPos) {
-        logger('Spectate target lost, stopping...');
-        this.unspectate();
+    this.teleport.teleport({
+      ...targetPos,
+      z: targetPos.z + 25,
+      y: targetPos.y + 25,
+    });
+
+    if (!this.cameraComponent) {
+      this.setupCamera(this.spectatedPlayerId);
+    } else if (this.loading.getCurrentState() !== ELoadingScreenState.Hidden) {
+      await this.loading.waitForLoadingScreenToHide();
+
+      this.setupCamera(this.spectatedPlayerId);
+    } else {
+      const gameId = mp.getPlayerGameIdByNetworkId(this.spectatedPlayerId);
+      const entity = this.entity.findById(gameId);
+      if (!entity) {
         return;
       }
 
-      await sleep(100);
+      const entityVehicle = mp.game.GetMountedVehicle(entity as gameObject);
 
-      this.teleport.teleport({
-        ...targetPos,
-        z: targetPos.z + 35,
-        y: targetPos.y + 35,
-      });
+      const newPosition = entityVehicle
+        ? { z: 2, x: 0, y: -5, w: 0 }
+        : { z: 2, x: 0, y: -2, w: 0 };
 
-      if (!this.cameraComponent) {
-        this.setupCamera(this.spectatedPlayerId);
-      } else {
-        this.cameraComponent.Activate(0, false);
+      const currentPosition = this.cameraComponent.GetLocalPosition();
+
+      if (
+        isEqual(newPosition, {
+          x: currentPosition.x,
+          y: currentPosition.y,
+          z: currentPosition.z,
+          w: currentPosition.w,
+        })
+      ) {
+        return;
       }
-    } catch (error) {
-      console.error(
-        'Error during spectate tick:',
-        error,
-        (error as any).message,
-      );
-    } finally {
-      this.isProcessingTick = false;
+
+      this.cameraComponent.SetLocalPosition(newPosition);
     }
   }
 
   private setupCamera(targetNetworkId: number) {
     const gameId = mp.getPlayerGameIdByNetworkId(targetNetworkId);
-    if (!gameId) return;
+    if (!gameId) {
+      return;
+    }
 
     const entity = this.entity.findById(gameId);
+    if (!entity) {
+      return;
+    }
+
     const component = entity?.FindComponentByName(
       'spectateCamera',
     ) as gameCameraComponent;
@@ -85,6 +115,7 @@ export class SpectatingService {
     if (component) {
       this.cameraComponent = component;
       this.cameraComponent.SetLocalPosition({ z: 2, x: 0, y: -2, w: 0 });
+      this.cameraComponent.SetFOV(80);
       this.cameraComponent.Activate(0, false);
       logger('Spectate camera linked and activated');
     }
@@ -95,7 +126,9 @@ export class SpectatingService {
     if (gameId) {
       const entity = this.entity.findById(gameId);
       const pos = entity?.GetWorldPosition();
-      if (pos) return pos;
+      if (pos) {
+        return pos;
+      }
     }
 
     const serverPos = await server.getPlayerPosition.call(playerId);
@@ -117,15 +150,15 @@ export class SpectatingService {
     this.spectatedPlayerId = playerId;
 
     this.applySpectatorState(true);
-    this.spectateTickId = mp.setTick(() => this.onTick());
+    this.spectateIntervalId = setInterval(this.onTick.bind(this), 100);
 
     logger(`Started spectating player: ${playerId}`);
   }
 
   unspectate() {
-    if (this.spectateTickId !== null) {
-      mp.clearTick(this.spectateTickId);
-      this.spectateTickId = null;
+    if (this.spectateIntervalId !== null) {
+      clearInterval(this.spectateIntervalId);
+      this.spectateIntervalId = null;
     }
 
     if (this.spectatedPlayerId !== null) {
@@ -137,7 +170,6 @@ export class SpectatingService {
       mp.game.GetPlayer().FindComponentByName('camera') as gameCameraComponent
     ).Activate();
     this.cameraComponent = null;
-    this.isProcessingTick = false;
   }
 
   private applySpectatorState(active: boolean) {

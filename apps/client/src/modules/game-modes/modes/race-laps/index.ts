@@ -159,7 +159,9 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
     this.navigation.destroy();
     this.checkpoint.destroy();
 
-    this.teleportService.teleport(this.initialPosition);
+    setTimeout(() => {
+      this.teleportService.teleport(this.initialPosition);
+    });
 
     this.statusEffectsService.remove(
       'GameplayRestriction.VehicleCombatBlockExit',
