@@ -94,7 +94,7 @@ export class GMenusService {
       // });
 
       mp.game.observe('gameuiInGameMenuGameController', 'OnInitialize', () => {
-        console.log('menu opened');
+        console.log('gameuiInGameMenuGameController OnInitialize');
 
         this.hideBrowser();
       });
@@ -103,11 +103,23 @@ export class GMenusService {
         'gameuiInGameMenuGameController',
         'OnUninitialize',
         () => {
-          console.log('menu closed');
+          console.log('gameuiInGameMenuGameController OnUninitialize');
 
-          this.showBrowser();
+          this.hideBrowser();
         },
       );
+
+      // mp.game.observe('gameuiInventoryGameController', 'OnShow', () => {});
+      // mp.game.observe('gameuiInventoryGameController', 'OnHide', () => {});
+
+      // gameuiInGameMenuGameController;
+      // gameuiPauseMenuGameController;
+      // gameuiWorldMapGameController;
+      // gameuiInventoryGameController;
+
+      mp.game.observe('gameuiHUDGameController', 'ToggleVisibility', () => {
+        browser.toggleVisibility.trigger();
+      });
     });
   }
 
