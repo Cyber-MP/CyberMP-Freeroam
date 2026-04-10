@@ -85,10 +85,67 @@ export class GMenusService {
         this.hideBrowser();
       });
 
+      // close pause menu
       mp.game.observe('MenuScenario_PauseMenu', 'OnLeaveScenario', () => {
         console.log('MenuScenario_PauseMenu OnLeaveScenario');
 
         this.showBrowser();
+      });
+
+      mp.game.observe('MenuScenario_HubMenu', 'OnCloseHubMenu', () => {
+        console.log('MenuScenario_HubMenu OnCloseHubMenu');
+
+        this.showBrowser();
+      });
+
+      mp.game.observe('MenuScenario_HubMenu', 'OnRequestHubMenu', () => {
+        console.log('MenuScenario_HubMenu OnRequestHubMenu');
+
+        this.showBrowser();
+      });
+
+      mp.game.observe('MenuScenario_HubMenu', 'OnCloseHubMenuRequest', () => {
+        console.log('MenuScenario_HubMenu OnCloseHubMenuRequest');
+
+        this.showBrowser();
+      });
+
+      mp.game.observe('MenuScenario_HubMenu', 'OnHotkeySwitchToMap', () => {
+        console.log('MenuScenario_HubMenu OnHotkeySwitchToMap');
+
+        this.hideBrowser();
+      });
+
+      mp.game.observe(
+        'MenuScenario_HubMenu',
+        'OnHotkeySwitchToCrafting',
+        () => {
+          console.log('MenuScenario_HubMenu OnHotkeySwitchToCrafting');
+
+          this.hideBrowser();
+        },
+      );
+
+      mp.game.observe('MenuScenario_HubMenu', 'OnHotkeySwitchToJournal', () => {
+        console.log('MenuScenario_HubMenu OnHotkeySwitchToJournal');
+
+        this.hideBrowser();
+      });
+
+      mp.game.observe(
+        'MenuScenario_HubMenu',
+        'OnHotkeySwitchToInventory',
+        () => {
+          console.log('MenuScenario_HubMenu OnHotkeySwitchToInventory');
+
+          this.hideBrowser();
+        },
+      );
+
+      mp.game.observe('MenuScenario_HubMenu', 'OnHotkeySwitchToPerks', () => {
+        console.log('MenuScenario_HubMenu OnHotkeySwitchToPerks');
+
+        this.hideBrowser();
       });
     });
   }
