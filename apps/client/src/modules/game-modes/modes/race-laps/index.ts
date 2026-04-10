@@ -137,7 +137,7 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
 
     this.statusEffectsService.add('GameplayRestriction.NoCombat');
     this.statusEffectsService.add('GameplayRestriction.NoWeapons');
-  }
+      }
 
   end() {
     this.unmountVehicleCheckInterval();
@@ -161,7 +161,7 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
 
     this.statusEffectsService.remove('GameplayRestriction.NoCombat');
     this.statusEffectsService.remove('GameplayRestriction.NoWeapons');
-
+    
     browser.hud.setGlobalPath.trigger('/hud');
     browser.navigate.trigger('/hud/game-modes/race-laps/results');
   }
@@ -333,11 +333,20 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
   }
 
   startCountdown(startTimestamp: number) {
+    console.log(
+      'CURRENT DATE',
+      Date.now(),
+      'START TIMESTAMP',
+      startTimestamp,
+      'REMAINING',
+      Math.ceil((startTimestamp - Date.now()) / 1000),
+    );
+
+    const initialRemaining = Math.ceil((startTimestamp - Date.now()) / 1000);
+
     const mountedVehicle = mp.game.GetMountedVehicle(mp.game.GetPlayerObject());
-    if (mountedVehicle) {
-      mountedVehicle.ForceBrakesFor(
-        Math.ceil((startTimestamp - Date.now()) / 1000),
-      );
+    if (mountedVehicle && initialRemaining > 0) {
+      mountedVehicle.ForceBrakesFor(initialRemaining);
     }
 
     this.countDownInterval = setInterval(() => {

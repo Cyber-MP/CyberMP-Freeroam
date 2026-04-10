@@ -415,6 +415,7 @@ export class RaceLaps extends BaseGameMode<
 
   async startCountdown() {
     const startDate = Date.now() + this.COUNTDOWN_TIME;
+    console.log('START TIMESTAMP', startDate);
 
     for (const racer of this.racers.keys()) {
       client.gameModes.raceLaps.startCountdown.trigger(racer, startDate);

@@ -96,7 +96,7 @@ export class EntryService {
 
     setTimeout(() => {
       browser.navigate.trigger('/entry');
-    });
+    }, 100);
 
     this.logger.info('Fully initialized entry service, spawn player and etc ');
   }
