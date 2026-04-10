@@ -12,30 +12,10 @@ export const hudState = proxy<HudState>({
   globalPath: '/hud',
 });
 
-const setHudVisibility = (visible: boolean) => {
-  document.body.dataset.visible = visible.toString();
-};
-
-const toggleHudVisibility = () => {
-  if (document.body.dataset.visible === 'true') {
-    document.body.dataset.visible = 'false';
-  } else {
-    document.body.dataset.visible = 'true';
-  }
-};
-
 export const hudContract = {
   setGlobalPath: r.procedure
     .input(z.string<keyof FileRoutesByFullPath>())
     .handler((c) => {
       hudState.globalPath = c.data as any;
     }),
-
-  hide: r.procedure.handler(() => {
-    setHudVisibility(false);
-  }),
-  show: r.procedure.handler(() => {
-    setHudVisibility(true);
-  }),
-  toggleVisibility: r.procedure.handler(toggleHudVisibility),
 };

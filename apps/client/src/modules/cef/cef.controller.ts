@@ -24,7 +24,7 @@ export class CefController {
 
   private toggleHudVisibility(action: EInputAction) {
     if (action === EInputAction.IACT_Release) {
-      browser.hud.toggleVisibility.trigger();
+      browser.toggleVisibility.trigger();
     }
   }
 

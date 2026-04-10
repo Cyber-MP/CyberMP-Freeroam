@@ -7,6 +7,7 @@ import type {
 import { eager } from '@freeroam/inversify';
 import { injectable, postConstruct } from 'inversify';
 import { mp } from '../../mp';
+import { browser } from '../../rpc/browser';
 
 @eager()
 @injectable()
@@ -53,7 +54,23 @@ export class GMenusService {
       mp.game.observe('MenuScenario_HubMenu', 'OnEnterScenario', (self) => {
         this.globalMenuScenario = self;
       });
+
+      mp.game.observe('MenuScenario_HubMenu', 'OpenMenu', () => {
+        this.hideBrowserHud();
+      });
+
+      mp.game.observe('MenuScenario_HubMenu', 'CloseMenu', () => {
+        this.showBrowserHud();
+      });
     });
+  }
+
+  private hideBrowserHud() {
+    browser.hide.trigger();
+  }
+
+  private showBrowserHud() {
+    browser.show.trigger();
   }
 
   closeAllMenus() {

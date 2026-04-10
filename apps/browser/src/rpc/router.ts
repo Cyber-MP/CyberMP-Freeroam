@@ -1,4 +1,5 @@
 import z from 'zod';
+import { setBodyVisibility, toggleBodyVisibility } from '../body';
 import { keysContract } from '../keys';
 import { copyToClipboard } from '../lib/clipboard';
 import { raceLapsContract } from '../routes/hud.game-modes/race-laps/-contract';
@@ -36,6 +37,14 @@ export const rpcRouter = {
         tanstackRouter.history.go(c.data);
       }
     }),
+
+  hide: r.procedure.handler(() => {
+    setBodyVisibility(false);
+  }),
+  show: r.procedure.handler(() => {
+    setBodyVisibility(true);
+  }),
+  toggleVisibility: r.procedure.handler(toggleBodyVisibility),
 };
 
 export type BrowserRouter = typeof rpcRouter;

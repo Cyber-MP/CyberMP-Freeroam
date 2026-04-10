@@ -157,7 +157,7 @@ export class BasicChatCommands {
   }
 
   private hideHud() {
-    browser.hud.hide.trigger();
+    browser.hide.trigger();
   }
 
   @postConstruct()
