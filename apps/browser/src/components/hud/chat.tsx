@@ -90,6 +90,19 @@ const CommandSuggestions = ({
   }, [selectedSuggestionIndex]);
 
   useHotkeys(
+    'enter',
+    () => {
+      const currentSuggestion = suggestions[selectedSuggestionIndex];
+
+      onSuggestionSelected(currentSuggestion, currentArgumentIndex);
+    },
+    {
+      enableOnFormTags: true,
+      enableOnContentEditable: true,
+    },
+  );
+
+  useHotkeys(
     'tab',
     () => {
       const currentSuggestion = suggestions[selectedSuggestionIndex];
