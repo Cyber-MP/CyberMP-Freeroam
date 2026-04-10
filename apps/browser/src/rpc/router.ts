@@ -7,6 +7,7 @@ import { chatContract } from '../store/chat';
 import { hintsContract } from '../store/hints';
 import { hudContract } from '../store/hud';
 import { killFeedContract } from '../store/kill-feed';
+import { loadingOverlayContract } from '../store/loading-overlay';
 import { tanstackRouter } from '../tanstack-router';
 import { r } from '.';
 
@@ -20,6 +21,7 @@ export const rpcRouter = {
   chat: chatContract,
   killFeed: killFeedContract,
   hud: hudContract,
+  loadingOverlay: loadingOverlayContract,
 
   copyToClipboard: r.procedure.input(z.string()).handler((c) => {
     copyToClipboard(c.data);

@@ -1,9 +1,8 @@
 import * as CyberEnums from '@cybermp/client-types/enums';
 import type { vehicleBaseObject } from '@cybermp/client-types/game';
-import { inject, injectable } from 'inversify';
+import { injectable } from 'inversify';
 import { sleep } from 'radash';
 import { mp } from '../../../mp';
-import { GPlayerService } from '../player.service';
 
 type RequestSitInVehicleOptions = {
   instant?: boolean;
@@ -12,8 +11,6 @@ type RequestSitInVehicleOptions = {
 
 @injectable()
 export class GVehiclesService {
-  constructor(@inject(GPlayerService) private playerService: GPlayerService) {}
-
   requestSitInVehicle(
     vehicleNetId: number,
     options?: RequestSitInVehicleOptions,
@@ -35,8 +32,6 @@ export class GVehiclesService {
       if (!entity) {
         return;
       }
-
-      this.playerService.freeze(false);
 
       const data = new mp.game.gameMountEventData();
       data.isInstant = instant;

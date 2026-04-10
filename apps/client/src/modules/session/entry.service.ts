@@ -77,15 +77,14 @@ export class EntryService {
     }
 
     browser.hud.setGlobalPath.trigger('/hud');
-    this.cefService.setLoadingRedirect('/hud');
+    // this.cefService.setLoadingRedirect('/hud');
     browser.navigate.trigger('/hud');
   }
 
   private async onGameLoaded() {
     this.hud.hide();
-    this.cefService.setLoadingRedirect('/entry');
+    // this.cefService.setLoadingRedirect('/entry');
     browser.hud.setGlobalPath.trigger('/entry');
-    console.log("IM SETTING THISS SHIT RIGHT WHY IS THIS NOT WORKING")
 
     setTimeout(() => this.toggleEntryRestrictions(true), 0);
 
@@ -95,7 +94,9 @@ export class EntryService {
 
     this.playerService.invisible(true);
 
-    browser.navigate.trigger('/entry');
+    setTimeout(() => {
+      browser.navigate.trigger('/entry');
+    }, 100);
 
     this.logger.info('Fully initialized entry service, spawn player and etc ');
   }

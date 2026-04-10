@@ -11,7 +11,6 @@ import { createEulerAngles, createVector4 } from '../../../../lib/vectors';
 import { mp } from '../../../../mp';
 import { server } from '../../../../rpc';
 import { browser } from '../../../../rpc/browser';
-import { CefService } from '../../../cef/cef.service';
 import {
   type DeathEvent,
   DeathService,
@@ -23,11 +22,11 @@ import { GStatusEffectsService } from '../../../game/status-effects/status-effec
 import { GTeleportService } from '../../../game/teleport/teleport.service';
 import { GVehiclesService } from '../../../game/vehicles/vehicles.service';
 import { SpawnService } from '../../../spawn/spawn.service';
+import { SpectatingService } from '../../../spectating/spectating.service';
 import { BaseGameMode } from '../../game-mode';
 import { RaceLapsCheckpoint } from './checkpoint';
 import type {
   RaceLapsCheckpointNode,
-  RaceLapsFinishedRacer,
   RaceLapsMap,
   RaceLapsPrepareDTO,
   RaceLapsRacerDTO,
@@ -103,18 +102,16 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
     currentLap: 0,
     finished: false,
   };
+  private currentRanks: RaceLapsRankDTO[] = [];
 
   private initialPosition!: Vector4;
 
   private countDownInterval: ReturnType<typeof setInterval> | undefined;
   private vehicleCheckInterval: ReturnType<typeof setInterval> | undefined;
 
-  private results: RaceLapsFinishedRacer[] | null = null;
-
   private navigation = new TrackPathNavigation();
 
   constructor(
-    @inject(CefService) private cefService: CefService,
     @inject(GVehiclesService) private vehiclesService: GVehiclesService,
     @inject(GTeleportService) private teleportService: GTeleportService,
     @inject(GHealthService) private healthService: GHealthService,
@@ -124,15 +121,16 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
     @inject(GKeyboardService) private keyboardService: GKeyboardService,
     @inject(DeathService) private deathService: DeathService,
     @inject(SpawnService) private spawnService: SpawnService,
+    @inject(SpectatingService) private spectatingService: SpectatingService,
   ) {
     super();
   }
 
   start() {
+    this.spectatingService.unspectate();
+
     this.healthService.set(this.healthService.getDefaultHealth());
     this.mountDeathHandler();
-
-    this.cefService.setLoadingRedirect('/hud/game-modes/race-laps/');
 
     this.initialPosition = mp.game.GetPlayer().GetWorldPosition();
 
@@ -148,6 +146,9 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
     this.unmountVehicleCheckInterval();
     this.unmountDeathHandler();
     this.unmountRespawnKey();
+    this.unmountSpectateBinds();
+
+    this.spectatingService.unspectate();
 
     if (this.countDownInterval) {
       clearInterval(this.countDownInterval);
@@ -155,11 +156,6 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
 
     this.navigation.destroy();
     this.checkpoint.destroy();
-
-    this.cefService.setLoadingRedirect(
-      this.results ? '/hud/game-modes/race-laps/results' : '/hud',
-      !!this.results,
-    );
 
     this.teleportService.teleport(this.initialPosition);
 
@@ -173,10 +169,7 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
     this.statusEffectsService.remove('GameplayRestriction.NoWeapons');
 
     browser.hud.setGlobalPath.trigger('/hud');
-
-    browser.navigate.trigger(
-      this.results ? '/hud/game-modes/race-laps/results' : '/hud',
-    );
+    browser.navigate.trigger('/hud/game-modes/race-laps/results');
   }
 
   updateRacerData(data: Partial<RaceLapsRacerDTO> = {}) {
@@ -189,13 +182,17 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
   }
 
   updateRanks(ranks: RaceLapsRankDTO[]) {
+    this.currentRanks = ranks;
     browser.gameModes.raceLaps.updateRanks.trigger(ranks);
-  }
 
-  setResults(results: RaceLapsFinishedRacer[]) {
-    this.results = results;
-
-    browser.gameModes.raceLaps.setResults.trigger(results);
+    if (this.spectatingService.isSpectating) {
+      const target = ranks.find(
+        (r) => r.playerId === this.spectatingService.getSpectatedPlayerId(),
+      );
+      if (!target || target.finished) {
+        this.spectateNextValidTarget();
+      }
+    }
   }
 
   async prepare(data: RaceLapsPrepareDTO) {
@@ -240,7 +237,9 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
 
       this.checkpoint.destroy();
 
-      if (!nextData.finished) {
+      if (nextData.finished) {
+        this.onFinish();
+      } else {
         this.createCheckpoint();
       }
     };
@@ -249,7 +248,13 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
   }
 
   private onFinish() {
-    // TODO: add here spectating logic or smth
+    this.unmountRespawnKey();
+    this.unmountDeathHandler();
+    this.unmountVehicleCheckInterval();
+
+    this.mountSpectateBinds();
+
+    this.spectateNextValidTarget();
   }
 
   private respawn() {
@@ -298,7 +303,7 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
     browser.hints.remove.trigger('F');
 
     if (this.respawnKeyHandler) {
-      this.keyboardService.unBindKey(this.RESPAWN_KEY, this.respawnKeyHandler);
+      this.keyboardService.unbindKey(this.RESPAWN_KEY, this.respawnKeyHandler);
     }
   }
 
@@ -318,6 +323,61 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
       clearInterval(this.vehicleCheckInterval);
       this.vehicleCheckInterval = undefined;
     }
+  }
+
+  private spectateNextKeyHandler = (action: EInputAction) => {
+    if (action === EInputAction.IACT_Press) {
+      this.cycleSpectateTarget(-1);
+    }
+  };
+
+  private spectatePrevKeyHandler = (action: EInputAction) => {
+    if (action === EInputAction.IACT_Press) {
+      this.cycleSpectateTarget(1);
+    }
+  };
+
+  private mountSpectateBinds() {
+    browser.hints.add.trigger({
+      'A/D': 'Switch Player',
+    });
+
+    this.keyboardService.bindKey(EInputKey.IK_A, this.spectatePrevKeyHandler);
+    this.keyboardService.bindKey(EInputKey.IK_D, this.spectateNextKeyHandler);
+  }
+
+  private unmountSpectateBinds() {
+    browser.hints.remove.trigger('A/D');
+
+    this.keyboardService.unbindKey(EInputKey.IK_A, this.spectatePrevKeyHandler);
+    this.keyboardService.unbindKey(EInputKey.IK_D, this.spectateNextKeyHandler);
+  }
+
+  private spectateNextValidTarget() {
+    const nextBest = this.currentRanks.find((r) => !r.finished);
+
+    if (nextBest) {
+      this.spectatingService.spectate(nextBest.playerId);
+    } else {
+      this.spectatingService.unspectate();
+    }
+  }
+
+  private cycleSpectateTarget(direction: number) {
+    const unfinished = this.currentRanks.filter((r) => !r.finished);
+    if (unfinished.length === 0) {
+      return;
+    }
+
+    const currentIndex = unfinished.findIndex(
+      (r) => r.playerId === this.spectatingService.getSpectatedPlayerId(),
+    );
+    let nextIndex = (currentIndex + direction) % unfinished.length;
+    if (nextIndex < 0) {
+      nextIndex = unfinished.length - 1;
+    }
+
+    this.spectatingService.spectate(unfinished[nextIndex].playerId);
   }
 
   private deathHandler: OnDeathCallback = (event: DeathEvent) => {
@@ -352,11 +412,20 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
   }
 
   startCountdown(startTimestamp: number) {
+    console.log(
+      'CURRENT DATE',
+      Date.now(),
+      'START TIMESTAMP',
+      startTimestamp,
+      'REMAINING',
+      Math.ceil((startTimestamp - Date.now()) / 1000),
+    );
+
+    const initialRemaining = Math.ceil((startTimestamp - Date.now()) / 1000);
+
     const mountedVehicle = mp.game.GetMountedVehicle(mp.game.GetPlayerObject());
-    if (mountedVehicle) {
-      mountedVehicle.ForceBrakesFor(
-        Math.ceil((startTimestamp - Date.now()) / 1000),
-      );
+    if (mountedVehicle && initialRemaining > 0) {
+      mountedVehicle.ForceBrakesFor(initialRemaining);
     }
 
     this.countDownInterval = setInterval(() => {

@@ -9,7 +9,6 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as LoadingRouteImport } from './routes/loading'
 import { Route as HudRouteImport } from './routes/hud'
 import { Route as EntryRouteImport } from './routes/entry'
 import { Route as DeathRouteImport } from './routes/death'
@@ -23,11 +22,6 @@ import { Route as HudGameModesRaceLapsIndexRouteImport } from './routes/hud.game
 import { Route as HudMenuMatchmakingCreateRouteImport } from './routes/hud.menu/matchmaking/create'
 import { Route as HudGameModesRaceLapsResultsRouteImport } from './routes/hud.game-modes/race-laps/results'
 
-const LoadingRoute = LoadingRouteImport.update({
-  id: '/loading',
-  path: '/loading',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const HudRoute = HudRouteImport.update({
   id: '/hud',
   path: '/hud',
@@ -97,7 +91,6 @@ export interface FileRoutesByFullPath {
   '/death': typeof DeathRoute
   '/entry': typeof EntryRoute
   '/hud': typeof HudRouteWithChildren
-  '/loading': typeof LoadingRoute
   '/hud/menu': typeof HudMenuRouteRouteWithChildren
   '/hud/menu/items': typeof HudMenuItemsRoute
   '/hud/menu/world': typeof HudMenuWorldRoute
@@ -112,7 +105,6 @@ export interface FileRoutesByTo {
   '/death': typeof DeathRoute
   '/entry': typeof EntryRoute
   '/hud': typeof HudRouteWithChildren
-  '/loading': typeof LoadingRoute
   '/hud/menu/items': typeof HudMenuItemsRoute
   '/hud/menu/world': typeof HudMenuWorldRoute
   '/hud/menu': typeof HudMenuIndexRoute
@@ -127,7 +119,6 @@ export interface FileRoutesById {
   '/death': typeof DeathRoute
   '/entry': typeof EntryRoute
   '/hud': typeof HudRouteWithChildren
-  '/loading': typeof LoadingRoute
   '/hud/menu': typeof HudMenuRouteRouteWithChildren
   '/hud/menu/items': typeof HudMenuItemsRoute
   '/hud/menu/world': typeof HudMenuWorldRoute
@@ -144,7 +135,6 @@ export interface FileRouteTypes {
     | '/death'
     | '/entry'
     | '/hud'
-    | '/loading'
     | '/hud/menu'
     | '/hud/menu/items'
     | '/hud/menu/world'
@@ -159,7 +149,6 @@ export interface FileRouteTypes {
     | '/death'
     | '/entry'
     | '/hud'
-    | '/loading'
     | '/hud/menu/items'
     | '/hud/menu/world'
     | '/hud/menu'
@@ -173,7 +162,6 @@ export interface FileRouteTypes {
     | '/death'
     | '/entry'
     | '/hud'
-    | '/loading'
     | '/hud/menu'
     | '/hud/menu/items'
     | '/hud/menu/world'
@@ -189,18 +177,10 @@ export interface RootRouteChildren {
   DeathRoute: typeof DeathRoute
   EntryRoute: typeof EntryRoute
   HudRoute: typeof HudRouteWithChildren
-  LoadingRoute: typeof LoadingRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/loading': {
-      id: '/loading'
-      path: '/loading'
-      fullPath: '/loading'
-      preLoaderRoute: typeof LoadingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/hud': {
       id: '/hud'
       path: '/hud'
@@ -327,7 +307,6 @@ const rootRouteChildren: RootRouteChildren = {
   DeathRoute: DeathRoute,
   EntryRoute: EntryRoute,
   HudRoute: HudRouteWithChildren,
-  LoadingRoute: LoadingRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -11,7 +11,6 @@ import {
 } from '../../middleware/active-game.middleware';
 import type { RaceLaps } from '.';
 import {
-  zRaceLapsFinishedRacer,
   zRaceLapsPrepareDTO,
   zRaceLapsRacerDTO,
   zRaceLapsRankDTO,
@@ -32,10 +31,6 @@ export const raceLapsContract = {
   updateRanks: r.contract
     .context<RpcActiveGameContext<RaceLaps>>()
     .input(z.array(zRaceLapsRankDTO)),
-  setResults: r.contract
-    .method(RpcApplyType.REGISTER)
-    .context<RpcActiveGameContext<RaceLaps>>()
-    .input(z.array(zRaceLapsFinishedRacer)),
 };
 
 type ContractInputs = InferRouterInputs<typeof raceLapsContract>;
@@ -76,12 +71,6 @@ export class RaceLapsController {
     context.mode.updateRanks(context.data);
   }
 
-  private async setResults(
-    context: RpcActiveGameContext<RaceLaps, ContractInputs['setResults']>,
-  ) {
-    context.mode.setResults(context.data);
-  }
-
   @postConstruct()
   private init() {
     r.implement(raceLapsContract, {
@@ -104,10 +93,6 @@ export class RaceLapsController {
       updateRanks: raceLapsContract.updateRanks.implement(
         this.activeGameMiddleware,
         this.updateRanks.bind(this),
-      ),
-      setResults: raceLapsContract.setResults.implement(
-        this.activeGameMiddleware,
-        this.setResults.bind(this),
       ),
     });
   }

@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useEffect, useMemo } from 'react';
 import { proxy, useSnapshot } from 'valtio';
 import { Button } from '@/components/ui/button';
@@ -251,6 +251,7 @@ const playerStore = proxy({
 
 function PlayerContent() {
   const { selected: selectedPlayer } = useSnapshot(playerStore);
+  const navigate = useNavigate();
 
   const playerId = usePlayerId();
 
@@ -287,6 +288,7 @@ function PlayerContent() {
 
     playerStore.selected = selectedPlayer.toString();
     teleportMutation.mutate([Number(selectedPlayer)]);
+    navigate({ to: '/hud' });
   };
 
   return (
@@ -402,8 +404,11 @@ const LOCATIONS: Location[] = [
 ];
 
 function LocationContent() {
+  const navigate = useNavigate();
+
   const teleport = (position: Location['positon']) => {
     client.game.teleport.teleport.trigger(position);
+    navigate({ to: '/hud' });
   };
 
   return (
