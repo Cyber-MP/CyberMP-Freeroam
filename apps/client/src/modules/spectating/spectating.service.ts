@@ -26,7 +26,13 @@ export class SpectatingService {
   private spectatedPlayerId: number | null = null;
   private cameraComponent: gameCameraComponent | null = null;
 
-  private readonly FREEZE_FLAGS = [
+  private readonly TELEPORT_OFFSET = 25;
+
+  private readonly ON_FOOT_CAMERA_POSITION = { z: 2, x: 0, y: -2, w: 0 };
+  private readonly IN_VEHICLE_CAMERA_POSITION = { z: 2, x: 0, y: -5, w: 0 };
+  private readonly CAMERA_FOV = 80;
+
+  private readonly STATUS_EFFECTS = [
     'GameplayRestriction.NoMovement',
     'GameplayRestriction.NoCombat',
     'GameplayRestriction.NoWeapons',
@@ -57,8 +63,8 @@ export class SpectatingService {
 
     this.teleport.teleport({
       ...targetPos,
-      z: targetPos.z + 25,
-      y: targetPos.y + 25,
+      z: targetPos.z + this.TELEPORT_OFFSET,
+      y: targetPos.y + this.TELEPORT_OFFSET,
     });
 
     if (!this.cameraComponent) {
@@ -77,8 +83,8 @@ export class SpectatingService {
       const entityVehicle = mp.game.GetMountedVehicle(entity as gameObject);
 
       const newPosition = entityVehicle
-        ? { z: 2, x: 0, y: -5, w: 0 }
-        : { z: 2, x: 0, y: -2, w: 0 };
+        ? this.IN_VEHICLE_CAMERA_POSITION
+        : this.ON_FOOT_CAMERA_POSITION;
 
       const currentPosition = this.cameraComponent.GetLocalPosition();
 
@@ -114,8 +120,8 @@ export class SpectatingService {
 
     if (component) {
       this.cameraComponent = component;
-      this.cameraComponent.SetLocalPosition({ z: 2, x: 0, y: -2, w: 0 });
-      this.cameraComponent.SetFOV(80);
+      this.cameraComponent.SetLocalPosition(this.ON_FOOT_CAMERA_POSITION);
+      this.cameraComponent.SetFOV(this.CAMERA_FOV);
       this.cameraComponent.Activate(0, false);
       logger('Spectate camera linked and activated');
     }
@@ -176,7 +182,7 @@ export class SpectatingService {
     this.player.invisible(active);
     this.health.god(active);
 
-    for (const flag of this.FREEZE_FLAGS) {
+    for (const flag of this.STATUS_EFFECTS) {
       if (active) {
         this.status.add(flag);
       } else {
