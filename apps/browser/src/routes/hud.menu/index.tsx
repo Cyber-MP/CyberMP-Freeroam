@@ -100,21 +100,27 @@ export const Route = createFileRoute('/hud/menu/')({
 function PendingComponent() {
   return (
     <div className="flex justify-center flex-wrap gap-12 gap-x-24 h-full w-full">
-      <Tabs defaultValue={'all' as VehicleCategory} className="w-full">
+      <Tabs defaultValue={'all' satisfies VehicleCategory} className="w-full">
         <div className="sticky top-0 flex gap-6 items-center z-50 pointer-events-none">
           <TabsList>
-            <TabsTrigger value={'all' as VehicleCategory}>All</TabsTrigger>
-            <TabsTrigger value={'sport' as VehicleCategory}>Sport</TabsTrigger>
-            <TabsTrigger value={'street' as VehicleCategory}>
+            <TabsTrigger value={'all' satisfies VehicleCategory}>
+              All
+            </TabsTrigger>
+            <TabsTrigger value={'sport' satisfies VehicleCategory}>
+              Sport
+            </TabsTrigger>
+            <TabsTrigger value={'street' satisfies VehicleCategory}>
               Street
             </TabsTrigger>
-            <TabsTrigger value={'bikes' as VehicleCategory}>Bikes</TabsTrigger>
-            <TabsTrigger value={'offroad' as VehicleCategory}>
+            <TabsTrigger value={'bikes' satisfies VehicleCategory}>
+              Bikes
+            </TabsTrigger>
+            <TabsTrigger value={'offroad' satisfies VehicleCategory}>
               Offroad
             </TabsTrigger>
           </TabsList>
         </div>
-        <TabsContent value={'all' as VehicleCategory}>
+        <TabsContent value={'all' satisfies VehicleCategory}>
           <Skeleton className="h-full" />
         </TabsContent>
       </Tabs>
@@ -131,7 +137,7 @@ function RouteComponent() {
     return (
       vehicles.reduce<Record<VehicleCategory, Vehicles>>(
         (acc, vehicle) => {
-          const category = vehicle.category as VehicleCategory;
+          const category = vehicle.category satisfies VehicleCategory;
 
           if (!acc[category]) {
             acc[category] = [];
@@ -148,33 +154,33 @@ function RouteComponent() {
 
   return (
     <div className="flex justify-center flex-wrap gap-12 gap-x-24 h-full w-full">
-      <Tabs defaultValue={'all' as VehicleCategory} className="w-full pb-4">
+      <Tabs defaultValue={'all' satisfies VehicleCategory} className="w-full pb-4">
         <div className="sticky top-0 flex gap-6 items-center z-50">
           <TabsList>
-            <TabsTrigger value={'all' as VehicleCategory}>All</TabsTrigger>
-            <TabsTrigger value={'sport' as VehicleCategory}>Sport</TabsTrigger>
-            <TabsTrigger value={'street' as VehicleCategory}>
+            <TabsTrigger value={'all' satisfies VehicleCategory}>All</TabsTrigger>
+            <TabsTrigger value={'sport' satisfies VehicleCategory}>Sport</TabsTrigger>
+            <TabsTrigger value={'street' satisfies VehicleCategory}>
               Street
             </TabsTrigger>
-            <TabsTrigger value={'bikes' as VehicleCategory}>Bikes</TabsTrigger>
-            <TabsTrigger value={'offroad' as VehicleCategory}>
+            <TabsTrigger value={'bikes' satisfies VehicleCategory}>Bikes</TabsTrigger>
+            <TabsTrigger value={'offroad' satisfies VehicleCategory}>
               Offroad
             </TabsTrigger>
           </TabsList>
         </div>
-        <TabsContent value={'all' as VehicleCategory}>
+        <TabsContent value={'all' satisfies VehicleCategory}>
           <ItemsContent vehicles={vehicles} />
         </TabsContent>
-        <TabsContent value={'sport' as VehicleCategory}>
+        <TabsContent value={'sport' satisfies VehicleCategory}>
           <ItemsContent vehicles={categories.sport} />
         </TabsContent>
-        <TabsContent value={'street' as VehicleCategory}>
+        <TabsContent value={'street' satisfies VehicleCategory}>
           <ItemsContent vehicles={categories.street} />
         </TabsContent>
-        <TabsContent value={'bikes' as VehicleCategory}>
+        <TabsContent value={'bikes' satisfies VehicleCategory}>
           <ItemsContent vehicles={categories.bikes} />
         </TabsContent>
-        <TabsContent value={'offroad' as VehicleCategory}>
+        <TabsContent value={'offroad' satisfies VehicleCategory}>
           <ItemsContent vehicles={categories.offroad} />
         </TabsContent>
       </Tabs>
