@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
+import { proxy, useSnapshot } from 'valtio';
 import { Button } from '@/components/ui/button';
 import {
   Select,
@@ -244,8 +245,12 @@ function WeatherContent() {
   );
 }
 
+const playerStore = proxy({
+  selected: '0',
+});
+
 function PlayerContent() {
-  const [selected, setSelected] = useState<number>();
+  const { selected: selectedPlayer } = useSnapshot(playerStore);
 
   const playerId = usePlayerId();
 
@@ -261,16 +266,27 @@ function PlayerContent() {
     return availablePlayersRaw.filter((player) => player.id !== playerId);
   }, [availablePlayersRaw, playerId]);
 
+  useEffect(() => {
+    if (selectedPlayer === '0') {
+      return;
+    }
+
+    if (!availablePlayers.some(({ id }) => id === Number(selectedPlayer))) {
+      playerStore.selected = '0';
+    }
+  }, [selectedPlayer, availablePlayers]);
+
   const teleportMutation = useMutation(
     serverQuery.teleport.teleportToPlayer.triggerMutationOptions(),
   );
 
   const handleTeleport = () => {
-    if (!selected) {
+    if (!selectedPlayer) {
       return;
     }
 
-    teleportMutation.mutate([selected]);
+    playerStore.selected = selectedPlayer.toString();
+    teleportMutation.mutate([Number(selectedPlayer)]);
   };
 
   return (
@@ -280,7 +296,10 @@ function PlayerContent() {
       </span>
 
       <div className="flex flex-row gap-1 w-full">
-        <Select onValueChange={(value) => setSelected(Number(value))}>
+        <Select
+          value={selectedPlayer}
+          onValueChange={(value) => (playerStore.selected = value)}
+        >
           <SelectTrigger className="min-w-50">
             <SelectValue />
           </SelectTrigger>
@@ -296,7 +315,11 @@ function PlayerContent() {
           </SelectContent>
         </Select>
 
-        <Button className="h-8" disabled={!selected} onClick={handleTeleport}>
+        <Button
+          className="h-8"
+          disabled={selectedPlayer === '0'}
+          onClick={handleTeleport}
+        >
           Teleport
         </Button>
       </div>
