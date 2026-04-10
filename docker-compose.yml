@@ -8,6 +8,13 @@ services:
       IS_DOCKER: "true"
     stdin_open: true
     tty: true
+    volumes:
+      - cache:/cybermp/cache
+      - crashdumps:/cybermp/crashdumps
     ports:
       - ${PORT:-2077}:2077/tcp
       - ${PORT:-2077}:2077/udp
+
+volumes:
+  cache:
+  crashdumps:
