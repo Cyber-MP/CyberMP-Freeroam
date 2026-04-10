@@ -146,7 +146,9 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
     this.unmountVehicleCheckInterval();
     this.unmountDeathHandler();
     this.unmountRespawnKey();
-    this.unmountSpectateBinds();
+    setTimeout(() => {
+      this.unmountSpectateBinds();
+    });
 
     this.spectatingService.unspectate();
 

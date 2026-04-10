@@ -19,7 +19,6 @@ export class SpectatingService {
   private spectateTickId: number | null = null;
   private spectatedPlayerId: number | null = null;
   private cameraComponent: gameCameraComponent | null = null;
-  private initialPosition: Vector4 | null = null;
   private isProcessingTick = false;
 
   private readonly FREEZE_FLAGS = [
@@ -64,7 +63,11 @@ export class SpectatingService {
         this.cameraComponent.Activate(0, false);
       }
     } catch (error) {
-      console.error('Error during spectate tick:', error);
+      console.error(
+        'Error during spectate tick:',
+        error,
+        (error as any).message,
+      );
     } finally {
       this.isProcessingTick = false;
     }
@@ -112,7 +115,6 @@ export class SpectatingService {
     this.unspectate();
 
     this.spectatedPlayerId = playerId;
-    this.initialPosition = mp.game.GetPlayer().GetWorldPosition();
 
     this.applySpectatorState(true);
     this.spectateTickId = mp.setTick(() => this.onTick());
@@ -131,7 +133,9 @@ export class SpectatingService {
       this.spectatedPlayerId = null;
     }
 
-    this.cameraComponent?.Deactivate(0, false);
+    (
+      mp.game.GetPlayer().FindComponentByName('camera') as gameCameraComponent
+    ).Activate();
     this.cameraComponent = null;
     this.isProcessingTick = false;
   }
@@ -151,13 +155,6 @@ export class SpectatingService {
 
   private restorePlayerState() {
     this.applySpectatorState(false);
-
-    setTimeout(() => {
-      if (this.initialPosition) {
-        this.teleport.teleport(this.initialPosition);
-        this.initialPosition = null;
-      }
-    }, 10);
   }
 
   @preDestroy()
