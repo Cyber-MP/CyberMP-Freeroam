@@ -93,32 +93,28 @@ export class GMenusService {
       //   this.showBrowser();
       // });
 
-      mp.game.observe('gameuiInGameMenuGameController', 'OnInitialize', () => {
-        console.log('gameuiInGameMenuGameController OnInitialize');
+      mp.game.observe('inkMenuLayer', 'PushMenu', () => {
+        console.log('inkMenuLayer PushMenu');
 
         this.hideBrowser();
       });
 
-      mp.game.observe(
-        'gameuiInGameMenuGameController',
-        'OnUninitialize',
-        () => {
-          console.log('gameuiInGameMenuGameController OnUninitialize');
+      mp.game.observe('inkMenuLayer', 'PopMenu', () => {
+        console.log('inkMenuLayer PopMenu');
 
-          this.hideBrowser();
-        },
-      );
+        this.showBrowser();
+      });
 
-      // mp.game.observe('gameuiInventoryGameController', 'OnShow', () => {});
-      // mp.game.observe('gameuiInventoryGameController', 'OnHide', () => {});
+      mp.game.observe('inkMenuLayer', 'PushMenuInternal', () => {
+        console.log('inkMenuLayer PushMenuInternal');
 
-      // gameuiInGameMenuGameController;
-      // gameuiPauseMenuGameController;
-      // gameuiWorldMapGameController;
-      // gameuiInventoryGameController;
+        this.hideBrowser();
+      });
 
-      mp.game.observe('gameuiHUDGameController', 'ToggleVisibility', () => {
-        browser.toggleVisibility.trigger();
+      mp.game.observe('inkMenuLayer', 'PopMenuInternal', () => {
+        console.log('inkMenuLayer PopMenuInternal');
+
+        this.showBrowser();
       });
     });
   }
