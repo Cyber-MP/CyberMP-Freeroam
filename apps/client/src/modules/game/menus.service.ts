@@ -55,11 +55,11 @@ export class GMenusService {
         this.globalMenuScenario = self;
       });
 
-      mp.game.observe('MenuScenario_HubMenu', 'OpenMenu', () => {
+      mp.game.observe('MenuScenario_HubMenu', 'ToggleMenu', () => {
         this.hideBrowserHud();
       });
 
-      mp.game.observe('MenuScenario_HubMenu', 'CloseMenu', () => {
+      mp.game.observe('MenuScenario_HubMenu', 'GotoIdleState', () => {
         this.showBrowserHud();
       });
     });

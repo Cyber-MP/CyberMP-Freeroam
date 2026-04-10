@@ -156,10 +156,6 @@ export class BasicChatCommands {
     }
   }
 
-  private hideHud() {
-    browser.hide.trigger();
-  }
-
   @postConstruct()
   private init() {
     mp.events.addCommand('basilisk1337', this.spawnBasilisk.bind(this));
@@ -187,12 +183,6 @@ export class BasicChatCommands {
       name: 'levelup',
       description: 'Levels up...',
       handler: this.levelUp.bind(this),
-    });
-
-    this.chatService.addCommand({
-      name: 'hudhide',
-      description: 'Hides the HUD. Press F6 to toggle visibility',
-      handler: this.hideHud.bind(this),
     });
   }
 }
