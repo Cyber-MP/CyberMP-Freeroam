@@ -1,6 +1,7 @@
 import {
   gamedataDevelopmentPointType,
   gamedataNewPerkType,
+  gamedataProficiencyType,
   gamedataStatType,
 } from '@cybermp/client-types/enums';
 import { eager } from '@freeroam/inversify';
@@ -49,6 +50,14 @@ export class BasicChatCommands {
     this.isLevelupProcess = true;
 
     try {
+      const player = mp.game.GetPlayerObject();
+
+      const addExpRequest = new mp.game.AddExperience();
+
+      addExpRequest.Set(player, 50000, gamedataProficiencyType.Level, false);
+
+      mp.game.PreventionSystem.QueueRequest(addExpRequest, 0);
+
       const arrData = [
         'Strength',
         'Reflexes',
@@ -56,8 +65,6 @@ export class BasicChatCommands {
         'Cool',
         'Intelligence',
       ];
-
-      const player = mp.game.GetPlayerObject();
 
       const closeHub = new mp.game.ForceCloseHubMenuEvent();
       const startHub = new mp.game.StartHubMenuEvent();
