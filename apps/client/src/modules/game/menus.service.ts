@@ -57,28 +57,38 @@ export class GMenusService {
 
       // HIDE BROWSER
 
+      // open settings & switch between categories
       mp.game.observe('SettingsMainGameController', 'OnMenuChanged', () => {
         console.log('SettingsMainGameController OnMenuChanged');
 
         this.hideBrowser();
       });
 
+      // exit game settings
       mp.game.observe('SettingsMainGameController', 'RequestClose', () => {
         console.log('SettingsMainGameController RequestClose');
 
         this.showBrowser();
       });
 
+      // open game settings from pause menu
       mp.game.observe('MenuScenario_PauseMenu', 'OnSwitchToSettings', () => {
         console.log('MenuScenario_PauseMenu OnSwitchToSettings');
 
         this.hideBrowser();
       });
 
+      // open pause menu
       mp.game.observe('MenuScenario_PauseMenu', 'OnEnterScenario', () => {
         console.log('MenuScenario_PauseMenu OnEnterScenario');
 
         this.hideBrowser();
+      });
+
+      mp.game.observe('MenuScenario_PauseMenu', 'OnLeaveScenario', () => {
+        console.log('MenuScenario_PauseMenu OnLeaveScenario');
+
+        this.showBrowser();
       });
     });
   }
