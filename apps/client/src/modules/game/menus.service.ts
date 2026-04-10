@@ -55,21 +55,25 @@ export class GMenusService {
         this.globalMenuScenario = self;
       });
 
-      mp.game.observe('MenuScenario_HubMenu', 'ToggleMenu', () => {
-        this.hideBrowserHud();
+      mp.game.observe('MenuScenario_BaseMenu', 'CloseMenu', () => {
+        this.hideBrowser();
       });
 
-      mp.game.observe('MenuScenario_HubMenu', 'GotoIdleState', () => {
-        this.showBrowserHud();
+      mp.game.observe('MenuScenario_BaseMenu', 'OpenMenu', () => {
+        this.showBrowser();
       });
     });
   }
 
-  private hideBrowserHud() {
+  private hideBrowser() {
+    console.log('HIDE BROWSER');
+
     browser.hide.trigger();
   }
 
-  private showBrowserHud() {
+  private showBrowser() {
+    console.log('SHOW BROWSER');
+
     browser.show.trigger();
   }
 
