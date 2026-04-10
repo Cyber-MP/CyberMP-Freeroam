@@ -1,5 +1,7 @@
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
+import ms from 'ms';
+import { draw, random } from 'radash';
 import z from 'zod';
 import { client } from '../../rpc';
 import { LoggerService } from '../logger/logger.service';
@@ -28,10 +30,13 @@ export const zWeatherState = z.enum(EWeatherState);
 @injectable()
 export class WeatherService {
   private weather: EWeatherState = EWeatherState.SUNNY;
-  private frozen: boolean = false;
+  private frozen = false;
   private timeoutId: ReturnType<typeof setTimeout> | null = null;
 
-  private readonly TICK_RATE_RANGE: [number, number] = [60_000, 1200_000]; // minute ... 20 minutes
+  private readonly TICK_RATE_RANGE: [min: number, max: number] = [
+    ms('1m'),
+    ms('20m'),
+  ];
 
   getWeather() {
     return this.weather;
@@ -66,11 +71,9 @@ export class WeatherService {
   }
 
   private getTickRate() {
-    return (
-      Math.floor(
-        Math.random() * (this.TICK_RATE_RANGE[1] - this.TICK_RATE_RANGE[0] + 1),
-      ) + this.TICK_RATE_RANGE[0]
-    );
+    const [min, max] = this.TICK_RATE_RANGE;
+
+    return random(min, max);
   }
 
   private startTimeout() {
@@ -98,8 +101,7 @@ export class WeatherService {
   private tick() {
     const weatherValues = Object.values(EWeatherState);
 
-    this.weather =
-      weatherValues[Math.floor(Math.random() * weatherValues.length)];
+    this.weather = draw(weatherValues) ?? EWeatherState.SUNNY;
 
     this.sync();
   }
