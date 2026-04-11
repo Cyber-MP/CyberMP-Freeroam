@@ -264,13 +264,13 @@ class RanksTracker {
         nextCheckpointPosition,
       );
       const playerDist = distance3D(playerPos, nextCheckpointPosition);
-      const segmentFraction = Math.max(
-        0,
-        Math.min(1, 1 - playerDist / segmentDist),
-      );
+      const segmentFraction =
+        segmentDist > 0
+          ? Math.max(0, Math.min(1, 1 - playerDist / segmentDist))
+          : 0;
 
       const absoluteProgress =
-        racer.currentLap * totalCheckpoints +
+        (racer.currentLap - 1) * totalCheckpoints +
         racer.currentCheckpointIndex +
         segmentFraction;
 
