@@ -5,6 +5,14 @@ import type {
   gameFxResource,
   Vector4,
 } from '@cybermp/client-types/game';
+import type {
+  RaceLapsCheckpointNode,
+  RaceLapsMap,
+  RaceLapsRacerDTO,
+  RaceLapsRankDTO,
+  RaceLapsStartPointNode,
+  RaceLapsTrackPath,
+} from '@freeroam/shared/game-modes/race-laps';
 import { inject, injectable } from 'inversify';
 import ms from 'ms';
 import { createEulerAngles, createVector4 } from '../../../../lib/vectors';
@@ -25,15 +33,7 @@ import { SpawnService } from '../../../spawn/spawn.service';
 import { SpectatingService } from '../../../spectating/spectating.service';
 import { BaseGameMode } from '../../game-mode';
 import { RaceLapsCheckpoint } from './checkpoint';
-import type {
-  RaceLapsCheckpointNode,
-  RaceLapsMap,
-  RaceLapsPrepareDTO,
-  RaceLapsRacerDTO,
-  RaceLapsRankDTO,
-  RaceLapsStartPointNode,
-  RaceLapsTrackPath,
-} from './dto';
+import type { RaceLapsPrepareDTO } from './dto';
 
 class TrackPathNavigation {
   private trackData: RaceLapsTrackPath = [];

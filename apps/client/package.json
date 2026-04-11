@@ -23,6 +23,7 @@
     "@cybermp/rpc-client": "0.1.0-rc.7",
     "@cybermp/rpc-router": "0.1.0-rc.7",
     "@freeroam/inversify": "workspace:*",
+    "@freeroam/shared": "workspace:*",
     "consola": "^3.4.2",
     "inversify": "^7.11.0",
     "ms": "^2.1.3",

@@ -1,0 +1,13 @@
+{
+  "name": "@freeroam/shared",
+  "version": "1.0.0",
+  "keywords": [],
+  "author": "Terminaate",
+  "exports": {
+    "./*": "./src/*/index.ts"
+  },
+  "peerDependencies": {
+    "zod": "^4.3.6"
+  },
+  "packageManager": "pnpm@10.28.2"
+}

@@ -11,6 +11,7 @@
   "license": "MIT",
   "description": "",
   "dependencies": {
+    "@freeroam/shared": "workspace:*",
     "@cybermp/rpc-router": "0.1.0-rc.7",
     "@cybermp/rpc-server": "0.1.0-rc.7",
     "@freeroam/inversify": "workspace:*",

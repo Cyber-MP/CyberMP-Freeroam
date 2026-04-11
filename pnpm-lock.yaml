@@ -41,6 +41,9 @@ importers:
       '@fontsource-variable/geist-mono':
         specifier: ^5.2.7
         version: 5.2.7
+      '@freeroam/shared':
+        specifier: workspace:*
+        version: link:../../libs/shared
       '@remixicon/react':
         specifier: ^4.9.0
         version: 4.9.0(react@19.2.3)
@@ -204,6 +207,9 @@ importers:
       '@freeroam/inversify':
         specifier: workspace:*
         version: link:../../libs/inversify
+      '@freeroam/shared':
+        specifier: workspace:*
+        version: link:../../libs/shared
       consola:
         specifier: ^3.4.2
         version: 3.4.2
@@ -256,6 +262,9 @@ importers:
       '@freeroam/inversify':
         specifier: workspace:*
         version: link:../../libs/inversify
+      '@freeroam/shared':
+        specifier: workspace:*
+        version: link:../../libs/shared
       consola:
         specifier: ^3.4.2
         version: 3.4.2
@@ -305,6 +314,12 @@ importers:
       inversify:
         specifier: ^7.11.0
         version: 7.11.0(reflect-metadata@0.2.2)
+
+  libs/shared:
+    dependencies:
+      zod:
+        specifier: ^4.3.6
+        version: 4.3.6
 
 packages:
 

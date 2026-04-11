@@ -1,4 +1,14 @@
 import type { MpPlayer, MpVehicle } from '@cybermp/server-types';
+import {
+  type RaceLapsCheckpointNode,
+  type RaceLapsFinishedRacer,
+  type RaceLapsMap,
+  RaceLapsMapName,
+  type RaceLapsRacerDTO,
+  type RaceLapsRankDTO,
+  type RaceLapsStartPointNode,
+  zRaceLapsRacerDTO,
+} from '@freeroam/shared/game-modes/race-laps';
 import { inject, injectable } from 'inversify';
 import ms from 'ms';
 import { sleep } from 'radash';
@@ -18,16 +28,6 @@ import {
   type VehicleData,
 } from '../../../vehicles-spawner/vehicles.repository';
 import { BaseGameMode, GameModeName } from '../../game-mode';
-import {
-  type RaceLapsCheckpointNode,
-  type RaceLapsFinishedRacer,
-  type RaceLapsMap,
-  RaceLapsMapName,
-  type RaceLapsRacerDTO,
-  type RaceLapsRankDTO,
-  type RaceLapsStartPointNode,
-  zRaceLapsRacerDTO,
-} from './data';
 import { RaceLapsMaps } from './maps';
 import {
   type PathTransform,

@@ -1,5 +1,6 @@
 import { gamedataMappinVariant } from '@cybermp/client-types/enums';
 import type { entEntity, gameNewMappinID } from '@cybermp/client-types/game';
+import type { RaceLapsCheckpointNode } from '@freeroam/shared/game-modes/race-laps';
 import { inject, injectable } from 'inversify';
 import { uid } from 'radash';
 import { createVector3, createVector4 } from '../../../../lib/vectors';
@@ -7,7 +8,6 @@ import { mp } from '../../../../mp';
 import { GObjectsService } from '../../../game/objects.service';
 import type { Polygon } from '../../../polygons/polygon';
 import { PolygonsService } from '../../../polygons/polygons.service';
-import type { RaceLapsCheckpointNode } from './dto';
 
 @injectable()
 export class RaceLapsCheckpoint {
@@ -21,7 +21,7 @@ export class RaceLapsCheckpoint {
     @inject(GObjectsService) private objectsService: GObjectsService,
     @inject(PolygonsService) private polygonsService: PolygonsService,
   ) {}
-  
+
   spawn(node: RaceLapsCheckpointNode, onEnter: (ent: entEntity) => void) {
     this.destroy();
 
