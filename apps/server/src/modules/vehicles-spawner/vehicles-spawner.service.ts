@@ -47,6 +47,7 @@ export class VehiclesSpawnerService {
       modelHash,
       appearanceHash,
       health: 1000,
+      sitInVehicle: true,
     });
   }
 
