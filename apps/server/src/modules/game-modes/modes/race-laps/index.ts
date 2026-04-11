@@ -37,7 +37,7 @@ import {
 export const zCreateRaceLapsOptions = zCreateMatchOptions.extend({
   map: z.enum(RaceLapsMapName),
   vehicleClass: z.enum(['all', ...VEHICLES_DATA.map((o) => o.category)]),
-  laps: z.number().min(0).max(10).meta({ default: 0 }),
+  laps: z.number().min(1).max(10).meta({ default: 1 }),
   combat: z.boolean().default(false).optional(),
 });
 
@@ -68,7 +68,7 @@ class Racer {
   finished = false;
   finishTimestamp: number | null = null;
   currentCheckpointIndex = 0;
-  currentLap = 0;
+  currentLap = 1;
 
   constructor(opts: RacerConstructorOptions) {
     this.map = opts.map;
@@ -418,11 +418,11 @@ export class RaceLaps extends BaseGameMode<
   }
 
   async startCountdown() {
-    const startDate = Date.now() + this.COUNTDOWN_TIME;
-    console.log('START TIMESTAMP', startDate);
-
     for (const racer of this.racers.keys()) {
-      client.gameModes.raceLaps.startCountdown.trigger(racer, startDate);
+      client.gameModes.raceLaps.startCountdown.trigger(
+        racer,
+        this.COUNTDOWN_TIME,
+      );
     }
 
     await sleep(this.COUNTDOWN_TIME);

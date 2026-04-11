@@ -415,17 +415,10 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
     this.createCheckpoint();
   }
 
-  startCountdown(startTimestamp: number) {
-    console.log(
-      'CURRENT DATE',
-      Date.now(),
-      'START TIMESTAMP',
-      startTimestamp,
-      'REMAINING',
-      Math.ceil((startTimestamp - Date.now()) / 1000),
-    );
+  startCountdown(duration: number) {
+    const startTime = Date.now();
 
-    const initialRemaining = Math.ceil((startTimestamp - Date.now()) / 1000);
+    const initialRemaining = Math.ceil((duration - Date.now()) / 1000);
 
     const mountedVehicle = mp.game.GetMountedVehicle(mp.game.GetPlayerObject());
     if (mountedVehicle && initialRemaining > 0) {
@@ -433,8 +426,8 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
     }
 
     this.countDownInterval = setInterval(() => {
-      const currentTime = Date.now();
-      const remaining = Math.ceil((startTimestamp - currentTime) / 1000);
+      const elapsed = Date.now() - startTime;
+      const remaining = Math.ceil((duration - elapsed) / 1000);
 
       if (remaining <= 0) {
         browser.gameModes.raceLaps.setCountdownText.trigger('GO!');
