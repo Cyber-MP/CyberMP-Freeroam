@@ -15,10 +15,10 @@ import { proxy, useSnapshot } from 'valtio';
 import { usePlayerId } from '@/hooks/use-player-id';
 import { r } from '@/rpc';
 import {
-  type RaceLapsRankDTO,
   raceLapsContract,
   raceLapsDataState,
 } from './-contract';
+import { RaceLapsRankDTO } from '@freeroam/shared/game-modes/race-laps';
 
 export const Route = createFileRoute('/hud/game-modes/race-laps/')({
   component: RouteComponent,

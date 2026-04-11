@@ -1,5 +1,7 @@
 import z from 'zod';
-import { zVector3 } from '../../../../lib/vectors';
+
+const zVector3 = z.tuple([z.number(), z.number(), z.number()]);
+const zEulerAngles = z.tuple([z.number(), z.number(), z.number()]);
 
 export const zRaceLapsRacerDTO = z.object({
   currentCheckpointIndex: z.number().default(0),
@@ -35,16 +37,16 @@ export enum RaceLapsMapName {
   PETROCHEM = 'petrochem',
 }
 
+export const zRaceLapsMapNode = z.union([
+  zRaceLapsStartPointNode,
+  zRaceLapsPathPointNode,
+  zRaceLapsCheckpointNode,
+]);
+
 export const zRaceLapsMap = z.object({
   name: z.enum(RaceLapsMapName),
   mapping: z.looseObject({}).optional(),
-  nodes: z.array(
-    z.union([
-      zRaceLapsStartPointNode,
-      zRaceLapsPathPointNode,
-      zRaceLapsCheckpointNode,
-    ]),
-  ),
+  nodes: z.array(zRaceLapsMapNode),
 });
 
 export const zRaceLapsRankDTO = z.object({
@@ -63,9 +65,19 @@ export const zRaceLapsFinishedRacer = z.object({
   time: z.number(),
 });
 
+export const zRaceLapsTrackPath = z.array(
+  z.object({
+    position: zVector3,
+    rotation: zEulerAngles,
+  }),
+);
+
+export type RaceLapsTrackPath = z.infer<typeof zRaceLapsTrackPath>;
+
 export type RaceLapsFinishedRacer = z.infer<typeof zRaceLapsFinishedRacer>;
 export type RaceLapsRankDTO = z.infer<typeof zRaceLapsRankDTO>;
 export type RaceLapsMap = z.infer<typeof zRaceLapsMap>;
+export type RaceLapsMapNode = z.infer<typeof zRaceLapsMapNode>;
 export type RaceLapsCheckpointNode = z.infer<typeof zRaceLapsCheckpointNode>;
 export type RaceLapsCheckpointDirection = RaceLapsCheckpointNode['direction'];
 export type RaceLapsStartPointNode = z.infer<typeof zRaceLapsStartPointNode>;

@@ -1,6 +1,10 @@
 import { RpcApplyType } from '@cybermp/rpc-client';
 import type { InferRouterInputs } from '@cybermp/rpc-router/server';
 import { eager } from '@freeroam/inversify';
+import {
+  zRaceLapsRacerDTO,
+  zRaceLapsRankDTO,
+} from '@freeroam/shared/game-modes/race-laps';
 import { inject, injectable, postConstruct } from 'inversify';
 import z from 'zod';
 import { r } from '../../../../rpc';
@@ -10,11 +14,7 @@ import {
   type RpcActiveGameContext,
 } from '../../middleware/active-game.middleware';
 import type { RaceLaps } from '.';
-import {
-  zRaceLapsPrepareDTO,
-  zRaceLapsRacerDTO,
-  zRaceLapsRankDTO,
-} from './dto';
+import { zRaceLapsPrepareDTO } from './dto';
 
 export const raceLapsContract = {
   prepare: r.contract

@@ -1,5 +1,6 @@
 import { RpcApplyType } from '@cybermp/rpc-server';
 import { eager } from '@freeroam/inversify';
+import { zRaceLapsRacerDTO } from '@freeroam/shared/game-modes/race-laps';
 import { inject, injectable, postConstruct } from 'inversify';
 import z from 'zod';
 import { r } from '../../../../rpc';
@@ -10,7 +11,6 @@ import type {
   RpcMatchContext,
 } from '../../../matchmaking/middlewares/match.middleware';
 import type { RaceLaps } from '.';
-import { zRaceLapsRacerDTO } from './data';
 
 export const raceLapsContract = {
   processCheckpoint: r.contract

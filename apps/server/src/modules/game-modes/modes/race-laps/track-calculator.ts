@@ -1,8 +1,12 @@
 import type { Rotation, Vector3 } from '@cybermp/server-types';
 import { eager } from '@freeroam/inversify';
+import {
+  type RaceLapsMap,
+  type RaceLapsMapName,
+  zRaceLapsMap,
+} from '@freeroam/shared/game-modes/race-laps';
 import { inject, injectable, postConstruct } from 'inversify';
 import { LoggerService } from '../../../logger/logger.service';
-import { type RaceLapsMap, type RaceLapsMapName, zRaceLapsMap } from './data';
 import { RaceLapsMaps } from './maps';
 
 export interface PathTransform {

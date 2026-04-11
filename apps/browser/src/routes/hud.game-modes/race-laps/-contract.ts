@@ -1,36 +1,12 @@
 import { contract, procedure } from '@cybermp/rpc-router/server';
+import {
+  type RaceLapsFinishedRacer,
+  zRaceLapsFinishedRacer,
+  zRaceLapsRacerDTO,
+  zRaceLapsRankDTO,
+} from '@freeroam/shared/game-modes/race-laps';
 import { proxy } from 'valtio';
 import z from 'zod';
-
-export const zRaceLapsRacerDTO = z.object({
-  currentCheckpointIndex: z.number(),
-  currentLap: z.number(),
-  finished: z.boolean(),
-  totalLaps: z.number(),
-  totalCheckpoints: z.number(),
-});
-
-export type RaceLapsRacerDTO = z.infer<typeof zRaceLapsRacerDTO>;
-
-export const zRaceLapsRankDTO = z.object({
-  playerId: z.number(),
-  playerNick: z.string(),
-  position: z.number(),
-  lap: z.number(),
-  checkpoint: z.number(),
-  finished: z.boolean(),
-});
-
-export type RaceLapsRankDTO = z.infer<typeof zRaceLapsRankDTO>;
-
-export const zRaceLapsFinishedRacer = z.object({
-  playerNick: z.string(),
-  lap: z.number(),
-  checkpoint: z.number(),
-  time: z.number(),
-});
-
-export type RaceLapsFinishedRacer = z.infer<typeof zRaceLapsFinishedRacer>;
 
 export const raceLapsResultsState = proxy<{ results: RaceLapsFinishedRacer[] }>(
   {
@@ -38,7 +14,14 @@ export const raceLapsResultsState = proxy<{ results: RaceLapsFinishedRacer[] }>(
   },
 );
 
-export const raceLapsDataState = proxy<RaceLapsRacerDTO>({
+const zRaceLapsRacerBrowserDTO = zRaceLapsRacerDTO.extend({
+  totalLaps: z.number(),
+  totalCheckpoints: z.number(),
+});
+
+export type RaceLapsRacerBrowserDTO = z.infer<typeof zRaceLapsRacerBrowserDTO>;
+
+export const raceLapsDataState = proxy<RaceLapsRacerBrowserDTO>({
   currentCheckpointIndex: 0,
   currentLap: 0,
   finished: false,
@@ -48,7 +31,7 @@ export const raceLapsDataState = proxy<RaceLapsRacerDTO>({
 
 export const raceLapsContract = {
   setCountdownText: contract.input(z.string()).build(),
-  updateData: procedure.input(zRaceLapsRacerDTO).handler((c) => {
+  updateData: procedure.input(zRaceLapsRacerBrowserDTO).handler((c) => {
     for (const key in c.data) {
       // @ts-expect-error
       raceLapsDataState[key] = c.data[key];

@@ -35,8 +35,6 @@ export class CefService {
     mp.game.onInit(() => {
       if (import.meta.env.DEV) {
         mp.cef.setUrl('http://localhost:5173');
-      } else {
-        mp.cef.setUrl('cefview://freeroam/browser/index.html');
       }
 
       browser.loadingOverlay.hide.trigger();

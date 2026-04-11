@@ -4,6 +4,12 @@ import type {
   gameFxResource,
 } from '@cybermp/client-types/game';
 import { eager } from '@freeroam/inversify';
+import type {
+  RaceLapsCheckpointNode,
+  RaceLapsMap,
+  RaceLapsMapNode,
+  RaceLapsTrackPath,
+} from '@freeroam/shared/game-modes/race-laps';
 import { inject, injectable, postConstruct } from 'inversify';
 import z from 'zod';
 import { createEulerAngles, createVector4 } from '../../../../lib/vectors';
@@ -14,12 +20,6 @@ import type { EntityLabel } from '../../../entity-labels/entity-label';
 import { EntityLabelsService } from '../../../entity-labels/entity-labels.service';
 import { GEntityService } from '../../../game/entity.service';
 import { GObjectsService } from '../../../game/objects.service';
-import type {
-  RaceLapsCheckpointNode,
-  RaceLapsMap,
-  RaceLapsMapNode,
-  RaceLapsTrackPath,
-} from './dto';
 
 class TrackPathNavigation {
   private trackData: RaceLapsTrackPath = [];
@@ -76,7 +76,7 @@ class TrackPathNavigation {
 @eager()
 @injectable()
 export class RaceLapsMapBuilder {
-  private currentMap: RaceLapsMap = { name: 'New Race', nodes: [] };
+  private currentMap: RaceLapsMap = { name: 'New Race' as any, nodes: [] };
   private navigation = new TrackPathNavigation();
 
   private entityLabels = new Set<EntityLabel>();
@@ -103,7 +103,7 @@ export class RaceLapsMapBuilder {
       description: 'Start a new race laps map',
       args: z.tuple([z.string().meta({ title: 'name' })]),
       handler: (name) => {
-        this.currentMap = { name, nodes: [] };
+        this.currentMap = { name: name as any, nodes: [] };
         this.navigation.destroy();
         this.destroyEntityLabels();
         this.objectsService.destroyGroup(this.OBJECTS_GROUP);

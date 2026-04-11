@@ -1,4 +1,7 @@
-import { type RaceLapsMap, RaceLapsMapName } from '../../data';
+import {
+  type RaceLapsMap,
+  RaceLapsMapName,
+} from '@freeroam/shared/game-modes/race-laps';
 
 export const RACE_LAPS_PETROCHEM_MAP: RaceLapsMap = {
   name: RaceLapsMapName.PETROCHEM,

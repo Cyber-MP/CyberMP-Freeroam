@@ -5,6 +5,14 @@ import type {
   gameFxResource,
   Vector4,
 } from '@cybermp/client-types/game';
+import type {
+  RaceLapsCheckpointNode,
+  RaceLapsMap,
+  RaceLapsRacerDTO,
+  RaceLapsRankDTO,
+  RaceLapsStartPointNode,
+  RaceLapsTrackPath,
+} from '@freeroam/shared/game-modes/race-laps';
 import { inject, injectable } from 'inversify';
 import ms from 'ms';
 import { createEulerAngles, createVector4 } from '../../../../lib/vectors';
@@ -25,15 +33,7 @@ import { SpawnService } from '../../../spawn/spawn.service';
 import { SpectatingService } from '../../../spectating/spectating.service';
 import { BaseGameMode } from '../../game-mode';
 import { RaceLapsCheckpoint } from './checkpoint';
-import type {
-  RaceLapsCheckpointNode,
-  RaceLapsMap,
-  RaceLapsPrepareDTO,
-  RaceLapsRacerDTO,
-  RaceLapsRankDTO,
-  RaceLapsStartPointNode,
-  RaceLapsTrackPath,
-} from './dto';
+import type { RaceLapsPrepareDTO } from './dto';
 
 class TrackPathNavigation {
   private trackData: RaceLapsTrackPath = [];
@@ -415,17 +415,10 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
     this.createCheckpoint();
   }
 
-  startCountdown(startTimestamp: number) {
-    console.log(
-      'CURRENT DATE',
-      Date.now(),
-      'START TIMESTAMP',
-      startTimestamp,
-      'REMAINING',
-      Math.ceil((startTimestamp - Date.now()) / 1000),
-    );
+  startCountdown(duration: number) {
+    const startTime = Date.now();
 
-    const initialRemaining = Math.ceil((startTimestamp - Date.now()) / 1000);
+    const initialRemaining = Math.ceil((duration - Date.now()) / 1000);
 
     const mountedVehicle = mp.game.GetMountedVehicle(mp.game.GetPlayerObject());
     if (mountedVehicle && initialRemaining > 0) {
@@ -433,8 +426,8 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
     }
 
     this.countDownInterval = setInterval(() => {
-      const currentTime = Date.now();
-      const remaining = Math.ceil((startTimestamp - currentTime) / 1000);
+      const elapsed = Date.now() - startTime;
+      const remaining = Math.ceil((duration - elapsed) / 1000);
 
       if (remaining <= 0) {
         browser.gameModes.raceLaps.setCountdownText.trigger('GO!');

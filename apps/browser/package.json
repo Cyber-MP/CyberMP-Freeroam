@@ -11,6 +11,7 @@
     "type:check": "tsc -b"
   },
   "dependencies": {
+    "@freeroam/shared": "workspace:*",
     "@cybermp/rpc-browser": "0.1.0-rc.7",
     "@cybermp/rpc-router": "0.1.0-rc.7",
     "@cybermp/rpc-router-react": "0.1.0-rc.7",
