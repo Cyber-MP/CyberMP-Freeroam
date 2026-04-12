@@ -54,8 +54,6 @@ class Racer {
   vehicle!: MpVehicle;
   alive = true;
   survivedTimestamp: number | null = null;
-  currentCheckpointIndex = 0;
-  currentLap = 1;
   startPoint: SumoStartPoint;
 
   constructor(opts: RacerConstructorOptions) {
@@ -200,6 +198,12 @@ export class Sumo extends BaseGameMode<
       }),
     );
 
+    const livingIds = [...this.racers.values()].map((r) => r.player.id);
+
+    for (const racerId of livingIds) {
+      client.gameModes.sumo.updateLivingIds.trigger(racerId, livingIds);
+    }
+
     await this.startCountdown();
   }
 
@@ -222,7 +226,21 @@ export class Sumo extends BaseGameMode<
   private checkSurvivers() {
     const living = [...this.racers.values()].filter((racer) => racer.alive);
 
-    console.log('SURVICERS', living.length);
+    console.log('SURVIVERS', living.length);
+
+    if (living.length > 2) {
+      const livingIds = [...this.racers.values()]
+        .filter((racer) => racer.alive)
+        .map((racer) => racer.player.id);
+
+      const deadIds = [...this.racers.values()]
+        .filter((racer) => !racer.alive)
+        .map((racer) => racer.player.id);
+
+      for (const deadId of deadIds) {
+        client.gameModes.sumo.updateLivingIds.trigger(deadId, livingIds);
+      }
+    }
 
     // if (living.length <= 1) {
     //   this.match.end();

@@ -31,19 +31,12 @@ export const zSumoMap = z.object({
   height: z.number(),
 });
 
-export const zSumoLivingDTO = z.object({
-  playerId: z.number(),
-  playerNick: z.string(),
-  survived: z.boolean(),
-});
-
 export const zSumoSurvivedRacer = z.object({
   playerNick: z.string(),
   time: z.number(),
 });
 
 export type SumoSurvivedRacer = z.infer<typeof zSumoSurvivedRacer>;
-export type SumoLivingDTO = z.infer<typeof zSumoLivingDTO>;
 export type SumoMap = z.infer<typeof zSumoMap>;
 export type SumoStartPoint = z.infer<typeof zSumoStartPoint>;
 export type SumoStartPoints = z.infer<typeof zSumoStartPoints>;

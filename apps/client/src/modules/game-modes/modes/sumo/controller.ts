@@ -21,6 +21,9 @@ export const sumoContract = {
   startCountdown: r.contract
     .context<RpcActiveGameContext<Sumo>>()
     .input(z.number()),
+  updateLivingIds: r.contract
+    .context<RpcActiveGameContext<Sumo>>()
+    .input(z.array(z.number())),
 };
 
 type ContractInputs = InferRouterInputs<typeof sumoContract>;
@@ -49,6 +52,12 @@ export class SumoController {
     context.mode.startCountdown(context.data);
   }
 
+  private async updateLivingIds(
+    context: RpcActiveGameContext<Sumo, ContractInputs['updateLivingIds']>,
+  ) {
+    context.mode.updateLivingIds(context.data);
+  }
+
   @postConstruct()
   private init() {
     r.implement(sumoContract, {
@@ -60,10 +69,13 @@ export class SumoController {
         this.activeGameMiddleware,
         this.reset.bind(this),
       ),
-
       startCountdown: sumoContract.startCountdown.implement(
         this.activeGameMiddleware,
         this.startCountdown.bind(this),
+      ),
+      updateLivingIds: sumoContract.updateLivingIds.implement(
+        this.activeGameMiddleware,
+        this.updateLivingIds.bind(this),
       ),
     });
   }

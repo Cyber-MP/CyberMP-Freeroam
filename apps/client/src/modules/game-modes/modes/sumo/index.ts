@@ -1,6 +1,5 @@
 import { EInputAction, EInputKey } from '@cybermp/client-types/enums';
 import type { Vector4 } from '@cybermp/client-types/game';
-import type { SumoLivingDTO } from '@freeroam/shared/game-modes/sumo';
 import { inject, injectable } from 'inversify';
 import { mp } from '../../../../mp';
 import { browser } from '../../../../rpc/browser';
@@ -15,7 +14,7 @@ import type { SumoPrepareDTO } from './dto';
 
 @injectable()
 export class Sumo extends BaseGameMode<'sumo'> {
-  private living: SumoLivingDTO[] = [];
+  private livingIds: number[] = [];
 
   private initialPosition!: Vector4;
 
@@ -88,15 +87,27 @@ export class Sumo extends BaseGameMode<'sumo'> {
     this.vehiclesService.requestSitInVehicle(data.vehicleId);
   }
 
+  updateLivingIds(data: number[]) {
+    this.livingIds = data;
+  }
+
   private mountVehicleCheckInterval() {
     this.vehicleCheckInterval = setInterval(() => {
       const mountedVehicle = mp.game.GetMountedVehicle(
         mp.game.GetPlayerObject(),
       );
       if (!mountedVehicle) {
-        this.spectateNextValidTarget();
+        this.onDead();
       }
     }, 1000);
+  }
+
+  private onDead() {
+    this.unmountVehicleCheckInterval();
+
+    this.mountSpectateBinds;
+
+    this.spectateNextValidTarget();
   }
 
   private unmountVehicleCheckInterval() {
@@ -135,30 +146,28 @@ export class Sumo extends BaseGameMode<'sumo'> {
   }
 
   private spectateNextValidTarget() {
-    const nextBest = this.living.find((r) => !r.survived);
-
-    if (nextBest) {
-      this.spectatingService.spectate(nextBest.playerId);
+    if (this.livingIds[0]) {
+      this.spectatingService.spectate(this.livingIds[0]);
     } else {
       this.spectatingService.unspectate();
     }
   }
 
   private cycleSpectateTarget(direction: number) {
-    const unfinished = this.living.filter((r) => !r.survived);
-    if (unfinished.length === 0) {
+    if (this.livingIds.length === 0) {
       return;
     }
 
-    const currentIndex = unfinished.findIndex(
-      (r) => r.playerId === this.spectatingService.getSpectatedPlayerId(),
+    const currentIndex = this.livingIds.findIndex(
+      (id) => id === this.spectatingService.getSpectatedPlayerId(),
     );
-    let nextIndex = (currentIndex + direction) % unfinished.length;
+
+    let nextIndex = (currentIndex + direction) % this.livingIds.length;
     if (nextIndex < 0) {
-      nextIndex = unfinished.length - 1;
+      nextIndex = this.livingIds.length - 1;
     }
 
-    this.spectatingService.spectate(unfinished[nextIndex].playerId);
+    this.spectatingService.spectate(this.livingIds[nextIndex]);
   }
 
   release() {
