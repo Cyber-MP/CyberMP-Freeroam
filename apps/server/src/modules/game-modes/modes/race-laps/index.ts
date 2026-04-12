@@ -171,6 +171,8 @@ class Racer {
       health: this.VEHICLE_HEALTH,
     });
 
+    client.game.health.heal.trigger(this.player);
+
     client.game.vehicles.requestSitInVehicle.trigger(
       this.player,
       this.vehicle.id,

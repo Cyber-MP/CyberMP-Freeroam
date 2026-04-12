@@ -11,6 +11,11 @@ export const healthContract = {
   setMax: contract.input(z.number()).build(),
   set: contract.input(z.number()).build(),
   get: contract.method(RpcApplyType.REGISTER).output(z.number()).build(),
+  getMax: contract.method(RpcApplyType.REGISTER).output(z.number()).build(),
+  getDefault: contract.method(RpcApplyType.REGISTER).output(z.number()).build(),
+  god: contract.input(z.boolean()).build(),
+  isGod: contract.method(RpcApplyType.REGISTER).output(z.boolean()).build(),
+  heal: contract.build(),
 };
 
 type ContractInputs = InferRouterInputs<typeof healthContract>;
@@ -27,7 +32,32 @@ export class GHealthController {
       get: this.get.bind(this),
       setCurrent: this.setCurrent.bind(this),
       setMax: this.setMax.bind(this),
+      getDefault: this.getDefault.bind(this),
+      god: this.god.bind(this),
+      isGod: this.isGod.bind(this),
+      heal: this.heal.bind(this),
+      getMax: this.getMax.bind(this),
     });
+  }
+
+  private getMax() {
+    return this.healthService.getMax();
+  }
+
+  private heal() {
+    this.healthService.heal();
+  }
+
+  private isGod() {
+    return this.healthService.isGod();
+  }
+
+  private god(context: RpcClientContext<ContractInputs['god']>) {
+    this.healthService.god(context.data);
+  }
+
+  private getDefault() {
+    return this.healthService.getDefaultHealth();
   }
 
   private set(context: RpcClientContext<ContractInputs['set']>) {
