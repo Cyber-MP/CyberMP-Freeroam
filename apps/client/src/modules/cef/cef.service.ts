@@ -1,4 +1,8 @@
-import { ELoadingScreenState } from '@cybermp/client-types/enums';
+import {
+  EInputAction,
+  EInputKey,
+  ELoadingScreenState,
+} from '@cybermp/client-types/enums';
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
 import { mp } from '../../mp';
@@ -30,6 +34,12 @@ export class CefService {
     browser.loadingOverlay.hide.trigger();
   };
 
+  private toggleHudVisibility(action: EInputAction) {
+    if (action === EInputAction.IACT_Release) {
+      browser.toggleVisibility.trigger();
+    }
+  }
+
   @postConstruct()
   private init() {
     mp.game.onInit(() => {
@@ -40,6 +50,11 @@ export class CefService {
       browser.loadingOverlay.hide.trigger();
 
       this.loadingService.subscribeOnStateChange(this.loadingHandler);
+
+      this.keyboardService.bindKey(
+        EInputKey.IK_F6,
+        this.toggleHudVisibility.bind(this),
+      );
 
       this.keyboardService.subscribe((key, action) => {
         if (mp.cef.isInFocus()) {
