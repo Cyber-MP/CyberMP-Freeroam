@@ -268,14 +268,8 @@ export class Sumo extends BaseGameMode<
   }
 
   private onRacerSurvive(racer: Racer) {
-    const activeRacers = [...this.racers.values()].filter((r) => !r.alive);
-
-    racer.vehicle.destroy();
-
-    if (activeRacers.length === 0) {
-      this.match.end();
-      return;
-    }
+    this.match.end();
+    return;
   }
 
   onPlayerLeave(playerId: number): void {
