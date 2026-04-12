@@ -184,8 +184,6 @@ export class Sumo extends BaseGameMode<
 
     const members = [...this.match.members.keys()];
 
-    console.log('MEMBERS', members.length);
-
     await Promise.all(
       members.map(async (member, index) => {
         const racer = new Racer({
@@ -197,8 +195,6 @@ export class Sumo extends BaseGameMode<
         });
 
         await racer.prepare();
-
-        console.log('MEMBER SET ID', member);
 
         this.racers.set(member, racer);
       }),
@@ -226,6 +222,8 @@ export class Sumo extends BaseGameMode<
   private checkSurvivers() {
     let livingCount = 0;
     let lastSurviver!: Racer;
+
+    console.log('RACERS SIZE', this.racers.size);
 
     this.racers.forEach((racer) => {
       if (racer.survived) {
