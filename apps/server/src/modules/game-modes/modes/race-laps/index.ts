@@ -1,4 +1,4 @@
-import type { MpPlayer, MpVehicle } from '@cybermp/server-types';
+import type { MpPlayer, MpVehicle, Vector3 } from '@cybermp/server-types';
 import {
   type RaceLapsCheckpointNode,
   type RaceLapsFinishedRacer,
@@ -14,7 +14,6 @@ import ms from 'ms';
 import { sleep } from 'radash';
 import type { WritableDeep } from 'type-fest';
 import z from 'zod';
-import { distance3D } from '../../../../lib/math';
 import { mp } from '../../../../mp';
 import { client } from '../../../../rpc';
 import { browser } from '../../../../rpc/browser';
@@ -210,12 +209,22 @@ class Racer {
 class RanksTracker {
   private interval?: ReturnType<typeof setInterval>;
   private readonly UPDATE_RATE = 100;
+  private lastRanks: RaceLapsRankDTO[] = [];
 
   constructor(
     private readonly racers: Map<number, Racer>,
     private readonly checkpoints: RaceLapsCheckpointNode[],
     private readonly totalLaps: number,
   ) {}
+
+  private makeSignature(ranks: RaceLapsRankDTO[]) {
+    return ranks
+      .map(
+        (r) =>
+          `${r.playerId}:${r.position}:${r.lap}:${r.checkpoint}:${r.finished ? 1 : 0}:${r.progress.toString()}`,
+      )
+      .join('|');
+  }
 
   create() {
     if (this.interval) {
@@ -236,10 +245,40 @@ class RanksTracker {
 
   private broadcastRankings() {
     const ranks = this.calculateRankings();
+    if (this.makeSignature(ranks) === this.makeSignature(this.lastRanks)) {
+      return;
+    }
+    this.lastRanks = ranks;
 
     for (const playerId of this.racers.keys()) {
       client.gameModes.raceLaps.updateRanks.trigger(playerId, ranks);
     }
+  }
+
+  private quantizeProgress(progress: number) {
+    const PROGRESS_PRECISION = 10000;
+
+    return Math.round(progress * PROGRESS_PRECISION) / PROGRESS_PRECISION;
+  }
+
+  private getSegmentProgress(a: Vector3, b: Vector3, p: Vector3) {
+    const abx = b[0] - a[0];
+    const aby = b[1] - a[1];
+    const abz = b[2] - a[2];
+
+    const apx = p[0] - a[0];
+    const apy = p[1] - a[1];
+    const apz = p[2] - a[2];
+
+    const abLenSq = abx * abx + aby * aby + abz * abz;
+    if (abLenSq === 0) return 0;
+
+    const dot = apx * abx + apy * aby + apz * abz;
+    const rawT = dot / abLenSq;
+
+    const t = Math.max(-0.5, Math.min(1, rawT));
+
+    return Math.abs(t) < 0.0001 ? 0 : t;
   }
 
   private calculateRankings(): RaceLapsRankDTO[] {
@@ -247,27 +286,23 @@ class RanksTracker {
     const totalLaps = this.totalLaps;
 
     const racersProgress = Array.from(this.racers.values()).map((racer) => {
-      const currentCheckpointPosition =
-        this.checkpoints[racer.currentCheckpointIndex]?.position ??
-        racer.startPoint?.position;
+      const segmentStartPosition =
+        racer.currentCheckpointIndex === 0
+          ? racer.startPoint.position
+          : (this.checkpoints[racer.currentCheckpointIndex - 1]?.position ??
+            racer.startPoint.position);
 
-      const nextCheckpointIndex =
-        (racer.currentCheckpointIndex + 1) % totalCheckpoints;
-      const nextCheckpoint = this.checkpoints[nextCheckpointIndex];
-      const nextCheckpointPosition =
-        nextCheckpoint?.position ?? currentCheckpointPosition;
+      const segmentEndPosition =
+        this.checkpoints[racer.currentCheckpointIndex]?.position ??
+        racer.startPoint.position;
 
       const playerPos = racer.player.position;
 
-      const segmentDist = distance3D(
-        currentCheckpointPosition,
-        nextCheckpointPosition,
+      const segmentFraction = this.getSegmentProgress(
+        segmentStartPosition,
+        segmentEndPosition,
+        playerPos,
       );
-      const playerDist = distance3D(playerPos, nextCheckpointPosition);
-      const segmentFraction =
-        segmentDist > 0
-          ? Math.max(0, Math.min(1, 1 - playerDist / segmentDist))
-          : 0;
 
       const absoluteProgress =
         (racer.currentLap - 1) * totalCheckpoints +
@@ -279,19 +314,24 @@ class RanksTracker {
 
       return {
         racer,
-        progress: normalizedProgress + (racer.finished ? 10000 : 0),
+        progress: normalizedProgress,
       };
     });
 
-    racersProgress.sort((a, b) => b.progress - a.progress);
+    racersProgress.sort((a, b) => {
+      if (a.racer.finished && !b.racer.finished) return -1;
+      if (!a.racer.finished && b.racer.finished) return 1;
+      return b.progress - a.progress;
+    });
 
-    return racersProgress.map(({ racer }, i) => ({
+    return racersProgress.map<RaceLapsRankDTO>(({ racer, progress }, i) => ({
       playerId: racer.player.id,
       position: i + 1,
       playerNick: racer.player.nickname,
       checkpoint: racer.currentCheckpointIndex + 1,
       lap: racer.currentLap,
       finished: racer.finished,
+      progress: this.quantizeProgress(progress),
     }));
   }
 }

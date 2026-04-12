@@ -1,5 +1,6 @@
 import type { RpcBrowserContext } from '@cybermp/rpc-browser';
 import { useImplement } from '@cybermp/rpc-router-react';
+import type { RaceLapsRankDTO } from '@freeroam/shared/game-modes/race-laps';
 import { createFileRoute } from '@tanstack/react-router';
 import {
   AnimatePresence,
@@ -14,11 +15,7 @@ import { useCountdown } from 'usehooks-ts';
 import { proxy, useSnapshot } from 'valtio';
 import { usePlayerId } from '@/hooks/use-player-id';
 import { r } from '@/rpc';
-import {
-  raceLapsContract,
-  raceLapsDataState,
-} from './-contract';
-import { RaceLapsRankDTO } from '@freeroam/shared/game-modes/race-laps';
+import { raceLapsContract, raceLapsDataState } from './-contract';
 
 export const Route = createFileRoute('/hud/game-modes/race-laps/')({
   component: RouteComponent,
@@ -118,6 +115,7 @@ const Ranks = () => {
               >
                 <span>Checkpoint: {rank.checkpoint}</span>
                 <span>Lap: {rank.lap}</span>
+                <span>Progress: {rank.progress.toString()}</span>
               </div>
             </div>
 
