@@ -224,9 +224,9 @@ export class Sumo extends BaseGameMode<
 
     console.log('SURVICERS', living.length);
 
-    if (living.length <= 1) {
-      this.match.end();
-    }
+    // if (living.length <= 1) {
+    //   this.match.end();
+    // }
   }
 
   release() {
