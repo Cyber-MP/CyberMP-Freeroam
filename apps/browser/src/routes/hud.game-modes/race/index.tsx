@@ -298,7 +298,6 @@ const forceFinishState = proxy<{ timestamp: null | number }>({
   timestamp: null,
 });
 
-// TODO: add red outline if count <= 60
 const ForceFinishTimer = () => {
   const { timestamp: finishTimestamp } = useSnapshot(forceFinishState);
 
