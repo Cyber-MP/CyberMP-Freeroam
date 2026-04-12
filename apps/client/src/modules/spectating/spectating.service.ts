@@ -24,6 +24,7 @@ const logger = throttle({ interval: 1000 }, console.log);
 export class SpectatingService {
   private spectateIntervalId: ReturnType<typeof setInterval> | null = null;
   private spectatedPlayerId: number | null = null;
+  private spectatedPlayerGameId: number | null = null;
   private cameraComponent: gameCameraComponent | null = null;
 
   private readonly TELEPORT_OFFSET = 25;
@@ -66,6 +67,14 @@ export class SpectatingService {
       z: targetPos.z + this.TELEPORT_OFFSET,
       y: targetPos.y + this.TELEPORT_OFFSET,
     });
+
+    const currentSpectatedPlayerGameId = mp.getPlayerGameIdByNetworkId(
+      this.spectatedPlayerId,
+    );
+    if (currentSpectatedPlayerGameId !== this.spectatedPlayerGameId) {
+      this.setupCamera(currentSpectatedPlayerGameId);
+      this.spectatedPlayerGameId = currentSpectatedPlayerGameId;
+    }
 
     if (!this.cameraComponent) {
       this.setupCamera(this.spectatedPlayerId);
