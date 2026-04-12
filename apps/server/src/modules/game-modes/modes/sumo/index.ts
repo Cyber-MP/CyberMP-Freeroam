@@ -4,8 +4,6 @@ import {
   SumoMapName,
   type SumoRacerDTO,
   type SumoStartPoint,
-  type SumoStartPoints,
-  type SumoVerticies,
   zSumoRacerDTO,
 } from '@freeroam/shared/game-modes/sumo';
 import { inject, injectable } from 'inversify';
@@ -143,8 +141,6 @@ export class Sumo extends BaseGameMode<
   private match!: Match<this>;
   private dimension!: number;
   private map!: SumoMap;
-  private verticies!: SumoVerticies;
-  private startPoints!: SumoStartPoints;
   private polygon!: Polygon;
 
   private racers = new Map<number, Racer>();
@@ -173,7 +169,6 @@ export class Sumo extends BaseGameMode<
   init(match: Match<this>): void {
     this.match = match;
     this.map = SumoMaps.find((o) => o.name === this.match.options.map)!;
-    this.verticies = this.map.verticies;
     this.dimension = match.dimension;
   }
 
@@ -182,7 +177,7 @@ export class Sumo extends BaseGameMode<
       this.polygon = this.polygonsService.create({
         dimension: this.dimension,
         height: this.map.height,
-        vertices: this.verticies,
+        vertices: this.map.verticies,
       });
 
       this.polygon.entityLeaveObserver.subscribe(this.polygonSubscribeEvent);
@@ -196,7 +191,7 @@ export class Sumo extends BaseGameMode<
             match: this.match,
             player: member,
             index,
-            startPoint: this.startPoints[index],
+            startPoint: this.map.startPoints[index],
           });
 
           await racer.prepare();
