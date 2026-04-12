@@ -52,7 +52,7 @@ class Racer {
   private vehicleData: VehicleData;
   player: MpPlayer;
   vehicle!: MpVehicle;
-  survived = false;
+  alive = true;
   survivedTimestamp: number | null = null;
   currentCheckpointIndex = 0;
   currentLap = 1;
@@ -104,18 +104,18 @@ class Racer {
   }
 
   async surrender() {
-    if (this.survived) {
+    if (!this.alive) {
       return;
     }
 
-    this.survived = true;
+    this.alive = false;
 
     this.vehicle.destroy();
   }
 
   toDTO(): SumoRacerDTO {
     return zSumoRacerDTO.parse({
-      survived: this.survived,
+      survived: this.alive,
     });
   }
 
@@ -220,24 +220,16 @@ export class Sumo extends BaseGameMode<
   };
 
   private checkSurvivers() {
-    let livingCount = 0;
-    let lastSurviver!: Racer;
+    const living = [...this.racers.values()].filter((racer) => racer.alive);
 
-    console.log('RACERS SIZE', this.racers.size);
+    console.log('SURVICERS', living.length);
 
-    this.racers.forEach((racer) => {
-      if (racer.survived) {
-        livingCount++;
-        lastSurviver = racer;
-      }
-    });
-
-    if (livingCount === 1 && lastSurviver) {
-      this.onRacerSurvive(lastSurviver);
+    if (living.length === 1) {
+      this.onRacerSurvive(living[0]);
     }
 
-    if (livingCount === 0) {
-      this.end();
+    if (living.length === 0) {
+      this.match.end();
     }
   }
 
@@ -276,7 +268,7 @@ export class Sumo extends BaseGameMode<
   }
 
   private onRacerSurvive(racer: Racer) {
-    const activeRacers = [...this.racers.values()].filter((r) => !r.survived);
+    const activeRacers = [...this.racers.values()].filter((r) => !r.alive);
 
     racer.vehicle.destroy();
 

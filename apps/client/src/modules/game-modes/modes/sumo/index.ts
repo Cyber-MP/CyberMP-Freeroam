@@ -2,28 +2,19 @@ import { EInputAction, EInputKey } from '@cybermp/client-types/enums';
 import type { Vector4 } from '@cybermp/client-types/game';
 import type { SumoLivingDTO } from '@freeroam/shared/game-modes/sumo';
 import { inject, injectable } from 'inversify';
-import ms from 'ms';
 import { mp } from '../../../../mp';
-import { server } from '../../../../rpc';
 import { browser } from '../../../../rpc/browser';
-import { DeathService } from '../../../death/death.service';
 import { GHealthService } from '../../../game/health/health.service';
 import { GKeyboardService } from '../../../game/keyboard.service';
 import { GStatusEffectsService } from '../../../game/status-effects/status-effects.service';
 import { GTeleportService } from '../../../game/teleport/teleport.service';
 import { GVehiclesService } from '../../../game/vehicles/vehicles.service';
-import { SpawnService } from '../../../spawn/spawn.service';
 import { SpectatingService } from '../../../spectating/spectating.service';
 import { BaseGameMode } from '../../game-mode';
 import type { SumoPrepareDTO } from './dto';
 
 @injectable()
-export class Sumo extends BaseGameMode<'race_laps'> {
-  private readonly SURRENDER_DURATION = ms('5s');
-  private readonly SURRENDER_KEY = EInputKey.IK_F;
-  private surrenderKeyHandler?: (action: EInputAction) => void;
-  private surrended = false;
-
+export class Sumo extends BaseGameMode<'sumo'> {
   private living: SumoLivingDTO[] = [];
 
   private initialPosition!: Vector4;
@@ -38,8 +29,6 @@ export class Sumo extends BaseGameMode<'race_laps'> {
     @inject(GStatusEffectsService)
     private statusEffectsService: GStatusEffectsService,
     @inject(GKeyboardService) private keyboardService: GKeyboardService,
-    @inject(DeathService) private deathService: DeathService,
-    @inject(SpawnService) private spawnService: SpawnService,
     @inject(SpectatingService) private spectatingService: SpectatingService,
   ) {
     super();
@@ -49,7 +38,6 @@ export class Sumo extends BaseGameMode<'race_laps'> {
     this.spectatingService.unspectate();
 
     this.healthService.set(this.healthService.getDefaultHealth());
-    this.mountDeathHandler();
 
     this.initialPosition = mp.game.GetPlayer().GetWorldPosition();
 
@@ -63,8 +51,7 @@ export class Sumo extends BaseGameMode<'race_laps'> {
 
   end() {
     this.unmountVehicleCheckInterval();
-    this.unmountDeathHandler();
-    this.unmountSurrenderKey();
+
     setTimeout(() => {
       this.unmountSpectateBinds();
     });
@@ -101,74 +88,13 @@ export class Sumo extends BaseGameMode<'race_laps'> {
     this.vehiclesService.requestSitInVehicle(data.vehicleId);
   }
 
-  private onSurrender() {
-    this.unmountSurrenderKey();
-    this.unmountDeathHandler();
-    this.unmountVehicleCheckInterval();
-
-    this.mountSpectateBinds();
-
-    this.spectateNextValidTarget();
-  }
-
-  private surrender() {
-    if (this.surrended) {
-      return;
-    }
-
-    this.surrended = true;
-
-    browser.gameModes.sumo.hideSurrender.trigger();
-
-    server.gameModes.sumo.surrender.trigger();
-  }
-
-  private mountSurrenderKey() {
-    browser.hints.add.trigger({
-      F: 'Respawn',
-    });
-
-    let respawnTimer: ReturnType<typeof setTimeout>;
-
-    this.surrenderKeyHandler = (action) => {
-      if (this.surrended) {
-        return;
-      }
-
-      if (action === EInputAction.IACT_Press) {
-        respawnTimer = setTimeout(() => {
-          this.surrender();
-        }, this.SURRENDER_DURATION);
-
-        browser.gameModes.sumo.showSurrender.trigger(this.SURRENDER_DURATION);
-      } else if (action === EInputAction.IACT_Release) {
-        browser.gameModes.sumo.hideSurrender.trigger();
-
-        clearTimeout(respawnTimer);
-      }
-    };
-
-    this.keyboardService.bindKey(this.SURRENDER_KEY, this.surrenderKeyHandler);
-  }
-
-  private unmountSurrenderKey() {
-    browser.hints.remove.trigger('F');
-
-    if (this.surrenderKeyHandler) {
-      this.keyboardService.unbindKey(
-        this.SURRENDER_KEY,
-        this.surrenderKeyHandler,
-      );
-    }
-  }
-
   private mountVehicleCheckInterval() {
     this.vehicleCheckInterval = setInterval(() => {
       const mountedVehicle = mp.game.GetMountedVehicle(
         mp.game.GetPlayerObject(),
       );
       if (!mountedVehicle) {
-        this.surrender();
+        this.spectateNextValidTarget();
       }
     }, 1000);
   }
@@ -235,16 +161,7 @@ export class Sumo extends BaseGameMode<'race_laps'> {
     this.spectatingService.spectate(unfinished[nextIndex].playerId);
   }
 
-  private mountDeathHandler() {
-    this.deathService.subscribe(this.surrender);
-  }
-
-  private unmountDeathHandler() {
-    this.deathService.unsubscribe(this.surrender);
-  }
-
   release() {
-    this.mountSurrenderKey();
     this.mountVehicleCheckInterval();
 
     this.statusEffectsService.remove('GameplayRestriction.NoDriving');
