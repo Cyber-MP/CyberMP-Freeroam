@@ -53,6 +53,9 @@ type RacerConstructorOptions = {
 };
 
 class Racer {
+  private readonly VEHICLE_HEALTH = 1600;
+  private readonly VEHICLE_SPAWN_OFFSET_Z = 1.5;
+
   private map: RaceLapsMap;
   private trackPath: PathTransform[];
   private match: Match<RaceLaps>;
@@ -108,11 +111,11 @@ class Racer {
       position: [
         this.startPoint.position[0],
         this.startPoint.position[1],
-        this.startPoint.position[2] + 3,
+        this.startPoint.position[2] + this.VEHICLE_SPAWN_OFFSET_Z,
       ],
       yaw: this.startPoint.yaw,
       dimension: this.match.dimension,
-      health: 1300,
+      health: this.VEHICLE_HEALTH,
     });
 
     await client.gameModes.raceLaps.prepare.call(
@@ -158,10 +161,14 @@ class Racer {
     this.vehicle = mp.vehicles.create({
       model: mp.hashes.tweakdbid(`Vehicle.${vehicleModel}`),
       appearance: mp.hashes.cname(vehicleAppearance),
-      position: [node.position[0], node.position[1], node.position[2] + 3],
+      position: [
+        node.position[0],
+        node.position[1],
+        node.position[2] + this.VEHICLE_SPAWN_OFFSET_Z,
+      ],
       yaw: node.yaw,
       dimension: this.match.dimension,
-      health: 1300,
+      health: this.VEHICLE_HEALTH,
     });
 
     client.game.vehicles.requestSitInVehicle.trigger(
