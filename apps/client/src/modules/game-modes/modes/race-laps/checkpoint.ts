@@ -72,7 +72,7 @@ export class RaceLapsCheckpoint {
     this.polygon = this.polygonsService.create({
       height: radius,
       vertices,
-      visible: true,
+      visible: import.meta.env.DEV,
     });
 
     this.polygon.entityEnterObserver.subscribe(onEnter);
