@@ -89,19 +89,23 @@ class Racer {
       health: 10_000_000,
     });
 
-    await client.gameModes.sumo.prepare.call(
-      this.player,
-      {
-        map: structuredClone(this.map),
-        vehicleId: this.vehicle.id,
-        startPoint: this.startPoint,
-      },
-      {},
-      { timeout: ms('15s') },
-    );
+    await client.gameModes.sumo.prepare
+      .call(
+        this.player,
+        {
+          map: structuredClone(this.map),
+          vehicleId: this.vehicle.id,
+          startPoint: this.startPoint,
+        },
+        {},
+        { timeout: ms('15s') },
+      )
+      .catch((e) => {
+        this.match.leave(this.player.id);
+      });
   }
 
-  async surrender() {
+  async lose() {
     if (!this.alive) {
       return;
     }
@@ -170,18 +174,7 @@ export class Sumo extends BaseGameMode<
   }
 
   async start() {
-    this.polygon = this.polygonsService.create({
-      dimension: this.dimension,
-      height: this.map.height,
-      vertices: this.map.verticies,
-      visible: true,
-    });
-
-    this.polygon.entityLeaveObserver.subscribe(this.onPolygonLeave);
-
     const members = [...this.match.members.keys()];
-
-    console.log('START MEMBERS', members.length);
 
     await Promise.all(
       members.map(async (member, index) => {
@@ -208,9 +201,6 @@ export class Sumo extends BaseGameMode<
   }
 
   private onPolygonLeave = async (entity: MpEntity) => {
-    console.log('PLAYER LEAVE POLYGON');
-    console.log(entity.type);
-
     // TODO replace `1` with EntityType.Player (terminate update @cybermp/server-types)
     if (entity.type !== 1) {
       return;
@@ -218,15 +208,13 @@ export class Sumo extends BaseGameMode<
 
     const racer = this.racers.get(entity.id);
 
-    await racer?.surrender();
+    await racer?.lose();
 
     this.checkSurvivers();
   };
 
   private checkSurvivers() {
     const living = [...this.racers.values()].filter((racer) => racer.alive);
-
-    console.log('SURVIVERS', living.length);
 
     if (living.length >= 2) {
       const livingIds = living.map((racer) => racer.player.id);
@@ -242,10 +230,19 @@ export class Sumo extends BaseGameMode<
   }
 
   release() {
+    this.polygon = this.polygonsService.create({
+      dimension: this.dimension,
+      height: this.map.height,
+      vertices: this.map.verticies,
+      visible: true,
+    });
+
+    this.polygon.entityLeaveObserver.subscribe(this.onPolygonLeave);
+
     this.released = true;
   }
 
-  surrender(playerId: number) {
+  lose(playerId: number) {
     if (!this.released) {
       return;
     }
@@ -256,7 +253,7 @@ export class Sumo extends BaseGameMode<
       return;
     }
 
-    return racer.surrender();
+    return racer.lose();
   }
 
   async startCountdown() {
