@@ -39,7 +39,6 @@ export const zJoinSumoOptions = zJoinMatchOptions.extend({
 
 type RacerConstructorOptions = {
   player: number;
-  index: number;
   map: SumoMap;
   match: Match<Sumo>;
   startPoint: SumoStartPoint;
@@ -51,7 +50,6 @@ class Racer {
 
   options: z.infer<typeof zJoinSumoOptions>;
   private vehicleData: VehicleData;
-  index: number;
   player: MpPlayer;
   vehicle!: MpVehicle;
   survived = false;
@@ -63,7 +61,6 @@ class Racer {
   constructor(opts: RacerConstructorOptions) {
     this.map = opts.map;
     this.player = mp.players.at(opts.player);
-    this.index = opts.index;
     this.match = opts.match;
     this.startPoint = opts.startPoint;
 
@@ -186,13 +183,14 @@ export class Sumo extends BaseGameMode<
 
     const members = [...this.match.members.keys()];
 
+    console.log('START MEMBERS', members.length);
+
     await Promise.all(
       members.map(async (member, index) => {
         const racer = new Racer({
           map: this.map,
           match: this.match,
           player: member,
-          index,
           startPoint: this.map.startPoints[index],
         });
 

@@ -1,7 +1,6 @@
 import { RpcApplyType } from '@cybermp/rpc-client';
 import type { InferRouterInputs } from '@cybermp/rpc-router/server';
 import { eager } from '@freeroam/inversify';
-import { zSumoRacerDTO } from '@freeroam/shared/game-modes/sumo';
 import { inject, injectable, postConstruct } from 'inversify';
 import z from 'zod';
 import { r } from '../../../../rpc';
@@ -22,9 +21,6 @@ export const sumoContract = {
   startCountdown: r.contract
     .context<RpcActiveGameContext<Sumo>>()
     .input(z.number()),
-  updateRacerData: r.contract
-    .context<RpcActiveGameContext<Sumo>>()
-    .input(zSumoRacerDTO),
 };
 
 type ContractInputs = InferRouterInputs<typeof sumoContract>;
@@ -53,12 +49,6 @@ export class SumoController {
     context.mode.startCountdown(context.data);
   }
 
-  private async updateRacerData(
-    context: RpcActiveGameContext<Sumo, ContractInputs['updateRacerData']>,
-  ) {
-    context.mode.updateRacerData(context.data);
-  }
-
   @postConstruct()
   private init() {
     r.implement(sumoContract, {
@@ -74,10 +64,6 @@ export class SumoController {
       startCountdown: sumoContract.startCountdown.implement(
         this.activeGameMiddleware,
         this.startCountdown.bind(this),
-      ),
-      updateRacerData: sumoContract.updateRacerData.implement(
-        this.activeGameMiddleware,
-        this.updateRacerData.bind(this),
       ),
     });
   }

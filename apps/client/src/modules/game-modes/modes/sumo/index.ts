@@ -1,9 +1,6 @@
 import { EInputAction, EInputKey } from '@cybermp/client-types/enums';
 import type { Vector4 } from '@cybermp/client-types/game';
-import type {
-  SumoLivingDTO,
-  SumoRacerDTO,
-} from '@freeroam/shared/game-modes/sumo';
+import type { SumoLivingDTO } from '@freeroam/shared/game-modes/sumo';
 import { inject, injectable } from 'inversify';
 import ms from 'ms';
 import { mp } from '../../../../mp';
@@ -25,11 +22,8 @@ export class Sumo extends BaseGameMode<'race_laps'> {
   private readonly SURRENDER_DURATION = ms('5s');
   private readonly SURRENDER_KEY = EInputKey.IK_F;
   private surrenderKeyHandler?: (action: EInputAction) => void;
-  private surrendered = false;
+  private surrended = false;
 
-  private data: SumoRacerDTO = {
-    survived: false,
-  };
   private living: SumoLivingDTO[] = [];
 
   private initialPosition!: Vector4;
@@ -98,13 +92,6 @@ export class Sumo extends BaseGameMode<'race_laps'> {
     browser.navigate.trigger('/hud/game-modes/race-laps/results');
   }
 
-  updateRacerData(data: Partial<SumoRacerDTO> = {}) {
-    this.data = { ...this.data, ...data };
-    browser.gameModes.sumo.updateData.trigger({
-      ...this.data,
-    });
-  }
-
   async prepare(data: SumoPrepareDTO) {
     await this.teleportService.teleportAsync(...data.startPoint);
 
@@ -112,8 +99,6 @@ export class Sumo extends BaseGameMode<'race_laps'> {
     browser.navigate.trigger('/hud/game-modes/sumo/');
 
     this.vehiclesService.requestSitInVehicle(data.vehicleId);
-
-    this.updateRacerData(this.data);
   }
 
   private onSurrender() {
@@ -127,11 +112,11 @@ export class Sumo extends BaseGameMode<'race_laps'> {
   }
 
   private surrender() {
-    if (this.surrendered || this.data.survived) {
+    if (this.surrended) {
       return;
     }
 
-    this.surrendered = true;
+    this.surrended = true;
 
     browser.gameModes.sumo.hideSurrender.trigger();
 
@@ -146,7 +131,7 @@ export class Sumo extends BaseGameMode<'race_laps'> {
     let respawnTimer: ReturnType<typeof setTimeout>;
 
     this.surrenderKeyHandler = (action) => {
-      if (this.surrendered || this.data.survived) {
+      if (this.surrended) {
         return;
       }
 
