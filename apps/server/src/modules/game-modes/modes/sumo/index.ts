@@ -228,23 +228,17 @@ export class Sumo extends BaseGameMode<
 
     console.log('SURVIVERS', living.length);
 
-    if (living.length > 2) {
-      const livingIds = [...this.racers.values()]
-        .filter((racer) => racer.alive)
-        .map((racer) => racer.player.id);
+    if (living.length >= 2) {
+      const livingIds = living.map((racer) => racer.player.id);
 
-      const deadIds = [...this.racers.values()]
-        .filter((racer) => !racer.alive)
-        .map((racer) => racer.player.id);
-
-      for (const deadId of deadIds) {
-        client.gameModes.sumo.updateLivingIds.trigger(deadId, livingIds);
+      for (const playerId of [...this.racers.keys()]) {
+        client.gameModes.sumo.updateLivingIds.trigger(playerId, livingIds);
       }
     }
 
-    // if (living.length <= 1) {
-    //   this.match.end();
-    // }
+    if (living.length <= 1) {
+      this.match.end();
+    }
   }
 
   release() {

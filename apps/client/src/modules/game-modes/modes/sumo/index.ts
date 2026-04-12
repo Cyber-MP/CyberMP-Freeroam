@@ -36,7 +36,7 @@ export class Sumo extends BaseGameMode<'sumo'> {
   start() {
     this.spectatingService.unspectate();
 
-    this.healthService.set(this.healthService.getDefaultHealth());
+    this.healthService.god(true);
 
     this.initialPosition = mp.game.GetPlayer().GetWorldPosition();
 
@@ -89,6 +89,12 @@ export class Sumo extends BaseGameMode<'sumo'> {
 
   updateLivingIds(data: number[]) {
     this.livingIds = data;
+
+    const current = this.spectatingService.getSpectatedPlayerId();
+
+    if (current && !this.livingIds.includes(current)) {
+      this.spectateNextValidTarget();
+    }
   }
 
   private mountVehicleCheckInterval() {
