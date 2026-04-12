@@ -29,49 +29,40 @@ export class MatchmakingService {
   }
 
   createMatch(ownerId: number, dto: z.infer<typeof zCreateMatchDTO>) {
-    let xxx: any;
+    const mode = this.gameModeFactory(dto.name);
 
-    try {
-      const mode = this.gameModeFactory(dto.name);
-
-      if (!mode.CREATE_OPTIONS_SCHEMA.safeParse(dto.createOptions).success) {
-        throw new RpcError({
-          message: 'Invalid create options',
-        });
-      }
-
-      if (!mode.JOIN_OPTIONS_SCHEMA.safeParse(dto.joinOptions).success) {
-        throw new RpcError({
-          message: 'Invalid join options',
-        });
-      }
-
-      const match = new Match<any>(
-        {
-          ownerId,
-          mode,
-          createOptions: dto.createOptions,
-          joinOptions: dto.joinOptions,
-          dimension: this.matchRepository.getUniqueDimension(),
-        },
-        {
-          onEnd: () => {
-            this.matchRepository.delete(match);
-          },
-        },
-      );
-
-      this.leaveMatch(ownerId);
-
-      this.matchRepository.save(match);
-
-      // return match;
-      xxx = match;
-    } catch (err) {
-      console.log(err, (err as any).message);
+    if (!mode.CREATE_OPTIONS_SCHEMA.safeParse(dto.createOptions).success) {
+      throw new RpcError({
+        message: 'Invalid create options',
+      });
     }
 
-    return xxx;
+    if (!mode.JOIN_OPTIONS_SCHEMA.safeParse(dto.joinOptions).success) {
+      throw new RpcError({
+        message: 'Invalid join options',
+      });
+    }
+
+    const match = new Match<any>(
+      {
+        ownerId,
+        mode,
+        createOptions: dto.createOptions,
+        joinOptions: dto.joinOptions,
+        dimension: this.matchRepository.getUniqueDimension(),
+      },
+      {
+        onEnd: () => {
+          this.matchRepository.delete(match);
+        },
+      },
+    );
+
+    this.leaveMatch(ownerId);
+
+    this.matchRepository.save(match);
+
+    return match;
   }
 
   joinMatch(playerId: number, dto: z.infer<typeof zJoinMatchDTO>) {

@@ -141,6 +141,7 @@ export class Sumo extends BaseGameMode<
   readonly JOIN_OPTIONS_SCHEMA = zJoinSumoOptions;
 
   private match!: Match<this>;
+  private dimension!: number;
   private map!: SumoMap;
   private verticies!: SumoVerticies;
   private startPoints!: SumoStartPoints;
@@ -173,12 +174,13 @@ export class Sumo extends BaseGameMode<
     this.match = match;
     this.map = SumoMaps.find((o) => o.name === this.match.options.map)!;
     this.verticies = this.map.verticies;
+    this.dimension = match.dimension;
   }
 
   async start() {
     this.polygon = this.polygonsService.create({
-      dimension: 0,
-      height: 0,
+      dimension: this.dimension,
+      height: this.map.height,
       vertices: this.verticies,
     });
 
