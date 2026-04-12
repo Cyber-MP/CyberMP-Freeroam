@@ -184,6 +184,8 @@ export class Sumo extends BaseGameMode<
 
     const members = [...this.match.members.keys()];
 
+    console.log('MEMBERS', members.length);
+
     await Promise.all(
       members.map(async (member, index) => {
         const racer = new Racer({
@@ -195,6 +197,8 @@ export class Sumo extends BaseGameMode<
         });
 
         await racer.prepare();
+
+        console.log('MEMBER SET ID', member);
 
         this.racers.set(member, racer);
       }),
