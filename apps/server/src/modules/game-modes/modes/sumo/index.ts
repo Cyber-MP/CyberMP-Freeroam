@@ -207,7 +207,6 @@ export class Sumo extends BaseGameMode<
 
   private polygonSubscribeEvent(entity: MpEntity) {
     // TODO replace `1` with EntityType.Player (terminate update @cybermp/server-types)
-
     if (entity.type !== 1) {
       return;
     }

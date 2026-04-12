@@ -1,6 +1,6 @@
 import { type SumoMap, SumoMapName } from '@freeroam/shared/game-modes/sumo';
 
-export const RACE_LAPS_TEST_MAP: SumoMap = {
+export const SUMO_TEST_MAP: SumoMap = {
   name: SumoMapName.TEST,
   height: 10,
 
