@@ -28,10 +28,7 @@ import {
 } from '../../../vehicles-spawner/vehicles.repository';
 import { BaseGameMode, GameModeName } from '../../game-mode';
 import { RaceLapsMaps } from './maps';
-import {
-  type PathTransform,
-  RaceTrackCalculator,
-} from './track-calculator';
+import { type PathTransform, RaceTrackCalculator } from './track-calculator';
 
 export const zCreateRaceOptions = zCreateMatchOptions.extend({
   map: z.enum(RaceMapName),
@@ -118,17 +115,21 @@ class Racer {
       health: this.VEHICLE_HEALTH,
     });
 
-    await client.gameModes.race.prepare.call(
-      this.player,
-      {
-        map: structuredClone(this.map),
-        startPoint: structuredClone(this.startPoint),
-        trackPath: structuredClone(this.trackPath),
-        vehicleId: this.vehicle.id,
-      },
-      {},
-      { timeout: ms('15s') },
-    );
+    await client.gameModes.race.prepare
+      .call(
+        this.player,
+        {
+          map: structuredClone(this.map),
+          startPoint: structuredClone(this.startPoint),
+          trackPath: structuredClone(this.trackPath),
+          vehicleId: this.vehicle.id,
+        },
+        {},
+        { timeout: ms('30s') },
+      )
+      .catch(() => {
+        this.match.leave(this.player.id);
+      });
   }
 
   async respawn() {
@@ -467,10 +468,7 @@ export class Race extends BaseGameMode<
 
   async startCountdown() {
     for (const racer of this.racers.keys()) {
-      client.gameModes.race.startCountdown.trigger(
-        racer,
-        this.COUNTDOWN_TIME,
-      );
+      client.gameModes.race.startCountdown.trigger(racer, this.COUNTDOWN_TIME);
     }
 
     await sleep(this.COUNTDOWN_TIME);
@@ -485,9 +483,7 @@ export class Race extends BaseGameMode<
 
     this.ranksTracker.destroy();
 
-    const finalResults: RaceFinishedRacer[] = Array.from(
-      this.racers.values(),
-    )
+    const finalResults: RaceFinishedRacer[] = Array.from(this.racers.values())
       .map((racer) => {
         const isFinished = racer.finished && racer.finishTimestamp !== null;
         const raceTime = isFinished
