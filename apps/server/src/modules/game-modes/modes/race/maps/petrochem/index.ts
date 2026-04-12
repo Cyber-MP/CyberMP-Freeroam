@@ -1,10 +1,10 @@
 import {
-  type RaceLapsMap,
-  RaceLapsMapName,
-} from '@freeroam/shared/game-modes/race-laps';
+  type RaceMap,
+  RaceMapName,
+} from '@freeroam/shared/game-modes/race';
 
-export const RACE_LAPS_PETROCHEM_MAP: RaceLapsMap = {
-  name: RaceLapsMapName.PETROCHEM,
+export const RACE_LAPS_PETROCHEM_MAP: RaceMap = {
+  name: RaceMapName.PETROCHEM,
   nodes: [
     {
       type: 'start-point',

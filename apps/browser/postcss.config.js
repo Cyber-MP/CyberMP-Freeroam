@@ -133,7 +133,7 @@ const colorMixVarResolverPlugin = () => {
                   // we convert the var() function into a raw value.
                   // We use valueParser.parse to ensure if the variable contains
                   // complex values, they are handled correctly.
-                  const tempParsed = valueParser(resolvedValue);
+                  const _tempParsed = valueParser(resolvedValue);
                   childNode.type = 'word';
                   childNode.value = resolvedValue;
                   childNode.nodes = [];

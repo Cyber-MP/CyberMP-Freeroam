@@ -5,11 +5,11 @@ import type {
 } from '@cybermp/client-types/game';
 import { eager } from '@freeroam/inversify';
 import type {
-  RaceLapsCheckpointNode,
-  RaceLapsMap,
-  RaceLapsMapNode,
-  RaceLapsTrackPath,
-} from '@freeroam/shared/game-modes/race-laps';
+  RaceCheckpointNode,
+  RaceMap,
+  RaceMapNode,
+  RaceTrackPath,
+} from '@freeroam/shared/game-modes/race';
 import { inject, injectable, postConstruct } from 'inversify';
 import z from 'zod';
 import { createEulerAngles, createVector4 } from '../../../../lib/vectors';
@@ -22,10 +22,10 @@ import { GEntityService } from '../../../game/entity.service';
 import { GObjectsService } from '../../../game/objects.service';
 
 class TrackPathNavigation {
-  private trackData: RaceLapsTrackPath = [];
+  private trackData: RaceTrackPath = [];
   private activeFx = new Map<number, gameFxInstance>();
 
-  private spawnEffect(index: number, path: RaceLapsTrackPath[number]) {
+  private spawnEffect(index: number, path: RaceTrackPath[number]) {
     const [x, y, z] = path.position;
     const [roll, pitch, yaw] = path.rotation;
 
@@ -55,7 +55,7 @@ class TrackPathNavigation {
     }
   }
 
-  create(trackPath: RaceLapsTrackPath) {
+  create(trackPath: RaceTrackPath) {
     this.trackData = trackPath;
 
     // Spawn every point in the path immediately
@@ -75,13 +75,13 @@ class TrackPathNavigation {
 
 @eager()
 @injectable()
-export class RaceLapsMapBuilder {
-  private currentMap: RaceLapsMap = { name: 'New Race' as any, nodes: [] };
+export class RaceMapBuilder {
+  private currentMap: RaceMap = { name: 'New Race' as any, nodes: [] };
   private navigation = new TrackPathNavigation();
 
   private entityLabels = new Set<EntityLabel>();
 
-  private readonly OBJECTS_GROUP = 'race-laps-map-builder';
+  private readonly OBJECTS_GROUP = 'race-map-builder';
 
   constructor(
     @inject(ChatService) private chatService: ChatService,
@@ -100,7 +100,7 @@ export class RaceLapsMapBuilder {
     // Initialize a new map
     this.chatService.addCommand({
       name: 'rl_new',
-      description: 'Start a new race laps map',
+      description: 'Start a new race map',
       args: z.tuple([z.string().meta({ title: 'name' })]),
       handler: (name) => {
         this.currentMap = { name: name as any, nodes: [] };
@@ -157,7 +157,7 @@ export class RaceLapsMapBuilder {
           .default('forward'),
       ]),
       handler: (radius, direction) => {
-        const node: RaceLapsCheckpointNode = {
+        const node: RaceCheckpointNode = {
           ...this.getCurrentNode('checkpoint'),
           radius: radius || 5,
           direction: direction || 'forward',
@@ -193,7 +193,7 @@ export class RaceLapsMapBuilder {
     this.entityLabels.clear();
   }
 
-  private getCurrentNode(type: RaceLapsMapNode['type']): any {
+  private getCurrentNode(type: RaceMapNode['type']): any {
     const pos = mp.game.GetPlayer().GetWorldPosition();
     const yaw = mp.game.GetPlayer().GetWorldYaw();
 
@@ -204,7 +204,7 @@ export class RaceLapsMapBuilder {
     };
   }
 
-  private addNode(node: RaceLapsMapNode) {
+  private addNode(node: RaceMapNode) {
     this.currentMap.nodes.push(node);
     this.refresh();
   }
@@ -216,7 +216,7 @@ export class RaceLapsMapBuilder {
     this.generateCheckpoints();
     this.generateStartPoints();
 
-    const trackPath: RaceLapsTrackPath = this.generateTrackPath(
+    const trackPath: RaceTrackPath = this.generateTrackPath(
       this.currentMap.nodes,
     );
 
@@ -289,10 +289,10 @@ export class RaceLapsMapBuilder {
   }
 
   private generateTrackPath(
-    mapNodes: RaceLapsMapNode[],
+    mapNodes: RaceMapNode[],
     stepDistance: number = 2.0,
-  ): RaceLapsTrackPath {
-    const path: RaceLapsTrackPath = [];
+  ): RaceTrackPath {
+    const path: RaceTrackPath = [];
 
     // 1. Combine Start Point and Checkpoints into a single sequence of nodes
     // We'll use the first start point as the origin

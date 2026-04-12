@@ -1,50 +1,48 @@
 import { RpcApplyType } from '@cybermp/rpc-server';
 import { eager } from '@freeroam/inversify';
-import { zRaceLapsRacerDTO } from '@freeroam/shared/game-modes/race-laps';
+import { zRaceRacerDTO } from '@freeroam/shared/game-modes/race';
 import { inject, injectable, postConstruct } from 'inversify';
 import z from 'zod';
 import { r } from '../../../../rpc';
 import { TYPES } from '../../../../types';
-import { ChatService } from '../../../chat/chat.service';
 import type {
   MatchMiddleware,
   RpcMatchContext,
 } from '../../../matchmaking/middlewares/match.middleware';
-import type { RaceLaps } from '.';
+import type { Race } from '.';
 
-export const raceLapsContract = {
+export const raceContract = {
   processCheckpoint: r.contract
     .method(RpcApplyType.REGISTER)
-    .context<RpcMatchContext<RaceLaps>>()
-    .output(zRaceLapsRacerDTO),
+    .context<RpcMatchContext<Race>>()
+    .output(zRaceRacerDTO),
   respawn: r.contract
     .method(RpcApplyType.REGISTER)
-    .context<RpcMatchContext<RaceLaps>>()
+    .context<RpcMatchContext<Race>>()
     .output(z.void()),
 };
 
 @eager()
 @injectable()
-export class RaceLapsController {
+export class RaceController {
   constructor(
     @inject(TYPES.MatchMemberMiddleware)
     private matchMemberMiddleware: MatchMiddleware,
-    @inject(ChatService) private chatService: ChatService,
   ) {}
 
-  processCheckpoint(ctx: RpcMatchContext<RaceLaps>) {
+  processCheckpoint(ctx: RpcMatchContext<Race>) {
     return ctx.match.mode.processCheckpoint(ctx.player.id);
   }
 
-  respawn(ctx: RpcMatchContext<RaceLaps>) {
+  respawn(ctx: RpcMatchContext<Race>) {
     return ctx.match.mode.respawn(ctx.player.id);
   }
 
   @postConstruct()
   private init() {
-    const { processCheckpoint, respawn } = raceLapsContract;
+    const { processCheckpoint, respawn } = raceContract;
 
-    r.implement(raceLapsContract, {
+    r.implement(raceContract, {
       processCheckpoint: processCheckpoint.implement(
         this.matchMemberMiddleware,
         this.processCheckpoint.bind(this),

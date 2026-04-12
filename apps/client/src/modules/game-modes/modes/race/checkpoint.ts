@@ -1,6 +1,6 @@
 import { gamedataMappinVariant } from '@cybermp/client-types/enums';
 import type { entEntity, gameNewMappinID } from '@cybermp/client-types/game';
-import type { RaceLapsCheckpointNode } from '@freeroam/shared/game-modes/race-laps';
+import type { RaceCheckpointNode } from '@freeroam/shared/game-modes/race';
 import { inject, injectable } from 'inversify';
 import { uid } from 'radash';
 import { createVector3, createVector4 } from '../../../../lib/vectors';
@@ -10,7 +10,7 @@ import type { Polygon } from '../../../polygons/polygon';
 import { PolygonsService } from '../../../polygons/polygons.service';
 
 @injectable()
-export class RaceLapsCheckpoint {
+export class RaceCheckpoint {
   private mappinId?: gameNewMappinID;
   private polygon?: Polygon;
   private objectsGroup?: string;
@@ -22,7 +22,7 @@ export class RaceLapsCheckpoint {
     @inject(PolygonsService) private polygonsService: PolygonsService,
   ) {}
 
-  spawn(node: RaceLapsCheckpointNode, onEnter: (ent: entEntity) => void) {
+  spawn(node: RaceCheckpointNode, onEnter: (ent: entEntity) => void) {
     this.destroy();
 
     const [x, y, z] = node.position;
@@ -40,7 +40,7 @@ export class RaceLapsCheckpoint {
       ),
     };
 
-    this.objectsGroup = `race-laps-checkpoint-${uid(7)}`;
+    this.objectsGroup = `race-checkpoint-${uid(7)}`;
 
     this.objectsService.create({
       skinHash: HASHES[direction],
@@ -72,7 +72,7 @@ export class RaceLapsCheckpoint {
     this.polygon = this.polygonsService.create({
       height: radius,
       vertices,
-      visible: true,
+      visible: import.meta.env.DEV,
     });
 
     this.polygon.entityEnterObserver.subscribe(onEnter);

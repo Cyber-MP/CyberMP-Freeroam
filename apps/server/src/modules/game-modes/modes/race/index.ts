@@ -1,20 +1,19 @@
-import type { MpPlayer, MpVehicle } from '@cybermp/server-types';
+import type { MpPlayer, MpVehicle, Vector3 } from '@cybermp/server-types';
 import {
-  type RaceLapsCheckpointNode,
-  type RaceLapsFinishedRacer,
-  type RaceLapsMap,
-  RaceLapsMapName,
-  type RaceLapsRacerDTO,
-  type RaceLapsRankDTO,
-  type RaceLapsStartPointNode,
-  zRaceLapsRacerDTO,
-} from '@freeroam/shared/game-modes/race-laps';
+  type RaceCheckpointNode,
+  type RaceFinishedRacer,
+  type RaceMap,
+  RaceMapName,
+  type RaceRacerDTO,
+  type RaceRankDTO,
+  type RaceStartPointNode,
+  zRaceRacerDTO,
+} from '@freeroam/shared/game-modes/race';
 import { inject, injectable } from 'inversify';
 import ms from 'ms';
 import { sleep } from 'radash';
 import type { WritableDeep } from 'type-fest';
 import z from 'zod';
-import { distance3D } from '../../../../lib/math';
 import { mp } from '../../../../mp';
 import { client } from '../../../../rpc';
 import { browser } from '../../../../rpc/browser';
@@ -31,37 +30,40 @@ import { BaseGameMode, GameModeName } from '../../game-mode';
 import { RaceLapsMaps } from './maps';
 import {
   type PathTransform,
-  RaceLapsTrackCalculator,
+  RaceTrackCalculator,
 } from './track-calculator';
 
-export const zCreateRaceLapsOptions = zCreateMatchOptions.extend({
-  map: z.enum(RaceLapsMapName),
+export const zCreateRaceOptions = zCreateMatchOptions.extend({
+  map: z.enum(RaceMapName),
   vehicleClass: z.enum(['all', ...VEHICLES_DATA.map((o) => o.category)]),
   laps: z.number().min(1).max(10).meta({ default: 1 }),
   combat: z.boolean().default(false).optional(),
 });
 
-export const zJoinRaceLapsOptions = zJoinMatchOptions.extend({
+export const zJoinRaceOptions = zJoinMatchOptions.extend({
   vehicle: z.enum(VEHICLES_DATA.map((o) => o.name)),
 });
 
 type RacerConstructorOptions = {
   player: number;
   index: number;
-  map: RaceLapsMap;
+  map: RaceMap;
   trackPath: PathTransform[];
-  match: Match<RaceLaps>;
+  match: Match<Race>;
 };
 
 class Racer {
-  private map: RaceLapsMap;
-  private trackPath: PathTransform[];
-  private match: Match<RaceLaps>;
-  private checkpoints: RaceLapsCheckpointNode[];
+  private readonly VEHICLE_HEALTH = 1600;
+  private readonly VEHICLE_SPAWN_OFFSET_Z = 1.5;
 
-  options: z.infer<typeof zJoinRaceLapsOptions>;
+  private map: RaceMap;
+  private trackPath: PathTransform[];
+  private match: Match<Race>;
+  private checkpoints: RaceCheckpointNode[];
+
+  options: z.infer<typeof zJoinRaceOptions>;
   private vehicleData: VehicleData;
-  startPoint!: RaceLapsStartPointNode;
+  startPoint!: RaceStartPointNode;
   index: number;
   player: MpPlayer;
   vehicle!: MpVehicle;
@@ -78,7 +80,7 @@ class Racer {
     this.match = opts.match;
     this.checkpoints = this.map.nodes.filter(
       (o) => o.type === 'checkpoint',
-    ) as RaceLapsCheckpointNode[];
+    ) as RaceCheckpointNode[];
 
     // biome-ignore lint/style/noNonNullAssertion: Player is obviously present
     this.options = opts.match.members.get(opts.player)!;
@@ -98,7 +100,7 @@ class Racer {
       startPoints.length
         ? (startPoints[this.index] ?? checkpoints[0])
         : checkpoints[0]
-    ) as RaceLapsStartPointNode;
+    ) as RaceStartPointNode;
 
     const { model: vehicleModel, appearance: vehicleAppearance } =
       this.vehicleData;
@@ -109,14 +111,14 @@ class Racer {
       position: [
         this.startPoint.position[0],
         this.startPoint.position[1],
-        this.startPoint.position[2] + 3,
+        this.startPoint.position[2] + this.VEHICLE_SPAWN_OFFSET_Z,
       ],
       yaw: this.startPoint.yaw,
       dimension: this.match.dimension,
-      health: 1300,
+      health: this.VEHICLE_HEALTH,
     });
 
-    await client.gameModes.raceLaps.prepare.call(
+    await client.gameModes.race.prepare.call(
       this.player,
       {
         map: structuredClone(this.map),
@@ -159,11 +161,17 @@ class Racer {
     this.vehicle = mp.vehicles.create({
       model: mp.hashes.tweakdbid(`Vehicle.${vehicleModel}`),
       appearance: mp.hashes.cname(vehicleAppearance),
-      position: [node.position[0], node.position[1], node.position[2] + 3],
+      position: [
+        node.position[0],
+        node.position[1],
+        node.position[2] + this.VEHICLE_SPAWN_OFFSET_Z,
+      ],
       yaw: node.yaw,
       dimension: this.match.dimension,
-      health: 1300,
+      health: this.VEHICLE_HEALTH,
     });
+
+    client.game.health.heal.trigger(this.player);
 
     client.game.vehicles.requestSitInVehicle.trigger(
       this.player,
@@ -191,8 +199,8 @@ class Racer {
     }
   }
 
-  toDTO(): RaceLapsRacerDTO {
-    return zRaceLapsRacerDTO.parse({
+  toDTO(): RaceRacerDTO {
+    return zRaceRacerDTO.parse({
       currentCheckpointIndex: this.currentCheckpointIndex,
       currentLap: this.currentLap,
       finished: this.finished,
@@ -203,19 +211,29 @@ class Racer {
     this.vehicle.destroy();
     this.player.dimension = 0;
 
-    client.gameModes.raceLaps.reset.trigger(this.player);
+    client.gameModes.race.reset.trigger(this.player);
   }
 }
 
 class RanksTracker {
   private interval?: ReturnType<typeof setInterval>;
   private readonly UPDATE_RATE = 100;
+  private lastRanks: RaceRankDTO[] = [];
 
   constructor(
     private readonly racers: Map<number, Racer>,
-    private readonly checkpoints: RaceLapsCheckpointNode[],
+    private readonly checkpoints: RaceCheckpointNode[],
     private readonly totalLaps: number,
   ) {}
+
+  private makeSignature(ranks: RaceRankDTO[]) {
+    return ranks
+      .map(
+        (r) =>
+          `${r.playerId}:${r.position}:${r.lap}:${r.checkpoint}:${r.finished ? 1 : 0}`,
+      )
+      .join('|');
+  }
 
   create() {
     if (this.interval) {
@@ -236,41 +254,67 @@ class RanksTracker {
 
   private broadcastRankings() {
     const ranks = this.calculateRankings();
+    if (this.makeSignature(ranks) === this.makeSignature(this.lastRanks)) {
+      return;
+    }
+    this.lastRanks = ranks;
 
     for (const playerId of this.racers.keys()) {
-      client.gameModes.raceLaps.updateRanks.trigger(playerId, ranks);
+      client.gameModes.race.updateRanks.trigger(playerId, ranks);
     }
   }
 
-  private calculateRankings(): RaceLapsRankDTO[] {
+  private quantizeProgress(progress: number) {
+    const PROGRESS_PRECISION = 10000;
+
+    return Math.round(progress * PROGRESS_PRECISION) / PROGRESS_PRECISION;
+  }
+
+  private getSegmentProgress(a: Vector3, b: Vector3, p: Vector3) {
+    const abx = b[0] - a[0];
+    const aby = b[1] - a[1];
+    const abz = b[2] - a[2];
+
+    const apx = p[0] - a[0];
+    const apy = p[1] - a[1];
+    const apz = p[2] - a[2];
+
+    const abLenSq = abx * abx + aby * aby + abz * abz;
+    if (abLenSq === 0) return 0;
+
+    const dot = apx * abx + apy * aby + apz * abz;
+    const rawT = dot / abLenSq;
+
+    const t = Math.max(-0.5, Math.min(1, rawT));
+
+    return Math.abs(t) < 0.0001 ? 0 : t;
+  }
+
+  private calculateRankings(): RaceRankDTO[] {
     const totalCheckpoints = this.checkpoints.length;
     const totalLaps = this.totalLaps;
 
     const racersProgress = Array.from(this.racers.values()).map((racer) => {
-      const currentCheckpointPosition =
-        this.checkpoints[racer.currentCheckpointIndex]?.position ??
-        racer.startPoint?.position;
+      const segmentStartPosition =
+        racer.currentCheckpointIndex === 0
+          ? racer.startPoint.position
+          : (this.checkpoints[racer.currentCheckpointIndex - 1]?.position ??
+            racer.startPoint.position);
 
-      const nextCheckpointIndex =
-        (racer.currentCheckpointIndex + 1) % totalCheckpoints;
-      const nextCheckpoint = this.checkpoints[nextCheckpointIndex];
-      const nextCheckpointPosition =
-        nextCheckpoint?.position ?? currentCheckpointPosition;
+      const segmentEndPosition =
+        this.checkpoints[racer.currentCheckpointIndex]?.position ??
+        racer.startPoint.position;
 
       const playerPos = racer.player.position;
 
-      const segmentDist = distance3D(
-        currentCheckpointPosition,
-        nextCheckpointPosition,
-      );
-      const playerDist = distance3D(playerPos, nextCheckpointPosition);
-      const segmentFraction = Math.max(
-        0,
-        Math.min(1, 1 - playerDist / segmentDist),
+      const segmentFraction = this.getSegmentProgress(
+        segmentStartPosition,
+        segmentEndPosition,
+        playerPos,
       );
 
       const absoluteProgress =
-        racer.currentLap * totalCheckpoints +
+        (racer.currentLap - 1) * totalCheckpoints +
         racer.currentCheckpointIndex +
         segmentFraction;
 
@@ -279,13 +323,17 @@ class RanksTracker {
 
       return {
         racer,
-        progress: normalizedProgress + (racer.finished ? 10000 : 0),
+        progress: normalizedProgress,
       };
     });
 
-    racersProgress.sort((a, b) => b.progress - a.progress);
+    racersProgress.sort((a, b) => {
+      if (a.racer.finished && !b.racer.finished) return -1;
+      if (!a.racer.finished && b.racer.finished) return 1;
+      return b.progress - a.progress;
+    });
 
-    return racersProgress.map(({ racer }, i) => ({
+    return racersProgress.map<RaceRankDTO>(({ racer }, i) => ({
       playerId: racer.player.id,
       position: i + 1,
       playerNick: racer.player.nickname,
@@ -297,18 +345,18 @@ class RanksTracker {
 }
 
 @injectable()
-export class RaceLaps extends BaseGameMode<
-  typeof zCreateRaceLapsOptions,
-  typeof zJoinRaceLapsOptions
+export class Race extends BaseGameMode<
+  typeof zCreateRaceOptions,
+  typeof zJoinRaceOptions
 > {
-  name = GameModeName.RACE_LAPS;
+  name = GameModeName.RACE;
 
-  readonly CREATE_OPTIONS_SCHEMA = zCreateRaceLapsOptions;
-  readonly JOIN_OPTIONS_SCHEMA = zJoinRaceLapsOptions;
+  readonly CREATE_OPTIONS_SCHEMA = zCreateRaceOptions;
+  readonly JOIN_OPTIONS_SCHEMA = zJoinRaceOptions;
 
   private match!: Match<this>;
-  private map!: RaceLapsMap;
-  private checkpoints!: RaceLapsCheckpointNode[];
+  private map!: RaceMap;
+  private checkpoints!: RaceCheckpointNode[];
   private trackPath!: PathTransform[];
 
   private racers = new Map<number, Racer>();
@@ -322,12 +370,12 @@ export class RaceLaps extends BaseGameMode<
 
   private ranksTracker!: RanksTracker;
 
-  @inject(RaceLapsTrackCalculator)
-  private trackCalculator!: RaceLapsTrackCalculator;
+  @inject(RaceTrackCalculator)
+  private trackCalculator!: RaceTrackCalculator;
 
   override getJoinSchema(
-    createOptions: z.infer<typeof zCreateRaceLapsOptions>,
-  ): typeof zJoinRaceLapsOptions {
+    createOptions: z.infer<typeof zCreateRaceOptions>,
+  ): typeof zJoinRaceOptions {
     let vehicles = VEHICLES_DATA.filter(
       (o) => o.category === createOptions.vehicleClass,
     );
@@ -345,7 +393,7 @@ export class RaceLaps extends BaseGameMode<
     this.map = RaceLapsMaps.find((o) => o.name === this.match.options.map)!;
     this.trackPath = this.trackCalculator.getTrackPath(this.match.options.map)!;
     this.checkpoints = this.map.nodes.filter(
-      (node): node is RaceLapsCheckpointNode => node.type === 'checkpoint',
+      (node): node is RaceCheckpointNode => node.type === 'checkpoint',
     );
     this.ranksTracker = new RanksTracker(
       this.racers,
@@ -419,7 +467,7 @@ export class RaceLaps extends BaseGameMode<
 
   async startCountdown() {
     for (const racer of this.racers.keys()) {
-      client.gameModes.raceLaps.startCountdown.trigger(
+      client.gameModes.race.startCountdown.trigger(
         racer,
         this.COUNTDOWN_TIME,
       );
@@ -437,7 +485,7 @@ export class RaceLaps extends BaseGameMode<
 
     this.ranksTracker.destroy();
 
-    const finalResults: RaceLapsFinishedRacer[] = Array.from(
+    const finalResults: RaceFinishedRacer[] = Array.from(
       this.racers.values(),
     )
       .map((racer) => {
@@ -464,7 +512,7 @@ export class RaceLaps extends BaseGameMode<
       });
 
     for (const racer of this.racers.values()) {
-      browser.gameModes.raceLaps.setResults.trigger(racer.player, finalResults);
+      browser.gameModes.race.setResults.trigger(racer.player, finalResults);
     }
 
     this.racers.clear();
@@ -489,7 +537,7 @@ export class RaceLaps extends BaseGameMode<
     }, this.FORCE_FINISH_TIME);
 
     for (const playerId of this.racers.keys()) {
-      browser.gameModes.raceLaps.forceFinishTimer.trigger(
+      browser.gameModes.race.forceFinishTimer.trigger(
         playerId,
         Date.now() + this.FORCE_FINISH_TIME,
       );

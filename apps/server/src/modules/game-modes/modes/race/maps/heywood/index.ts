@@ -1,7 +1,10 @@
-import { type RaceLapsMap, RaceLapsMapName } from '@freeroam/shared/game-modes/race-laps';
+import {
+  type RaceMap,
+  RaceMapName,
+} from '@freeroam/shared/game-modes/race';
 
-export const RACE_LAPS_HEYWOOD_MAP: RaceLapsMap = {
-  name: RaceLapsMapName.HEYWOOD,
+export const RACE_LAPS_HEYWOOD_MAP: RaceMap = {
+  name: RaceMapName.HEYWOOD,
   nodes: [
     {
       type: 'checkpoint',

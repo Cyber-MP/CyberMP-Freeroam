@@ -30,9 +30,10 @@ export class BasicChatCommands {
 
   private pos() {
     const { x, y, z } = mp.game.GetPlayer().GetWorldPosition();
+    const yaw = mp.game.GetPlayer().GetWorldYaw();
 
-    console.log(x, y, z);
-    this.chatService.sendMessage(`${x} ${y} ${z}`);
+    console.log(x, y, z, yaw);
+    this.chatService.sendMessage(`${x} ${y} ${z} ${yaw}`);
   }
 
   private fixWeapons() {

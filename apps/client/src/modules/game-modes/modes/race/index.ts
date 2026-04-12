@@ -6,13 +6,13 @@ import type {
   Vector4,
 } from '@cybermp/client-types/game';
 import type {
-  RaceLapsCheckpointNode,
-  RaceLapsMap,
-  RaceLapsRacerDTO,
-  RaceLapsRankDTO,
-  RaceLapsStartPointNode,
-  RaceLapsTrackPath,
-} from '@freeroam/shared/game-modes/race-laps';
+  RaceCheckpointNode,
+  RaceMap,
+  RaceRacerDTO,
+  RaceRankDTO,
+  RaceStartPointNode,
+  RaceTrackPath,
+} from '@freeroam/shared/game-modes/race';
 import { inject, injectable } from 'inversify';
 import ms from 'ms';
 import { createEulerAngles, createVector4 } from '../../../../lib/vectors';
@@ -32,14 +32,14 @@ import { GVehiclesService } from '../../../game/vehicles/vehicles.service';
 import { SpawnService } from '../../../spawn/spawn.service';
 import { SpectatingService } from '../../../spectating/spectating.service';
 import { BaseGameMode } from '../../game-mode';
-import { RaceLapsCheckpoint } from './checkpoint';
-import type { RaceLapsPrepareDTO } from './dto';
+import { RaceCheckpoint } from './checkpoint';
+import type { RacePrepareDTO } from './dto';
 
 class TrackPathNavigation {
-  private trackData: RaceLapsTrackPath = [];
+  private trackData: RaceTrackPath = [];
   private activeFx = new Map<number, gameFxInstance>();
 
-  private spawnEffect(index: number, path: RaceLapsTrackPath[number]) {
+  private spawnEffect(index: number, path: RaceTrackPath[number]) {
     const [x, y, z] = path.position;
     const [roll, pitch, yaw] = path.rotation;
 
@@ -69,7 +69,7 @@ class TrackPathNavigation {
     }
   }
 
-  create(trackPath: RaceLapsTrackPath) {
+  create(trackPath: RaceTrackPath) {
     this.trackData = trackPath;
 
     this.trackData.forEach((path, index) => {
@@ -86,23 +86,23 @@ class TrackPathNavigation {
 }
 
 @injectable()
-export class RaceLaps extends BaseGameMode<'race_laps'> {
-  private trackPath!: RaceLapsTrackPath;
-  private map!: RaceLapsMap;
-  private checkpoints: RaceLapsCheckpointNode[] = [];
-  private startPoint!: RaceLapsStartPointNode;
+export class Race extends BaseGameMode<'race'> {
+  private trackPath!: RaceTrackPath;
+  private map!: RaceMap;
+  private checkpoints: RaceCheckpointNode[] = [];
+  private startPoint!: RaceStartPointNode;
 
   private readonly RESPAWN_DURATION = ms('1s');
   private readonly RESPAWN_KEY = EInputKey.IK_F;
   private respawnKeyHandler?: (action: EInputAction) => void;
   private respawning = false;
 
-  private data: RaceLapsRacerDTO = {
+  private data: RaceRacerDTO = {
     currentCheckpointIndex: 0,
     currentLap: 0,
     finished: false,
   };
-  private currentRanks: RaceLapsRankDTO[] = [];
+  private currentRanks: RaceRankDTO[] = [];
 
   private initialPosition!: Vector4;
 
@@ -117,7 +117,7 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
     @inject(GHealthService) private healthService: GHealthService,
     @inject(GStatusEffectsService)
     private statusEffectsService: GStatusEffectsService,
-    @inject(RaceLapsCheckpoint) private checkpoint: RaceLapsCheckpoint,
+    @inject(RaceCheckpoint) private checkpoint: RaceCheckpoint,
     @inject(GKeyboardService) private keyboardService: GKeyboardService,
     @inject(DeathService) private deathService: DeathService,
     @inject(SpawnService) private spawnService: SpawnService,
@@ -173,21 +173,21 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
     this.statusEffectsService.remove('GameplayRestriction.NoWeapons');
 
     browser.hud.setGlobalPath.trigger('/hud');
-    browser.navigate.trigger('/hud/game-modes/race-laps/results');
+    browser.navigate.trigger('/hud/game-modes/race/results');
   }
 
-  updateRacerData(data: Partial<RaceLapsRacerDTO> = {}) {
+  updateRacerData(data: Partial<RaceRacerDTO> = {}) {
     this.data = { ...this.data, ...data };
-    browser.gameModes.raceLaps.updateData.trigger({
+    browser.gameModes.race.updateData.trigger({
       ...this.data,
       totalCheckpoints: this.checkpoints.length,
       totalLaps: this.options.laps ?? 0,
     });
   }
 
-  updateRanks(ranks: RaceLapsRankDTO[]) {
+  updateRanks(ranks: RaceRankDTO[]) {
     this.currentRanks = ranks;
-    browser.gameModes.raceLaps.updateRanks.trigger(ranks);
+    browser.gameModes.race.updateRanks.trigger(ranks);
 
     if (this.spectatingService.isSpectating) {
       const target = ranks.find(
@@ -199,21 +199,21 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
     }
   }
 
-  async prepare(data: RaceLapsPrepareDTO) {
+  async prepare(data: RacePrepareDTO) {
     await this.teleportService.teleportAsync(
       ...data.startPoint.position,
       data.startPoint.yaw,
     );
 
-    browser.hud.setGlobalPath.trigger('/hud/game-modes/race-laps/');
-    browser.navigate.trigger('/hud/game-modes/race-laps/');
+    browser.hud.setGlobalPath.trigger('/hud/game-modes/race/');
+    browser.navigate.trigger('/hud/game-modes/race/');
 
     this.vehiclesService.requestSitInVehicle(data.vehicleId);
 
     this.trackPath = data.trackPath;
     this.map = data.map;
     this.checkpoints = data.map.nodes.filter(
-      (node): node is RaceLapsCheckpointNode => node.type === 'checkpoint',
+      (node): node is RaceCheckpointNode => node.type === 'checkpoint',
     );
     this.startPoint = data.startPoint;
 
@@ -230,7 +230,7 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
         return;
       }
 
-      const nextData = await server.gameModes.raceLaps.processCheckpoint
+      const nextData = await server.gameModes.race.processCheckpoint
         .call()
         .catch(() => null);
       if (!nextData) {
@@ -268,9 +268,9 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
 
     this.respawning = true;
 
-    browser.gameModes.raceLaps.hideRespawn.trigger();
+    browser.gameModes.race.hideRespawn.trigger();
 
-    server.gameModes.raceLaps.respawn.call().finally(() => {
+    server.gameModes.race.respawn.call().finally(() => {
       this.respawning = false;
     });
   }
@@ -292,9 +292,9 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
           this.respawn();
         }, this.RESPAWN_DURATION);
 
-        browser.gameModes.raceLaps.showRespawn.trigger(this.RESPAWN_DURATION);
+        browser.gameModes.race.showRespawn.trigger(this.RESPAWN_DURATION);
       } else if (action === EInputAction.IACT_Release) {
-        browser.gameModes.raceLaps.hideRespawn.trigger();
+        browser.gameModes.race.hideRespawn.trigger();
 
         clearTimeout(respawnTimer);
       }
@@ -430,12 +430,12 @@ export class RaceLaps extends BaseGameMode<'race_laps'> {
       const remaining = Math.ceil((duration - elapsed) / 1000);
 
       if (remaining <= 0) {
-        browser.gameModes.raceLaps.setCountdownText.trigger('GO!');
+        browser.gameModes.race.setCountdownText.trigger('GO!');
 
         this.release();
         clearInterval(this.countDownInterval);
       } else {
-        browser.gameModes.raceLaps.setCountdownText.trigger(String(remaining));
+        browser.gameModes.race.setCountdownText.trigger(String(remaining));
       }
     }, 100);
   }

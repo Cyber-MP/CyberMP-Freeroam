@@ -1,10 +1,10 @@
 import type { Rotation, Vector3 } from '@cybermp/server-types';
 import { eager } from '@freeroam/inversify';
 import {
-  type RaceLapsMap,
-  type RaceLapsMapName,
-  zRaceLapsMap,
-} from '@freeroam/shared/game-modes/race-laps';
+  type RaceMap,
+  type RaceMapName,
+  zRaceMap,
+} from '@freeroam/shared/game-modes/race';
 import { inject, injectable, postConstruct } from 'inversify';
 import { LoggerService } from '../../../logger/logger.service';
 import { RaceLapsMaps } from './maps';
@@ -16,17 +16,17 @@ export interface PathTransform {
 
 @eager()
 @injectable()
-export class RaceLapsTrackCalculator {
-  private registry = new Map<RaceLapsMapName, PathTransform[]>();
+export class RaceTrackCalculator {
+  private registry = new Map<RaceMapName, PathTransform[]>();
 
   constructor(@inject(LoggerService) private logger: LoggerService) {
-    this.logger.setContext('RaceLapsTrackCalculator');
+    this.logger.setContext('RaceTrackCalculator');
   }
 
   @postConstruct()
   private init() {
     for (const map of RaceLapsMaps) {
-      const parsedMap = zRaceLapsMap.safeParse(map);
+      const parsedMap = zRaceMap.safeParse(map);
       if (!parsedMap.success) {
         this.logger.error(
           `map "${map.name}" has an invalid schema -`,
@@ -35,17 +35,17 @@ export class RaceLapsTrackCalculator {
         continue;
       }
 
-      this.registry.set(map.name, this.generateTrackPath(map as RaceLapsMap));
+      this.registry.set(map.name, this.generateTrackPath(map as RaceMap));
       this.logger.success(`Generated track path for "${map.name}" map`);
     }
   }
 
-  getTrackPath(mapName: RaceLapsMapName): PathTransform[] | undefined {
+  getTrackPath(mapName: RaceMapName): PathTransform[] | undefined {
     return this.registry.get(mapName);
   }
 
   private generateTrackPath(
-    map: RaceLapsMap,
+    map: RaceMap,
     stepDistance: number = 2.0,
   ): PathTransform[] {
     const path: PathTransform[] = [];

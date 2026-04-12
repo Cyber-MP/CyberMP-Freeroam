@@ -7,21 +7,18 @@ import {
 } from './game-mode';
 import { GameModesController } from './game-modes.controller';
 import { GameModesService } from './game-modes.service';
-import { RaceLaps } from './modes/race-laps';
-import { RaceLapsController } from './modes/race-laps/controller';
-import { RaceLapsTrackCalculator } from './modes/race-laps/track-calculator';
-import { RaceP2P } from './modes/race-p2p';
+import { Race } from './modes/race';
+import { RaceController } from './modes/race/controller';
+import { RaceTrackCalculator } from './modes/race/track-calculator';
 import { Sumo } from './modes/sumo';
 
 export const GameModesModule = new ContainerModule(({ bind }) => {
   bind(GameModesService).toSelf().inSingletonScope();
   bind(GameModesController).toSelf().inSingletonScope();
-
-  bind(GameModeName.RACE_LAPS).to(RaceLaps).inRequestScope();
-  bind(GameModeName.RACE_P2P).to(RaceP2P).inRequestScope();
   bind(GameModeName.SUMO).to(Sumo).inRequestScope();
-  bind(RaceLapsController).toSelf().inSingletonScope();
-  bind(RaceLapsTrackCalculator).toSelf().inSingletonScope();
+  bind(GameModeName.RACE).to(Race).inRequestScope();
+  bind(RaceController).toSelf().inSingletonScope();
+  bind(RaceTrackCalculator).toSelf().inSingletonScope();
 
   bind<GameModeFactory>(TYPES.GameModeFactory).toFactory((c) => {
     return (name: TGameModeName) => {

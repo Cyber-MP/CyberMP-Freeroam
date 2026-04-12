@@ -6,9 +6,8 @@ import type {
 } from '../matchmaking/match';
 
 export const GameModeName = {
-  RACE_LAPS: 'race_laps',
-  RACE_P2P: 'race_p2p',
   SUMO: 'sumo',
+  RACE: 'race',
 } as const;
 
 export type TGameModeName = (typeof GameModeName)[keyof typeof GameModeName];

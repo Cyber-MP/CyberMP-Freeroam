@@ -9,8 +9,8 @@ export class SpawnCommands {
   constructor(
     @inject(ChatService) private chatService: ChatService,
     @inject(SpawnService) private spawnService: SpawnService,
-  ) { }
-  
+  ) {}
+
   private spawn() {
     this.spawnService.spawn({
       position: this.spawnService.getSpawnPosition(),
