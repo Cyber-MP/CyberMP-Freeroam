@@ -8,6 +8,7 @@ import { zGameModesCreateSchemas } from './dto/game-modes-schemas.dto';
 import { zGetJoinSchemaDTO } from './dto/get-join-schema.dto';
 import { GameModesService } from './game-modes.service';
 import { raceLapsContract } from './modes/race-laps/controller';
+import { sumoContract } from './modes/sumo/controller';
 
 export const gameModesContract = {
   getCreateSchemas: r.contract
@@ -20,6 +21,7 @@ export const gameModesContract = {
     .output(z.record(z.string(), z.unknown()))
     .build(),
   raceLaps: raceLapsContract,
+  sumo: sumoContract,
 };
 
 type ContractInputs = InferRouterInputs<typeof gameModesContract>;
@@ -35,9 +37,7 @@ export class GameModesController {
     return this.gameModesService.getCreateSchemas();
   }
 
-  private getJoinSchema(
-    c: RpcServerContext<ContractInputs['getJoinSchema']>,
-  ) {
+  private getJoinSchema(c: RpcServerContext<ContractInputs['getJoinSchema']>) {
     return this.gameModesService.getJoinSchema(
       c.data.modeName,
       c.data.createOptions,
@@ -50,9 +50,6 @@ export class GameModesController {
       gameModesContract.getCreateSchemas,
       this.getCreateSchemas.bind(this),
     );
-    r.implement(
-      gameModesContract.getJoinSchema,
-      this.getJoinSchema.bind(this),
-    );
+    r.implement(gameModesContract.getJoinSchema, this.getJoinSchema.bind(this));
   }
 }

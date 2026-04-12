@@ -11,6 +11,7 @@ import { RaceLaps } from './modes/race-laps';
 import { RaceLapsController } from './modes/race-laps/controller';
 import { RaceLapsTrackCalculator } from './modes/race-laps/track-calculator';
 import { RaceP2P } from './modes/race-p2p';
+import { Sumo } from './modes/sumo';
 
 export const GameModesModule = new ContainerModule(({ bind }) => {
   bind(GameModesService).toSelf().inSingletonScope();
@@ -18,6 +19,7 @@ export const GameModesModule = new ContainerModule(({ bind }) => {
 
   bind(GameModeName.RACE_LAPS).to(RaceLaps).inRequestScope();
   bind(GameModeName.RACE_P2P).to(RaceP2P).inRequestScope();
+  bind(GameModeName.SUMO).to(Sumo).inRequestScope();
   bind(RaceLapsController).toSelf().inSingletonScope();
   bind(RaceLapsTrackCalculator).toSelf().inSingletonScope();
 

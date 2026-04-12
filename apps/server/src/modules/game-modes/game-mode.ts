@@ -8,6 +8,7 @@ import type {
 export const GameModeName = {
   RACE_LAPS: 'race_laps',
   RACE_P2P: 'race_p2p',
+  SUMO: 'sumo',
 } as const;
 
 export type TGameModeName = (typeof GameModeName)[keyof typeof GameModeName];

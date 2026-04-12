@@ -8,6 +8,10 @@ import {
   zCreateRaceP2POptions,
   zJoinRaceP2POptions,
 } from '../../game-modes/modes/race-p2p';
+import {
+  zCreateSumoOptions,
+  zJoinSumoOptions,
+} from '../../game-modes/modes/sumo';
 
 export const zCreateMatchDTO = z.union([
   z.object({
@@ -19,5 +23,10 @@ export const zCreateMatchDTO = z.union([
     name: z.literal(GameModeName.RACE_P2P),
     createOptions: zCreateRaceP2POptions,
     joinOptions: zJoinRaceP2POptions,
+  }),
+  z.object({
+    name: z.literal(GameModeName.SUMO),
+    createOptions: zCreateSumoOptions,
+    joinOptions: zJoinSumoOptions,
   }),
 ]);

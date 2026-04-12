@@ -7,6 +7,7 @@ import { r } from '../../rpc';
 import { GameModesService } from './game-modes.service';
 import type { MatchDTO } from './match';
 import { raceLapsContract } from './modes/race-laps/controller';
+import { sumoContract } from './modes/sumo/controller';
 
 export const gameModesContract = {
   start: contract
@@ -14,6 +15,7 @@ export const gameModesContract = {
     .build(),
   end: contract.build(),
   raceLaps: raceLapsContract,
+  sumo: sumoContract,
 };
 
 @eager()
@@ -33,7 +35,7 @@ export class GameModesController {
 
   @postConstruct()
   private init() {
-    const { raceLaps, ...contract } = gameModesContract;
+    const { raceLaps, sumo, ...contract } = gameModesContract;
 
     r.implement(contract, {
       start: this.start.bind(this),

@@ -14,6 +14,7 @@ import { RaceLaps } from './modes/race-laps';
 import { RaceLapsCheckpoint } from './modes/race-laps/checkpoint';
 import { RaceLapsController } from './modes/race-laps/controller';
 import { RaceLapsMapBuilder } from './modes/race-laps/map-builder';
+import { Sumo } from './modes/sumo';
 
 export const GameModesModule = new ContainerModule(({ bind }) => {
   bind(GameModesService).toSelf().inSingletonScope();
@@ -21,6 +22,9 @@ export const GameModesModule = new ContainerModule(({ bind }) => {
 
   bind('race_laps' satisfies GameModeName)
     .to(RaceLaps)
+    .inRequestScope();
+  bind('sumo' satisfies GameModeName)
+    .to(Sumo)
     .inRequestScope();
   bind(RaceLapsController).toSelf().inSingletonScope();
   bind(RaceLapsMapBuilder).toSelf().inSingletonScope();
