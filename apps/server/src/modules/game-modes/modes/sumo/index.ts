@@ -224,11 +224,7 @@ export class Sumo extends BaseGameMode<
 
     console.log('SURVICERS', living.length);
 
-    if (living.length === 1) {
-      this.onRacerSurvive(living[0]);
-    }
-
-    if (living.length === 0) {
+    if (living.length <= 1) {
       this.match.end();
     }
   }
@@ -265,11 +261,6 @@ export class Sumo extends BaseGameMode<
     this.polygon.entityLeaveObserver.unsubscribe(this.onPolygonLeave);
 
     this.racers.clear();
-  }
-
-  private onRacerSurvive(racer: Racer) {
-    this.match.end();
-    return;
   }
 
   onPlayerLeave(playerId: number): void {
