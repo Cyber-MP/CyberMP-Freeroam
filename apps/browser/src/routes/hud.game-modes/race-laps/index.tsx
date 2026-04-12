@@ -1,6 +1,6 @@
 import type { RpcBrowserContext } from '@cybermp/rpc-browser';
 import { useImplement } from '@cybermp/rpc-router-react';
-import type { RaceLapsRankDTO } from '@freeroam/shared/game-modes/race-laps';
+import type { RaceRankDTO } from '@freeroam/shared/game-modes/race-laps';
 import { createFileRoute } from '@tanstack/react-router';
 import {
   AnimatePresence,
@@ -15,7 +15,7 @@ import { useCountdown } from 'usehooks-ts';
 import { proxy, useSnapshot } from 'valtio';
 import { usePlayerId } from '@/hooks/use-player-id';
 import { r } from '@/rpc';
-import { raceLapsContract, raceLapsDataState } from './-contract';
+import { raceContract, raceDataState } from './-contract';
 
 export const Route = createFileRoute('/hud/game-modes/race-laps/')({
   component: RouteComponent,
@@ -42,10 +42,10 @@ const ReleaseCountdown = () => {
       }, 1500);
     };
 
-    r.implement(raceLapsContract.setCountdownText, handler);
+    r.implement(raceContract.setCountdownText, handler);
 
     return () => {
-      r.unimplement(raceLapsContract.setCountdownText);
+      r.unimplement(raceContract.setCountdownText);
       if (clearTimeoutId) {
         clearTimeout(clearTimeoutId);
       }
@@ -71,10 +71,10 @@ const ReleaseCountdown = () => {
 };
 
 const Ranks = () => {
-  const [ranks, setRanks] = useState<RaceLapsRankDTO[]>([]);
+  const [ranks, setRanks] = useState<RaceRankDTO[]>([]);
   const playerId = usePlayerId();
 
-  useImplement(raceLapsContract.updateRanks, (c) => setRanks(c.data));
+  useImplement(raceContract.updateRanks, (c) => setRanks(c.data));
 
   return (
     <div className="flex flex-col gap-1 absolute right-12 bottom-12 w-80 font-mono text-xs uppercase tracking-tighter">
@@ -129,7 +129,7 @@ const Ranks = () => {
 };
 
 const Info = () => {
-  const data = useSnapshot(raceLapsDataState);
+  const data = useSnapshot(raceDataState);
 
   return (
     <div className="flex gap-4 font-mono uppercase tracking-tighter select-none">
@@ -221,8 +221,8 @@ const Respawn = () => {
   const timeValue = useMotionValue(0);
   const displayTime = useTransform(timeValue, (l) => l.toFixed(1));
 
-  useImplement(raceLapsContract.showRespawn, (c) => setRespawnDuration(c.data));
-  useImplement(raceLapsContract.hideRespawn, () => setRespawnDuration(null));
+  useImplement(raceContract.showRespawn, (c) => setRespawnDuration(c.data));
+  useImplement(raceContract.hideRespawn, () => setRespawnDuration(null));
 
   useEffect(() => {
     if (!respawnDuration) {
@@ -311,7 +311,7 @@ const ForceFinishTimer = () => {
     intervalMs: 1000,
   });
 
-  useImplement(raceLapsContract.forceFinishTimer, (c) => {
+  useImplement(raceContract.forceFinishTimer, (c) => {
     forceFinishState.timestamp = c.data;
   });
 

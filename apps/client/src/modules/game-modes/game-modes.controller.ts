@@ -6,14 +6,14 @@ import z from 'zod';
 import { r } from '../../rpc';
 import { GameModesService } from './game-modes.service';
 import type { MatchDTO } from './match';
-import { raceLapsContract } from './modes/race-laps/controller';
+import { raceContract } from './modes/race-laps/controller';
 
 export const gameModesContract = {
   start: contract
     .input(z.record(z.string(), z.any()) as unknown as z.ZodCustom<MatchDTO>)
     .build(),
   end: contract.build(),
-  raceLaps: raceLapsContract,
+  race: raceContract,
 };
 
 @eager()
@@ -33,7 +33,7 @@ export class GameModesController {
 
   @postConstruct()
   private init() {
-    const { raceLaps, ...contract } = gameModesContract;
+    const { race, ...contract } = gameModesContract;
 
     r.implement(contract, {
       start: this.start.bind(this),

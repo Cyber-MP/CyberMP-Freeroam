@@ -1,15 +1,15 @@
 import {
-  zRaceLapsMap,
-  zRaceLapsStartPointNode,
-  zRaceLapsTrackPath,
+  zRaceMap,
+  zRaceStartPointNode,
+  zRaceTrackPath,
 } from '@freeroam/shared/game-modes/race-laps';
 import z from 'zod';
 
-export const zRaceLapsPrepareDTO = z.object({
+export const zRacePrepareDTO = z.object({
   vehicleId: z.number(),
-  map: zRaceLapsMap,
-  startPoint: zRaceLapsStartPointNode,
-  trackPath: zRaceLapsTrackPath,
+  map: zRaceMap,
+  startPoint: zRaceStartPointNode,
+  trackPath: zRaceTrackPath,
 });
 
-export type RaceLapsPrepareDTO = z.infer<typeof zRaceLapsPrepareDTO>;
+export type RacePrepareDTO = z.infer<typeof zRacePrepareDTO>;

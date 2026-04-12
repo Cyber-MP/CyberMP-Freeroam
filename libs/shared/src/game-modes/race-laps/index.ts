@@ -3,53 +3,53 @@ import z from 'zod';
 const zVector3 = z.tuple([z.number(), z.number(), z.number()]);
 const zEulerAngles = z.tuple([z.number(), z.number(), z.number()]);
 
-export const zRaceLapsRacerDTO = z.object({
+export const zRaceRacerDTO = z.object({
   currentCheckpointIndex: z.number().default(0),
   currentLap: z.number(),
   finished: z.boolean().default(false),
 });
 
-export type RaceLapsRacerDTO = z.infer<typeof zRaceLapsRacerDTO>;
+export type RaceRacerDTO = z.infer<typeof zRaceRacerDTO>;
 
-export const zRaceLapsBaseNode = z.object({
+export const zRaceBaseNode = z.object({
   type: z.string(),
   position: zVector3,
   yaw: z.number().default(0).optional(),
 });
 
-export const zRaceLapsCheckpointNode = zRaceLapsBaseNode.extend({
+export const zRaceCheckpointNode = zRaceBaseNode.extend({
   type: z.literal('checkpoint'),
   direction: z.enum(['forward', 'left', 'right']).default('forward').optional(),
   radius: z.number().default(10).optional(),
 });
 
-export const zRaceLapsStartPointNode = zRaceLapsBaseNode.extend({
+export const zRaceStartPointNode = zRaceBaseNode.extend({
   type: z.literal('start-point'),
 });
 
-export const zRaceLapsPathPointNode = zRaceLapsBaseNode.extend({
+export const zRacePathPointNode = zRaceBaseNode.extend({
   type: z.literal('path-point'),
 });
 
-export enum RaceLapsMapName {
+export enum RaceMapName {
   TEST = 'test',
   HEYWOOD = 'heywood',
   PETROCHEM = 'petrochem',
 }
 
-export const zRaceLapsMapNode = z.union([
-  zRaceLapsStartPointNode,
-  zRaceLapsPathPointNode,
-  zRaceLapsCheckpointNode,
+export const zRaceMapNode = z.union([
+  zRaceStartPointNode,
+  zRacePathPointNode,
+  zRaceCheckpointNode,
 ]);
 
-export const zRaceLapsMap = z.object({
-  name: z.enum(RaceLapsMapName),
+export const zRaceMap = z.object({
+  name: z.enum(RaceMapName),
   mapping: z.looseObject({}).optional(),
-  nodes: z.array(zRaceLapsMapNode),
+  nodes: z.array(zRaceMapNode),
 });
 
-export const zRaceLapsRankDTO = z.object({
+export const zRaceRankDTO = z.object({
   playerId: z.number(),
   playerNick: z.string(),
   position: z.number(),
@@ -58,26 +58,26 @@ export const zRaceLapsRankDTO = z.object({
   finished: z.boolean(),
 });
 
-export const zRaceLapsFinishedRacer = z.object({
+export const zRaceFinishedRacer = z.object({
   playerNick: z.string(),
   lap: z.number(),
   checkpoint: z.number(),
   time: z.number(),
 });
 
-export const zRaceLapsTrackPath = z.array(
+export const zRaceTrackPath = z.array(
   z.object({
     position: zVector3,
     rotation: zEulerAngles,
   }),
 );
 
-export type RaceLapsTrackPath = z.infer<typeof zRaceLapsTrackPath>;
+export type RaceTrackPath = z.infer<typeof zRaceTrackPath>;
 
-export type RaceLapsFinishedRacer = z.infer<typeof zRaceLapsFinishedRacer>;
-export type RaceLapsRankDTO = z.infer<typeof zRaceLapsRankDTO>;
-export type RaceLapsMap = z.infer<typeof zRaceLapsMap>;
-export type RaceLapsMapNode = z.infer<typeof zRaceLapsMapNode>;
-export type RaceLapsCheckpointNode = z.infer<typeof zRaceLapsCheckpointNode>;
-export type RaceLapsCheckpointDirection = RaceLapsCheckpointNode['direction'];
-export type RaceLapsStartPointNode = z.infer<typeof zRaceLapsStartPointNode>;
+export type RaceFinishedRacer = z.infer<typeof zRaceFinishedRacer>;
+export type RaceRankDTO = z.infer<typeof zRaceRankDTO>;
+export type RaceMap = z.infer<typeof zRaceMap>;
+export type RaceMapNode = z.infer<typeof zRaceMapNode>;
+export type RaceCheckpointNode = z.infer<typeof zRaceCheckpointNode>;
+export type RaceCheckpointDirection = RaceCheckpointNode['direction'];
+export type RaceStartPointNode = z.infer<typeof zRaceStartPointNode>;

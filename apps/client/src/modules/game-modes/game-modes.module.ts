@@ -10,21 +10,21 @@ import {
   ActiveGameMiddlewareSymbol,
   activeGameMiddleware,
 } from './middleware/active-game.middleware';
-import { RaceLaps } from './modes/race-laps';
-import { RaceLapsCheckpoint } from './modes/race-laps/checkpoint';
-import { RaceLapsController } from './modes/race-laps/controller';
-import { RaceLapsMapBuilder } from './modes/race-laps/map-builder';
+import { Race } from './modes/race-laps';
+import { RaceCheckpoint } from './modes/race-laps/checkpoint';
+import { RaceController } from './modes/race-laps/controller';
+import { RaceMapBuilder } from './modes/race-laps/map-builder';
 
 export const GameModesModule = new ContainerModule(({ bind }) => {
   bind(GameModesService).toSelf().inSingletonScope();
   bind(GameModesController).toSelf().inSingletonScope();
 
-  bind('race_laps' satisfies GameModeName)
-    .to(RaceLaps)
+  bind('race' satisfies GameModeName)
+    .to(Race)
     .inRequestScope();
-  bind(RaceLapsController).toSelf().inSingletonScope();
-  bind(RaceLapsMapBuilder).toSelf().inSingletonScope();
-  bind(RaceLapsCheckpoint).toSelf().inRequestScope();
+  bind(RaceController).toSelf().inSingletonScope();
+  bind(RaceMapBuilder).toSelf().inSingletonScope();
+  bind(RaceCheckpoint).toSelf().inRequestScope();
 
   bind(ActiveGameMiddlewareSymbol).toDynamicValue(activeGameMiddleware);
   bind<GameModeFactory>(GameModeFactorySymbol).toFactory((c) => {

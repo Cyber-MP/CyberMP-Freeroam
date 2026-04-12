@@ -1,3 +1,3 @@
-import { RaceLaps } from './race-laps';
+import { Race } from './race-laps';
 
-export const GameModes = [RaceLaps];
+export const GameModes = [Race];

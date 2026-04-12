@@ -5,7 +5,7 @@ import { useSnapshot } from 'valtio';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { useFocus } from '@/hooks/use-focus';
 import { loadingOverlayState } from '@/store/loading-overlay';
-import { raceLapsResultsState } from './-contract';
+import { raceResultsState } from './-contract';
 
 export const Route = createFileRoute('/hud/game-modes/race-laps/results')({
   component: RouteComponent,
@@ -22,7 +22,7 @@ const formatTime = (ms: number) => {
 };
 
 function RouteComponent() {
-  const { results } = useSnapshot(raceLapsResultsState);
+  const { results } = useSnapshot(raceResultsState);
   const { visible } = useSnapshot(loadingOverlayState);
   const navigate = useNavigate();
 
@@ -31,7 +31,7 @@ function RouteComponent() {
   };
 
   useUnmount(() => {
-    raceLapsResultsState.results = [];
+    raceResultsState.results = [];
   });
 
   useFocus(!visible, [visible]);

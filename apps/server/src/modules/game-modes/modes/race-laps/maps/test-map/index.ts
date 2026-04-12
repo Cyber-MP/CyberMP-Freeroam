@@ -1,10 +1,10 @@
 import {
-  type RaceLapsMap,
-  RaceLapsMapName,
+  type RaceMap,
+  RaceMapName,
 } from '@freeroam/shared/game-modes/race-laps';
 
-export const RACE_LAPS_TEST_MAP: RaceLapsMap = {
-  name: RaceLapsMapName.TEST,
+export const RACE_LAPS_TEST_MAP: RaceMap = {
+  name: RaceMapName.TEST,
   nodes: [
     {
       type: 'start-point',

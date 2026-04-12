@@ -1,27 +1,27 @@
 import { contract, procedure } from '@cybermp/rpc-router/server';
 import {
-  type RaceLapsFinishedRacer,
-  zRaceLapsFinishedRacer,
-  zRaceLapsRacerDTO,
-  zRaceLapsRankDTO,
+  type RaceFinishedRacer,
+  zRaceFinishedRacer,
+  zRaceRacerDTO,
+  zRaceRankDTO,
 } from '@freeroam/shared/game-modes/race-laps';
 import { proxy } from 'valtio';
 import z from 'zod';
 
-export const raceLapsResultsState = proxy<{ results: RaceLapsFinishedRacer[] }>(
+export const raceResultsState = proxy<{ results: RaceFinishedRacer[] }>(
   {
     results: [],
   },
 );
 
-const zRaceLapsRacerBrowserDTO = zRaceLapsRacerDTO.extend({
+const zRaceRacerBrowserDTO = zRaceRacerDTO.extend({
   totalLaps: z.number(),
   totalCheckpoints: z.number(),
 });
 
-export type RaceLapsRacerBrowserDTO = z.infer<typeof zRaceLapsRacerBrowserDTO>;
+export type RaceRacerBrowserDTO = z.infer<typeof zRaceRacerBrowserDTO>;
 
-export const raceLapsDataState = proxy<RaceLapsRacerBrowserDTO>({
+export const raceDataState = proxy<RaceRacerBrowserDTO>({
   currentCheckpointIndex: 0,
   currentLap: 0,
   finished: false,
@@ -29,19 +29,19 @@ export const raceLapsDataState = proxy<RaceLapsRacerBrowserDTO>({
   totalCheckpoints: 0,
 });
 
-export const raceLapsContract = {
+export const raceContract = {
   setCountdownText: contract.input(z.string()).build(),
-  updateData: procedure.input(zRaceLapsRacerBrowserDTO).handler((c) => {
+  updateData: procedure.input(zRaceRacerBrowserDTO).handler((c) => {
     for (const key in c.data) {
       // @ts-expect-error
-      raceLapsDataState[key] = c.data[key];
+      raceDataState[key] = c.data[key];
     }
   }),
-  updateRanks: contract.input(z.array(zRaceLapsRankDTO)).build(),
+  updateRanks: contract.input(z.array(zRaceRankDTO)).build(),
   showRespawn: contract.input(z.number()).build(),
   hideRespawn: contract.build(),
   forceFinishTimer: contract.input(z.number()).build(),
-  setResults: procedure.input(z.array(zRaceLapsFinishedRacer)).handler((c) => {
-    raceLapsResultsState.results = c.data;
+  setResults: procedure.input(z.array(zRaceFinishedRacer)).handler((c) => {
+    raceResultsState.results = c.data;
   }),
 };

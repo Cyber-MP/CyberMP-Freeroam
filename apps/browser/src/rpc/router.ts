@@ -2,7 +2,7 @@ import z from 'zod';
 import { setBodyVisibility, toggleBodyVisibility } from '../body';
 import { keysContract } from '../keys';
 import { copyToClipboard } from '../lib/clipboard';
-import { raceLapsContract } from '../routes/hud.game-modes/race-laps/-contract';
+import { raceContract } from '../routes/hud.game-modes/race-laps/-contract';
 import type { FileRoutesByFullPath } from '../routeTree.gen';
 import { chatContract } from '../store/chat';
 import { hintsContract } from '../store/hints';
@@ -16,7 +16,7 @@ export const rpcRouter = {
   pingBrowser: r.procedure.input(z.string()).handler(() => {
     console.log('test handler invoked');
   }),
-  gameModes: { raceLaps: raceLapsContract },
+  gameModes: { race: raceContract },
   keys: keysContract,
   hints: hintsContract,
   chat: chatContract,

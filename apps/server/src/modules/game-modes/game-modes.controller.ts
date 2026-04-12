@@ -7,7 +7,7 @@ import { r } from '../../rpc';
 import { zGameModesCreateSchemas } from './dto/game-modes-schemas.dto';
 import { zGetJoinSchemaDTO } from './dto/get-join-schema.dto';
 import { GameModesService } from './game-modes.service';
-import { raceLapsContract } from './modes/race-laps/controller';
+import { raceContract } from './modes/race-laps/controller';
 
 export const gameModesContract = {
   getCreateSchemas: r.contract
@@ -19,7 +19,7 @@ export const gameModesContract = {
     .input(zGetJoinSchemaDTO)
     .output(z.record(z.string(), z.unknown()))
     .build(),
-  raceLaps: raceLapsContract,
+  race: raceContract,
 };
 
 type ContractInputs = InferRouterInputs<typeof gameModesContract>;

@@ -1,23 +1,14 @@
 import z from 'zod';
 import { GameModeName } from '../../game-modes/game-mode';
 import {
-  zCreateRaceLapsOptions,
-  zJoinRaceLapsOptions,
+  zCreateRaceOptions,
+  zJoinRaceOptions,
 } from '../../game-modes/modes/race-laps';
-import {
-  zCreateRaceP2POptions,
-  zJoinRaceP2POptions,
-} from '../../game-modes/modes/race-p2p';
 
 export const zCreateMatchDTO = z.union([
   z.object({
-    name: z.literal(GameModeName.RACE_LAPS),
-    createOptions: zCreateRaceLapsOptions,
-    joinOptions: zJoinRaceLapsOptions,
-  }),
-  z.object({
-    name: z.literal(GameModeName.RACE_P2P),
-    createOptions: zCreateRaceP2POptions,
-    joinOptions: zJoinRaceP2POptions,
+    name: z.literal(GameModeName.RACE),
+    createOptions: zCreateRaceOptions,
+    joinOptions: zJoinRaceOptions,
   }),
 ]);
