@@ -7,9 +7,9 @@ import {
 } from './game-mode';
 import { GameModesController } from './game-modes.controller';
 import { GameModesService } from './game-modes.service';
-import { Race } from './modes/race-laps';
-import { RaceController } from './modes/race-laps/controller';
-import { RaceTrackCalculator } from './modes/race-laps/track-calculator';
+import { Race } from './modes/race';
+import { RaceController } from './modes/race/controller';
+import { RaceTrackCalculator } from './modes/race/track-calculator';
 
 export const GameModesModule = new ContainerModule(({ bind }) => {
   bind(GameModesService).toSelf().inSingletonScope();

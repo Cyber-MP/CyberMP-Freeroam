@@ -3,7 +3,7 @@ import { GameModeName } from '../../game-modes/game-mode';
 import {
   zCreateRaceOptions,
   zJoinRaceOptions,
-} from '../../game-modes/modes/race-laps';
+} from '../../game-modes/modes/race';
 
 export const zCreateMatchDTO = z.union([
   z.object({

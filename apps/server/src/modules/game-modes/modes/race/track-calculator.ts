@@ -4,7 +4,7 @@ import {
   type RaceMap,
   type RaceMapName,
   zRaceMap,
-} from '@freeroam/shared/game-modes/race-laps';
+} from '@freeroam/shared/game-modes/race';
 import { inject, injectable, postConstruct } from 'inversify';
 import { LoggerService } from '../../../logger/logger.service';
 import { RaceLapsMaps } from './maps';

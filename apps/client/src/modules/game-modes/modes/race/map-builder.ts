@@ -9,7 +9,7 @@ import type {
   RaceMap,
   RaceMapNode,
   RaceTrackPath,
-} from '@freeroam/shared/game-modes/race-laps';
+} from '@freeroam/shared/game-modes/race';
 import { inject, injectable, postConstruct } from 'inversify';
 import z from 'zod';
 import { createEulerAngles, createVector4 } from '../../../../lib/vectors';

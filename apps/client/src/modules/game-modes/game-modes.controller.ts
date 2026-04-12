@@ -6,7 +6,7 @@ import z from 'zod';
 import { r } from '../../rpc';
 import { GameModesService } from './game-modes.service';
 import type { MatchDTO } from './match';
-import { raceContract } from './modes/race-laps/controller';
+import { raceContract } from './modes/race/controller';
 
 export const gameModesContract = {
   start: contract

@@ -4,7 +4,7 @@ import {
   zRaceFinishedRacer,
   zRaceRacerDTO,
   zRaceRankDTO,
-} from '@freeroam/shared/game-modes/race-laps';
+} from '@freeroam/shared/game-modes/race';
 import { proxy } from 'valtio';
 import z from 'zod';
 

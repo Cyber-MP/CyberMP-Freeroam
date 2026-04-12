@@ -1,4 +1,4 @@
-import type { RaceMap } from '@freeroam/shared/game-modes/race-laps';
+import type { RaceMap } from '@freeroam/shared/game-modes/race';
 import { RACE_LAPS_HEYWOOD_MAP } from './heywood';
 import { RACE_LAPS_PETROCHEM_MAP } from './petrochem';
 import { RACE_LAPS_TEST_MAP } from './test-map';

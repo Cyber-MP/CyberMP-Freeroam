@@ -2,7 +2,7 @@ import z from 'zod';
 import { setBodyVisibility, toggleBodyVisibility } from '../body';
 import { keysContract } from '../keys';
 import { copyToClipboard } from '../lib/clipboard';
-import { raceContract } from '../routes/hud.game-modes/race-laps/-contract';
+import { raceContract } from '../routes/hud.game-modes/race/-contract';
 import type { FileRoutesByFullPath } from '../routeTree.gen';
 import { chatContract } from '../store/chat';
 import { hintsContract } from '../store/hints';

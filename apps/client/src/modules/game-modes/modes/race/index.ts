@@ -12,7 +12,7 @@ import type {
   RaceRankDTO,
   RaceStartPointNode,
   RaceTrackPath,
-} from '@freeroam/shared/game-modes/race-laps';
+} from '@freeroam/shared/game-modes/race';
 import { inject, injectable } from 'inversify';
 import ms from 'ms';
 import { createEulerAngles, createVector4 } from '../../../../lib/vectors';
@@ -173,7 +173,7 @@ export class Race extends BaseGameMode<'race'> {
     this.statusEffectsService.remove('GameplayRestriction.NoWeapons');
 
     browser.hud.setGlobalPath.trigger('/hud');
-    browser.navigate.trigger('/hud/game-modes/race-laps/results');
+    browser.navigate.trigger('/hud/game-modes/race/results');
   }
 
   updateRacerData(data: Partial<RaceRacerDTO> = {}) {
@@ -205,8 +205,8 @@ export class Race extends BaseGameMode<'race'> {
       data.startPoint.yaw,
     );
 
-    browser.hud.setGlobalPath.trigger('/hud/game-modes/race-laps/');
-    browser.navigate.trigger('/hud/game-modes/race-laps/');
+    browser.hud.setGlobalPath.trigger('/hud/game-modes/race/');
+    browser.navigate.trigger('/hud/game-modes/race/');
 
     this.vehiclesService.requestSitInVehicle(data.vehicleId);
 

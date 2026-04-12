@@ -1,6 +1,6 @@
 import type { RpcBrowserContext } from '@cybermp/rpc-browser';
 import { useImplement } from '@cybermp/rpc-router-react';
-import type { RaceRankDTO } from '@freeroam/shared/game-modes/race-laps';
+import type { RaceRankDTO } from '@freeroam/shared/game-modes/race';
 import { createFileRoute } from '@tanstack/react-router';
 import {
   AnimatePresence,
@@ -17,7 +17,7 @@ import { usePlayerId } from '@/hooks/use-player-id';
 import { r } from '@/rpc';
 import { raceContract, raceDataState } from './-contract';
 
-export const Route = createFileRoute('/hud/game-modes/race-laps/')({
+export const Route = createFileRoute('/hud/game-modes/race/')({
   component: RouteComponent,
 });
 

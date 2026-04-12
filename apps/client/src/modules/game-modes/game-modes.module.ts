@@ -10,10 +10,10 @@ import {
   ActiveGameMiddlewareSymbol,
   activeGameMiddleware,
 } from './middleware/active-game.middleware';
-import { Race } from './modes/race-laps';
-import { RaceCheckpoint } from './modes/race-laps/checkpoint';
-import { RaceController } from './modes/race-laps/controller';
-import { RaceMapBuilder } from './modes/race-laps/map-builder';
+import { Race } from './modes/race';
+import { RaceCheckpoint } from './modes/race/checkpoint';
+import { RaceController } from './modes/race/controller';
+import { RaceMapBuilder } from './modes/race/map-builder';
 
 export const GameModesModule = new ContainerModule(({ bind }) => {
   bind(GameModesService).toSelf().inSingletonScope();

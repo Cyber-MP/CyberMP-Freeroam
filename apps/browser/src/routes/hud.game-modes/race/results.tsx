@@ -7,7 +7,7 @@ import { useFocus } from '@/hooks/use-focus';
 import { loadingOverlayState } from '@/store/loading-overlay';
 import { raceResultsState } from './-contract';
 
-export const Route = createFileRoute('/hud/game-modes/race-laps/results')({
+export const Route = createFileRoute('/hud/game-modes/race/results')({
   component: RouteComponent,
 });
 

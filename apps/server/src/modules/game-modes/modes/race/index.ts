@@ -8,7 +8,7 @@ import {
   type RaceRankDTO,
   type RaceStartPointNode,
   zRaceRacerDTO,
-} from '@freeroam/shared/game-modes/race-laps';
+} from '@freeroam/shared/game-modes/race';
 import { inject, injectable } from 'inversify';
 import ms from 'ms';
 import { sleep } from 'radash';

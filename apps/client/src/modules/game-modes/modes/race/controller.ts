@@ -4,7 +4,7 @@ import { eager } from '@freeroam/inversify';
 import {
   zRaceRacerDTO,
   zRaceRankDTO,
-} from '@freeroam/shared/game-modes/race-laps';
+} from '@freeroam/shared/game-modes/race';
 import { inject, injectable, postConstruct } from 'inversify';
 import z from 'zod';
 import { r } from '../../../../rpc';

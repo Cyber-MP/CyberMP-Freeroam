@@ -1,7 +1,7 @@
 import {
   type RaceMap,
   RaceMapName,
-} from '@freeroam/shared/game-modes/race-laps';
+} from '@freeroam/shared/game-modes/race';
 
 export const RACE_LAPS_TEST_MAP: RaceMap = {
   name: RaceMapName.TEST,

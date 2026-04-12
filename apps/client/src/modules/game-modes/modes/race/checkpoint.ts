@@ -1,6 +1,6 @@
 import { gamedataMappinVariant } from '@cybermp/client-types/enums';
 import type { entEntity, gameNewMappinID } from '@cybermp/client-types/game';
-import type { RaceCheckpointNode } from '@freeroam/shared/game-modes/race-laps';
+import type { RaceCheckpointNode } from '@freeroam/shared/game-modes/race';
 import { inject, injectable } from 'inversify';
 import { uid } from 'radash';
 import { createVector3, createVector4 } from '../../../../lib/vectors';
