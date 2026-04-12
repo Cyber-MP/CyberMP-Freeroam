@@ -98,7 +98,7 @@ class Racer {
           startPoint: this.startPoint,
         },
         {},
-        { timeout: ms('15s') },
+        { timeout: ms('30s') },
       )
       .catch((e) => {
         this.match.leave(this.player.id);

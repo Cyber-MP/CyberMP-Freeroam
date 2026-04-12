@@ -75,7 +75,7 @@ export class Sumo extends BaseGameMode<'sumo'> {
     this.statusEffectsService.remove('GameplayRestriction.NoWeapons');
 
     browser.hud.setGlobalPath.trigger('/hud');
-    browser.navigate.trigger('/hud/game-modes/race-laps/results');
+    browser.navigate.trigger('/hud');
   }
 
   async prepare(data: SumoPrepareDTO) {
