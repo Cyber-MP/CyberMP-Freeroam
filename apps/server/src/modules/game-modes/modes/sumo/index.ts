@@ -180,7 +180,7 @@ export class Sumo extends BaseGameMode<
       visible: true,
     });
 
-    this.polygon.entityLeaveObserver.subscribe(this.polygonSubscribeEvent);
+    this.polygon.entityLeaveObserver.subscribe(this.onPolygonLeave);
 
     const members = [...this.match.members.keys()];
 
@@ -203,7 +203,7 @@ export class Sumo extends BaseGameMode<
     await this.startCountdown();
   }
 
-  private async polygonSubscribeEvent(entity: MpEntity) {
+  private onPolygonLeave = async (entity: MpEntity) => {
     console.log('PLAYER LEAVE POLYGON');
     console.log(entity.type);
 
@@ -217,7 +217,7 @@ export class Sumo extends BaseGameMode<
     await racer?.surrender();
 
     this.checkSurvivers();
-  }
+  };
 
   private checkSurvivers() {
     let livingCount = 0;
@@ -270,7 +270,7 @@ export class Sumo extends BaseGameMode<
   }
 
   end() {
-    this.polygon.entityLeaveObserver.unsubscribe(this.polygonSubscribeEvent);
+    this.polygon.entityLeaveObserver.unsubscribe(this.onPolygonLeave);
 
     this.racers.clear();
   }
