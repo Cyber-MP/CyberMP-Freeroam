@@ -178,33 +178,37 @@ export class Sumo extends BaseGameMode<
   }
 
   async start() {
-    this.polygon = this.polygonsService.create({
-      dimension: this.dimension,
-      height: this.map.height,
-      vertices: this.verticies,
-    });
+    try {
+      this.polygon = this.polygonsService.create({
+        dimension: this.dimension,
+        height: this.map.height,
+        vertices: this.verticies,
+      });
 
-    this.polygon.entityLeaveObserver.subscribe(this.polygonSubscribeEvent);
+      this.polygon.entityLeaveObserver.subscribe(this.polygonSubscribeEvent);
 
-    const members = [...this.match.members.keys()];
+      const members = [...this.match.members.keys()];
 
-    await Promise.all(
-      members.map(async (member, index) => {
-        const racer = new Racer({
-          map: this.map,
-          match: this.match,
-          player: member,
-          index,
-          startPoint: this.startPoints[index],
-        });
+      await Promise.all(
+        members.map(async (member, index) => {
+          const racer = new Racer({
+            map: this.map,
+            match: this.match,
+            player: member,
+            index,
+            startPoint: this.startPoints[index],
+          });
 
-        await racer.prepare();
+          await racer.prepare();
 
-        this.racers.set(member, racer);
-      }),
-    );
+          this.racers.set(member, racer);
+        }),
+      );
 
-    await this.startCountdown();
+      await this.startCountdown();
+    } catch (err) {
+      console.log(err, (err as any).message);
+    }
   }
 
   private polygonSubscribeEvent(entity: MpEntity) {
