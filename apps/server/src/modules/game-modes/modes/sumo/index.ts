@@ -173,46 +173,47 @@ export class Sumo extends BaseGameMode<
   }
 
   async start() {
-    try {
-      this.polygon = this.polygonsService.create({
-        dimension: this.dimension,
-        height: this.map.height,
-        vertices: this.map.verticies,
-      });
+    this.polygon = this.polygonsService.create({
+      dimension: this.dimension,
+      height: this.map.height,
+      vertices: this.map.verticies,
+    });
 
-      this.polygon.entityLeaveObserver.subscribe(this.polygonSubscribeEvent);
+    this.polygon.entityLeaveObserver.subscribe(this.polygonSubscribeEvent);
 
-      const members = [...this.match.members.keys()];
+    const members = [...this.match.members.keys()];
 
-      await Promise.all(
-        members.map(async (member, index) => {
-          const racer = new Racer({
-            map: this.map,
-            match: this.match,
-            player: member,
-            index,
-            startPoint: this.map.startPoints[index],
-          });
+    await Promise.all(
+      members.map(async (member, index) => {
+        const racer = new Racer({
+          map: this.map,
+          match: this.match,
+          player: member,
+          index,
+          startPoint: this.map.startPoints[index],
+        });
 
-          await racer.prepare();
+        await racer.prepare();
 
-          this.racers.set(member, racer);
-        }),
-      );
+        this.racers.set(member, racer);
+      }),
+    );
 
-      await this.startCountdown();
-    } catch (err) {
-      console.log(err, (err as any).message);
-    }
+    await this.startCountdown();
   }
 
   private polygonSubscribeEvent(entity: MpEntity) {
+    console.log('PLAYER LEAVE POLYGON');
+    console.log(entity.type);
+
     // TODO replace `1` with EntityType.Player (terminate update @cybermp/server-types)
     if (entity.type !== 1) {
       return;
     }
 
     const racer = this.racers.get(entity.id);
+
+    console.log('RACER', !!racer);
 
     racer?.surrender();
   }
