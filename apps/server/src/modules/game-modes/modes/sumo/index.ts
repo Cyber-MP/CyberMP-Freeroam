@@ -111,6 +111,8 @@ class Racer {
       return;
     }
 
+    this.survived = true;
+
     this.vehicle.destroy();
   }
 
