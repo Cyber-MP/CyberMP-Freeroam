@@ -8,7 +8,6 @@ import {
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { cva } from 'class-variance-authority';
 import { useMemo, useRef } from 'react';
-import { JoinMatchForm } from './-components/form';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -33,6 +32,7 @@ import { usePlayerId } from '@/hooks/use-player-id';
 import { isMatchMember, type Match, type MatchStatus } from '@/lib/match';
 import { serverQuery } from '@/rpc';
 import { queryClient } from '@/tanstack-query';
+import { JoinMatchForm } from './-components/form';
 
 export const Route = createFileRoute('/hud/menu/matchmaking/')({
   component: RouteComponent,

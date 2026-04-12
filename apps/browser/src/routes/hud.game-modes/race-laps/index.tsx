@@ -115,7 +115,6 @@ const Ranks = () => {
               >
                 <span>Checkpoint: {rank.checkpoint}</span>
                 <span>Lap: {rank.lap}</span>
-                <span>Progress: {rank.progress.toString()}</span>
               </div>
             </div>
 

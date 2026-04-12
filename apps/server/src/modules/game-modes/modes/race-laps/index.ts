@@ -230,7 +230,7 @@ class RanksTracker {
     return ranks
       .map(
         (r) =>
-          `${r.playerId}:${r.position}:${r.lap}:${r.checkpoint}:${r.finished ? 1 : 0}:${r.progress.toString()}`,
+          `${r.playerId}:${r.position}:${r.lap}:${r.checkpoint}:${r.finished ? 1 : 0}`,
       )
       .join('|');
   }
@@ -333,14 +333,13 @@ class RanksTracker {
       return b.progress - a.progress;
     });
 
-    return racersProgress.map<RaceLapsRankDTO>(({ racer, progress }, i) => ({
+    return racersProgress.map<RaceLapsRankDTO>(({ racer }, i) => ({
       playerId: racer.player.id,
       position: i + 1,
       playerNick: racer.player.nickname,
       checkpoint: racer.currentCheckpointIndex + 1,
       lap: racer.currentLap,
       finished: racer.finished,
-      progress: this.quantizeProgress(progress),
     }));
   }
 }

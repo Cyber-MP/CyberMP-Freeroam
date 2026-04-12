@@ -1,7 +1,10 @@
 import { RiLoader2Fill } from '@remixicon/react';
 import { cn } from '@/lib/utils';
 
-function Spinner({ className, ...props }: React.ComponentProps<typeof RiLoader2Fill>) {
+function Spinner({
+  className,
+  ...props
+}: React.ComponentProps<typeof RiLoader2Fill>) {
   return (
     <RiLoader2Fill
       role="status"

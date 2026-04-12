@@ -1,7 +1,7 @@
 import { ContainerModule } from 'inversify';
+import { SpawnCommands } from './spawn.commands';
 import { SpawnController } from './spawn.controller';
 import { SpawnService } from './spawn.service';
-import { SpawnCommands } from './spawn.commands';
 
 export const SpawnModule = new ContainerModule(({ bind }) => {
   bind(SpawnService).toSelf().inSingletonScope();

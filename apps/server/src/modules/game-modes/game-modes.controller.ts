@@ -35,9 +35,7 @@ export class GameModesController {
     return this.gameModesService.getCreateSchemas();
   }
 
-  private getJoinSchema(
-    c: RpcServerContext<ContractInputs['getJoinSchema']>,
-  ) {
+  private getJoinSchema(c: RpcServerContext<ContractInputs['getJoinSchema']>) {
     return this.gameModesService.getJoinSchema(
       c.data.modeName,
       c.data.createOptions,
@@ -50,9 +48,6 @@ export class GameModesController {
       gameModesContract.getCreateSchemas,
       this.getCreateSchemas.bind(this),
     );
-    r.implement(
-      gameModesContract.getJoinSchema,
-      this.getJoinSchema.bind(this),
-    );
+    r.implement(gameModesContract.getJoinSchema, this.getJoinSchema.bind(this));
   }
 }

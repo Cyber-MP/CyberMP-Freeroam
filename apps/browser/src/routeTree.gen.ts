@@ -8,128 +8,128 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from './routes/__root'
-import { Route as HudRouteImport } from './routes/hud'
-import { Route as EntryRouteImport } from './routes/entry'
-import { Route as DeathRouteImport } from './routes/death'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as HudMenuRouteRouteImport } from './routes/hud.menu/route'
-import { Route as HudMenuIndexRouteImport } from './routes/hud.menu/index'
-import { Route as HudMenuWorldRouteImport } from './routes/hud.menu/world'
-import { Route as HudMenuItemsRouteImport } from './routes/hud.menu/items'
-import { Route as HudMenuMatchmakingIndexRouteImport } from './routes/hud.menu/matchmaking/index'
-import { Route as HudGameModesRaceLapsIndexRouteImport } from './routes/hud.game-modes/race-laps/index'
-import { Route as HudMenuMatchmakingCreateRouteImport } from './routes/hud.menu/matchmaking/create'
-import { Route as HudGameModesRaceLapsResultsRouteImport } from './routes/hud.game-modes/race-laps/results'
+import { Route as rootRouteImport } from './routes/__root';
+import { Route as DeathRouteImport } from './routes/death';
+import { Route as EntryRouteImport } from './routes/entry';
+import { Route as HudRouteImport } from './routes/hud';
+import { Route as HudGameModesRaceLapsIndexRouteImport } from './routes/hud.game-modes/race-laps/index';
+import { Route as HudGameModesRaceLapsResultsRouteImport } from './routes/hud.game-modes/race-laps/results';
+import { Route as HudMenuIndexRouteImport } from './routes/hud.menu/index';
+import { Route as HudMenuItemsRouteImport } from './routes/hud.menu/items';
+import { Route as HudMenuMatchmakingCreateRouteImport } from './routes/hud.menu/matchmaking/create';
+import { Route as HudMenuMatchmakingIndexRouteImport } from './routes/hud.menu/matchmaking/index';
+import { Route as HudMenuRouteRouteImport } from './routes/hud.menu/route';
+import { Route as HudMenuWorldRouteImport } from './routes/hud.menu/world';
+import { Route as IndexRouteImport } from './routes/index';
 
 const HudRoute = HudRouteImport.update({
   id: '/hud',
   path: '/hud',
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const EntryRoute = EntryRouteImport.update({
   id: '/entry',
   path: '/entry',
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const DeathRoute = DeathRouteImport.update({
   id: '/death',
   path: '/death',
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const HudMenuRouteRoute = HudMenuRouteRouteImport.update({
   id: '/menu',
   path: '/menu',
   getParentRoute: () => HudRoute,
-} as any)
+} as any);
 const HudMenuIndexRoute = HudMenuIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => HudMenuRouteRoute,
-} as any)
+} as any);
 const HudMenuWorldRoute = HudMenuWorldRouteImport.update({
   id: '/world',
   path: '/world',
   getParentRoute: () => HudMenuRouteRoute,
-} as any)
+} as any);
 const HudMenuItemsRoute = HudMenuItemsRouteImport.update({
   id: '/items',
   path: '/items',
   getParentRoute: () => HudMenuRouteRoute,
-} as any)
+} as any);
 const HudMenuMatchmakingIndexRoute = HudMenuMatchmakingIndexRouteImport.update({
   id: '/matchmaking/',
   path: '/matchmaking/',
   getParentRoute: () => HudMenuRouteRoute,
-} as any)
+} as any);
 const HudGameModesRaceLapsIndexRoute =
   HudGameModesRaceLapsIndexRouteImport.update({
     id: '/game-modes/race-laps/',
     path: '/game-modes/race-laps/',
     getParentRoute: () => HudRoute,
-  } as any)
+  } as any);
 const HudMenuMatchmakingCreateRoute =
   HudMenuMatchmakingCreateRouteImport.update({
     id: '/matchmaking/create',
     path: '/matchmaking/create',
     getParentRoute: () => HudMenuRouteRoute,
-  } as any)
+  } as any);
 const HudGameModesRaceLapsResultsRoute =
   HudGameModesRaceLapsResultsRouteImport.update({
     id: '/game-modes/race-laps/results',
     path: '/game-modes/race-laps/results',
     getParentRoute: () => HudRoute,
-  } as any)
+  } as any);
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/death': typeof DeathRoute
-  '/entry': typeof EntryRoute
-  '/hud': typeof HudRouteWithChildren
-  '/hud/menu': typeof HudMenuRouteRouteWithChildren
-  '/hud/menu/items': typeof HudMenuItemsRoute
-  '/hud/menu/world': typeof HudMenuWorldRoute
-  '/hud/menu/': typeof HudMenuIndexRoute
-  '/hud/game-modes/race-laps/results': typeof HudGameModesRaceLapsResultsRoute
-  '/hud/menu/matchmaking/create': typeof HudMenuMatchmakingCreateRoute
-  '/hud/game-modes/race-laps/': typeof HudGameModesRaceLapsIndexRoute
-  '/hud/menu/matchmaking/': typeof HudMenuMatchmakingIndexRoute
+  '/': typeof IndexRoute;
+  '/death': typeof DeathRoute;
+  '/entry': typeof EntryRoute;
+  '/hud': typeof HudRouteWithChildren;
+  '/hud/menu': typeof HudMenuRouteRouteWithChildren;
+  '/hud/menu/items': typeof HudMenuItemsRoute;
+  '/hud/menu/world': typeof HudMenuWorldRoute;
+  '/hud/menu/': typeof HudMenuIndexRoute;
+  '/hud/game-modes/race-laps/results': typeof HudGameModesRaceLapsResultsRoute;
+  '/hud/menu/matchmaking/create': typeof HudMenuMatchmakingCreateRoute;
+  '/hud/game-modes/race-laps/': typeof HudGameModesRaceLapsIndexRoute;
+  '/hud/menu/matchmaking/': typeof HudMenuMatchmakingIndexRoute;
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/death': typeof DeathRoute
-  '/entry': typeof EntryRoute
-  '/hud': typeof HudRouteWithChildren
-  '/hud/menu/items': typeof HudMenuItemsRoute
-  '/hud/menu/world': typeof HudMenuWorldRoute
-  '/hud/menu': typeof HudMenuIndexRoute
-  '/hud/game-modes/race-laps/results': typeof HudGameModesRaceLapsResultsRoute
-  '/hud/menu/matchmaking/create': typeof HudMenuMatchmakingCreateRoute
-  '/hud/game-modes/race-laps': typeof HudGameModesRaceLapsIndexRoute
-  '/hud/menu/matchmaking': typeof HudMenuMatchmakingIndexRoute
+  '/': typeof IndexRoute;
+  '/death': typeof DeathRoute;
+  '/entry': typeof EntryRoute;
+  '/hud': typeof HudRouteWithChildren;
+  '/hud/menu/items': typeof HudMenuItemsRoute;
+  '/hud/menu/world': typeof HudMenuWorldRoute;
+  '/hud/menu': typeof HudMenuIndexRoute;
+  '/hud/game-modes/race-laps/results': typeof HudGameModesRaceLapsResultsRoute;
+  '/hud/menu/matchmaking/create': typeof HudMenuMatchmakingCreateRoute;
+  '/hud/game-modes/race-laps': typeof HudGameModesRaceLapsIndexRoute;
+  '/hud/menu/matchmaking': typeof HudMenuMatchmakingIndexRoute;
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/death': typeof DeathRoute
-  '/entry': typeof EntryRoute
-  '/hud': typeof HudRouteWithChildren
-  '/hud/menu': typeof HudMenuRouteRouteWithChildren
-  '/hud/menu/items': typeof HudMenuItemsRoute
-  '/hud/menu/world': typeof HudMenuWorldRoute
-  '/hud/menu/': typeof HudMenuIndexRoute
-  '/hud/game-modes/race-laps/results': typeof HudGameModesRaceLapsResultsRoute
-  '/hud/menu/matchmaking/create': typeof HudMenuMatchmakingCreateRoute
-  '/hud/game-modes/race-laps/': typeof HudGameModesRaceLapsIndexRoute
-  '/hud/menu/matchmaking/': typeof HudMenuMatchmakingIndexRoute
+  __root__: typeof rootRouteImport;
+  '/': typeof IndexRoute;
+  '/death': typeof DeathRoute;
+  '/entry': typeof EntryRoute;
+  '/hud': typeof HudRouteWithChildren;
+  '/hud/menu': typeof HudMenuRouteRouteWithChildren;
+  '/hud/menu/items': typeof HudMenuItemsRoute;
+  '/hud/menu/world': typeof HudMenuWorldRoute;
+  '/hud/menu/': typeof HudMenuIndexRoute;
+  '/hud/game-modes/race-laps/results': typeof HudGameModesRaceLapsResultsRoute;
+  '/hud/menu/matchmaking/create': typeof HudMenuMatchmakingCreateRoute;
+  '/hud/game-modes/race-laps/': typeof HudGameModesRaceLapsIndexRoute;
+  '/hud/menu/matchmaking/': typeof HudMenuMatchmakingIndexRoute;
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
+  fileRoutesByFullPath: FileRoutesByFullPath;
   fullPaths:
     | '/'
     | '/death'
@@ -142,8 +142,8 @@ export interface FileRouteTypes {
     | '/hud/game-modes/race-laps/results'
     | '/hud/menu/matchmaking/create'
     | '/hud/game-modes/race-laps/'
-    | '/hud/menu/matchmaking/'
-  fileRoutesByTo: FileRoutesByTo
+    | '/hud/menu/matchmaking/';
+  fileRoutesByTo: FileRoutesByTo;
   to:
     | '/'
     | '/death'
@@ -155,7 +155,7 @@ export interface FileRouteTypes {
     | '/hud/game-modes/race-laps/results'
     | '/hud/menu/matchmaking/create'
     | '/hud/game-modes/race-laps'
-    | '/hud/menu/matchmaking'
+    | '/hud/menu/matchmaking';
   id:
     | '__root__'
     | '/'
@@ -169,111 +169,111 @@ export interface FileRouteTypes {
     | '/hud/game-modes/race-laps/results'
     | '/hud/menu/matchmaking/create'
     | '/hud/game-modes/race-laps/'
-    | '/hud/menu/matchmaking/'
-  fileRoutesById: FileRoutesById
+    | '/hud/menu/matchmaking/';
+  fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  DeathRoute: typeof DeathRoute
-  EntryRoute: typeof EntryRoute
-  HudRoute: typeof HudRouteWithChildren
+  IndexRoute: typeof IndexRoute;
+  DeathRoute: typeof DeathRoute;
+  EntryRoute: typeof EntryRoute;
+  HudRoute: typeof HudRouteWithChildren;
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
     '/hud': {
-      id: '/hud'
-      path: '/hud'
-      fullPath: '/hud'
-      preLoaderRoute: typeof HudRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/hud';
+      path: '/hud';
+      fullPath: '/hud';
+      preLoaderRoute: typeof HudRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/entry': {
-      id: '/entry'
-      path: '/entry'
-      fullPath: '/entry'
-      preLoaderRoute: typeof EntryRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/entry';
+      path: '/entry';
+      fullPath: '/entry';
+      preLoaderRoute: typeof EntryRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/death': {
-      id: '/death'
-      path: '/death'
-      fullPath: '/death'
-      preLoaderRoute: typeof DeathRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/death';
+      path: '/death';
+      fullPath: '/death';
+      preLoaderRoute: typeof DeathRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/';
+      path: '/';
+      fullPath: '/';
+      preLoaderRoute: typeof IndexRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/hud/menu': {
-      id: '/hud/menu'
-      path: '/menu'
-      fullPath: '/hud/menu'
-      preLoaderRoute: typeof HudMenuRouteRouteImport
-      parentRoute: typeof HudRoute
-    }
+      id: '/hud/menu';
+      path: '/menu';
+      fullPath: '/hud/menu';
+      preLoaderRoute: typeof HudMenuRouteRouteImport;
+      parentRoute: typeof HudRoute;
+    };
     '/hud/menu/': {
-      id: '/hud/menu/'
-      path: '/'
-      fullPath: '/hud/menu/'
-      preLoaderRoute: typeof HudMenuIndexRouteImport
-      parentRoute: typeof HudMenuRouteRoute
-    }
+      id: '/hud/menu/';
+      path: '/';
+      fullPath: '/hud/menu/';
+      preLoaderRoute: typeof HudMenuIndexRouteImport;
+      parentRoute: typeof HudMenuRouteRoute;
+    };
     '/hud/menu/world': {
-      id: '/hud/menu/world'
-      path: '/world'
-      fullPath: '/hud/menu/world'
-      preLoaderRoute: typeof HudMenuWorldRouteImport
-      parentRoute: typeof HudMenuRouteRoute
-    }
+      id: '/hud/menu/world';
+      path: '/world';
+      fullPath: '/hud/menu/world';
+      preLoaderRoute: typeof HudMenuWorldRouteImport;
+      parentRoute: typeof HudMenuRouteRoute;
+    };
     '/hud/menu/items': {
-      id: '/hud/menu/items'
-      path: '/items'
-      fullPath: '/hud/menu/items'
-      preLoaderRoute: typeof HudMenuItemsRouteImport
-      parentRoute: typeof HudMenuRouteRoute
-    }
+      id: '/hud/menu/items';
+      path: '/items';
+      fullPath: '/hud/menu/items';
+      preLoaderRoute: typeof HudMenuItemsRouteImport;
+      parentRoute: typeof HudMenuRouteRoute;
+    };
     '/hud/menu/matchmaking/': {
-      id: '/hud/menu/matchmaking/'
-      path: '/matchmaking'
-      fullPath: '/hud/menu/matchmaking/'
-      preLoaderRoute: typeof HudMenuMatchmakingIndexRouteImport
-      parentRoute: typeof HudMenuRouteRoute
-    }
+      id: '/hud/menu/matchmaking/';
+      path: '/matchmaking';
+      fullPath: '/hud/menu/matchmaking/';
+      preLoaderRoute: typeof HudMenuMatchmakingIndexRouteImport;
+      parentRoute: typeof HudMenuRouteRoute;
+    };
     '/hud/game-modes/race-laps/': {
-      id: '/hud/game-modes/race-laps/'
-      path: '/game-modes/race-laps'
-      fullPath: '/hud/game-modes/race-laps/'
-      preLoaderRoute: typeof HudGameModesRaceLapsIndexRouteImport
-      parentRoute: typeof HudRoute
-    }
+      id: '/hud/game-modes/race-laps/';
+      path: '/game-modes/race-laps';
+      fullPath: '/hud/game-modes/race-laps/';
+      preLoaderRoute: typeof HudGameModesRaceLapsIndexRouteImport;
+      parentRoute: typeof HudRoute;
+    };
     '/hud/menu/matchmaking/create': {
-      id: '/hud/menu/matchmaking/create'
-      path: '/matchmaking/create'
-      fullPath: '/hud/menu/matchmaking/create'
-      preLoaderRoute: typeof HudMenuMatchmakingCreateRouteImport
-      parentRoute: typeof HudMenuRouteRoute
-    }
+      id: '/hud/menu/matchmaking/create';
+      path: '/matchmaking/create';
+      fullPath: '/hud/menu/matchmaking/create';
+      preLoaderRoute: typeof HudMenuMatchmakingCreateRouteImport;
+      parentRoute: typeof HudMenuRouteRoute;
+    };
     '/hud/game-modes/race-laps/results': {
-      id: '/hud/game-modes/race-laps/results'
-      path: '/game-modes/race-laps/results'
-      fullPath: '/hud/game-modes/race-laps/results'
-      preLoaderRoute: typeof HudGameModesRaceLapsResultsRouteImport
-      parentRoute: typeof HudRoute
-    }
+      id: '/hud/game-modes/race-laps/results';
+      path: '/game-modes/race-laps/results';
+      fullPath: '/hud/game-modes/race-laps/results';
+      preLoaderRoute: typeof HudGameModesRaceLapsResultsRouteImport;
+      parentRoute: typeof HudRoute;
+    };
   }
 }
 
 interface HudMenuRouteRouteChildren {
-  HudMenuItemsRoute: typeof HudMenuItemsRoute
-  HudMenuWorldRoute: typeof HudMenuWorldRoute
-  HudMenuIndexRoute: typeof HudMenuIndexRoute
-  HudMenuMatchmakingCreateRoute: typeof HudMenuMatchmakingCreateRoute
-  HudMenuMatchmakingIndexRoute: typeof HudMenuMatchmakingIndexRoute
+  HudMenuItemsRoute: typeof HudMenuItemsRoute;
+  HudMenuWorldRoute: typeof HudMenuWorldRoute;
+  HudMenuIndexRoute: typeof HudMenuIndexRoute;
+  HudMenuMatchmakingCreateRoute: typeof HudMenuMatchmakingCreateRoute;
+  HudMenuMatchmakingIndexRoute: typeof HudMenuMatchmakingIndexRoute;
 }
 
 const HudMenuRouteRouteChildren: HudMenuRouteRouteChildren = {
@@ -282,32 +282,32 @@ const HudMenuRouteRouteChildren: HudMenuRouteRouteChildren = {
   HudMenuIndexRoute: HudMenuIndexRoute,
   HudMenuMatchmakingCreateRoute: HudMenuMatchmakingCreateRoute,
   HudMenuMatchmakingIndexRoute: HudMenuMatchmakingIndexRoute,
-}
+};
 
 const HudMenuRouteRouteWithChildren = HudMenuRouteRoute._addFileChildren(
   HudMenuRouteRouteChildren,
-)
+);
 
 interface HudRouteChildren {
-  HudMenuRouteRoute: typeof HudMenuRouteRouteWithChildren
-  HudGameModesRaceLapsResultsRoute: typeof HudGameModesRaceLapsResultsRoute
-  HudGameModesRaceLapsIndexRoute: typeof HudGameModesRaceLapsIndexRoute
+  HudMenuRouteRoute: typeof HudMenuRouteRouteWithChildren;
+  HudGameModesRaceLapsResultsRoute: typeof HudGameModesRaceLapsResultsRoute;
+  HudGameModesRaceLapsIndexRoute: typeof HudGameModesRaceLapsIndexRoute;
 }
 
 const HudRouteChildren: HudRouteChildren = {
   HudMenuRouteRoute: HudMenuRouteRouteWithChildren,
   HudGameModesRaceLapsResultsRoute: HudGameModesRaceLapsResultsRoute,
   HudGameModesRaceLapsIndexRoute: HudGameModesRaceLapsIndexRoute,
-}
+};
 
-const HudRouteWithChildren = HudRoute._addFileChildren(HudRouteChildren)
+const HudRouteWithChildren = HudRoute._addFileChildren(HudRouteChildren);
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DeathRoute: DeathRoute,
   EntryRoute: EntryRoute,
   HudRoute: HudRouteWithChildren,
-}
+};
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+  ._addFileTypes<FileRouteTypes>();

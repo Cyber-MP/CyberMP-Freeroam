@@ -154,15 +154,24 @@ function RouteComponent() {
 
   return (
     <div className="flex justify-center flex-wrap gap-12 gap-x-24 h-full w-full">
-      <Tabs defaultValue={'all' satisfies VehicleCategory} className="w-full pb-4">
+      <Tabs
+        defaultValue={'all' satisfies VehicleCategory}
+        className="w-full pb-4"
+      >
         <div className="sticky top-0 flex gap-6 items-center z-50">
           <TabsList>
-            <TabsTrigger value={'all' satisfies VehicleCategory}>All</TabsTrigger>
-            <TabsTrigger value={'sport' satisfies VehicleCategory}>Sport</TabsTrigger>
+            <TabsTrigger value={'all' satisfies VehicleCategory}>
+              All
+            </TabsTrigger>
+            <TabsTrigger value={'sport' satisfies VehicleCategory}>
+              Sport
+            </TabsTrigger>
             <TabsTrigger value={'street' satisfies VehicleCategory}>
               Street
             </TabsTrigger>
-            <TabsTrigger value={'bikes' satisfies VehicleCategory}>Bikes</TabsTrigger>
+            <TabsTrigger value={'bikes' satisfies VehicleCategory}>
+              Bikes
+            </TabsTrigger>
             <TabsTrigger value={'offroad' satisfies VehicleCategory}>
               Offroad
             </TabsTrigger>
