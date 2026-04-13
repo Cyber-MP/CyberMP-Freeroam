@@ -2,10 +2,10 @@ name: Deploy to Server
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - dev
-      - user/nan
+  # push:
+  #   branches:
+  #     - dev
+  #     - user/nan
 
 jobs:
   deploy:
