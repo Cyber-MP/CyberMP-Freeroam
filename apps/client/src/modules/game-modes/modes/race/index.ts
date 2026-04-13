@@ -99,7 +99,7 @@ export class Race extends BaseGameMode<'race'> {
 
   private data: RaceRacerDTO = {
     currentCheckpointIndex: 0,
-    currentLap: 0,
+    currentLap: 1,
     finished: false,
   };
   private currentRanks: RaceRankDTO[] = [];
