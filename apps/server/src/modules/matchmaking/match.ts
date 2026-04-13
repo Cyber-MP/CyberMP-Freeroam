@@ -13,7 +13,11 @@ export const MatchStatus = {
 export type TMatchStatus = (typeof MatchStatus)[keyof typeof MatchStatus];
 
 export const zCreateMatchOptions = z.looseObject({
-  maxPlayers: z.number().min(1).max(20).meta({ default: 5 }),
+  maxPlayers: z
+    .number()
+    .min(1)
+    .max(20)
+    .meta({ default: 5, title: 'Max players' }),
 });
 
 export type CreateMatchOptions = z.infer<typeof zCreateMatchOptions>;

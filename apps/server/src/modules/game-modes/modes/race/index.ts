@@ -31,14 +31,19 @@ import { RaceLapsMaps } from './maps';
 import { type PathTransform, RaceTrackCalculator } from './track-calculator';
 
 export const zCreateRaceOptions = zCreateMatchOptions.extend({
-  map: z.enum(RaceMapName),
-  vehicleClass: z.enum(['all', ...VEHICLES_DATA.map((o) => o.category)]),
-  laps: z.number().min(1).max(10).meta({ default: 1 }),
-  combat: z.boolean().default(false).optional(),
+  map: z.enum(RaceMapName).meta({
+    title: 'Map',
+    description: 'Props to @spookable for creating race maps)',
+  }),
+  vehicleClass: z
+    .enum(['all', ...VEHICLES_DATA.map((o) => o.category)])
+    .meta({ title: 'Vehicle class' }),
+  laps: z.number().min(1).max(10).meta({ default: 1 }).meta({ title: 'Laps' }),
+  combat: z.boolean().default(false).optional().meta({ title: 'Combat' }),
 });
 
 export const zJoinRaceOptions = zJoinMatchOptions.extend({
-  vehicle: z.enum(VEHICLES_DATA.map((o) => o.name)),
+  vehicle: z.enum(VEHICLES_DATA.map((o) => o.name)).meta({ title: 'Vehicle' }),
 });
 
 type RacerConstructorOptions = {
