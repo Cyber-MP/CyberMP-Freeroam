@@ -3,6 +3,7 @@ import { setBodyVisibility, toggleBodyVisibility } from '../body';
 import { keysContract } from '../keys';
 import { copyToClipboard } from '../lib/clipboard';
 import { raceContract } from '../routes/hud.game-modes/race/-contract';
+import { sumoContract } from '../routes/hud.game-modes/sumo/-contract';
 import type { FileRoutesByFullPath } from '../routeTree.gen';
 import { chatContract } from '../store/chat';
 import { hintsContract } from '../store/hints';
@@ -10,13 +11,14 @@ import { hudContract } from '../store/hud';
 import { killFeedContract } from '../store/kill-feed';
 import { loadingOverlayContract } from '../store/loading-overlay';
 import { tanstackRouter } from '../tanstack-router';
+import { toastContract } from '../toast';
 import { r } from '.';
 
 export const rpcRouter = {
   pingBrowser: r.procedure.input(z.string()).handler(() => {
     console.log('test handler invoked');
   }),
-  gameModes: { race: raceContract },
+  gameModes: { race: raceContract, sumo: sumoContract },
   keys: keysContract,
   hints: hintsContract,
   chat: chatContract,
@@ -45,6 +47,7 @@ export const rpcRouter = {
     setBodyVisibility(true);
   }),
   toggleVisibility: r.procedure.handler(toggleBodyVisibility),
+  toast: toastContract,
 };
 
 export type BrowserRouter = typeof rpcRouter;

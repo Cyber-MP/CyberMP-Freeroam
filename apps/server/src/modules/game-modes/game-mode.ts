@@ -6,6 +6,7 @@ import type {
 } from '../matchmaking/match';
 
 export const GameModeName = {
+  SUMO: 'sumo',
   RACE: 'race',
 } as const;
 

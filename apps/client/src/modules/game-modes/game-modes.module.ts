@@ -14,13 +14,16 @@ import { Race } from './modes/race';
 import { RaceCheckpoint } from './modes/race/checkpoint';
 import { RaceController } from './modes/race/controller';
 import { RaceMapBuilder } from './modes/race/map-builder';
+import { Sumo } from './modes/sumo';
 
 export const GameModesModule = new ContainerModule(({ bind }) => {
   bind(GameModesService).toSelf().inSingletonScope();
   bind(GameModesController).toSelf().inSingletonScope();
-
   bind('race' satisfies GameModeName)
     .to(Race)
+    .inRequestScope();
+  bind('sumo' satisfies GameModeName)
+    .to(Sumo)
     .inRequestScope();
   bind(RaceController).toSelf().inSingletonScope();
   bind(RaceMapBuilder).toSelf().inSingletonScope();
