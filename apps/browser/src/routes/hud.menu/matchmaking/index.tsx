@@ -170,9 +170,9 @@ const MatchComponent = (match: Match) => {
 
   const navigate = useNavigate();
 
-  const { maxPlayers: maxPlayersSchema } = (
-    match.createSchema as JSONSchema.ObjectSchema
-  ).properties!;
+  const createSchema = match.createSchema as JSONSchema.ObjectSchema;
+
+  const { maxPlayers: maxPlayersSchema } = createSchema.properties!;
   const minPlayers = (maxPlayersSchema as JSONSchema.NumberSchema).minimum ?? 0;
 
   const leaveMatch = async () => {
@@ -233,7 +233,9 @@ const MatchComponent = (match: Match) => {
                 key={`${match.id}-${key}`}
                 className="bg-secondary px-2 py-0.5 rounded text-[1vh] capitalize"
               >
-                {key}: {String(value)}
+                {(createSchema.properties?.[key] as JSONSchema.ObjectSchema)
+                  ?.title ?? key}
+                : {String(value)}
               </span>
             ))}
           </div>
