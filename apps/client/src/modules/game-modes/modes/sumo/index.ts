@@ -15,11 +15,9 @@ import type { SumoPrepareDTO } from './dto';
 @injectable()
 export class Sumo extends BaseGameMode<'sumo'> {
   private livingIds: number[] = [];
-
+  private isAlive = true;
   private initialPosition!: Vector4;
-
   private countDownInterval: ReturnType<typeof setInterval> | undefined;
-  private vehicleCheckInterval: ReturnType<typeof setInterval> | undefined;
 
   constructor(
     @inject(GVehiclesService) private vehiclesService: GVehiclesService,
@@ -49,8 +47,6 @@ export class Sumo extends BaseGameMode<'sumo'> {
   }
 
   end() {
-    this.unmountVehicleCheckInterval();
-
     setTimeout(() => {
       this.unmountSpectateBinds();
     });
@@ -90,37 +86,27 @@ export class Sumo extends BaseGameMode<'sumo'> {
   updateLivingIds(data: number[]) {
     this.livingIds = data;
 
-    const current = this.spectatingService.getSpectatedPlayerId();
+    if (!this.livingIds.includes(mp.getPlayerServerId(1))) {
+      this.onDead();
+    } else {
+      const current = this.spectatingService.getSpectatedPlayerId();
 
-    if (current && !this.livingIds.includes(current)) {
-      this.spectateNextValidTarget();
+      if (current && !this.livingIds.includes(current)) {
+        this.spectateNextValidTarget();
+      }
     }
   }
 
-  private mountVehicleCheckInterval() {
-    this.vehicleCheckInterval = setInterval(() => {
-      const mountedVehicle = mp.game.GetMountedVehicle(
-        mp.game.GetPlayerObject(),
-      );
-      if (!mountedVehicle) {
-        this.onDead();
-      }
-    }, 1000);
-  }
-
   private onDead() {
-    this.unmountVehicleCheckInterval();
+    if (this.isAlive) {
+      return;
+    }
+
+    this.isAlive = false;
 
     this.mountSpectateBinds;
 
     this.spectateNextValidTarget();
-  }
-
-  private unmountVehicleCheckInterval() {
-    if (this.vehicleCheckInterval) {
-      clearInterval(this.vehicleCheckInterval);
-      this.vehicleCheckInterval = undefined;
-    }
   }
 
   private spectateNextKeyHandler = (action: EInputAction) => {
@@ -177,14 +163,7 @@ export class Sumo extends BaseGameMode<'sumo'> {
   }
 
   release() {
-    this.mountVehicleCheckInterval();
-
     this.statusEffectsService.remove('GameplayRestriction.NoDriving');
-
-    if (this.options.combat) {
-      this.statusEffectsService.remove('GameplayRestriction.NoCombat');
-      this.statusEffectsService.remove('GameplayRestriction.NoWeapons');
-    }
   }
 
   startCountdown(duration: number) {

@@ -1,11 +1,5 @@
 import z from 'zod';
 
-export const zSumoRacerDTO = z.object({
-  survived: z.boolean().default(false),
-});
-
-export type SumoRacerDTO = z.infer<typeof zSumoRacerDTO>;
-
 export const zSumoStartPoint = z.tuple([
   z.number(),
   z.number(),

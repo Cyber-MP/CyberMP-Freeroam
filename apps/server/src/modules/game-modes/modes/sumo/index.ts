@@ -2,9 +2,7 @@ import type { MpEntity, MpPlayer, MpVehicle } from '@cybermp/server-types';
 import {
   type SumoMap,
   SumoMapName,
-  type SumoRacerDTO,
   type SumoStartPoint,
-  zSumoRacerDTO,
 } from '@freeroam/shared/game-modes/sumo';
 import { inject, injectable } from 'inversify';
 import ms from 'ms';
@@ -53,8 +51,10 @@ class Racer {
   player: MpPlayer;
   vehicle!: MpVehicle;
   alive = true;
-  survivedTimestamp: number | null = null;
   startPoint: SumoStartPoint;
+
+  private VEHICLE_SPAWN_Z_OFFSET = 3;
+  private VEHICLE_HEATLH = 10_000_000;
 
   constructor(opts: RacerConstructorOptions) {
     this.map = opts.map;
@@ -82,11 +82,11 @@ class Racer {
       position: [
         this.startPoint[0],
         this.startPoint[1],
-        this.startPoint[2] + 3,
+        this.startPoint[2] + this.VEHICLE_SPAWN_Z_OFFSET,
       ],
       yaw: this.startPoint[3],
       dimension: this.match.dimension,
-      health: 10_000_000,
+      health: this.VEHICLE_HEATLH,
     });
 
     await client.gameModes.sumo.prepare
@@ -113,12 +113,6 @@ class Racer {
     this.alive = false;
 
     this.vehicle.destroy();
-  }
-
-  toDTO(): SumoRacerDTO {
-    return zSumoRacerDTO.parse({
-      survived: this.alive,
-    });
   }
 
   reset() {
