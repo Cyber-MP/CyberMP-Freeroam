@@ -3,7 +3,7 @@ import {
   RaceMapName,
 } from '@freeroam/shared/game-modes/race';
 
-export const RACE_LAPS_PETROCHEM_MAP: RaceMap = {
+export const RACE_PETROCHEM_MAP: RaceMap = {
   name: RaceMapName.PETROCHEM,
   nodes: [
     {

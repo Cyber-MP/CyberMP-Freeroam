@@ -53,6 +53,7 @@ export type MatchHooks = {
   onPlayerLeave?(playerId: number): void;
 };
 
+// TODO: make it injectable and create it through factory
 export class Match<TGameMode extends BaseGameMode = BaseGameMode> {
   id: string;
   ownerId: number;

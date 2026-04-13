@@ -52,14 +52,16 @@ export class RaceCheckpoint {
 
     const data = new mp.game.gamemappinsMappinData();
     data.mappinType = 'Mappins.DefaultStaticMappin';
-    data.variant = gamedataMappinVariant.DefaultQuestVariant;
+    data.variant = gamedataMappinVariant.DefaultVariant;
     data.visibleThroughWalls = true;
 
-    this.mappinId = mp.game.ScriptGameInstance.GetMappinSystem().RegisterMappin(
+    const mappingSystem = mp.game.ScriptGameInstance.GetMappinSystem();
+
+    this.mappinId = mappingSystem.RegisterMappin(
       data,
       createVector4(x, y, z, 1),
     );
-    mp.game.ScriptGameInstance.GetMappinSystem().TrackMappin(this.mappinId);
+    mappingSystem.TrackMappin(this.mappinId);
 
     const radius = node.radius || 10;
     const vertices = [

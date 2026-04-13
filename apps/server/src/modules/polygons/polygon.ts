@@ -16,6 +16,7 @@ const DEBUG_OBJECT_HASH = 7454566152498118096n;
 type OnEntityEnterPolygon = (entity: MpEntity) => void;
 type onEntityLeavePolygon = (entity: MpEntity) => void;
 
+// TODO: make it injectable and create it through factory
 export class Polygon {
   id: string;
   vertices: Vector3[];

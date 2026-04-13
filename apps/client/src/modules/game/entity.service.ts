@@ -1,4 +1,4 @@
-import type { entEntityID } from '@cybermp/client-types/game';
+import type { entEntity, entEntityID } from '@cybermp/client-types/game';
 import { inject, injectable } from 'inversify';
 import { sleep } from 'radash';
 import { mp } from '../../mp';
@@ -32,7 +32,7 @@ export class GEntityService {
     }
   }
 
-  findById(entityId: number | entEntityID) {
+  findById<T extends entEntity = entEntity>(entityId: number | entEntityID): T {
     let entityIdObj: entEntityID;
 
     if (typeof entityId === 'number') {
@@ -45,6 +45,6 @@ export class GEntityService {
 
     const candidate = mp.game.ScriptGameInstance.FindEntityByID(entityIdObj);
 
-    return candidate;
+    return candidate as T;
   }
 }
