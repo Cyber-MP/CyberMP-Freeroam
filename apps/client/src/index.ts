@@ -54,6 +54,10 @@ const coopWhen = async () => {
     const loggerService = container.get(LoggerService);
 
     for (const constructorValue of eagerRegistry.values()) {
+      if (!container.isBound(constructorValue)) {
+        continue;
+      }
+
       const classId = constructorValue.name.replace('$1', '');
 
       const start = Date.now();
@@ -70,7 +74,7 @@ const coopWhen = async () => {
 
     loggerService.success('Client initialized');
   } catch (e) {
-    console.log('Failed to initialize client: ', e);
+    console.log('Failed to initialize client: ', e, (e as Error).message);
   }
 };
 
