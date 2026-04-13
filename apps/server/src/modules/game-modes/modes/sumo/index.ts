@@ -54,8 +54,8 @@ class Racer {
   alive = true;
   startPoint: SumoStartPoint;
 
-  private VEHICLE_SPAWN_Z_OFFSET = 3;
-  private VEHICLE_HEATLH = 10_000_000;
+  private readonly VEHICLE_SPAWN_Z_OFFSET = 3;
+  private readonly VEHICLE_HEATLH = 10_000_000;
 
   constructor(opts: RacerConstructorOptions) {
     this.map = opts.map;
@@ -232,7 +232,7 @@ export class Sumo extends BaseGameMode<
       : `Draw! Better luck next time...`;
 
     for (const member of [...this.match.members.keys()]) {
-      browser.toast.call(member, {
+      browser.toast.trigger(member, {
         title,
         type: 'success',
       });

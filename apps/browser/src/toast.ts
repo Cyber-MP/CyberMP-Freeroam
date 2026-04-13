@@ -1,4 +1,3 @@
-import { RpcApplyType } from '@cybermp/rpc-browser';
 import ms from 'ms';
 import { toast } from 'sonner';
 import z from 'zod';
@@ -13,7 +12,6 @@ const TOAST_MAP = {
 };
 
 export const toastContract = r.procedure
-  .method(RpcApplyType.REGISTER)
   .input(
     z.object({
       title: z.string(),
@@ -34,7 +32,6 @@ export const toastContract = r.procedure
         .default('top-center'),
     }),
   )
-  .output(z.any())
   .handler((c) => {
     TOAST_MAP[c.data.type](c.data.title, {
       duration: c.data.duration,
