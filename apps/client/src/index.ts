@@ -6,12 +6,18 @@ import { container } from './container';
 import { CefModule } from './modules/cef/cef.module';
 import { ChatModule } from './modules/chat/chat.module';
 import { DeathModule } from './modules/death/death.module';
+import { EntityLabelsModule } from './modules/entity-labels/entity-labels.module';
 import { GameModule } from './modules/game/game.module';
+import { GameModesModule } from './modules/game-modes/game-modes.module';
 import { LoggerModule } from './modules/logger/logger.module';
 import { LoggerService } from './modules/logger/logger.service';
+import { MappingModule } from './modules/mapping/mapping.module';
+import { PlayersMarkersModule } from './modules/players-markers/players-markers.module';
+import { PolygonsModule } from './modules/polygons/polygons.module';
 import { SessionInterceptor } from './modules/session/session.interceptor';
 import { SessionModule } from './modules/session/session.module';
 import { SpawnModule } from './modules/spawn/spawn.module';
+import { SpectatingModule } from './modules/spectating/spectating.module';
 import { TimeModule } from './modules/time/time.module';
 import { WeatherModule } from './modules/weather/weather.module';
 import { mp } from './mp';
@@ -28,12 +34,12 @@ const modules: ContainerModule[] = [
   DeathModule,
   TimeModule,
   WeatherModule,
-  // GameModesModule,
-  // MappingModule,
-  // EntityLabelsModule,
-  // PolygonsModule,
-  // SpectatingModule,
-  // PlayersMarkersModule,
+  GameModesModule,
+  MappingModule,
+  EntityLabelsModule,
+  PolygonsModule,
+  SpectatingModule,
+  PlayersMarkersModule,
 ];
 
 const coopWhen = async () => {
