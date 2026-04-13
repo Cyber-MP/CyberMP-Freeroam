@@ -1,0 +1,54 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches:
+      - dev
+      - user/nan
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Compute dynamic project path
+        id: vars
+        run: |
+          REPO_NAME=$(basename "${{ github.repository }}")
+          BRANCH_NAME="${GITHUB_REF_NAME}"
+          SAFE_BRANCH_NAME=$(echo "$BRANCH_NAME" | tr '/' '-')
+
+          PROJECT_PATH="${REPO_NAME}-${SAFE_BRANCH_NAME}"
+
+          echo "repo=$REPO_NAME" >> $GITHUB_OUTPUT
+          echo "branch=$SAFE_BRANCH_NAME" >> $GITHUB_OUTPUT
+          echo "path=$PROJECT_PATH" >> $GITHUB_OUTPUT
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            set -e
+
+            PROJECT_PATH="${{ steps.vars.outputs.path }}"
+
+            echo "📂 Using project path: $PROJECT_PATH"
+
+            # Ensure directory exists (optional safety)
+            if [ ! -d "$PROJECT_PATH" ]; then
+              echo "❌ Directory does not exist: $PROJECT_PATH"
+              exit 1
+            fi
+
+            cd "$PROJECT_PATH"
+
+            echo "🔄 Pulling latest changes"
+            git pull origin "${{ github.ref_name }}"
+
+            echo "🐳 Rebuilding and restarting containers"
+            docker compose up --build -d
+
+            echo "✅ Deployment complete"
