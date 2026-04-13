@@ -11,6 +11,7 @@ import type { WritableDeep } from 'type-fest';
 import z from 'zod';
 import { mp } from '../../../../mp';
 import { client } from '../../../../rpc';
+import { browser } from '../../../../rpc/browser';
 import {
   type Match,
   zCreateMatchOptions,
@@ -219,8 +220,25 @@ export class Sumo extends BaseGameMode<
     }
 
     if (living.length <= 1) {
-      this.match.end();
+      this.endMatch(living[0]?.player.id);
     }
+  }
+
+  private endMatch(winnerId?: number) {
+    const winner = winnerId ? this.racers.get(winnerId) : undefined;
+
+    const title = winner
+      ? `${winner?.player.nickname} won this match! Choomba!`
+      : `Draw! Better luck next time...`;
+
+    for (const member of [...this.match.members.keys()]) {
+      browser.toast.call(member, {
+        title,
+        type: 'success',
+      });
+    }
+
+    this.match.end();
   }
 
   release() {

@@ -11,6 +11,7 @@ import { hudContract } from '../store/hud';
 import { killFeedContract } from '../store/kill-feed';
 import { loadingOverlayContract } from '../store/loading-overlay';
 import { tanstackRouter } from '../tanstack-router';
+import { toastContract } from '../toast';
 import { r } from '.';
 
 export const rpcRouter = {
@@ -46,6 +47,7 @@ export const rpcRouter = {
     setBodyVisibility(true);
   }),
   toggleVisibility: r.procedure.handler(toggleBodyVisibility),
+  toast: toastContract,
 };
 
 export type BrowserRouter = typeof rpcRouter;
