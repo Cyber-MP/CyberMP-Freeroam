@@ -4,6 +4,7 @@ import { RACE_FREEWAY_MAP } from './freeway';
 import { RACE_HEYWOOD_MAP } from './heywood';
 import { RACE_PETROCHEM_MAP } from './petrochem';
 import { RACE_WATSON_MAP } from './watson';
+import { RACE_DOHLA_MAP } from './dohla';
 
 export const RaceLapsMaps: RaceMap[] = [
   RACE_HEYWOOD_MAP,
@@ -11,4 +12,5 @@ export const RaceLapsMaps: RaceMap[] = [
   RACE_CORONADO_MAP,
   RACE_PETROCHEM_MAP,
   RACE_WATSON_MAP,
+  RACE_DOHLA_MAP
 ];

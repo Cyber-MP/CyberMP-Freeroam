@@ -34,6 +34,7 @@ export const zRacePathPointNode = zRaceBaseNode.extend({
 
 export enum RaceMapName {
   WATSON = 'watson',
+  DOHLA = 'dohla',
   FREEWAY = 'freeway',
   CORONADO = 'coronado',
   HEYWOOD = 'heywood',
