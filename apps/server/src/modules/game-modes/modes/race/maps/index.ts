@@ -1,10 +1,16 @@
 import type { RaceMap } from '@freeroam/shared/game-modes/race';
-import { RACE_LAPS_HEYWOOD_MAP } from './heywood';
-import { RACE_LAPS_PETROCHEM_MAP } from './petrochem';
-import { RACE_LAPS_TEST_MAP } from './test-map';
+import { RACE_CORONADO_MAP } from './coronado';
+import { RACE_FREEWAY_MAP } from './freeway';
+import { RACE_HEYWOOD_MAP } from './heywood';
+import { RACE_PETROCHEM_MAP } from './petrochem';
+import { RACE_WATSON_MAP } from './watson';
+import { RACE_DOHLA_MAP } from './dohla';
 
 export const RaceLapsMaps: RaceMap[] = [
-  RACE_LAPS_TEST_MAP,
-  RACE_LAPS_HEYWOOD_MAP,
-  RACE_LAPS_PETROCHEM_MAP,
+  RACE_HEYWOOD_MAP,
+  RACE_FREEWAY_MAP,
+  RACE_CORONADO_MAP,
+  RACE_PETROCHEM_MAP,
+  RACE_WATSON_MAP,
+  RACE_DOHLA_MAP
 ];

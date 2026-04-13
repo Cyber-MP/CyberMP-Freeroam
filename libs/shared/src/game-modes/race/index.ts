@@ -21,6 +21,7 @@ export const zRaceCheckpointNode = zRaceBaseNode.extend({
   type: z.literal('checkpoint'),
   direction: z.enum(['forward', 'left', 'right']).default('forward').optional(),
   radius: z.number().default(10).optional(),
+  ignorePath: z.boolean().default(false).optional(),
 });
 
 export const zRaceStartPointNode = zRaceBaseNode.extend({
@@ -32,7 +33,10 @@ export const zRacePathPointNode = zRaceBaseNode.extend({
 });
 
 export enum RaceMapName {
-  TEST = 'test',
+  WATSON = 'watson',
+  DOHLA = 'dohla',
+  FREEWAY = 'freeway',
+  CORONADO = 'coronado',
   HEYWOOD = 'heywood',
   PETROCHEM = 'petrochem',
 }

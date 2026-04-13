@@ -28,20 +28,22 @@ import {
 } from '../../../vehicles-spawner/vehicles.repository';
 import { BaseGameMode, GameModeName } from '../../game-mode';
 import { RaceLapsMaps } from './maps';
-import {
-  type PathTransform,
-  RaceTrackCalculator,
-} from './track-calculator';
+import { type PathTransform, RaceTrackCalculator } from './track-calculator';
 
 export const zCreateRaceOptions = zCreateMatchOptions.extend({
-  map: z.enum(RaceMapName),
-  vehicleClass: z.enum(['all', ...VEHICLES_DATA.map((o) => o.category)]),
-  laps: z.number().min(1).max(10).meta({ default: 1 }),
-  combat: z.boolean().default(false).optional(),
+  map: z.enum(RaceMapName).meta({
+    title: 'Map',
+    description: 'Props to @spookable for creating race maps)',
+  }),
+  vehicleClass: z
+    .enum(['all', ...VEHICLES_DATA.map((o) => o.category)])
+    .meta({ title: 'Vehicle class' }),
+  laps: z.number().min(1).max(10).meta({ default: 1 }).meta({ title: 'Laps' }),
+  combat: z.boolean().default(false).optional().meta({ title: 'Combat' }),
 });
 
 export const zJoinRaceOptions = zJoinMatchOptions.extend({
-  vehicle: z.enum(VEHICLES_DATA.map((o) => o.name)),
+  vehicle: z.enum(VEHICLES_DATA.map((o) => o.name)).meta({ title: 'Vehicle' }),
 });
 
 type RacerConstructorOptions = {
@@ -118,17 +120,21 @@ class Racer {
       health: this.VEHICLE_HEALTH,
     });
 
-    await client.gameModes.race.prepare.call(
-      this.player,
-      {
-        map: structuredClone(this.map),
-        startPoint: structuredClone(this.startPoint),
-        trackPath: structuredClone(this.trackPath),
-        vehicleId: this.vehicle.id,
-      },
-      {},
-      { timeout: ms('15s') },
-    );
+    await client.gameModes.race.prepare
+      .call(
+        this.player,
+        {
+          map: structuredClone(this.map),
+          startPoint: structuredClone(this.startPoint),
+          trackPath: structuredClone(this.trackPath),
+          vehicleId: this.vehicle.id,
+        },
+        {},
+        { timeout: ms('30s') },
+      )
+      .catch(() => {
+        this.match.leave(this.player.id);
+      });
   }
 
   async respawn() {
@@ -467,10 +473,7 @@ export class Race extends BaseGameMode<
 
   async startCountdown() {
     for (const racer of this.racers.keys()) {
-      client.gameModes.race.startCountdown.trigger(
-        racer,
-        this.COUNTDOWN_TIME,
-      );
+      client.gameModes.race.startCountdown.trigger(racer, this.COUNTDOWN_TIME);
     }
 
     await sleep(this.COUNTDOWN_TIME);
@@ -485,9 +488,7 @@ export class Race extends BaseGameMode<
 
     this.ranksTracker.destroy();
 
-    const finalResults: RaceFinishedRacer[] = Array.from(
-      this.racers.values(),
-    )
+    const finalResults: RaceFinishedRacer[] = Array.from(this.racers.values())
       .map((racer) => {
         const isFinished = racer.finished && racer.finishTimestamp !== null;
         const raceTime = isFinished

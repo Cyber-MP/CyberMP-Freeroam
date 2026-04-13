@@ -12,6 +12,7 @@ import { GameModesModule } from './modules/game-modes/game-modes.module';
 import { LoggerModule } from './modules/logger/logger.module';
 import { LoggerService } from './modules/logger/logger.service';
 import { MappingModule } from './modules/mapping/mapping.module';
+import { PlayersMarkersModule } from './modules/players-markers/players-markers.module';
 import { PolygonsModule } from './modules/polygons/polygons.module';
 import { SessionInterceptor } from './modules/session/session.interceptor';
 import { SessionModule } from './modules/session/session.module';
@@ -38,6 +39,7 @@ const modules: ContainerModule[] = [
   EntityLabelsModule,
   PolygonsModule,
   SpectatingModule,
+  PlayersMarkersModule,
 ];
 
 const coopWhen = async () => {
@@ -52,6 +54,10 @@ const coopWhen = async () => {
     const loggerService = container.get(LoggerService);
 
     for (const constructorValue of eagerRegistry.values()) {
+      if (!container.isBound(constructorValue)) {
+        continue;
+      }
+
       const classId = constructorValue.name.replace('$1', '');
 
       const start = Date.now();
@@ -68,7 +74,7 @@ const coopWhen = async () => {
 
     loggerService.success('Client initialized');
   } catch (e) {
-    console.log('Failed to initialize client: ', e);
+    console.log('Failed to initialize client: ', e, (e as Error).message);
   }
 };
 

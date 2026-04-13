@@ -97,13 +97,13 @@ export const VEHICLES_DATA = [
   {
     model: 'v_standard2_archer_quartz_base_player',
     name: 'Archer Quartz EC-L R275',
-    appearance: 'archer_quartz_basic_suburban_1_1',
+    appearance: 'archer_quartz__basic_suburban_1_1',
     category: VehicleCategory.STREET,
   },
   {
     model: 'v_standard25_mahir_supron_player',
     name: 'Mahir Supron FS3',
-    appearance: 'mahir_supron_basic_player_01',
+    appearance: 'mahir_supron__basic_player_01',
     category: VehicleCategory.STREET,
   },
   {
