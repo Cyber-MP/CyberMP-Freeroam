@@ -17,12 +17,12 @@ jobs:
         run: |
           REPO_NAME=$(basename "${{ github.repository }}")
           BRANCH_NAME="${GITHUB_REF_NAME}"
+
           SAFE_BRANCH_NAME=$(echo "$BRANCH_NAME" | tr '/' '-')
 
-          PROJECT_PATH="${REPO_NAME}-${SAFE_BRANCH_NAME}"
+          # Convert to lowercase
+          PROJECT_PATH=$(echo "${REPO_NAME}-${SAFE_BRANCH_NAME}" | tr '[:upper:]' '[:lower:]')
 
-          echo "repo=$REPO_NAME" >> $GITHUB_OUTPUT
-          echo "branch=$SAFE_BRANCH_NAME" >> $GITHUB_OUTPUT
           echo "path=$PROJECT_PATH" >> $GITHUB_OUTPUT
 
       - name: Deploy via SSH
