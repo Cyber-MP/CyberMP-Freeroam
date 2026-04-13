@@ -30,6 +30,7 @@ export const zMatchDTO = z.object({
   }),
   dimension: z.number(),
   joinSchema: z.record(z.string(), z.unknown()),
+  createSchema: z.record(z.string(), z.unknown()),
   modeName: z.enum(GameModeName),
   options: zCreateMatchOptions,
   members: z.record(z.number(), zJoinMatchOptions),
@@ -94,6 +95,9 @@ export class Match<TGameMode extends BaseGameMode = BaseGameMode> {
       joinSchema: this.mode
         .getJoinSchema(this.options)
         .toJSONSchema({ target: 'draft-07' }),
+      createSchema: this.mode.CREATE_OPTIONS_SCHEMA.toJSONSchema({
+        target: 'draft-07',
+      }),
       dimension: this.dimension,
       modeName: this.mode.name,
       options: this.options,
@@ -163,6 +167,14 @@ export class Match<TGameMode extends BaseGameMode = BaseGameMode> {
 
   start() {
     if (this.status !== MatchStatus.LOBBY) {
+      return false;
+    }
+
+    if (
+      !this.mode.CREATE_OPTIONS_SCHEMA.shape.maxPlayers.safeParse(
+        this.members.size,
+      ).success
+    ) {
       return false;
     }
 

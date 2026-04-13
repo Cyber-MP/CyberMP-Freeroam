@@ -8,6 +8,7 @@ import {
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { cva } from 'class-variance-authority';
 import { useMemo, useRef } from 'react';
+import type { JSONSchema } from 'zod/v4/core';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -158,18 +159,21 @@ const JoinMatch = (match: Match) => {
 };
 
 const MatchComponent = (match: Match) => {
+  const queryClient = useQueryClient();
   const leaveMutation = useMutation(
     serverQuery.matchmaking.leave.triggerMutationOptions({}),
   );
   const startMutation = useMutation(
     serverQuery.matchmaking.start.triggerMutationOptions({}),
   );
+  const playerId = usePlayerId();
 
   const navigate = useNavigate();
 
-  const playerId = usePlayerId();
-
-  const queryClient = useQueryClient();
+  const { maxPlayers: maxPlayersSchema } = (
+    match.createSchema as JSONSchema.ObjectSchema
+  ).properties!;
+  const minPlayers = (maxPlayersSchema as JSONSchema.NumberSchema).minimum ?? 0;
 
   const leaveMatch = async () => {
     await leaveMutation.mutateAsync([]);
@@ -240,7 +244,11 @@ const MatchComponent = (match: Match) => {
         <CardFooter>
           <CardAction className="w-full flex items-center justify-between">
             {!!(isOwner && match.status === 'LOBBY') && (
-              <Button onClick={startMatch} size="xs">
+              <Button
+                disabled={Object.keys(match.members).length < minPlayers}
+                onClick={startMatch}
+                size="xs"
+              >
                 Start
               </Button>
             )}
