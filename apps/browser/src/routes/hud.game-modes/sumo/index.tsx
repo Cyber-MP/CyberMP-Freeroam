@@ -74,7 +74,7 @@ const drawTimerState = proxy<{ timestamp: null | number }>({
   timestamp: null,
 });
 
-const ForceFinishTimer = () => {
+const DrawTimer = () => {
   const { timestamp } = useSnapshot(drawTimerState);
 
   const seconds = Math.floor(((timestamp ?? Date.now()) - Date.now()) / 1000);
@@ -134,7 +134,7 @@ function RouteComponent() {
   return (
     <div>
       <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4">
-        <ForceFinishTimer />
+        <DrawTimer />
       </div>
 
       <ReleaseCountdown />
