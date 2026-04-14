@@ -103,6 +103,7 @@ export class Match<TGameMode extends BaseGameMode = BaseGameMode> {
       'TRIGGERING TO DTO',
       'OWNER OBJECT',
       mp.players.at(this.ownerId),
+      this.ownerId,
       'owner nickname',
       mp.players.at(this.ownerId)?.nickname,
     );
@@ -164,6 +165,7 @@ export class Match<TGameMode extends BaseGameMode = BaseGameMode> {
   }
 
   leave(playerId: number) {
+    console.log('leave triggered ', playerId, this.members.has(playerId));
     if (!this.members.has(playerId)) {
       return;
     }
@@ -181,6 +183,7 @@ export class Match<TGameMode extends BaseGameMode = BaseGameMode> {
     const newAuthor = this.members.keys().next().value;
     if (newAuthor) {
       this.ownerId = newAuthor;
+      console.log('setted new owner');
     } else {
       this.end();
     }
