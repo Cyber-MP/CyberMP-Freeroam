@@ -35,8 +35,7 @@ export const zCreateSumoOptions = zCreateMatchOptions.extend({
   map: z.enum(SumoMapName),
   vehicleClass: z.enum(['all', ...VEHICLES_DATA.map((o) => o.category)]),
   // TODO: set min(2)
-  // maxPlayers: z.number().min(2).max(6).meta({ default: 6 }),
-  maxPlayers: z.number().max(6).meta({ default: 6 }),
+  maxPlayers: z.number().min(1).max(6).meta({ default: 6 }),
 });
 
 export const zJoinSumoOptions = zJoinMatchOptions.extend({

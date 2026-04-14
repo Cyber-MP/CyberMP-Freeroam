@@ -178,28 +178,34 @@ export class Sumo extends BaseGameMode<'sumo'> {
   }
 
   startCountdown(duration: number) {
-    const startTime = Date.now();
+    try {
+      const startTime = Date.now();
 
-    const initialRemaining = Math.ceil((duration - Date.now()) / 1000);
+      const initialRemaining = Math.ceil((duration - Date.now()) / 1000);
 
-    const mountedVehicle = mp.game.GetMountedVehicle(mp.game.GetPlayerObject());
-    if (mountedVehicle && initialRemaining > 0) {
-      mountedVehicle.ForceBrakesFor(initialRemaining);
-    }
-
-    this.countDownInterval = setInterval(() => {
-      const elapsed = Date.now() - startTime;
-      const remaining = Math.ceil((duration - elapsed) / 1000);
-
-      if (remaining <= 0) {
-        browser.gameModes.sumo.setCountdownText.trigger('GO!');
-
-        this.release();
-        clearInterval(this.countDownInterval);
-      } else {
-        browser.gameModes.sumo.setCountdownText.trigger(String(remaining));
+      const mountedVehicle = mp.game.GetMountedVehicle(
+        mp.game.GetPlayerObject(),
+      );
+      if (mountedVehicle && initialRemaining > 0) {
+        mountedVehicle.ForceBrakesFor(initialRemaining);
       }
-    }, 100);
+
+      this.countDownInterval = setInterval(() => {
+        const elapsed = Date.now() - startTime;
+        const remaining = Math.ceil((duration - elapsed) / 1000);
+
+        if (remaining <= 0) {
+          browser.gameModes.sumo.setCountdownText.trigger('GO!');
+
+          this.release();
+          clearInterval(this.countDownInterval);
+        } else {
+          browser.gameModes.sumo.setCountdownText.trigger(String(remaining));
+        }
+      }, 100);
+    } catch (e) {
+      console.error(e, (e as any).message);
+    }
   }
 
   reset() {
