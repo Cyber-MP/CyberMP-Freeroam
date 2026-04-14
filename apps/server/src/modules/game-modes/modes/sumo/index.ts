@@ -147,8 +147,10 @@ export class Sumo extends BaseGameMode<
 
   private racers = new Map<number, Racer>();
   private released = false;
+  private drawTimeout: ReturnType<typeof setTimeout> | null = null;
 
   private readonly COUNTDOWN_TIME = ms('5s');
+  private readonly DRAW_TIME = ms('5m');
 
   @inject(PolygonsService)
   private polygonsService!: PolygonsService;
@@ -229,23 +231,6 @@ export class Sumo extends BaseGameMode<
     }
   }
 
-  private endMatch(winnerId?: number) {
-    const winner = winnerId ? this.racers.get(winnerId) : undefined;
-
-    const title = winner
-      ? `${winner?.player.nickname} won this match! Choomba!`
-      : `Draw! Better luck next time...`;
-
-    for (const member of [...this.match.members.keys()]) {
-      browser.toast.trigger(member, {
-        title,
-        type: 'success',
-      });
-    }
-
-    this.match.end();
-  }
-
   release() {
     this.polygon = this.polygonsService.create({
       dimension: this.dimension,
@@ -256,6 +241,10 @@ export class Sumo extends BaseGameMode<
     });
 
     this.polygon.entityLeaveObserver.subscribe(this.onPolygonLeave);
+
+    this.drawTimeout = setTimeout(() => {
+      this.match.end();
+    }, this.DRAW_TIME);
 
     this.released = true;
   }
@@ -284,7 +273,28 @@ export class Sumo extends BaseGameMode<
     this.release();
   }
 
+  private endMatch(winnerId?: number) {
+    const winner = winnerId ? this.racers.get(winnerId) : undefined;
+
+    const title = winner
+      ? `${winner?.player.nickname} won this match! Choomba!`
+      : `Draw! Better luck next time...`;
+
+    for (const member of [...this.match.members.keys()]) {
+      browser.toast.trigger(member, {
+        title,
+        type: 'success',
+      });
+    }
+
+    this.match.end();
+  }
+
   end() {
+    if (this.drawTimeout) {
+      clearTimeout(this.drawTimeout);
+    }
+
     this.polygon?.entityLeaveObserver.unsubscribe(this.onPolygonLeave);
 
     for (const racer of this.racers.values()) {

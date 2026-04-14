@@ -1,6 +1,7 @@
 import { EInputAction, EInputKey } from '@cybermp/client-types/enums';
 import type { Vector4 } from '@cybermp/client-types/game';
 import { inject, injectable } from 'inversify';
+import ms from 'ms';
 import { mp } from '../../../../mp';
 import { browser } from '../../../../rpc/browser';
 import { GHealthService } from '../../../game/health/health.service';
@@ -166,6 +167,8 @@ export class Sumo extends BaseGameMode<'sumo'> {
 
   release() {
     this.statusEffectsService.remove('GameplayRestriction.NoDriving');
+
+    browser.gameModes.sumo.startDrawTimer.trigger(ms('5m'));
   }
 
   startCountdown(duration: number) {

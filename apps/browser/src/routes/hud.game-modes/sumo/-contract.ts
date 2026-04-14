@@ -3,4 +3,5 @@ import z from 'zod';
 
 export const sumoContract = {
   setCountdownText: contract.input(z.string()).build(),
+  startDrawTimer: contract.input(z.number()).build(),
 };
