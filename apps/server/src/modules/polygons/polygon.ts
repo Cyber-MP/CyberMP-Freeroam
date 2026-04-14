@@ -1,5 +1,6 @@
 import { generateUUID } from '@cybermp/rpc-server';
 import type { MpEntity, Vector3 } from '@cybermp/server-types';
+import { injectable } from 'inversify';
 import { isPointInArea2D } from '../../lib/math';
 import { Observer } from '../../lib/observer';
 import { mp } from '../../mp';
@@ -16,26 +17,21 @@ const DEBUG_OBJECT_HASH = 7454566152498118096n;
 type OnEntityEnterPolygon = (entity: MpEntity) => void;
 type onEntityLeavePolygon = (entity: MpEntity) => void;
 
-// TODO: make it injectable and create it through factory
+@injectable()
 export class Polygon {
-  id: string;
-  vertices: Vector3[];
-  height: number;
-  dimension: number;
+  id!: string;
+  vertices!: Vector3[];
+  height!: number;
+  dimension!: number;
   private _contains = new Map<number, MpEntity>();
-  private _visible: boolean;
+  private _visible!: boolean;
 
   entityEnterObserver = new Observer<OnEntityEnterPolygon>();
   entityLeaveObserver = new Observer<onEntityLeavePolygon>();
 
   private debugObjects = new Set<number>();
 
-  constructor({
-    dimension = 0,
-    height,
-    vertices,
-    visible = false,
-  }: PolygonOptions) {
+  _init({ dimension = 0, height, vertices, visible = false }: PolygonOptions) {
     this.id = generateUUID();
     this.vertices = vertices;
     this._visible = visible;
@@ -137,3 +133,6 @@ export class Polygon {
     return isPointInArea2D([position[0], position[1]], polygonPoints2D);
   }
 }
+
+export type PolygonFactory = () => Polygon;
+export const PolygonFactorySymbol = Symbol('PolygonFactory');

@@ -1,14 +1,23 @@
 import type { MpEntity } from '@cybermp/server-types';
 import { eager } from '@freeroam/inversify';
-import { injectable, postConstruct, preDestroy } from 'inversify';
+import { inject, injectable, postConstruct, preDestroy } from 'inversify';
 import { mp } from '../../mp';
-import { Polygon, type PolygonOptions } from './polygon';
+import {
+  type Polygon,
+  type PolygonFactory,
+  PolygonFactorySymbol,
+  type PolygonOptions,
+} from './polygon';
 
 @eager()
 @injectable()
 export class PolygonsService {
   private registry = new Set<Polygon>();
   private intervalId!: ReturnType<typeof setInterval>;
+
+  constructor(
+    @inject(PolygonFactorySymbol) private polygonFactory: PolygonFactory,
+  ) {}
 
   private onTick() {
     const polygons = Array.from(this.registry);
@@ -58,7 +67,8 @@ export class PolygonsService {
   }
 
   create(opts: PolygonOptions) {
-    const polygon = new Polygon(opts);
+    const polygon = this.polygonFactory();
+    polygon._init(opts);
     this.registry.add(polygon);
 
     return polygon;

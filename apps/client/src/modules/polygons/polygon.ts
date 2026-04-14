@@ -5,7 +5,7 @@ import type {
   Vector3,
 } from '@cybermp/client-types/game';
 import { generateUUID } from '@cybermp/rpc-client';
-import { inject } from 'inversify';
+import { inject, injectable } from 'inversify';
 import { isPointInArea2D } from '../../lib/math';
 import { Observer } from '../../lib/observer';
 import { GEntityService } from '../game/entity.service';
@@ -26,6 +26,7 @@ export type PolygonFactory = () => Polygon;
 
 export const PolygonFactorySymbol = Symbol.for('PolygonFactorySymbol');
 
+@injectable()
 export class Polygon {
   id!: string;
   vertices!: Vector3[];

@@ -2,19 +2,28 @@ import { RpcError } from '@cybermp/rpc-server';
 import type { MpPlayer } from '@cybermp/server-types';
 import { inject, injectable } from 'inversify';
 import type z from 'zod';
-import { TYPES } from '../../types';
-import type { GameModeFactory } from '../game-modes/game-mode';
+import {
+  type GameModeFactory,
+  GameModeFactorySymbol,
+} from '../game-modes/game-mode';
 import type { zCreateMatchDTO } from './dto/create-match.dto';
 import type { zJoinMatchDTO } from './dto/join-match.dto';
-import { type JoinMatchOptions, Match, MatchStatus } from './match';
+import {
+  type JoinMatchOptions,
+  type MatchFactory,
+  MatchFactorySymbol,
+  MatchStatus,
+} from './match';
 import { MatchRepository } from './match.repository';
 
 @injectable()
 export class MatchmakingService {
   constructor(
     @inject(MatchRepository) private matchRepository: MatchRepository,
-    @inject(TYPES.GameModeFactory)
+    @inject(GameModeFactorySymbol)
     private gameModeFactory: GameModeFactory,
+    @inject(MatchFactorySymbol)
+    private matchFactory: MatchFactory,
   ) {}
 
   isOnActiveMatch(player: number | MpPlayer) {
@@ -43,7 +52,8 @@ export class MatchmakingService {
       });
     }
 
-    const match = new Match<any>(
+    const match = this.matchFactory();
+    match._init(
       {
         ownerId,
         mode,

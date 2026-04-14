@@ -4,10 +4,10 @@ import { zRaceRacerDTO } from '@freeroam/shared/game-modes/race';
 import { inject, injectable, postConstruct } from 'inversify';
 import z from 'zod';
 import { r } from '../../../../rpc';
-import { TYPES } from '../../../../types';
-import type {
-  MatchMiddleware,
-  RpcMatchContext,
+import {
+  MatchMemberMiddlewareSymbol,
+  type MatchMiddleware,
+  type RpcMatchContext,
 } from '../../../matchmaking/middlewares/match.middleware';
 import type { Race } from '.';
 
@@ -26,7 +26,7 @@ export const raceContract = {
 @injectable()
 export class RaceController {
   constructor(
-    @inject(TYPES.MatchMemberMiddleware)
+    @inject(MatchMemberMiddlewareSymbol)
     private matchMemberMiddleware: MatchMiddleware,
   ) {}
 
