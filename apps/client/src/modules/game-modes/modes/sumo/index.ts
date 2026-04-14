@@ -84,14 +84,21 @@ export class Sumo extends BaseGameMode<'sumo'> {
   }
 
   updateLivingIds(data: number[]) {
+    console.log('UPDATE LIVING IDS');
+
     this.livingIds = data;
 
     if (!this.livingIds.includes(mp.getPlayerServerId(1))) {
+      console.log('DEAD');
+
       this.onDead();
     } else {
+      console.log('SPECTATE?');
+
       const current = this.spectatingService.getSpectatedPlayerId();
 
       if (current && !this.livingIds.includes(current)) {
+        console.log('SPECTATE');
         this.spectateNextValidTarget();
       }
     }
