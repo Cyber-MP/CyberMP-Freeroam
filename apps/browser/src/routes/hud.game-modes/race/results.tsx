@@ -34,7 +34,7 @@ function RouteComponent() {
     raceResultsState.results = [];
   });
 
-  useFocus(!visible, [visible]);
+  useFocus(!visible && !!results.length, [visible, results]);
 
   const ref = useHotkeys<HTMLDivElement>('esc', close);
 

@@ -37,3 +37,4 @@ cache
 ./apps/browser/.tanstack
 
 **/tsconfig.tsbuildinfo
+.env

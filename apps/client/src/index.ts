@@ -1,5 +1,6 @@
 import './mp';
 import 'reflect-metadata';
+import { RpcError } from '@cybermp/rpc-client';
 import { eagerRegistry } from '@freeroam/inversify';
 import type { ContainerModule } from 'inversify';
 import { container } from './container';
@@ -50,6 +51,24 @@ const coopWhen = async () => {
 
     const sessionInterceptor = container.get(SessionInterceptor);
     rpc.interceptors.request.use(sessionInterceptor.onRequest);
+    rpc.use(async (c, next) => {
+      try {
+        const res = await next();
+
+        return res;
+      } catch (e) {
+        if (!(e instanceof RpcError)) {
+          console.log(
+            '[RPC] Unexpected error in:',
+            c.packet.method,
+            e,
+            (e as Error).message,
+          );
+        }
+
+        throw e;
+      }
+    });
 
     const loggerService = container.get(LoggerService);
 
