@@ -75,12 +75,16 @@ export class Sumo extends BaseGameMode<'sumo'> {
   }
 
   async prepare(data: SumoPrepareDTO) {
-    await this.teleportService.teleportAsync(...data.startPoint);
+    try {
+      await this.teleportService.teleportAsync(...data.startPoint);
 
-    browser.hud.setGlobalPath.trigger('/hud/game-modes/sumo/');
-    browser.navigate.trigger('/hud/game-modes/sumo/');
+      browser.hud.setGlobalPath.trigger('/hud/game-modes/sumo/');
+      browser.navigate.trigger('/hud/game-modes/sumo/');
 
-    this.vehiclesService.requestSitInVehicle(data.vehicleId);
+      this.vehiclesService.requestSitInVehicle(data.vehicleId);
+    } catch (e) {
+      console.error(e, (e as any).message);
+    }
   }
 
   updateLivingIds(data: number[]) {
