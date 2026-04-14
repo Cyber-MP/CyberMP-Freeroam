@@ -34,13 +34,18 @@ import v_sportbike3_brennan_apollo_player from '../../assets/images/vehicles/v_s
 import v_sportbike3_brennan_apollo_player_02 from '../../assets/images/vehicles/v_sportbike3_brennan_apollo_player_02.webp?w=300&h=225&imagetools';
 import v_standard2_archer_bandit from '../../assets/images/vehicles/v_standard2_archer_bandit.webp?w=300&h=225&imagetools';
 import v_standard2_archer_quartz_base_player from '../../assets/images/vehicles/v_standard2_archer_quartz_base_player.webp?w=300&h=225&imagetools';
+import v_standard2_makigai_maimai_player from '../../assets/images/vehicles/v_standard2_makigai_maimai_player.webp?w=300&h=225&imagetools';
 import v_standard2_thorton_colby_gt_player from '../../assets/images/vehicles/v_standard2_thorton_colby_gt_player.webp?w=300&h=225&imagetools';
 import v_standard2_thorton_galena_nomad_player from '../../assets/images/vehicles/v_standard2_thorton_galena_nomad_player.webp?w=300&h=225&imagetools';
 import v_standard2_thorton_galena_player from '../../assets/images/vehicles/v_standard2_thorton_galena_player.webp?w=300&h=225&imagetools';
+import v_standard3_chevalier_emperor_militech_wasteland_prevention from '../../assets/images/vehicles/v_standard3_chevalier_emperor_militech_wasteland_prevention.webp?w=300&h=225&imagetools';
+import v_standard3_chevalier_emperor_player from '../../assets/images/vehicles/v_standard3_chevalier_emperor_player.webp?w=300&h=225&imagetools';
+import v_standard3_chevalier_emperor_police from '../../assets/images/vehicles/v_standard3_chevalier_emperor_police.webp?w=300&h=225&imagetools';
 import v_standard3_thorton_mackinaw_02_player from '../../assets/images/vehicles/v_standard3_thorton_mackinaw_02_player.webp?w=300&h=225&imagetools';
 import v_standard25_mahir_supron_player from '../../assets/images/vehicles/v_standard25_mahir_supron_player.webp?w=300&h=225&imagetools';
 import v_standard25_thorton_colby_nomad_player from '../../assets/images/vehicles/v_standard25_thorton_colby_nomad_player.webp?w=300&h=225&imagetools';
 import v_standard25_thorton_colby_pickup_player from '../../assets/images/vehicles/v_standard25_thorton_colby_pickup_player.webp?w=300&h=225&imagetools';
+import v_utility4_chevalier_legatus_player from '../../assets/images/vehicles/v_utility4_chevalier_legatus_player.webp?w=300&h=225&imagetools';
 
 type Vehicles = ServerOutputs['vehiclesSpawner']['getAll'];
 
@@ -83,6 +88,11 @@ const VEHICLE_IMAGES: Record<Vehicle['model'], string> = {
   v_sport2_porsche_911turbo_player,
   v_sport2_villefort_alvarado_player,
   v_sport1_yaiba_semimaru_player,
+  v_standard3_chevalier_emperor_police,
+  v_standard3_chevalier_emperor_militech_wasteland_prevention,
+  v_standard3_chevalier_emperor_player,
+  v_utility4_chevalier_legatus_player,
+  v_standard2_makigai_maimai_player,
 };
 
 export const Route = createFileRoute('/hud/menu/')({
