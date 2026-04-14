@@ -147,25 +147,29 @@ export class Match<TGameMode extends BaseGameMode = BaseGameMode> {
   }
 
   leave(playerId: number) {
-    if (!this.members.has(playerId)) {
-      return;
-    }
+    try {
+      if (!this.members.has(playerId)) {
+        return;
+      }
 
-    this.members.delete(playerId);
-    this.mode.onPlayerLeave(playerId);
-    this.hooks?.onPlayerLeave?.(playerId);
+      this.members.delete(playerId);
+      this.mode.onPlayerLeave(playerId);
+      this.hooks?.onPlayerLeave?.(playerId);
 
-    client.gameModes.end.trigger(playerId);
+      client.gameModes.end.trigger(playerId);
 
-    if (this.ownerId !== playerId) {
-      return;
-    }
+      if (this.ownerId !== playerId) {
+        return;
+      }
 
-    const newAuthor = this.members.keys().next().value;
-    if (newAuthor) {
-      this.ownerId = newAuthor;
-    } else {
-      this.end();
+      const newAuthor = this.members.keys().next().value;
+      if (newAuthor) {
+        this.ownerId = newAuthor;
+      } else {
+        this.end();
+      }
+    } catch (e) {
+      console.log('error happend during leave', e, (e as Error).message);
     }
   }
 
@@ -174,13 +178,13 @@ export class Match<TGameMode extends BaseGameMode = BaseGameMode> {
       return false;
     }
 
-    if (
-      !this.mode.CREATE_OPTIONS_SCHEMA.shape.maxPlayers.safeParse(
-        this.members.size,
-      ).success
-    ) {
-      return false;
-    }
+    // if (
+    //   !this.mode.CREATE_OPTIONS_SCHEMA.shape.maxPlayers.safeParse(
+    //     this.members.size,
+    //   ).success
+    // ) {
+    //   return false;
+    // }
 
     this.status = MatchStatus.ACTIVE;
 
