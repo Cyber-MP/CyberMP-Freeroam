@@ -52,7 +52,7 @@ export class GVehiclesService {
       mountEvent.mountData = data;
       mp.game.ScriptGameInstance.GetMountingFacility().Mount(mountEvent);
 
-      mp.events.off('onVehicleStreamIn', onVehicleStreamIn);
+      mp.events.off('vehicleStreamIn', onVehicleStreamIn);
     };
 
     const alreadyStreamed = mp
@@ -65,7 +65,7 @@ export class GVehiclesService {
       );
     }
 
-    mp.events.on('onVehicleStreamIn', onVehicleStreamIn);
+    mp.events.on('vehicleStreamIn', onVehicleStreamIn);
   }
 
   requestLeaveVehicle(instant = true) {
