@@ -14,6 +14,8 @@ export class GPlayerService {
     'GameplayRestriction.NoWeapons',
   ] as const;
 
+  private turnedOffComponents = new Set<string>();
+
   constructor(
     @inject(GHealthService) private readonly healthService: GHealthService,
     @inject(GStatusEffectsService)
@@ -21,15 +23,25 @@ export class GPlayerService {
   ) {}
 
   invisible(value: boolean) {
-    for (const component of mp.game.GetPlayer().GetComponents()) {
-      if (
-        !component.IsA('entIVisualComponent') ||
-        component.GetName().toLowerCase().includes('light')
-      ) {
-        continue;
-      }
+    const components = mp.game.GetPlayer().GetComponents();
 
-      component.Toggle(!value);
+    if (value) {
+      for (const component of components) {
+        if (!component.IsEnabled()) {
+          continue;
+        }
+
+        this.turnedOffComponents.add(component.GetName());
+        component.Toggle(false);
+      }
+    } else {
+      const disabledComponents = components.filter((o) =>
+        this.turnedOffComponents.has(o.GetName()),
+      );
+
+      for (const component of disabledComponents) {
+        component.Toggle(true);
+      }
     }
   }
 
