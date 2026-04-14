@@ -1,12 +1,18 @@
 import * as CyberEnums from '@cybermp/client-types/enums';
 import type { gameStatsObjectID } from '@cybermp/client-types/game';
-import { injectable } from 'inversify';
+import { inject, injectable } from 'inversify';
 import { mp } from '../../../mp';
+import { GStatusEffectsService } from '../status-effects/status-effects.service';
 
 @injectable()
 export class GHealthService {
   private readonly DEFAULT_HEALTH = 300;
   private godMode = false;
+
+  constructor(
+    @inject(GStatusEffectsService)
+    private statusEffectsService: GStatusEffectsService,
+  ) {}
 
   getDefaultHealth() {
     return this.DEFAULT_HEALTH;
@@ -16,9 +22,11 @@ export class GHealthService {
     if (value) {
       this.setMax(99999999);
       this.setCurrent(99999999);
+      this.statusEffectsService.add('BaseStatusEffect.Invulnerable');
     } else {
       this.setCurrent(this.DEFAULT_HEALTH);
       this.setMax(this.DEFAULT_HEALTH);
+      this.statusEffectsService.remove('BaseStatusEffect.Invulnerable');
     }
 
     this.godMode = value;
