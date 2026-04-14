@@ -61,6 +61,8 @@ export class Sumo extends BaseGameMode<'sumo'> {
       this.teleportService.teleport(this.initialPosition);
     });
 
+    this.healthService.god(false);
+
     this.statusEffectsService.remove(
       'GameplayRestriction.VehicleCombatBlockExit',
     );
@@ -75,36 +77,23 @@ export class Sumo extends BaseGameMode<'sumo'> {
   }
 
   async prepare(data: SumoPrepareDTO) {
-    try {
-      await this.teleportService.teleportAsync(...data.startPoint);
+    await this.teleportService.teleportAsync(...data.startPoint);
 
-      browser.hud.setGlobalPath.trigger('/hud/game-modes/sumo/');
-      browser.navigate.trigger('/hud/game-modes/sumo/');
+    browser.hud.setGlobalPath.trigger('/hud/game-modes/sumo/');
+    browser.navigate.trigger('/hud/game-modes/sumo/');
 
-      this.vehiclesService.requestSitInVehicle(data.vehicleId);
-    } catch (e) {
-      console.error(e, (e as any).message);
-    }
+    this.vehiclesService.requestSitInVehicle(data.vehicleId);
   }
 
   updateLivingIds(data: number[]) {
-    console.log('UPDATE LIVING IDS');
-
     this.livingIds = data;
 
     if (!this.livingIds.includes(mp.getPlayerServerId(1))) {
-      console.log('DEAD');
-
       this.onDead();
     } else {
-      console.log('SPECTATE?');
-
       const current = this.spectatingService.getSpectatedPlayerId();
 
-      console.log('CURRENT', current);
-
       if (current && !this.livingIds.includes(current)) {
-        console.log('SPECTATE');
         this.spectateNextValidTarget();
       }
     }
@@ -180,34 +169,28 @@ export class Sumo extends BaseGameMode<'sumo'> {
   }
 
   startCountdown(duration: number) {
-    try {
-      const startTime = Date.now();
+    const startTime = Date.now();
 
-      const initialRemaining = Math.ceil((duration - Date.now()) / 1000);
+    const initialRemaining = Math.ceil((duration - Date.now()) / 1000);
 
-      const mountedVehicle = mp.game.GetMountedVehicle(
-        mp.game.GetPlayerObject(),
-      );
-      if (mountedVehicle && initialRemaining > 0) {
-        mountedVehicle.ForceBrakesFor(initialRemaining);
-      }
-
-      this.countDownInterval = setInterval(() => {
-        const elapsed = Date.now() - startTime;
-        const remaining = Math.ceil((duration - elapsed) / 1000);
-
-        if (remaining <= 0) {
-          browser.gameModes.sumo.setCountdownText.trigger('GO!');
-
-          this.release();
-          clearInterval(this.countDownInterval);
-        } else {
-          browser.gameModes.sumo.setCountdownText.trigger(String(remaining));
-        }
-      }, 100);
-    } catch (e) {
-      console.error(e, (e as any).message);
+    const mountedVehicle = mp.game.GetMountedVehicle(mp.game.GetPlayerObject());
+    if (mountedVehicle && initialRemaining > 0) {
+      mountedVehicle.ForceBrakesFor(initialRemaining);
     }
+
+    this.countDownInterval = setInterval(() => {
+      const elapsed = Date.now() - startTime;
+      const remaining = Math.ceil((duration - elapsed) / 1000);
+
+      if (remaining <= 0) {
+        browser.gameModes.sumo.setCountdownText.trigger('GO!');
+
+        this.release();
+        clearInterval(this.countDownInterval);
+      } else {
+        browser.gameModes.sumo.setCountdownText.trigger(String(remaining));
+      }
+    }, 100);
   }
 
   reset() {
