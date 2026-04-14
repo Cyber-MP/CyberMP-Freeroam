@@ -109,7 +109,7 @@ class Racer {
       )
       .catch((e) => {
         console.log('CATCH EMAR OMAGAT', e, (e as any).message);
-        // this.match.leave(this.player.id);
+        this.match.leave(this.player.id);
       });
   }
 
