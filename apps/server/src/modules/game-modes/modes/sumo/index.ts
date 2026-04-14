@@ -101,14 +101,15 @@ class Racer {
         this.player,
         {
           map: structuredClone(this.map),
-          vehicleId: this.vehicle.id,
-          startPoint: this.startPoint,
+          vehicleId: structuredClone(this.vehicle.id),
+          startPoint: structuredClone(this.startPoint),
         },
         {},
         { timeout: ms('30s') },
       )
-      .catch(() => {
-        this.match.leave(this.player.id);
+      .catch((e) => {
+        console.log('CATCH EMAR OMAGAT', e, (e as any).message);
+        // this.match.leave(this.player.id);
       });
   }
 
