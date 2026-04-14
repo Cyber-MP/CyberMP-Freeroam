@@ -323,7 +323,7 @@ export class Race extends BaseGameMode<'race'> {
       if (!mountedVehicle) {
         this.respawn();
       }
-    }, 1000);
+    }, 2000);
   }
 
   private unmountVehicleCheckInterval() {
