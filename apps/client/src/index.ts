@@ -10,6 +10,7 @@ import { DeathModule } from './modules/death/death.module';
 import { EntityLabelsModule } from './modules/entity-labels/entity-labels.module';
 import { GameModule } from './modules/game/game.module';
 import { GameModesModule } from './modules/game-modes/game-modes.module';
+import { ItemSpawnerModule } from './modules/item-spawner/item-spawner.module';
 import { LoggerModule } from './modules/logger/logger.module';
 import { LoggerService } from './modules/logger/logger.service';
 import { MappingModule } from './modules/mapping/mapping.module';
@@ -41,6 +42,7 @@ const modules: ContainerModule[] = [
   PolygonsModule,
   SpectatingModule,
   PlayersMarkersModule,
+  ItemSpawnerModule,
 ];
 
 const coopWhen = async () => {

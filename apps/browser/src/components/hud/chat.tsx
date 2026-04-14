@@ -357,7 +357,7 @@ const chatContainerVariants = cva(
     variants: {
       visibility: {
         [ChatVisibility.HIDDEN]: 'opacity-0',
-        [ChatVisibility.INACTIVE]: 'opacity-65',
+        [ChatVisibility.INACTIVE]: 'opacity-80',
         [ChatVisibility.ACTIVE]: 'opacity-100',
       },
     },

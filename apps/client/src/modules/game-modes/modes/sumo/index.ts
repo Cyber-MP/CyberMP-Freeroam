@@ -61,6 +61,8 @@ export class Sumo extends BaseGameMode<'sumo'> {
       this.teleportService.teleport(this.initialPosition);
     });
 
+    this.healthService.god(false);
+
     this.statusEffectsService.remove(
       'GameplayRestriction.VehicleCombatBlockExit',
     );

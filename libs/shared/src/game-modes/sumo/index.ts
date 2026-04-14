@@ -14,7 +14,7 @@ export const zSumoVericies = z.array(
 export const zSumoStartPoints = z.array(zSumoStartPoint);
 
 export enum SumoMapName {
-  TEST = 'test',
+  GUZL = 'Guzl',
 }
 
 export const zSumoMap = z.object({

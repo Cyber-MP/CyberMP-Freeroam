@@ -32,6 +32,7 @@ export const toastContract = r.procedure
         .default('top-center'),
     }),
   )
+  .validate({ input: true })
   .handler((c) => {
     TOAST_MAP[c.data.type](c.data.title, {
       duration: c.data.duration,

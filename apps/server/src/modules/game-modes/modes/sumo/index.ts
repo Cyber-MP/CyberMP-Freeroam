@@ -11,7 +11,7 @@ import {
 } from '@freeroam/shared/game-modes/sumo';
 import { inject, injectable } from 'inversify';
 import ms from 'ms';
-import { sleep } from 'radash';
+import { shuffle, sleep } from 'radash';
 import type { WritableDeep } from 'type-fest';
 import z from 'zod';
 import { mp } from '../../../../mp';
@@ -100,8 +100,8 @@ class Racer {
         this.player,
         {
           map: structuredClone(this.map),
-          vehicleId: this.vehicle.id,
-          startPoint: this.startPoint,
+          vehicleId: structuredClone(this.vehicle.id),
+          startPoint: structuredClone(this.startPoint),
         },
         {},
         { timeout: ms('30s') },
@@ -120,11 +120,13 @@ class Racer {
     this.vehicle.destroy();
   }
 
-  reset() {
+  reset(triggerClient = true) {
     this.vehicle.destroy();
     this.player.dimension = 0;
 
-    client.gameModes.sumo.reset.trigger(this.player);
+    if (triggerClient) {
+      client.gameModes.sumo.reset.trigger(this.player);
+    }
   }
 }
 
@@ -145,8 +147,10 @@ export class Sumo extends BaseGameMode<
 
   private racers = new Map<number, Racer>();
   private released = false;
+  private drawTimeout: ReturnType<typeof setTimeout> | null = null;
 
   private readonly COUNTDOWN_TIME = ms('5s');
+  private readonly DRAW_TIME = ms('20m');
 
   @inject(PolygonsService)
   private polygonsService!: PolygonsService;
@@ -175,13 +179,15 @@ export class Sumo extends BaseGameMode<
   async start() {
     const members = [...this.match.members.keys()];
 
+    const shuffledStartPoints = shuffle(this.map.startPoints);
+
     await Promise.all(
       members.map(async (member, index) => {
         const racer = new Racer({
           map: this.map,
           match: this.match,
           player: member,
-          startPoint: this.map.startPoints[index],
+          startPoint: shuffledStartPoints[index],
         });
 
         await racer.prepare();
@@ -227,24 +233,14 @@ export class Sumo extends BaseGameMode<
     }
   }
 
-  private endMatch(winnerId?: number) {
-    const winner = winnerId ? this.racers.get(winnerId) : undefined;
-
-    const title = winner
-      ? `${winner?.player.nickname} won this match! Choomba!`
-      : `Draw! Better luck next time...`;
-
-    for (const member of [...this.match.members.keys()]) {
-      browser.toast.trigger(member, {
-        title,
-        type: 'success',
-      });
+  release() {
+    for (const racer of this.racers.values()) {
+      browser.gameModes.sumo.startDrawTimer.trigger(
+        racer.player.id,
+        this.DRAW_TIME,
+      );
     }
 
-    this.match.end();
-  }
-
-  release() {
     this.polygon = this.polygonsService.create({
       dimension: this.dimension,
       height: this.map.height,
@@ -254,6 +250,10 @@ export class Sumo extends BaseGameMode<
     });
 
     this.polygon.entityLeaveObserver.subscribe(this.onPolygonLeave);
+
+    this.drawTimeout = setTimeout(() => {
+      this.match.end();
+    }, this.DRAW_TIME);
 
     this.released = true;
   }
@@ -282,8 +282,33 @@ export class Sumo extends BaseGameMode<
     this.release();
   }
 
+  private endMatch(winnerId?: number) {
+    const winner = winnerId ? this.racers.get(winnerId) : undefined;
+
+    const title = winner
+      ? `${winner?.player.nickname} won this match! Choomba!`
+      : `Draw! Better luck next time...`;
+
+    for (const member of [...this.match.members.keys()]) {
+      browser.toast.trigger(member, {
+        title,
+        type: 'success',
+      });
+    }
+
+    this.match.end();
+  }
+
   end() {
+    if (this.drawTimeout) {
+      clearTimeout(this.drawTimeout);
+    }
+
     this.polygon?.entityLeaveObserver.unsubscribe(this.onPolygonLeave);
+
+    for (const racer of this.racers.values()) {
+      racer.reset(false);
+    }
 
     this.racers.clear();
   }

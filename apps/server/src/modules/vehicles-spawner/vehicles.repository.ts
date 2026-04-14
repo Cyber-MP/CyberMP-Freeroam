@@ -119,6 +119,12 @@ export const VEHICLES_DATA = [
     category: VehicleCategory.STREET,
   },
   {
+    model: 'v_standard2_makigai_maimai_player',
+    name: 'Makagai MaiMai',
+    appearance: 'makigai_maimai__basic_player_01',
+    category: VehicleCategory.STREET,
+  },
+  {
     model: 'v_sport2_mizutani_shion_nomad_player',
     name: 'Mitzutani Shion Coyote',
     appearance: 'mizutani_shion_nomad_player_01',
@@ -128,6 +134,30 @@ export const VEHICLES_DATA = [
     model: 'v_standard25_thorton_colby_pickup_player',
     name: 'Thorton Colby CX410 Butte',
     appearance: 'thorton_colby_pickup_player_01',
+    category: VehicleCategory.OFFROAD,
+  },
+  {
+    model: 'v_standard3_chevalier_emperor_police',
+    name: 'Chevalier Emperor NCPD',
+    appearance: 'chevalier_emperor__basic_police',
+    category: VehicleCategory.OFFROAD,
+  },
+  {
+    model: 'v_standard3_chevalier_emperor_militech_wasteland_prevention',
+    name: 'Chevalier Emperor Militech',
+    appearance: 'chevalier_emperor__basic_militech',
+    category: VehicleCategory.OFFROAD,
+  },
+  {
+    model: 'v_standard3_chevalier_emperor_player',
+    name: 'Chevalier Emperor',
+    appearance: 'chevalier_emperor__basic_player_01',
+    category: VehicleCategory.OFFROAD,
+  },
+  {
+    model: 'v_utility4_chevalier_legatus_player',
+    name: 'Chevalier Legatus',
+    appearance: 'chevalier_legatus_basic_legatus_aquila_01',
     category: VehicleCategory.OFFROAD,
   },
   {
