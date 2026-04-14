@@ -141,7 +141,7 @@ export class Sumo extends BaseGameMode<
   private match!: Match<this>;
   private dimension!: number;
   private map!: SumoMap;
-  private polygon!: Polygon;
+  private polygon?: Polygon;
 
   private racers = new Map<number, Racer>();
   private released = false;
@@ -283,7 +283,7 @@ export class Sumo extends BaseGameMode<
   }
 
   end() {
-    this.polygon.entityLeaveObserver.unsubscribe(this.onPolygonLeave);
+    this.polygon?.entityLeaveObserver.unsubscribe(this.onPolygonLeave);
 
     this.racers.clear();
   }
