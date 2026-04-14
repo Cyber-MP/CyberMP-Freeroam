@@ -206,7 +206,7 @@ importers:
     dependencies:
       '@cybermp/rpc-client':
         specifier: 0.1.0-rc.8
-        version: 0.1.0-rc.8(@cybermp/client-types@2.0.3)
+        version: 0.1.0-rc.8(@cybermp/client-types@2.1.0)
       '@cybermp/rpc-router':
         specifier: 0.1.0-rc.8
         version: 0.1.0-rc.8
@@ -236,8 +236,8 @@ importers:
         version: 4.3.6
     devDependencies:
       '@cybermp/client-types':
-        specifier: ^2.0.3
-        version: 2.0.3
+        specifier: ^2.1.0
+        version: 2.1.0
       '@types/ms':
         specifier: ^2.1.0
         version: 2.1.0
@@ -264,7 +264,7 @@ importers:
         version: 0.1.0-rc.8
       '@cybermp/rpc-server':
         specifier: 0.1.0-rc.8
-        version: 0.1.0-rc.8(@cybermp/server-types@3.2.1)
+        version: 0.1.0-rc.8(@cybermp/server-types@3.2.2)
       '@freeroam/inversify':
         specifier: workspace:*
         version: link:../../libs/inversify
@@ -291,8 +291,8 @@ importers:
         version: 4.3.6
     devDependencies:
       '@cybermp/server-types':
-        specifier: ^3.2.1
-        version: 3.2.1
+        specifier: ^3.2.2
+        version: 3.2.2
       '@types/ms':
         specifier: ^2.1.0
         version: 2.1.0
@@ -616,6 +616,9 @@ packages:
   '@cybermp/client-types@2.0.3':
     resolution: {integrity: sha512-Mk71Ua3GaTs5TJ7GT8tRdQe9ZSMz/INrk4pn6pEwxLxPjsUH6F/hongR4ToxH+wqNaHMaJBTY+D4/sOwKQ7yUg==}
 
+  '@cybermp/client-types@2.1.0':
+    resolution: {integrity: sha512-+4PcopODfHvJvLPQrlVStbxnH1x2zpcIebbjlXaI7gvUnyme4gB8F9nTp0VmDXpGwOg+WbpNcFkW9dFFXRKoBw==}
+
   '@cybermp/rpc-browser@0.1.0-rc.8':
     resolution: {integrity: sha512-VbGawcGKz7MIUfNpe9GIN/1FvMPYXQjkWDfaoqr1rtGQrzZ+X9XVNPgVUE+CghQxe2bQwZ068QFj5Ca7EOD5xg==}
     peerDependencies:
@@ -652,8 +655,8 @@ packages:
     peerDependencies:
       '@cybermp/server-types': ^3.1.1
 
-  '@cybermp/server-types@3.2.1':
-    resolution: {integrity: sha512-VQ5QtqhA1VhfIy2Ods1t2yIL9/lRV4up6cg9mhtSjZyOShleG0YQlLnMzUlOwY+eAAacs8WWysgE0UTtMyIsYA==}
+  '@cybermp/server-types@3.2.2':
+    resolution: {integrity: sha512-vXUhxsrouWeG3yZ6UZYBlWm9RWN9tBJ9OF8X1K3slQ4dV0oDQdzVaITa0QbcKMDdpJkbWgt9+pW7nxqYnTXIvQ==}
 
   '@dotenvx/dotenvx@1.61.0':
     resolution: {integrity: sha512-utL3cpZoFzflyqUkjYbxYujI6STBTmO5LFn4bbin/NZnRWN6wQ7eErhr3/Vpa5h/jicPFC6kTa42r940mQftJQ==}
@@ -4851,14 +4854,16 @@ snapshots:
 
   '@cybermp/client-types@2.0.3': {}
 
+  '@cybermp/client-types@2.1.0': {}
+
   '@cybermp/rpc-browser@0.1.0-rc.8(@cybermp/browser-types@2.0.0)':
     dependencies:
       '@cybermp/browser-types': 2.0.0
       '@cybermp/rpc-core': 0.1.0-rc.8
 
-  '@cybermp/rpc-client@0.1.0-rc.8(@cybermp/client-types@2.0.3)':
+  '@cybermp/rpc-client@0.1.0-rc.8(@cybermp/client-types@2.1.0)':
     dependencies:
-      '@cybermp/client-types': 2.0.3
+      '@cybermp/client-types': 2.1.0
       '@cybermp/rpc-core': 0.1.0-rc.8
 
   '@cybermp/rpc-core@0.1.0-rc.8': {}
@@ -4881,12 +4886,12 @@ snapshots:
       '@cybermp/rpc-core': 0.1.0-rc.8
       radash: 12.1.1
 
-  '@cybermp/rpc-server@0.1.0-rc.8(@cybermp/server-types@3.2.1)':
+  '@cybermp/rpc-server@0.1.0-rc.8(@cybermp/server-types@3.2.2)':
     dependencies:
       '@cybermp/rpc-core': 0.1.0-rc.8
-      '@cybermp/server-types': 3.2.1
+      '@cybermp/server-types': 3.2.2
 
-  '@cybermp/server-types@3.2.1': {}
+  '@cybermp/server-types@3.2.2': {}
 
   '@dotenvx/dotenvx@1.61.0':
     dependencies:

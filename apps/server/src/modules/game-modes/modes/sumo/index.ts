@@ -1,6 +1,6 @@
 import {
   EntityType,
-  type MpEntity,
+  type MpAnyEntity,
   type MpPlayer,
   type MpVehicle,
 } from '@cybermp/server-types';
@@ -203,7 +203,7 @@ export class Sumo extends BaseGameMode<
     await this.startCountdown();
   }
 
-  private onPolygonLeave = async (entity: MpEntity) => {
+  private onPolygonLeave = async (entity: MpAnyEntity) => {
     if (entity.type !== EntityType.Player) {
       return;
     }

@@ -32,7 +32,7 @@ import peralezes_apt from '../../assets/images/locations/peralezes_apt.webp?w=30
 import v_house from '../../assets/images/locations/v_house.webp?w=300&h=225&imagetools';
 
 export const Route = createFileRoute('/hud/menu/world')({
-  component: withDisabledDuringMatch(RouteComponent),
+  component: RouteComponent,
   pendingComponent: PendingComponent,
   pendingMs: 500,
   pendingMinMs: 300,
@@ -249,7 +249,7 @@ const playerStore = proxy({
   selected: '0',
 });
 
-function PlayerContent() {
+const PlayerContent = withDisabledDuringMatch(() => {
   const { selected: selectedPlayer } = useSnapshot(playerStore);
   const navigate = useNavigate();
 
@@ -327,7 +327,7 @@ function PlayerContent() {
       </div>
     </div>
   );
-}
+});
 
 type Location = {
   name: string;
@@ -403,7 +403,7 @@ const LOCATIONS: Location[] = [
   },
 ];
 
-function LocationContent() {
+const LocationContent = withDisabledDuringMatch(() => {
   const navigate = useNavigate();
 
   const teleport = (position: Location['positon']) => {
@@ -439,4 +439,4 @@ function LocationContent() {
       </div>
     </div>
   );
-}
+});

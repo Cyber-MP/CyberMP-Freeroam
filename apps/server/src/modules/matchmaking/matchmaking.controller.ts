@@ -5,15 +5,15 @@ import { inject, injectable, postConstruct } from 'inversify';
 import z from 'zod';
 import { mp } from '../../mp';
 import { r } from '../../rpc';
-import { TYPES } from '../../types';
 import { zCreateMatchDTO } from './dto/create-match.dto';
 import { zJoinMatchDTO } from './dto/join-match.dto';
 import { zMatchDTO } from './match';
 import { MatchRepository } from './match.repository';
 import { MatchmakingService } from './matchmaking.service';
-import type {
-  MatchMiddleware,
-  RpcMatchContext,
+import {
+  type MatchMiddleware,
+  MatchOwnerMiddlewareSymbol,
+  type RpcMatchContext,
 } from './middlewares/match.middleware';
 
 export const matchmakingContract = {
@@ -35,7 +35,7 @@ export class MatchmakingController {
   constructor(
     @inject(MatchmakingService) private matchmakingService: MatchmakingService,
     @inject(MatchRepository) private matchRepo: MatchRepository,
-    @inject(TYPES.MatchOwnerMiddleware)
+    @inject(MatchOwnerMiddlewareSymbol)
     private matchOwnerMiddleware: MatchMiddleware,
   ) {}
 

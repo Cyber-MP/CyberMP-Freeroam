@@ -18,6 +18,9 @@ export type RpcMatchContext<
 
 export type MatchMiddleware = RpcHandler<RpcMatchContext>;
 
+export const MatchMemberMiddlewareSymbol = Symbol.for('MatchMemberMiddleware');
+export const MatchOwnerMiddlewareSymbol = Symbol.for('MatchOwnerMiddleware');
+
 export const matchMemberMiddleware = (
   c: Container | ResolutionContext,
 ): RpcHandler<RpcMatchContext> => {

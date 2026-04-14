@@ -1,7 +1,9 @@
 import { generateUUID } from '@cybermp/rpc-server';
+import { inject, injectable } from 'inversify';
 import z from 'zod';
 import { mp } from '../../mp';
 import { client } from '../../rpc';
+import { ChatCommandFlag, ChatService } from '../chat/chat.service';
 import { type BaseGameMode, GameModeName } from '../game-modes/game-mode';
 
 export const MatchStatus = {
@@ -58,17 +60,22 @@ export type MatchHooks = {
   onPlayerLeave?(playerId: number): void;
 };
 
-// TODO: make it injectable and create it through factory
+@injectable()
 export class Match<TGameMode extends BaseGameMode = BaseGameMode> {
-  id: string;
-  ownerId: number;
-  dimension: number;
-  options: z.infer<TGameMode['CREATE_OPTIONS_SCHEMA']>;
+  id!: string;
+  ownerId!: number;
+  dimension!: number;
+  options!: z.infer<TGameMode['CREATE_OPTIONS_SCHEMA']>;
   members: Map<number, z.infer<TGameMode['JOIN_OPTIONS_SCHEMA']>> = new Map();
-  mode: TGameMode;
+  mode!: TGameMode;
   status: TMatchStatus = MatchStatus.LOBBY;
 
-  constructor(
+  private hooks?: MatchHooks;
+
+  @inject(ChatService)
+  private chatService!: ChatService;
+
+  _init(
     {
       dimension,
       mode,
@@ -76,8 +83,10 @@ export class Match<TGameMode extends BaseGameMode = BaseGameMode> {
       joinOptions,
       ownerId,
     }: MatchConstructorOptions<TGameMode>,
-    private hooks?: MatchHooks,
+    hooks?: MatchHooks,
   ) {
+    this.hooks = hooks;
+
     this.id = generateUUID();
     this.ownerId = ownerId;
     this.dimension = dimension;
@@ -188,6 +197,10 @@ export class Match<TGameMode extends BaseGameMode = BaseGameMode> {
 
     for (const playerId of this.members.keys()) {
       client.gameModes.start.trigger(playerId, this.toDTO());
+      this.chatService.addCommandFlag(
+        playerId,
+        ChatCommandFlag.DisableInGameMode,
+      );
     }
 
     this.mode.start();
@@ -203,6 +216,10 @@ export class Match<TGameMode extends BaseGameMode = BaseGameMode> {
 
     for (const playerId of this.members.keys()) {
       client.gameModes.end.trigger(playerId);
+      this.chatService.removeCommandFlag(
+        playerId,
+        ChatCommandFlag.DisableInGameMode,
+      );
     }
 
     this.hooks?.onEnd?.();
@@ -210,3 +227,7 @@ export class Match<TGameMode extends BaseGameMode = BaseGameMode> {
     this.members.clear();
   }
 }
+
+export type MatchFactory = <T extends BaseGameMode>() => Match<T>;
+
+export const MatchFactorySymbol = Symbol.for('MatchFactory');
