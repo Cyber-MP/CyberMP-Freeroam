@@ -11,10 +11,10 @@
     "type:check": "tsc -b"
   },
   "dependencies": {
-    "@cybermp/rpc-browser": "0.1.0-rc.7",
-    "@cybermp/rpc-router": "0.1.0-rc.7",
-    "@cybermp/rpc-router-react": "0.1.0-rc.7",
-    "@cybermp/rpc-router-tanstack-query": "0.1.0-rc.7",
+    "@cybermp/rpc-browser": "0.1.0-rc.8",
+    "@cybermp/rpc-router": "0.1.0-rc.8",
+    "@cybermp/rpc-router-react": "0.1.0-rc.8",
+    "@cybermp/rpc-router-tanstack-query": "0.1.0-rc.8",
     "@fontsource-variable/geist-mono": "^5.2.7",
     "@freeroam/shared": "workspace:*",
     "@remixicon/react": "^4.9.0",
