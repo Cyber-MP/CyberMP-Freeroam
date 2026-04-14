@@ -146,11 +146,11 @@ export class Race extends BaseGameMode<'race'> {
     this.unmountVehicleCheckInterval();
     this.unmountDeathHandler();
     this.unmountRespawnKey();
+
     setTimeout(() => {
       this.unmountSpectateBinds();
+      this.spectatingService.unspectate();
     });
-
-    this.spectatingService.unspectate();
 
     if (this.countDownInterval) {
       clearInterval(this.countDownInterval);
