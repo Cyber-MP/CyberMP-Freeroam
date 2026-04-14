@@ -101,6 +101,8 @@ export class Sumo extends BaseGameMode<'sumo'> {
 
       const current = this.spectatingService.getSpectatedPlayerId();
 
+      console.log('CURRENT', current);
+
       if (current && !this.livingIds.includes(current)) {
         console.log('SPECTATE');
         this.spectateNextValidTarget();
