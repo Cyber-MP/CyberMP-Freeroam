@@ -34,7 +34,8 @@ import { SumoMaps } from './maps';
 export const zCreateSumoOptions = zCreateMatchOptions.extend({
   map: z.enum(SumoMapName),
   vehicleClass: z.enum(['all', ...VEHICLES_DATA.map((o) => o.category)]),
-  maxPlayers: z.number().min(2).max(6).meta({ default: 6 }),
+  // TODO: set min(2)
+  maxPlayers: z.number().min(1).max(6).meta({ default: 6 }),
 });
 
 export const zJoinSumoOptions = zJoinMatchOptions.extend({
@@ -120,11 +121,13 @@ class Racer {
     this.vehicle.destroy();
   }
 
-  reset() {
+  reset(triggerClient = true) {
     this.vehicle.destroy();
     this.player.dimension = 0;
 
-    client.gameModes.sumo.reset.trigger(this.player);
+    if (triggerClient) {
+      client.gameModes.sumo.reset.trigger(this.player);
+    }
   }
 }
 
@@ -167,12 +170,16 @@ export class Sumo extends BaseGameMode<
   }
 
   init(match: Match<this>): void {
+    console.log('INIT');
+
     this.match = match;
     this.map = SumoMaps.find((o) => o.name === this.match.options.map)!;
     this.dimension = match.dimension;
   }
 
   async start() {
+    console.log('START');
+
     const members = [...this.match.members.keys()];
 
     await Promise.all(
@@ -200,6 +207,8 @@ export class Sumo extends BaseGameMode<
   }
 
   private onPolygonLeave = async (entity: MpEntity) => {
+    console.log('POLYGON LEAVE');
+
     if (entity.type !== EntityType.Player) {
       return;
     }
@@ -212,6 +221,8 @@ export class Sumo extends BaseGameMode<
   };
 
   private checkSurvivors() {
+    console.log('CHECK SURVIVORS');
+
     const living = [...this.racers.values()].filter((racer) => racer.alive);
 
     if (living.length >= 2) {
@@ -228,6 +239,8 @@ export class Sumo extends BaseGameMode<
   }
 
   private endMatch(winnerId?: number) {
+    console.log('END MATCH');
+
     const winner = winnerId ? this.racers.get(winnerId) : undefined;
 
     const title = winner
@@ -245,6 +258,8 @@ export class Sumo extends BaseGameMode<
   }
 
   release() {
+    console.log('RELEASE');
+
     this.polygon = this.polygonsService.create({
       dimension: this.dimension,
       height: this.map.height,
@@ -283,7 +298,13 @@ export class Sumo extends BaseGameMode<
   }
 
   end() {
+    console.log('END');
+
     this.polygon?.entityLeaveObserver.unsubscribe(this.onPolygonLeave);
+
+    for (const racer of this.racers.values()) {
+      racer.reset(false);
+    }
 
     this.racers.clear();
   }
