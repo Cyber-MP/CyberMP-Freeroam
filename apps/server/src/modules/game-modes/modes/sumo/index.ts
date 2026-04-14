@@ -237,7 +237,7 @@ export class Sumo extends BaseGameMode<
     for (const racer of this.racers.values()) {
       browser.gameModes.sumo.startDrawTimer.trigger(
         racer.player.id,
-        this.DRAW_TIME,
+        Date.now() + this.DRAW_TIME,
       );
     }
 
