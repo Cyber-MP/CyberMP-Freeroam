@@ -99,11 +99,19 @@ export class Match<TGameMode extends BaseGameMode = BaseGameMode> {
   }
 
   toDTO(): MatchDTO {
+    console.log(
+      'TRIGGERING TO DTO',
+      'OWNER OBJECT',
+      mp.players.at(this.ownerId),
+      'owner nickname',
+      mp.players.at(this.ownerId)?.nickname,
+    );
+
     return zMatchDTO.parse({
       id: this.id,
       owner: {
         id: this.ownerId,
-        nickname: mp.players.at(this.ownerId).nickname,
+        nickname: mp.players.at(this.ownerId)?.nickname,
       },
       joinSchema: this.mode
         .getJoinSchema(this.options)
