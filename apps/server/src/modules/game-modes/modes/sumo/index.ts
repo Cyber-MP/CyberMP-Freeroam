@@ -1,4 +1,9 @@
-import type { MpEntity, MpPlayer, MpVehicle } from '@cybermp/server-types';
+import {
+  EntityType,
+  type MpEntity,
+  type MpPlayer,
+  type MpVehicle,
+} from '@cybermp/server-types';
 import {
   type SumoMap,
   SumoMapName,
@@ -55,7 +60,7 @@ class Racer {
   startPoint: SumoStartPoint;
 
   private readonly VEHICLE_SPAWN_Z_OFFSET = 3;
-  private readonly VEHICLE_HEATLH = 10_000_000;
+  private readonly VEHICLE_HEALTH = 10_000_000;
 
   constructor(opts: RacerConstructorOptions) {
     this.map = opts.map;
@@ -87,7 +92,7 @@ class Racer {
       ],
       yaw: this.startPoint[3],
       dimension: this.match.dimension,
-      health: this.VEHICLE_HEATLH,
+      health: this.VEHICLE_HEALTH,
     });
 
     await client.gameModes.sumo.prepare
@@ -101,7 +106,7 @@ class Racer {
         {},
         { timeout: ms('30s') },
       )
-      .catch((e) => {
+      .catch(() => {
         this.match.leave(this.player.id);
       });
   }
@@ -112,7 +117,6 @@ class Racer {
     }
 
     this.alive = false;
-
     this.vehicle.destroy();
   }
 
@@ -196,8 +200,7 @@ export class Sumo extends BaseGameMode<
   }
 
   private onPolygonLeave = async (entity: MpEntity) => {
-    // TODO replace `1` with EntityType.Player (terminate update @cybermp/server-types)
-    if (entity.type !== 1) {
+    if (entity.type !== EntityType.Player) {
       return;
     }
 
@@ -205,10 +208,10 @@ export class Sumo extends BaseGameMode<
 
     await racer?.lose();
 
-    this.checkSurvivers();
+    this.checkSurvivors();
   };
 
-  private checkSurvivers() {
+  private checkSurvivors() {
     const living = [...this.racers.values()].filter((racer) => racer.alive);
 
     if (living.length >= 2) {
@@ -246,6 +249,7 @@ export class Sumo extends BaseGameMode<
       dimension: this.dimension,
       height: this.map.height,
       vertices: this.map.verticies,
+      // TODO: remove in prod
       visible: true,
     });
 

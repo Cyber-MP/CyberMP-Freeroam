@@ -264,7 +264,7 @@ importers:
         version: 0.1.0-rc.7
       '@cybermp/rpc-server':
         specifier: 0.1.0-rc.7
-        version: 0.1.0-rc.7(@cybermp/server-types@3.1.1)
+        version: 0.1.0-rc.7(@cybermp/server-types@3.2.0)
       '@freeroam/inversify':
         specifier: workspace:*
         version: link:../../libs/inversify
@@ -291,8 +291,8 @@ importers:
         version: 4.3.6
     devDependencies:
       '@cybermp/server-types':
-        specifier: ^3.1.1
-        version: 3.1.1
+        specifier: ^3.2.0
+        version: 3.2.0
       '@types/ms':
         specifier: ^2.1.0
         version: 2.1.0
@@ -656,8 +656,8 @@ packages:
     peerDependencies:
       '@cybermp/server-types': ^3.1.1
 
-  '@cybermp/server-types@3.1.1':
-    resolution: {integrity: sha512-qGK9iuOTXTGn7HyEA5+TxbKehX+YRmbAqo1oJdceioeocAHr8un0xBFAOnJGJL2S3Qlv/iYBUCaitrnSz28/0A==}
+  '@cybermp/server-types@3.2.0':
+    resolution: {integrity: sha512-zPNUwkC2fNLrYeeyUHrcHSihFUlWKYDC7Z0i9ItVPGXc8f2QM1vRepIy2dGPff56Ute3fSGeevUjcqmVLJ8NwA==}
 
   '@dotenvx/dotenvx@1.54.1':
     resolution: {integrity: sha512-41gU3q7v05GM92QPuPUf4CmUw+mmF8p4wLUh6MCRlxpCkJ9ByLcY9jUf6MwrMNmiKyG/rIckNxj9SCfmNCmCqw==}
@@ -4885,12 +4885,12 @@ snapshots:
       '@cybermp/rpc-core': 0.1.0-rc.7
       radash: 12.1.1
 
-  '@cybermp/rpc-server@0.1.0-rc.7(@cybermp/server-types@3.1.1)':
+  '@cybermp/rpc-server@0.1.0-rc.7(@cybermp/server-types@3.2.0)':
     dependencies:
       '@cybermp/rpc-core': 0.1.0-rc.7
-      '@cybermp/server-types': 3.1.1
+      '@cybermp/server-types': 3.2.0
 
-  '@cybermp/server-types@3.1.1': {}
+  '@cybermp/server-types@3.2.0': {}
 
   '@dotenvx/dotenvx@1.54.1':
     dependencies:
