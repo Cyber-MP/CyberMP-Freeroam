@@ -147,6 +147,8 @@ export class Match<TGameMode extends BaseGameMode = BaseGameMode> {
   }
 
   leave(playerId: number) {
+    console.log('LEAVE');
+
     if (!this.members.has(playerId)) {
       return;
     }
