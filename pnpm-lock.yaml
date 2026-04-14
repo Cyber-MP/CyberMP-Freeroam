@@ -206,7 +206,7 @@ importers:
     dependencies:
       '@cybermp/rpc-client':
         specifier: 0.1.0-rc.8
-        version: 0.1.0-rc.8(@cybermp/client-types@2.0.3)
+        version: 0.1.0-rc.8(@cybermp/client-types@2.1.0)
       '@cybermp/rpc-router':
         specifier: 0.1.0-rc.8
         version: 0.1.0-rc.8
@@ -236,8 +236,8 @@ importers:
         version: 4.3.6
     devDependencies:
       '@cybermp/client-types':
-        specifier: ^2.0.3
-        version: 2.0.3
+        specifier: ^2.1.0
+        version: 2.1.0
       '@types/ms':
         specifier: ^2.1.0
         version: 2.1.0
@@ -615,6 +615,9 @@ packages:
 
   '@cybermp/client-types@2.0.3':
     resolution: {integrity: sha512-Mk71Ua3GaTs5TJ7GT8tRdQe9ZSMz/INrk4pn6pEwxLxPjsUH6F/hongR4ToxH+wqNaHMaJBTY+D4/sOwKQ7yUg==}
+
+  '@cybermp/client-types@2.1.0':
+    resolution: {integrity: sha512-+4PcopODfHvJvLPQrlVStbxnH1x2zpcIebbjlXaI7gvUnyme4gB8F9nTp0VmDXpGwOg+WbpNcFkW9dFFXRKoBw==}
 
   '@cybermp/rpc-browser@0.1.0-rc.8':
     resolution: {integrity: sha512-VbGawcGKz7MIUfNpe9GIN/1FvMPYXQjkWDfaoqr1rtGQrzZ+X9XVNPgVUE+CghQxe2bQwZ068QFj5Ca7EOD5xg==}
@@ -4851,14 +4854,16 @@ snapshots:
 
   '@cybermp/client-types@2.0.3': {}
 
+  '@cybermp/client-types@2.1.0': {}
+
   '@cybermp/rpc-browser@0.1.0-rc.8(@cybermp/browser-types@2.0.0)':
     dependencies:
       '@cybermp/browser-types': 2.0.0
       '@cybermp/rpc-core': 0.1.0-rc.8
 
-  '@cybermp/rpc-client@0.1.0-rc.8(@cybermp/client-types@2.0.3)':
+  '@cybermp/rpc-client@0.1.0-rc.8(@cybermp/client-types@2.1.0)':
     dependencies:
-      '@cybermp/client-types': 2.0.3
+      '@cybermp/client-types': 2.1.0
       '@cybermp/rpc-core': 0.1.0-rc.8
 
   '@cybermp/rpc-core@0.1.0-rc.8': {}
