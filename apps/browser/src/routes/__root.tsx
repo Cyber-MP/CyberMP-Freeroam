@@ -8,7 +8,7 @@ const RootLayout = () => {
   return (
     <>
       <Outlet />
-      <Toaster />
+      <Toaster expand={true} />
       <LoadingOverlay />
       {IS_MP_MOCKED && <TanStackRouterDevtools position="top-left" />}
     </>
