@@ -10,6 +10,7 @@ import { GCameraService } from '../game/camera.service';
 import { GHealthService } from '../game/health/health.service';
 import { GHudService } from '../game/hud.service';
 import { GLoadingScreenService } from '../game/loading-screen.service';
+import { GMenusService } from '../game/menus.service';
 import { GPlayerService } from '../game/player.service';
 import { GStatusEffectsService } from '../game/status-effects/status-effects.service';
 import { LoggerService } from '../logger/logger.service';
@@ -48,6 +49,7 @@ export class EntryService {
     @inject(GCameraService) private readonly cameraService: GCameraService,
     @inject(LoggerService) private readonly logger: LoggerService,
     @inject(GPlayerService) private readonly playerService: GPlayerService,
+    @inject(GMenusService) private readonly menusService: GMenusService,
   ) {
     this.logger.setContext('EntryService');
   }
@@ -83,6 +85,7 @@ export class EntryService {
 
   private async onGameLoaded() {
     this.hud.hide();
+    this.menusService.closeAllMenus();
     // this.cefService.setLoadingRedirect('/entry');
     browser.hud.setGlobalPath.trigger('/entry');
 

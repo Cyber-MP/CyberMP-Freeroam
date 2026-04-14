@@ -313,13 +313,17 @@ export class Race extends BaseGameMode<'race'> {
 
   private mountVehicleCheckInterval() {
     this.vehicleCheckInterval = setInterval(() => {
+      if (this.respawning) {
+        return;
+      }
+
       const mountedVehicle = mp.game.GetMountedVehicle(
         mp.game.GetPlayerObject(),
       );
       if (!mountedVehicle) {
         this.respawn();
       }
-    }, 1000);
+    }, 2000);
   }
 
   private unmountVehicleCheckInterval() {

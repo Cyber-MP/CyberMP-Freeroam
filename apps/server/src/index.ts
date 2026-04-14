@@ -1,3 +1,4 @@
+import { RpcError } from '@cybermp/rpc-server';
 import { eagerRegistry } from '@freeroam/inversify';
 import { container } from './container';
 import { ChatModule } from './modules/chat/chat.module';
@@ -22,7 +23,7 @@ process.on('unhandledRejection', (reason, promise) => {
 });
 
 process.on('uncaughtException', (error) => {
-  console.error('Uncaught Exception:', error);
+  console.error('Uncaught Exception:', error, error.message);
   console.error('Stack:', error.stack);
 });
 
@@ -45,7 +46,9 @@ const coopWhen = async () => {
 
     await container.load(...modules);
 
+    const loggerService = container.get(LoggerService);
     const loggerMiddleware = container.get(LoggerMiddleware).middleware;
+
     rpc.use(loggerMiddleware);
     rpc.use(async (c, next) => {
       try {
@@ -53,12 +56,18 @@ const coopWhen = async () => {
 
         return res;
       } catch (e) {
-        console.log('Error in', c.packet.method, e);
+        if (!(e instanceof RpcError)) {
+          console.log(
+            '[RPC] Unexpected error in:',
+            c.packet.method,
+            e,
+            (e as Error).message,
+          );
+        }
+
         throw e;
       }
     });
-
-    const loggerService = container.get(LoggerService);
 
     for (const constructorValue of eagerRegistry.values()) {
       if (!container.isBound(constructorValue)) {
