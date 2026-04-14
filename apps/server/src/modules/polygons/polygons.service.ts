@@ -1,4 +1,4 @@
-import type { MpEntity } from '@cybermp/server-types';
+import type { MpAnyEntity } from '@cybermp/server-types';
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct, preDestroy } from 'inversify';
 import { mp } from '../../mp';
@@ -25,7 +25,7 @@ export class PolygonsService {
       return;
     }
 
-    const entities: MpEntity[] = [
+    const entities: MpAnyEntity[] = [
       ...mp.players.toArray(),
       ...mp.vehicles.toArray(),
       ...mp.peds.toArray(),

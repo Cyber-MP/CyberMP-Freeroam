@@ -1,5 +1,5 @@
 import { generateUUID } from '@cybermp/rpc-server';
-import type { MpEntity, Vector3 } from '@cybermp/server-types';
+import type { MpAnyEntity, MpEntity, Vector3 } from '@cybermp/server-types';
 import { injectable } from 'inversify';
 import { isPointInArea2D } from '../../lib/math';
 import { Observer } from '../../lib/observer';
@@ -14,8 +14,8 @@ export type PolygonOptions = {
 
 const DEBUG_OBJECT_HASH = 7454566152498118096n;
 
-type OnEntityEnterPolygon = (entity: MpEntity) => void;
-type onEntityLeavePolygon = (entity: MpEntity) => void;
+type OnEntityEnterPolygon = (entity: MpAnyEntity) => void;
+type onEntityLeavePolygon = (entity: MpAnyEntity) => void;
 
 @injectable()
 export class Polygon {
@@ -23,7 +23,7 @@ export class Polygon {
   vertices!: Vector3[];
   height!: number;
   dimension!: number;
-  private _contains = new Map<number, MpEntity>();
+  private _contains = new Map<number, MpAnyEntity>();
   private _visible!: boolean;
 
   entityEnterObserver = new Observer<OnEntityEnterPolygon>();
@@ -90,18 +90,18 @@ export class Polygon {
     return [...this._contains.values()];
   }
 
-  addToContains(entity: MpEntity) {
+  addToContains(entity: MpAnyEntity) {
     this._contains.set(entity.id, entity);
 
     this.entityEnterObserver.notify(entity);
   }
 
-  removeFromContains(entity: MpEntity | number) {
+  removeFromContains(entity: MpAnyEntity) {
     const id = typeof entity === 'object' ? entity.id : entity;
 
     if (this._contains.has(id)) {
       this._contains.delete(id);
-      this.entityLeaveObserver.notify(mp.entities.at(id));
+      this.entityLeaveObserver.notify(entity);
     }
   }
 
