@@ -1,4 +1,10 @@
 import type { SumoMap } from '@freeroam/shared/game-modes/sumo';
-import { SUMO_TEST_MAP } from './test-map';
+import { SUMO_FACTORY_MAP } from './factory-map';
+import { SUMO_GUZL_MAP } from './guzl-map';
+import { SUMO_TOWER_MAP } from './tower-map';
 
-export const SumoMaps: SumoMap[] = [SUMO_TEST_MAP];
+export const SumoMaps: SumoMap[] = [
+  SUMO_GUZL_MAP,
+  SUMO_TOWER_MAP,
+  SUMO_FACTORY_MAP,
+];
