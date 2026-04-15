@@ -213,13 +213,9 @@ class Racer {
     });
   }
 
-  reset(triggerClient = true) {
+  reset() {
     this.vehicle.destroy();
     this.player.dimension = 0;
-
-    if (triggerClient) {
-      client.gameModes.race.reset.trigger(this.player);
-    }
   }
 }
 
@@ -516,7 +512,7 @@ export class Race extends BaseGameMode<
 
     for (const racer of this.racers.values()) {
       browser.gameModes.race.setResults.trigger(racer.player, finalResults);
-      racer.reset(false);
+      racer.reset();
     }
 
     this.racers.clear();

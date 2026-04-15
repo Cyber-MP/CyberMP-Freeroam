@@ -8,6 +8,7 @@ import type {
 export const GameModeName = {
   SUMO: 'sumo',
   RACE: 'race',
+  PVP: 'pvp',
 } as const;
 
 export type TGameModeName = (typeof GameModeName)[keyof typeof GameModeName];
@@ -20,7 +21,7 @@ export abstract class BaseGameMode<
   abstract readonly CREATE_OPTIONS_SCHEMA: TCreateOptions;
   abstract readonly JOIN_OPTIONS_SCHEMA: TJoinOptions;
 
-  getJoinSchema(createOptions: z.infer<TCreateOptions>) {
+  getJoinSchema(createOptions: z.infer<TCreateOptions>): TJoinOptions {
     return this.JOIN_OPTIONS_SCHEMA;
   }
 

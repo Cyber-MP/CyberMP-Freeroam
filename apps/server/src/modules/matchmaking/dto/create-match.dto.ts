@@ -1,5 +1,6 @@
 import z from 'zod';
 import { GameModeName } from '../../game-modes/game-mode';
+import { zCreatePvpOptions, zJoinPvpOptions } from '../../game-modes/modes/pvp';
 import {
   zCreateRaceOptions,
   zJoinRaceOptions,
@@ -19,5 +20,10 @@ export const zCreateMatchDTO = z.union([
     name: z.literal(GameModeName.SUMO),
     createOptions: zCreateSumoOptions,
     joinOptions: zJoinSumoOptions,
+  }),
+  z.object({
+    name: z.literal(GameModeName.PVP),
+    createOptions: zCreatePvpOptions,
+    joinOptions: zJoinPvpOptions,
   }),
 ]);

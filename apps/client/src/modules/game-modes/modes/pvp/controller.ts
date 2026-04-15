@@ -9,62 +9,62 @@ import {
   ActiveGameMiddlewareSymbol,
   type RpcActiveGameContext,
 } from '../../middleware/active-game.middleware';
-import type { Sumo } from '.';
-import { zSumoPrepareDTO } from './dto';
+import type { Pvp } from '.';
+import { zPvpPrepareDTO } from './dto';
 
-export const sumoContract = {
+export const pvpContract = {
   prepare: r.contract
     .method(RpcApplyType.REGISTER)
-    .input(zSumoPrepareDTO)
-    .context<RpcActiveGameContext<Sumo>>(),
+    .input(zPvpPrepareDTO)
+    .context<RpcActiveGameContext<Pvp>>(),
   startCountdown: r.contract
-    .context<RpcActiveGameContext<Sumo>>()
+    .context<RpcActiveGameContext<Pvp>>()
     .input(z.number()),
   updateLivingIds: r.contract
-    .context<RpcActiveGameContext<Sumo>>()
+    .context<RpcActiveGameContext<Pvp>>()
     .input(z.array(z.number())),
 };
 
-type ContractInputs = InferRouterInputs<typeof sumoContract>;
+type ContractInputs = InferRouterInputs<typeof pvpContract>;
 
 @eager()
 @injectable()
-export class SumoController {
+export class PvpController {
   constructor(
     @inject(ActiveGameMiddlewareSymbol)
     private activeGameMiddleware: ActiveGameMiddleware,
   ) {}
 
   private async prepare(
-    context: RpcActiveGameContext<Sumo, ContractInputs['prepare']>,
+    context: RpcActiveGameContext<Pvp, ContractInputs['prepare']>,
   ) {
     await context.mode.prepare(context.data);
   }
 
   private async startCountdown(
-    context: RpcActiveGameContext<Sumo, ContractInputs['startCountdown']>,
+    context: RpcActiveGameContext<Pvp, ContractInputs['startCountdown']>,
   ) {
     context.mode.startCountdown(context.data);
   }
 
   private async updateLivingIds(
-    context: RpcActiveGameContext<Sumo, ContractInputs['updateLivingIds']>,
+    context: RpcActiveGameContext<Pvp, ContractInputs['updateLivingIds']>,
   ) {
     context.mode.updateLivingIds(context.data);
   }
 
   @postConstruct()
   private init() {
-    r.implement(sumoContract, {
-      prepare: sumoContract.prepare.implement(
+    r.implement(pvpContract, {
+      prepare: pvpContract.prepare.implement(
         this.activeGameMiddleware,
         this.prepare.bind(this),
       ),
-      startCountdown: sumoContract.startCountdown.implement(
+      startCountdown: pvpContract.startCountdown.implement(
         this.activeGameMiddleware,
         this.startCountdown.bind(this),
       ),
-      updateLivingIds: sumoContract.updateLivingIds.implement(
+      updateLivingIds: pvpContract.updateLivingIds.implement(
         this.activeGameMiddleware,
         this.updateLivingIds.bind(this),
       ),

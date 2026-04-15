@@ -6,6 +6,7 @@ import z from 'zod';
 import { r } from '../../rpc';
 import { GameModesService } from './game-modes.service';
 import type { MatchDTO } from './match';
+import { pvpContract } from './modes/pvp/controller';
 import { raceContract } from './modes/race/controller';
 import { sumoContract } from './modes/sumo/controller';
 
@@ -16,6 +17,7 @@ export const gameModesContract = {
   end: contract.build(),
   race: raceContract,
   sumo: sumoContract,
+  pvp: pvpContract,
 };
 
 @eager()
@@ -35,11 +37,9 @@ export class GameModesController {
 
   @postConstruct()
   private init() {
-    const { race, sumo, ...contract } = gameModesContract;
+    const { start, end } = gameModesContract;
 
-    r.implement(contract, {
-      start: this.start.bind(this),
-      end: this.end.bind(this),
-    });
+    r.implement(start, this.start.bind(this));
+    r.implement(end, this.end.bind(this));
   }
 }

@@ -2,6 +2,7 @@ import z from 'zod';
 import { setBodyVisibility, toggleBodyVisibility } from '../body';
 import { keysContract } from '../keys';
 import { copyToClipboard } from '../lib/clipboard';
+import { pvpContract } from '../routes/hud.game-modes/pvp/-contract';
 import { raceContract } from '../routes/hud.game-modes/race/-contract';
 import { sumoContract } from '../routes/hud.game-modes/sumo/-contract';
 import type { FileRoutesByFullPath } from '../routeTree.gen';
@@ -18,7 +19,7 @@ export const rpcRouter = {
   pingBrowser: r.procedure.input(z.string()).handler(() => {
     console.log('test handler invoked');
   }),
-  gameModes: { race: raceContract, sumo: sumoContract },
+  gameModes: { race: raceContract, sumo: sumoContract, pvp: pvpContract },
   keys: keysContract,
   hints: hintsContract,
   chat: chatContract,

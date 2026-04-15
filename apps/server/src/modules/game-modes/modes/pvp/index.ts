@@ -2,17 +2,15 @@ import {
   EntityType,
   type MpAnyEntity,
   type MpPlayer,
-  type MpVehicle,
 } from '@cybermp/server-types';
 import {
-  type SumoMap,
-  SumoMapName,
-  type SumoStartPoint,
-} from '@freeroam/shared/game-modes/sumo';
+  type PvpMap,
+  PvpMapName,
+  type PvpStartPoint,
+} from '@freeroam/shared/game-modes/pvp';
 import { inject, injectable } from 'inversify';
 import ms from 'ms';
 import { shuffle, sleep } from 'radash';
-import type { WritableDeep } from 'type-fest';
 import z from 'zod';
 import { mp } from '../../../../mp';
 import { client } from '../../../../rpc';
@@ -24,89 +22,62 @@ import {
 } from '../../../matchmaking/match';
 import type { Polygon } from '../../../polygons/polygon';
 import { PolygonsService } from '../../../polygons/polygons.service';
-import {
-  VEHICLES_DATA,
-  type VehicleData,
-} from '../../../vehicles-spawner/vehicles.repository';
 import { BaseGameMode, GameModeName } from '../../game-mode';
-import { SumoMaps } from './maps';
+import { PvpWeapons } from './data';
+import { PvpMaps } from './maps';
 
-export const zCreateSumoOptions = zCreateMatchOptions.extend({
-  map: z.enum(SumoMapName).meta({ title: 'Map' }),
-  vehicleClass: z
-    .enum(['all', ...VEHICLES_DATA.map((o) => o.category)])
-    .meta({ title: 'Vehicle Class' }),
-  maxPlayers: z
-    .number()
-    .min(1)
-    .max(10)
-    .meta({ default: 10, title: 'Max Players' }),
+export const zCreatePvpOptions = zCreateMatchOptions.extend({
+  map: z.enum(PvpMapName).meta({ title: 'Map' }),
+  maxPlayers: z.number().min(2).max(20).meta({ default: 20 }),
+  healing: z.boolean(),
 });
 
-export const zJoinSumoOptions = zJoinMatchOptions.extend({
-  vehicle: z.enum(VEHICLES_DATA.map((o) => o.name)).meta({ title: 'Vehicle' }),
+export const zJoinPvpOptions = zJoinMatchOptions.extend({
+  weapon: z.enum(PvpWeapons).meta({ title: 'Weapon' }),
 });
 
-type RacerConstructorOptions = {
+type FighterConstructorOptions = {
   player: number;
-  map: SumoMap;
-  match: Match<Sumo>;
-  startPoint: SumoStartPoint;
+  map: PvpMap;
+  match: Match<Pvp>;
+  startPoint: PvpStartPoint;
 };
 
-class Racer {
-  private map: SumoMap;
-  private match: Match<Sumo>;
+class Fighter {
+  private map: PvpMap;
+  private match: Match<Pvp>;
 
-  options: z.infer<typeof zJoinSumoOptions>;
-  private vehicleData: VehicleData;
+  options: z.infer<typeof zJoinPvpOptions>;
   player: MpPlayer;
-  vehicle!: MpVehicle;
+  weapon: string;
+  startPoint: PvpStartPoint;
   alive = true;
-  startPoint: SumoStartPoint;
 
-  private readonly VEHICLE_SPAWN_Z_OFFSET = 3;
-  private readonly VEHICLE_HEALTH = 10_000_000;
-
-  constructor(opts: RacerConstructorOptions) {
+  constructor(opts: FighterConstructorOptions) {
     this.map = opts.map;
     this.player = mp.players.at(opts.player);
+
     this.match = opts.match;
     this.startPoint = opts.startPoint;
 
     // biome-ignore lint/style/noNonNullAssertion: Player is obviously present
     this.options = opts.match.members.get(opts.player)!;
 
-    this.vehicleData = VEHICLES_DATA.find(
-      (o) => o.name === this.options.vehicle,
-    )!;
+    this.weapon =
+      Object.entries(PvpWeapons).find(
+        ([key, name]) => name === this.options.weapon,
+      )?.[0] ?? 'Items.Preset_Silverhand_3516';
   }
 
   async prepare() {
     this.player.dimension = this.match.dimension;
 
-    const { model: vehicleModel, appearance: vehicleAppearance } =
-      this.vehicleData;
-
-    this.vehicle = mp.vehicles.create({
-      model: mp.hashes.tweakdbid(`Vehicle.${vehicleModel}`),
-      appearance: mp.hashes.cname(vehicleAppearance),
-      position: [
-        this.startPoint[0],
-        this.startPoint[1],
-        this.startPoint[2] + this.VEHICLE_SPAWN_Z_OFFSET,
-      ],
-      yaw: this.startPoint[3],
-      dimension: this.match.dimension,
-      health: this.VEHICLE_HEALTH,
-    });
-
-    await client.gameModes.sumo.prepare
+    await client.gameModes.pvp.prepare
       .call(
         this.player,
         {
           map: structuredClone(this.map),
-          vehicleId: structuredClone(this.vehicle.id),
+          weapon: this.weapon,
           startPoint: structuredClone(this.startPoint),
         },
         {},
@@ -126,27 +97,26 @@ class Racer {
   }
 
   reset() {
-    this.vehicle.destroy();
     this.player.dimension = 0;
   }
 }
 
 @injectable()
-export class Sumo extends BaseGameMode<
-  typeof zCreateSumoOptions,
-  typeof zJoinSumoOptions
+export class Pvp extends BaseGameMode<
+  typeof zCreatePvpOptions,
+  typeof zJoinPvpOptions
 > {
-  name = GameModeName.SUMO;
+  name = GameModeName.PVP;
 
-  readonly CREATE_OPTIONS_SCHEMA = zCreateSumoOptions;
-  readonly JOIN_OPTIONS_SCHEMA = zJoinSumoOptions;
+  readonly CREATE_OPTIONS_SCHEMA = zCreatePvpOptions;
+  readonly JOIN_OPTIONS_SCHEMA = zJoinPvpOptions;
 
   private match!: Match<this>;
   private dimension!: number;
-  private map!: SumoMap;
+  private map!: PvpMap;
   private polygon?: Polygon;
 
-  private racers = new Map<number, Racer>();
+  private fighters = new Map<number, Fighter>();
   private released = false;
   private drawTimeout: ReturnType<typeof setTimeout> | null = null;
 
@@ -156,24 +126,13 @@ export class Sumo extends BaseGameMode<
   @inject(PolygonsService)
   private polygonsService!: PolygonsService;
 
-  override getJoinSchema(
-    createOptions: z.infer<typeof zCreateSumoOptions>,
-  ): typeof zJoinSumoOptions {
-    let vehicles = VEHICLES_DATA.filter(
-      (o) => o.category === createOptions.vehicleClass,
-    );
-    if (!vehicles.length) {
-      vehicles = VEHICLES_DATA as WritableDeep<typeof VEHICLES_DATA>;
-    }
-
-    return this.JOIN_OPTIONS_SCHEMA.extend({
-      vehicle: z.enum(vehicles.map((o) => o.name)),
-    });
+  override getJoinSchema() {
+    return this.JOIN_OPTIONS_SCHEMA;
   }
 
   init(match: Match<this>): void {
     this.match = match;
-    this.map = SumoMaps.find((o) => o.name === this.match.options.map)!;
+    this.map = PvpMaps.find((o) => o.name === this.match.options.map)!;
     this.dimension = match.dimension;
   }
 
@@ -184,23 +143,23 @@ export class Sumo extends BaseGameMode<
 
     await Promise.all(
       members.map(async (member, index) => {
-        const racer = new Racer({
+        const fighter = new Fighter({
           map: this.map,
           match: this.match,
           player: member,
           startPoint: shuffledStartPoints[index],
         });
 
-        await racer.prepare();
+        await fighter.prepare();
 
-        this.racers.set(member, racer);
+        this.fighters.set(member, fighter);
       }),
     );
 
-    const livingIds = [...this.racers.values()].map((r) => r.player.id);
+    const livingIds = [...this.fighters.values()].map((r) => r.player.id);
 
     for (const racerId of livingIds) {
-      client.gameModes.sumo.updateLivingIds.trigger(racerId, livingIds);
+      client.gameModes.pvp.updateLivingIds.trigger(racerId, livingIds);
     }
 
     await this.startCountdown();
@@ -211,21 +170,32 @@ export class Sumo extends BaseGameMode<
       return;
     }
 
-    const racer = this.racers.get(entity.id);
+    const fighter = this.fighters.get(entity.id);
 
-    racer?.lose();
+    fighter?.lose();
+
+    this.checkSurvivors();
+  };
+
+  private onPlayerDeath = (playerId: number) => {
+    const fighter = this.fighters.get(playerId);
+    if (!fighter) {
+      return;
+    }
+
+    fighter.lose();
 
     this.checkSurvivors();
   };
 
   private checkSurvivors() {
-    const living = [...this.racers.values()].filter((racer) => racer.alive);
+    const living = [...this.fighters.values()].filter((racer) => racer.alive);
 
     if (living.length >= 2) {
       const livingIds = living.map((racer) => racer.player.id);
 
-      for (const playerId of [...this.racers.keys()]) {
-        client.gameModes.sumo.updateLivingIds.trigger(playerId, livingIds);
+      for (const playerId of [...this.fighters.keys()]) {
+        client.gameModes.pvp.updateLivingIds.trigger(playerId, livingIds);
       }
     }
 
@@ -235,10 +205,10 @@ export class Sumo extends BaseGameMode<
   }
 
   release() {
-    for (const racer of this.racers.values()) {
-      browser.gameModes.sumo.startDrawTimer.trigger(
+    for (const racer of this.fighters.values()) {
+      browser.gameModes.pvp.startDrawTimer.trigger(
         racer.player.id,
-        Date.now() + this.DRAW_TIME,
+        this.DRAW_TIME,
       );
     }
 
@@ -252,6 +222,8 @@ export class Sumo extends BaseGameMode<
 
     this.polygon.entityLeaveObserver.subscribe(this.onPolygonLeave);
 
+    mp.events.on('playerDeath', this.onPlayerDeath);
+
     this.drawTimeout = setTimeout(() => {
       this.match.end();
     }, this.DRAW_TIME);
@@ -264,7 +236,7 @@ export class Sumo extends BaseGameMode<
       return;
     }
 
-    const racer = this.racers.get(playerId);
+    const racer = this.fighters.get(playerId);
 
     if (!racer) {
       return;
@@ -274,8 +246,8 @@ export class Sumo extends BaseGameMode<
   }
 
   async startCountdown() {
-    for (const racer of this.racers.keys()) {
-      client.gameModes.sumo.startCountdown.trigger(racer, this.COUNTDOWN_TIME);
+    for (const racer of this.fighters.keys()) {
+      client.gameModes.pvp.startCountdown.trigger(racer, this.COUNTDOWN_TIME);
     }
 
     await sleep(this.COUNTDOWN_TIME);
@@ -284,7 +256,7 @@ export class Sumo extends BaseGameMode<
   }
 
   private endMatch(winnerId?: number) {
-    const winner = winnerId ? this.racers.get(winnerId) : undefined;
+    const winner = winnerId ? this.fighters.get(winnerId) : undefined;
 
     const title = winner
       ? `${winner?.player.nickname} won this match! Choomba!`
@@ -306,20 +278,21 @@ export class Sumo extends BaseGameMode<
     }
 
     this.polygon?.entityLeaveObserver.unsubscribe(this.onPolygonLeave);
+    mp.events.off('playerDeath', this.onPlayerDeath);
 
-    for (const racer of this.racers.values()) {
+    for (const racer of this.fighters.values()) {
       racer.reset();
     }
 
-    this.racers.clear();
+    this.fighters.clear();
   }
 
   onPlayerLeave(playerId: number): void {
-    const racer = this.racers.get(playerId);
+    const racer = this.fighters.get(playerId);
 
     racer?.reset();
 
-    this.racers.delete(playerId);
+    this.fighters.delete(playerId);
   }
 
   onPlayerJoin() {}

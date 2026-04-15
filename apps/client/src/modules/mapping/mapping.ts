@@ -3,6 +3,7 @@ import { inject, injectable } from 'inversify';
 import { uid } from 'radash';
 import { createQuaternion } from '../../lib/vectors';
 import { mp } from '../../mp';
+import { GEntityService } from '../game/entity.service';
 import { GObjectsService } from '../game/objects.service';
 
 type SectorNodeData = {
@@ -53,6 +54,7 @@ export class Mapping {
 
   constructor(
     @inject(GObjectsService) private objectsService: GObjectsService,
+    @inject(GEntityService) private entityService: GEntityService,
   ) {}
 
   private async renderSectorNode(node: SectorNode) {
@@ -75,7 +77,7 @@ export class Mapping {
       ),
     );
 
-    this.objectsService.create({
+    const entityId = this.objectsService.create({
       skinHash: model,
       appHash: appearance,
       position: node.position,
@@ -83,6 +85,10 @@ export class Mapping {
       streaming: true,
       group: this.group,
     });
+
+    const entity = await this.entityService.waitForEntityToSpawn(entityId);
+    
+    entity?.GetComponents
   }
 
   private renderSectors(sectors: Sector[]) {
@@ -115,3 +121,7 @@ export class Mapping {
     this.objectsService.destroyGroup(this.group);
   }
 }
+
+export type MappingFactory = () => Mapping;
+
+export const MappingFactorySymbol = Symbol.for('MappingFactorySymbol');

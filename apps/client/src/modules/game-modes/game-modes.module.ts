@@ -10,6 +10,8 @@ import {
   ActiveGameMiddlewareSymbol,
   activeGameMiddleware,
 } from './middleware/active-game.middleware';
+import { Pvp } from './modes/pvp';
+import { PvpController } from './modes/pvp/controller';
 import { Race } from './modes/race';
 import { RaceCheckpoint } from './modes/race/checkpoint';
 import { RaceController } from './modes/race/controller';
@@ -32,6 +34,11 @@ export const GameModesModule = new ContainerModule(({ bind }) => {
     .to(Sumo)
     .inRequestScope();
   bind(SumoController).toSelf().inSingletonScope();
+
+  bind('pvp' satisfies GameModeName)
+    .to(Pvp)
+    .inRequestScope();
+  bind(PvpController).toSelf().inSingletonScope();
 
   bind(ActiveGameMiddlewareSymbol).toDynamicValue(activeGameMiddleware);
   bind<GameModeFactory>(GameModeFactorySymbol).toFactory((c) => {

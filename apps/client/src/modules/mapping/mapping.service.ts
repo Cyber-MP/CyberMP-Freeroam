@@ -1,8 +1,12 @@
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct, preDestroy } from 'inversify';
 import { ChatService } from '../chat/chat.service';
-import type { Mapping, MappingProject } from './mapping';
-import { type MappingFactory, MappingFactorySymbol } from './mapping-factory';
+import {
+  type Mapping,
+  type MappingFactory,
+  MappingFactorySymbol,
+  type MappingProject,
+} from './mapping';
 import roof404 from './roof404.json';
 
 @eager()

@@ -443,8 +443,4 @@ export class Race extends BaseGameMode<'race'> {
       }
     }, 100);
   }
-
-  reset() {
-    this.end();
-  }
 }

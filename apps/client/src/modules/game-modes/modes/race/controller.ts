@@ -1,10 +1,7 @@
 import { RpcApplyType } from '@cybermp/rpc-client';
 import type { InferRouterInputs } from '@cybermp/rpc-router/server';
 import { eager } from '@freeroam/inversify';
-import {
-  zRaceRacerDTO,
-  zRaceRankDTO,
-} from '@freeroam/shared/game-modes/race';
+import { zRaceRacerDTO, zRaceRankDTO } from '@freeroam/shared/game-modes/race';
 import { inject, injectable, postConstruct } from 'inversify';
 import z from 'zod';
 import { r } from '../../../../rpc';
@@ -21,7 +18,6 @@ export const raceContract = {
     .method(RpcApplyType.REGISTER)
     .input(zRacePrepareDTO)
     .context<RpcActiveGameContext<Race>>(),
-  reset: r.contract.context<RpcActiveGameContext<Race>>(),
   startCountdown: r.contract
     .context<RpcActiveGameContext<Race>>()
     .input(z.number()),
@@ -49,10 +45,6 @@ export class RaceController {
     await context.mode.prepare(context.data);
   }
 
-  private async reset(context: RpcActiveGameContext<Race>) {
-    context.mode.reset();
-  }
-
   private async startCountdown(
     context: RpcActiveGameContext<Race, ContractInputs['startCountdown']>,
   ) {
@@ -77,10 +69,6 @@ export class RaceController {
       prepare: raceContract.prepare.implement(
         this.activeGameMiddleware,
         this.prepare.bind(this),
-      ),
-      reset: raceContract.reset.implement(
-        this.activeGameMiddleware,
-        this.reset.bind(this),
       ),
       startCountdown: raceContract.startCountdown.implement(
         this.activeGameMiddleware,

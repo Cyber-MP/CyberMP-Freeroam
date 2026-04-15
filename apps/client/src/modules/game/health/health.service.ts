@@ -18,6 +18,10 @@ export class GHealthService {
     return this.DEFAULT_HEALTH;
   }
 
+  resetToDefault() {
+    this.set(this.DEFAULT_HEALTH);
+  }
+
   god(value: boolean) {
     if (value) {
       this.setMax(99999999);

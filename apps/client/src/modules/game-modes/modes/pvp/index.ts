@@ -1,4 +1,9 @@
-import { EInputAction, EInputKey } from '@cybermp/client-types/enums';
+import {
+  EInputAction,
+  EInputKey,
+  EquipmentManipulationAction,
+  gamedataEquipmentArea,
+} from '@cybermp/client-types/enums';
 import type { Vector4 } from '@cybermp/client-types/game';
 import { inject, injectable } from 'inversify';
 import { mp } from '../../../../mp';
@@ -7,20 +12,24 @@ import { GHealthService } from '../../../game/health/health.service';
 import { GKeyboardService } from '../../../game/keyboard.service';
 import { GStatusEffectsService } from '../../../game/status-effects/status-effects.service';
 import { GTeleportService } from '../../../game/teleport/teleport.service';
-import { GVehiclesService } from '../../../game/vehicles/vehicles.service';
 import { SpectatingService } from '../../../spectating/spectating.service';
 import { BaseGameMode } from '../../game-mode';
-import type { SumoPrepareDTO } from './dto';
+import type { PvpPrepareDTO } from './dto';
 
 @injectable()
-export class Sumo extends BaseGameMode<'sumo'> {
+export class Pvp extends BaseGameMode<'pvp'> {
   private livingIds: number[] = [];
   private isAlive = true;
   private initialPosition!: Vector4;
+
   private countDownInterval: ReturnType<typeof setInterval> | undefined;
+  private checkWeaponInterval: ReturnType<typeof setInterval> | undefined;
+
+  private weapon!: string;
+
+  private HEALTH = 1000;
 
   constructor(
-    @inject(GVehiclesService) private vehiclesService: GVehiclesService,
     @inject(GTeleportService) private teleportService: GTeleportService,
     @inject(GHealthService) private healthService: GHealthService,
     @inject(GStatusEffectsService)
@@ -34,24 +43,25 @@ export class Sumo extends BaseGameMode<'sumo'> {
   start() {
     this.spectatingService.unspectate();
 
-    this.healthService.god(true);
+    this.healthService.set(this.HEALTH);
 
     this.initialPosition = mp.game.GetPlayer().GetWorldPosition();
 
-    this.statusEffectsService.add('GameplayRestriction.VehicleCombatBlockExit');
-    this.statusEffectsService.add('GameplayRestriction.NoDriving');
     this.statusEffectsService.add('GameplayRestriction.NoMovement');
-
     this.statusEffectsService.add('GameplayRestriction.NoCombat');
     this.statusEffectsService.add('GameplayRestriction.NoWeapons');
+    this.statusEffectsService.add('GameplayRestriction.BlockAllMenu');
+    this.statusEffectsService.add('GameplayRestriction.NoRadialMenus');
+    this.statusEffectsService.add('GameplayRestriction.NoHealing');
   }
 
   end() {
+    this.unmountCheckWeaponInterval();
+
     setTimeout(() => {
       this.unmountSpectateBinds();
+      this.spectatingService.unspectate();
     });
-
-    this.spectatingService.unspectate();
 
     if (this.countDownInterval) {
       clearInterval(this.countDownInterval);
@@ -61,28 +71,87 @@ export class Sumo extends BaseGameMode<'sumo'> {
       this.teleportService.teleport(this.initialPosition);
     });
 
-    this.healthService.god(false);
+    this.healthService.resetToDefault();
 
-    this.statusEffectsService.remove(
-      'GameplayRestriction.VehicleCombatBlockExit',
-    );
-    this.statusEffectsService.remove('GameplayRestriction.NoDriving');
     this.statusEffectsService.remove('GameplayRestriction.NoMovement');
-
     this.statusEffectsService.remove('GameplayRestriction.NoCombat');
     this.statusEffectsService.remove('GameplayRestriction.NoWeapons');
+    this.statusEffectsService.remove('GameplayRestriction.BlockAllMenu');
+    this.statusEffectsService.remove('GameplayRestriction.NoRadialMenus');
+    this.statusEffectsService.remove('GameplayRestriction.NoHealing');
 
     browser.hud.setGlobalPath.trigger('/hud');
     browser.navigate.trigger('/hud');
   }
 
-  async prepare(data: SumoPrepareDTO) {
+  async prepare(data: PvpPrepareDTO) {
     await this.teleportService.teleportAsync(...data.startPoint);
 
-    browser.hud.setGlobalPath.trigger('/hud/game-modes/sumo/');
-    browser.navigate.trigger('/hud/game-modes/sumo/');
+    browser.hud.setGlobalPath.trigger('/hud/game-modes/pvp/');
+    browser.navigate.trigger('/hud/game-modes/pvp/');
 
-    this.vehiclesService.requestSitInVehicle(data.vehicleId);
+    const localPlayerObject = mp.game.GetPlayerObject();
+    const localPlayer = mp.game.GetPlayer();
+
+    mp.game.EquipmentSystem.RequestUnequipItem(
+      localPlayerObject,
+      gamedataEquipmentArea.Weapon,
+      0,
+    );
+    mp.game.EquipmentSystem.RequestUnequipItem(
+      localPlayerObject,
+      gamedataEquipmentArea.Weapon,
+      1,
+    );
+    mp.game.EquipmentSystem.RequestUnequipItem(
+      localPlayerObject,
+      gamedataEquipmentArea.Weapon,
+      2,
+    );
+    mp.game.ScriptGameInstance.GetScriptableSystemsContainer()
+      .Get('EquipmentSystem')
+      .EquipCyberwareByTDBID(
+        localPlayer,
+        'Items.AdvancedBoostedTendonsLegendary',
+      );
+
+    this.weapon = data.weapon;
+  }
+
+  private checkCurrentWeapon() {
+    const equipmentSystem =
+      mp.game.ScriptGameInstance.GetScriptableSystemsContainer().Get(
+        'EquipmentSystem',
+      );
+    const player = mp.game.GetPlayerObject();
+
+    const comradeItemId = mp.game.gameItemID.FromTDBID(this.weapon);
+    const isComradeEquipped = equipmentSystem.IsEquipped(player, comradeItemId);
+
+    if (!isComradeEquipped) {
+      const drawItemRequest = new mp.game.gameDrawItemRequest();
+      drawItemRequest.owner = player;
+      drawItemRequest.itemID = mp.game.gameItemID.CreateQuery(this.weapon);
+      equipmentSystem.QueueRequest(drawItemRequest);
+    } else {
+      const request = new mp.game.EquipmentSystemWeaponManipulationRequest();
+      request.owner = player;
+      request.requestType =
+        EquipmentManipulationAction.RequestLastUsedOrFirstAvailableWeapon;
+      equipmentSystem.QueueRequest(request);
+    }
+  }
+
+  private mountCheckWeaponInterval() {
+    this.checkWeaponInterval = setInterval(() => {
+      this.checkCurrentWeapon();
+    });
+  }
+
+  private unmountCheckWeaponInterval() {
+    if (this.checkWeaponInterval) {
+      clearInterval(this.checkWeaponInterval);
+    }
   }
 
   updateLivingIds(data: number[]) {
@@ -165,30 +234,32 @@ export class Sumo extends BaseGameMode<'sumo'> {
   }
 
   release() {
-    this.statusEffectsService.remove('GameplayRestriction.NoDriving');
+    this.statusEffectsService.remove('GameplayRestriction.NoMovement');
+
+    this.statusEffectsService.remove('GameplayRestriction.NoCombat');
+    this.statusEffectsService.remove('GameplayRestriction.NoWeapons');
+
+    if (this.options.healing) {
+      this.statusEffectsService.remove('GameplayRestriction.NoHealing');
+    }
+
+    this.mountCheckWeaponInterval();
   }
 
   startCountdown(duration: number) {
     const startTime = Date.now();
-
-    const initialRemaining = Math.ceil((duration - Date.now()) / 1000);
-
-    const mountedVehicle = mp.game.GetMountedVehicle(mp.game.GetPlayerObject());
-    if (mountedVehicle && initialRemaining > 0) {
-      mountedVehicle.ForceBrakesFor(initialRemaining);
-    }
 
     this.countDownInterval = setInterval(() => {
       const elapsed = Date.now() - startTime;
       const remaining = Math.ceil((duration - elapsed) / 1000);
 
       if (remaining <= 0) {
-        browser.gameModes.sumo.setCountdownText.trigger('GO!');
+        browser.gameModes.pvp.setCountdownText.trigger('GO!');
 
         this.release();
         clearInterval(this.countDownInterval);
       } else {
-        browser.gameModes.sumo.setCountdownText.trigger(String(remaining));
+        browser.gameModes.pvp.setCountdownText.trigger(String(remaining));
       }
     }, 100);
   }

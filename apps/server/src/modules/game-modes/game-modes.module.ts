@@ -7,6 +7,7 @@ import {
 } from './game-mode';
 import { GameModesController } from './game-modes.controller';
 import { GameModesService } from './game-modes.service';
+import { Pvp } from './modes/pvp';
 import { Race } from './modes/race';
 import { RaceController } from './modes/race/controller';
 import { RaceTrackCalculator } from './modes/race/track-calculator';
@@ -21,6 +22,7 @@ export const GameModesModule = new ContainerModule(({ bind }) => {
   bind(RaceTrackCalculator).toSelf().inSingletonScope();
 
   bind(GameModeName.SUMO).to(Sumo).inRequestScope();
+  bind(GameModeName.PVP).to(Pvp).inRequestScope();
 
   bind<GameModeFactory>(GameModeFactorySymbol).toFactory((c) => {
     return (name: TGameModeName) => {
