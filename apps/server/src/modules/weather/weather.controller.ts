@@ -5,7 +5,7 @@ import { inject, injectable, postConstruct } from 'inversify';
 import z from 'zod';
 import { r } from '../../rpc';
 import { AdminService } from '../admin/admin.service';
-import { ChatService } from '../chat/chat.service';
+import { ChatCommandFlag, ChatService } from '../chat/chat.service';
 import {
   type EWeatherState,
   WeatherService,
@@ -33,10 +33,6 @@ export class WeatherController {
   }
 
   private adminWeather(player: MpPlayer, weather: EWeatherState) {
-    if (!this.adminService.isAdminWithWarn(player)) {
-      return;
-    }
-
     this.weatherService.setWeather(weather);
   }
 
@@ -49,6 +45,7 @@ export class WeatherController {
     this.chatService.addCommand({
       name: 'admin-weather',
       description: 'Set server weather',
+      flags: ChatCommandFlag.Admin,
       args: z.tuple([zWeatherState.meta({ title: 'weather' })]),
       handler: this.adminWeather.bind(this),
     });

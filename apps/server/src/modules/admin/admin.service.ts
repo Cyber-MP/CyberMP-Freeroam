@@ -2,7 +2,7 @@ import type { MpPlayer } from '@cybermp/server-types';
 import { eager } from '@freeroam/inversify';
 import { inject, injectable } from 'inversify';
 import { mp } from '../../mp';
-import { ChatService } from '../chat/chat.service';
+import { ChatCommandFlag, ChatService } from '../chat/chat.service';
 
 @eager()
 @injectable()
@@ -22,6 +22,7 @@ export class AdminService {
       return;
     }
 
+    this.chatService.addCommandFlag(player, ChatCommandFlag.Admin);
     player.setMeta('admin', true);
     this.chatService.sendMessage(player, 'Success 0_o');
   }
@@ -34,13 +35,13 @@ export class AdminService {
     return player.getMeta('admin') === true;
   }
 
-  public isAdminWithWarn(player: MpPlayer | number) {
-    const isAdmin = this.isAdmin(player);
+  // public isAdminWithWarn(player: MpPlayer | number) {
+  //   const isAdmin = this.isAdmin(player);
 
-    if (!isAdmin) {
-      this.chatService.sendMessage(player, 'You are not an admin ._.');
-    }
+  //   if (!isAdmin) {
+  //     this.chatService.sendMessage(player, 'You are not an admin ._.');
+  //   }
 
-    return isAdmin;
-  }
+  //   return isAdmin;
+  // }
 }

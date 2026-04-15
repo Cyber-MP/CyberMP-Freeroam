@@ -17,6 +17,7 @@ export type ChatCommand<Args extends z.ZodTuple> = {
 export enum ChatCommandFlag {
   None = 0,
   DisableInGameMode = 1 << 2,
+  Admin = 1 << 3,
 }
 
 export type ServerCommand<Args extends z.ZodTuple> = ChatCommand<Args> & {
