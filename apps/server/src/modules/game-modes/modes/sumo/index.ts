@@ -117,12 +117,12 @@ class Racer {
     }
 
     this.alive = false;
-    this.vehicle.destroy();
   }
 
   reset(triggerClient = true) {
     this.vehicle.destroy();
     this.player.dimension = 0;
+    this.vehicle.destroy();
 
     if (triggerClient) {
       client.gameModes.sumo.reset.trigger(this.player);
