@@ -66,7 +66,7 @@
     "postcss-value-parser": "^4.2.0",
     "terser": "^5.46.0",
     "typescript": "~5.9.3",
-    "vite": "^8.0.8",
+    "vite": "^7.3.2",
     "vite-imagetools": "^10.0.0",
     "vite-plugin-svgr": "^4.5.0",
     "vite-tsconfig-paths": "^6.0.4"
