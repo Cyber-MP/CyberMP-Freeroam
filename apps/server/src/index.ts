@@ -17,16 +17,6 @@ import { mp } from './mp';
 import { r, rpc } from './rpc';
 import { router } from './rpc/router';
 
-process.on('unhandledRejection', (reason, promise) => {
-  console.error('Unhandled Promise Rejection:', reason);
-  console.error('At promise:', promise);
-});
-
-process.on('uncaughtException', (error) => {
-  console.error('Uncaught Exception:', error, error.message);
-  console.error('Stack:', error.stack);
-});
-
 const modules = [
   LoggerModule,
   ChatModule,
@@ -62,6 +52,7 @@ const coopWhen = async () => {
             c.packet.method,
             e,
             (e as Error).message,
+            (e as Error).stack,
           );
         }
 
@@ -90,7 +81,12 @@ const coopWhen = async () => {
 
     loggerService.success('Server initialized');
   } catch (e) {
-    console.log('Failed to initialize server: ', e, (e as Error).message);
+    console.log(
+      'Failed to initialize server: ',
+      e,
+      (e as Error).message,
+      (e as Error).stack,
+    );
   }
 };
 

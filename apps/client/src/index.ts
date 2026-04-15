@@ -65,6 +65,7 @@ const coopWhen = async () => {
             c.packet.method,
             e,
             (e as Error).message,
+            (e as Error).stack,
           );
         }
 
@@ -95,7 +96,12 @@ const coopWhen = async () => {
 
     loggerService.success('Client initialized');
   } catch (e) {
-    console.log('Failed to initialize client: ', e, (e as Error).message);
+    console.log(
+      'Failed to initialize client: ',
+      e,
+      (e as Error).message,
+      (e as Error).stack,
+    );
   }
 };
 

@@ -1,5 +1,5 @@
 import './styles/index.css';
-import "@fontsource-variable/geist-mono/wght.css";
+import '@fontsource-variable/geist-mono/wght.css';
 import { RpcError } from '@cybermp/rpc-browser';
 import { RpcRouterProvider } from '@cybermp/rpc-router-react';
 import { QueryClientProvider } from '@tanstack/react-query';
@@ -29,6 +29,7 @@ const bootstrap = () => {
           c.packet.method,
           e,
           (e as Error).message,
+          (e as Error).stack,
         );
       }
 

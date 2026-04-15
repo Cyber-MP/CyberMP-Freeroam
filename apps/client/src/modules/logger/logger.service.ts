@@ -22,16 +22,16 @@ class Reporter {
     }
   }
 
-  jsonLog(logObj: LogObject) {
+  reportLog(logObj: LogObject) {
     server.logger.reportClientLog.trigger({ ...logObj, date: +logObj.date });
   }
 
   log(logObj: LogObject) {
-    if (import.meta.env.DEV) {
-      this.prettyLog(logObj);
-    } else {
-      this.jsonLog(logObj);
-    }
+    // if (import.meta.env.DEV) {
+    this.prettyLog(logObj);
+    // } else {
+    //   this.jsonLog(logObj);
+    // }
   }
 }
 
