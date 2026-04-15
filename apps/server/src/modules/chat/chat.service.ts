@@ -3,6 +3,7 @@ import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
 import z from 'zod';
 import { browser } from '../../rpc/browser';
+import { AdminService } from '../admin/admin.service';
 import { LoggerService } from '../logger/logger.service';
 import { zChatCommandMetaDTO } from './dto/chat-command-meta';
 import { zChatMessageDTO } from './dto/chat-message';
@@ -31,7 +32,10 @@ export class ChatService {
   private registry = new Map<string, ServerCommand<any>>();
   private playersFlags = new Map<number, number>();
 
-  constructor(@inject(LoggerService) private logger: LoggerService) {
+  constructor(
+    @inject(LoggerService) private logger: LoggerService,
+    @inject(AdminService) private adminService: AdminService,
+  ) {
     this.logger.setContext('ChatService');
   }
 
@@ -67,10 +71,14 @@ export class ChatService {
       this.playersFlags.get(player.id) ?? ChatCommandFlag.None;
 
     if (command.flags && (playerFlags & command.flags) !== 0) {
-      this.sendMessage(
-        player,
-        `Command /${command.name} is disabled for you right now.`,
-      );
+      if (command.flags & ChatCommandFlag.Admin) {
+        this.adminService.chatWarn(player);
+      } else {
+        this.sendMessage(
+          player,
+          `Command /${command.name} is disabled for you right now.`,
+        );
+      }
       return;
     }
 
