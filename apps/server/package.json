@@ -27,9 +27,7 @@
     "@types/ms": "^2.1.0",
     "@types/node": "^25.3.5",
     "cross-env": "^7.0.3",
-    "tsdown": "^0.21.4",
     "typescript": "^5.8.3",
-    "vite": "npm:rolldown-vite@7.3.1",
-    "vite-tsconfig-paths": "^6.1.1"
+    "vite": "8.0.8"
   }
 }
