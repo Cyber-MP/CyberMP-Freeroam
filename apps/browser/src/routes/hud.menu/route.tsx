@@ -77,7 +77,12 @@ function RouteComponent() {
     <div className="fixed inset-0 w-full h-full z-20">
       <Dialog open={true} onOpenChange={(s) => !s && close()}>
         <DialogContent className="overflow-hidden p-0 h-full max-h-160 lg:max-w-300">
-          <SidebarProvider ref={ref} className="items-start">
+          <SidebarProvider
+            open={true}
+            defaultOpen={true}
+            ref={ref}
+            className="items-start"
+          >
             <Sidebar collapsible="none" className="hidden md:flex">
               <SidebarContent>
                 <SidebarGroup>
