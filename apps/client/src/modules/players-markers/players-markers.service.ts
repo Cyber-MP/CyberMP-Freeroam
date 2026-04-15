@@ -13,6 +13,13 @@ import { inject, injectable, postConstruct, preDestroy } from 'inversify';
 import { mp } from '../../mp';
 import { GEntityService } from '../game/entity.service';
 
+// TODO: rewrite this without ticking system but with RegisterMappinWithObject
+// const mappin =
+//   mp.game.ScriptGameInstance.GetMappinSystem().RegisterMappinWithObject(
+//     data,
+//     player,
+//   );
+
 @eager()
 @injectable()
 export class PlayersMarkersService {
