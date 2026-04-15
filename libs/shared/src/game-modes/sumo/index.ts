@@ -15,6 +15,10 @@ export const zSumoStartPoints = z.array(zSumoStartPoint);
 
 export enum SumoMapName {
   GUZL = 'Guzl',
+  TOWER = 'Tower',
+  FACTORY = 'Factory',
+  PARKOUR = 'Parkour',
+  OIL = 'Oil',
 }
 
 export const zSumoMap = z.object({

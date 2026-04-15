@@ -32,13 +32,19 @@ import { BaseGameMode, GameModeName } from '../../game-mode';
 import { SumoMaps } from './maps';
 
 export const zCreateSumoOptions = zCreateMatchOptions.extend({
-  map: z.enum(SumoMapName),
-  vehicleClass: z.enum(['all', ...VEHICLES_DATA.map((o) => o.category)]),
-  maxPlayers: z.number().min(2).max(6).meta({ default: 6 }),
+  map: z.enum(SumoMapName).meta({ title: 'Map' }),
+  vehicleClass: z
+    .enum(['all', ...VEHICLES_DATA.map((o) => o.category)])
+    .meta({ title: 'Vehicle Class' }),
+  maxPlayers: z
+    .number()
+    .min(1)
+    .max(10)
+    .meta({ default: 10, title: 'Max Players' }),
 });
 
 export const zJoinSumoOptions = zJoinMatchOptions.extend({
-  vehicle: z.enum(VEHICLES_DATA.map((o) => o.name)),
+  vehicle: z.enum(VEHICLES_DATA.map((o) => o.name)).meta({ title: 'Vehicle' }),
 });
 
 type RacerConstructorOptions = {
@@ -117,7 +123,6 @@ class Racer {
     }
 
     this.alive = false;
-    this.vehicle.destroy();
   }
 
   reset(triggerClient = true) {
@@ -237,7 +242,7 @@ export class Sumo extends BaseGameMode<
     for (const racer of this.racers.values()) {
       browser.gameModes.sumo.startDrawTimer.trigger(
         racer.player.id,
-        this.DRAW_TIME,
+        Date.now() + this.DRAW_TIME,
       );
     }
 
