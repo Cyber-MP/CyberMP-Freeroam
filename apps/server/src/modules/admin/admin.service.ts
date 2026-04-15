@@ -39,9 +39,13 @@ export class AdminService {
   //   const isAdmin = this.isAdmin(player);
 
   //   if (!isAdmin) {
-  //     this.chatService.sendMessage(player, 'You are not an admin ._.');
+  //     this.chatWarn(player);
   //   }
 
   //   return isAdmin;
   // }
+
+  public chatWarn(player: MpPlayer | number) {
+    this.chatService.sendMessage(player, 'You are not an admin ._.');
+  }
 }
