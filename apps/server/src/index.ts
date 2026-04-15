@@ -1,6 +1,7 @@
 import { RpcError } from '@cybermp/rpc-server';
 import { eagerRegistry } from '@freeroam/inversify';
 import { container } from './container';
+import { AdminModule } from './modules/admin/admin.module';
 import { ChatModule } from './modules/chat/chat.module';
 import { GameModesModule } from './modules/game-modes/game-modes.module';
 import { KillFeedModule } from './modules/killfeed/killfeed.module';
@@ -38,6 +39,7 @@ const modules = [
   GameModesModule,
   PolygonsModule,
   TeleportModule,
+  AdminModule,
 ];
 
 const coopWhen = async () => {
