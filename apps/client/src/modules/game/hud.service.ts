@@ -29,7 +29,7 @@ export class GHudService {
         continue;
       }
 
-      settingVar.SetValue(false);
+      settingVar.SetEnabled(false);
     }
   }
 
@@ -42,7 +42,7 @@ export class GHudService {
         continue;
       }
 
-      settingVar.SetValue(true);
+      settingVar.SetEnabled(true);
     }
   }
 }

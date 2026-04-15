@@ -87,8 +87,8 @@ export class Mapping {
     });
 
     const entity = await this.entityService.waitForEntityToSpawn(entityId);
-    
-    entity?.GetComponents
+
+    entity?.GetComponents;
   }
 
   private renderSectors(sectors: Sector[]) {
