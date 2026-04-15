@@ -5,7 +5,7 @@ import { inject, injectable, postConstruct } from 'inversify';
 import z from 'zod';
 import { r } from '../../rpc';
 import { AdminService } from '../admin/admin.service';
-import { ChatService } from '../chat/chat.service';
+import { ChatCommandFlag, ChatService } from '../chat/chat.service';
 import { TimeService } from './time.service';
 
 export const zServerTime = z.object({
@@ -34,10 +34,6 @@ export class TimeController {
   }
 
   private adminTime(player: MpPlayer, hours: number, minutes: number) {
-    if (!this.adminService.isAdminWithWarn(player)) {
-      return;
-    }
-
     this.timeService.setTime(hours, minutes);
   }
 
@@ -50,6 +46,7 @@ export class TimeController {
     this.chatService.addCommand({
       name: 'admin-time',
       description: 'Set server time',
+      flags: ChatCommandFlag.Admin,
       args: z.tuple([
         z.coerce.number().meta({ title: 'hours' }).min(0).max(24),
         z.coerce.number().meta({ title: 'minutes' }).min(0).max(60).optional(),
