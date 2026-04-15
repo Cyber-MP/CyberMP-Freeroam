@@ -17,6 +17,8 @@ export enum SumoMapName {
   GUZL = 'Guzl',
   TOWER = 'Tower',
   FACTORY = 'Factory',
+  PARKOUR = 'Parkour',
+  OIL = 'Oil',
 }
 
 export const zSumoMap = z.object({
