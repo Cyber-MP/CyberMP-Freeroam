@@ -21,8 +21,6 @@ const ENTRY_STATUS_EFFECTS = [
   'GameplayRestriction.NoMovement',
   'GameplayRestriction.NoWeapons',
   'GameplayRestriction.NoCombat',
-  'GameplayRestriction.BlockAllMenu',
-  'GameplayRestriction.NoRadialMenus',
 ] as const;
 
 @eager()
@@ -84,6 +82,13 @@ export class EntryService {
   }
 
   private async onGameLoaded() {
+    const questsSystem = mp.game.ScriptGameInstance.GetQuestsSystem();
+
+    questsSystem.SetFactStr('apartment_on', 1);
+    questsSystem.SetFactStr('unlock_car_hud_dpad', 1);
+    questsSystem.SetFactStr('vvc_visual_customization_unlocked', 1);
+    questsSystem.SetFactStr('disable_tutorials', 1);
+
     this.hud.hide();
     this.menusService.closeAllMenus();
     // this.cefService.setLoadingRedirect('/entry');

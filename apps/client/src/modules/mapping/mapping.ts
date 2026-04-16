@@ -73,9 +73,14 @@ export class Mapping {
 
     const rot = mp.game.Quaternion.ToEulerAngles(
       createQuaternion(
-        ...(Object.values(node.rotation) as [number, number, number, number]),
+        node.rotation.i,
+        node.rotation.j,
+        node.rotation.k,
+        node.rotation.r,
       ),
     );
+
+    console.log(rot.yaw);
 
     const entityId = this.objectsService.create({
       skinHash: model,
@@ -88,20 +93,20 @@ export class Mapping {
 
     const entity = await this.entityService.waitForEntityToSpawn(entityId);
 
-    const worldTransform = new mp.game.WorldTransform();
-    const worldPosition = new mp.game.WorldPosition();
-    mp.game.WorldPosition.SetVector4(
-      worldPosition,
-      Object.assign(new mp.game.Vector4(), node.position),
-    );
+    // const worldTransform = new mp.game.WorldTransform();
+    // const worldPosition = new mp.game.WorldPosition();
+    // mp.game.WorldPosition.SetVector4(
+    //   worldPosition,
+    //   Object.assign(new mp.game.Vector4(), node.position),
+    // );
 
-    mp.game.WorldTransform.SetOrientation(
-      worldTransform,
-      Object.assign(new mp.game.Quaternion(), node.rotation),
-    );
-    mp.game.WorldTransform.SetWorldPosition(worldTransform, worldPosition);
+    // mp.game.WorldTransform.SetOrientation(
+    //   worldTransform,
+    //   Object.assign(new mp.game.Quaternion(), node.rotation),
+    // );
+    // mp.game.WorldTransform.SetWorldPosition(worldTransform, worldPosition);
 
-    entity?.SetWorldTransform(worldTransform);
+    // entity?.SetWorldTransform(worldTransform);
   }
 
   private renderSectors(sectors: Sector[]) {
