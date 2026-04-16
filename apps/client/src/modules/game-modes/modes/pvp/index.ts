@@ -8,10 +8,16 @@ import type { Vector4 } from '@cybermp/client-types/game';
 import { inject, injectable } from 'inversify';
 import { mp } from '../../../../mp';
 import { browser } from '../../../../rpc/browser';
+import {
+  type DeathEvent,
+  DeathService,
+  type OnDeathCallback,
+} from '../../../death/death.service';
 import { GHealthService } from '../../../game/health/health.service';
 import { GKeyboardService } from '../../../game/keyboard.service';
 import { GStatusEffectsService } from '../../../game/status-effects/status-effects.service';
 import { GTeleportService } from '../../../game/teleport/teleport.service';
+import { SpawnService } from '../../../spawn/spawn.service';
 import { SpectatingService } from '../../../spectating/spectating.service';
 import { BaseGameMode } from '../../game-mode';
 import type { PvpPrepareDTO } from './dto';
@@ -36,6 +42,8 @@ export class Pvp extends BaseGameMode<'pvp'> {
     private statusEffectsService: GStatusEffectsService,
     @inject(GKeyboardService) private keyboardService: GKeyboardService,
     @inject(SpectatingService) private spectatingService: SpectatingService,
+    @inject(DeathService) private deathService: DeathService,
+    @inject(SpawnService) private spawnService: SpawnService,
   ) {
     super();
   }
@@ -53,10 +61,13 @@ export class Pvp extends BaseGameMode<'pvp'> {
     this.statusEffectsService.add('GameplayRestriction.BlockAllMenu');
     this.statusEffectsService.add('GameplayRestriction.NoRadialMenus');
     this.statusEffectsService.add('GameplayRestriction.NoHealing');
+
+    this.mountDeathHandler();
   }
 
   end() {
     this.unmountCheckWeaponInterval();
+    this.unmountDeathHandler();
 
     setTimeout(() => {
       this.unmountSpectateBinds();
@@ -153,6 +164,21 @@ export class Pvp extends BaseGameMode<'pvp'> {
     if (this.checkWeaponInterval) {
       clearInterval(this.checkWeaponInterval);
     }
+  }
+
+  private deathHandler: OnDeathCallback = (event: DeathEvent) => {
+    event.preventDefault();
+    this.spawnService.spawn({
+      position: mp.game.GetPlayer().GetWorldPosition(),
+    });
+  };
+
+  private mountDeathHandler() {
+    this.deathService.subscribe(this.deathHandler);
+  }
+
+  private unmountDeathHandler() {
+    this.deathService.unsubscribe(this.deathHandler);
   }
 
   updateLivingIds(data: number[]) {
