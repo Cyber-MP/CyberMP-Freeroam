@@ -21,7 +21,7 @@ export class SumoController {
     private matchMemberMiddleware: MatchMiddleware,
   ) {}
 
-  surrender(ctx: RpcMatchContext<Sumo>) {
+  lose(ctx: RpcMatchContext<Sumo>) {
     return ctx.match.mode.lose(ctx.player.id);
   }
 
@@ -30,10 +30,7 @@ export class SumoController {
     const { lose } = sumoContract;
 
     r.implement(sumoContract, {
-      lose: lose.implement(
-        this.matchMemberMiddleware,
-        this.surrender.bind(this),
-      ),
+      lose: lose.implement(this.matchMemberMiddleware, this.lose.bind(this)),
     });
   }
 }
