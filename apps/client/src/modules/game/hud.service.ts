@@ -6,7 +6,25 @@ import { mp } from '../../mp';
 
 // TODO: disable default hud hints
 
-const DEFAULT_HUD_OPTIONS = [];
+const DEFAULT_HUD_OPTIONS = {
+  npc_healthbar: false, // Boss Health Bars
+  ammo_counter: true, // Ammo Counter
+  hud_markers: false, // Hints
+  action_buttons: false, // Action Buttons
+  activity_log: false, // Activity Log
+  crosshairs: true, // Crosshar
+  object_markers: false, // Target Marker
+  quest_tracker: true, // Job Tracker
+  npc_names: true, // NPC Names
+  wanted_level: true, // NCPD Wanted Level
+  npc_nameplates: true, // NPC Nameplates
+  crouch_indicator: false, // Crouch Indicator
+  minimap: true,
+  healthbar: true,
+  stamina_oxygen: true,
+  input_hints: false,
+  vehicle_hud: true,
+};
 
 @eager()
 @injectable()
@@ -32,14 +50,13 @@ export class GHudService {
         continue;
       }
 
-      console.log(
-        '+++',
-        settingVar.GetName(),
-        settingVar.GetDisplayName(),
-        settingVar.GetDisplayNameKey(0),
-      );
+      // console.log('+++', settingVar.GetName());
 
-      // settingVar.SetEnabled();
+      settingVar.SetEnabled(
+        DEFAULT_HUD_OPTIONS[
+          settingVar.GetName() as keyof typeof DEFAULT_HUD_OPTIONS
+        ] ?? false,
+      );
     }
   }
 
