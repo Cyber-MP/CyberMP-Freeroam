@@ -272,7 +272,8 @@ export class Sumo extends BaseGameMode<
       return;
     }
 
-    return racer.lose();
+    racer.lose();
+    this.checkSurvivors();
   }
 
   async startCountdown() {
