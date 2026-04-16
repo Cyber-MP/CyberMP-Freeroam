@@ -56,7 +56,7 @@ export class GHudService {
         ] ?? false,
       );
 
-      settingVar.SetEnabled(
+      settingVar.SetVisible(
         DEFAULT_HUD_OPTIONS[
           settingVar.GetName() as keyof typeof DEFAULT_HUD_OPTIONS
         ] ?? false,
