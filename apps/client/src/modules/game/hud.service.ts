@@ -14,12 +14,12 @@ const DEFAULT_HUD_OPTIONS = {
   action_buttons: false, // Action Buttons
   activity_log: false, // Activity Log
   crosshairs: true, // Crosshar
-  object_markers: false, // Target Marker
-  quest_tracker: true, // Job Tracker
+  quest_tracker: false, // Target Marker
+  object_markers: true, // Job Tracker
   npc_names: true, // NPC Names
   wanted_level: true, // NCPD Wanted Level
   npc_nameplates: true, // NPC Nameplates
-  crouch_indicator: false, // Crouch Indicator
+  crouch_indicator: true, // Crouch Indicator
   minimap: true,
   healthbar: true,
   stamina_oxygen: true,
