@@ -2,6 +2,7 @@ import { EInputAction, EInputKey } from '@cybermp/client-types/enums';
 import type { Vector4 } from '@cybermp/client-types/game';
 import { inject, injectable } from 'inversify';
 import { mp } from '../../../../mp';
+import { server } from '../../../../rpc';
 import { browser } from '../../../../rpc/browser';
 import { GHealthService } from '../../../game/health/health.service';
 import { GKeyboardService } from '../../../game/keyboard.service';
@@ -50,6 +51,7 @@ export class Sumo extends BaseGameMode<'sumo'> {
   end() {
     setTimeout(() => {
       this.unmountSpectateBinds();
+      this.unmountVehicleCheckInterval();
     });
 
     this.spectatingService.unspectate();
@@ -171,13 +173,17 @@ export class Sumo extends BaseGameMode<'sumo'> {
     this.statusEffectsService.remove('GameplayRestriction.NoDriving');
   }
 
+  onLoose() {
+    server.gameModes.sumo.lose.trigger();
+  }
+
   private mountVehicleCheckInterval() {
     this.vehicleCheckInterval = setInterval(() => {
       const mountedVehicle = mp.game.GetMountedVehicle(
         mp.game.GetPlayerObject(),
       );
       if (!mountedVehicle) {
-        this.onDead();
+        this.onLoose();
       }
     }, 2000);
   }

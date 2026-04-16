@@ -8,6 +8,7 @@ import { zGameModesCreateSchemas } from './dto/game-modes-schemas.dto';
 import { zGetJoinSchemaDTO } from './dto/get-join-schema.dto';
 import { GameModesService } from './game-modes.service';
 import { raceContract } from './modes/race/controller';
+import { sumoContract } from './modes/sumo/controller';
 
 export const gameModesContract = {
   getCreateSchemas: r.contract
@@ -20,6 +21,7 @@ export const gameModesContract = {
     .output(z.record(z.string(), z.unknown()))
     .build(),
   race: raceContract,
+  sumo: sumoContract,
 };
 
 type ContractInputs = InferRouterInputs<typeof gameModesContract>;
