@@ -37,8 +37,6 @@ export class GHudService {
   private init() {
     mp.game.onGameLoaded(() => {
       this.system = mp.game.ScriptGameInstance.GetSettingsSystem();
-
-      this.setDefaultHud();
     });
   }
 
@@ -82,15 +80,17 @@ export class GHudService {
   }
 
   show() {
-    const group = this.system.GetGroup(this.hud_path);
-    const vars = group.GetVars(false);
+    this.setDefaultHud();
 
-    for (const settingVar of vars) {
-      if (+String(settingVar.GetType()) !== InGameConfigVarType.Bool) {
-        continue;
-      }
+    // const group = this.system.GetGroup(this.hud_path);
+    // const vars = group.GetVars(false);
 
-      settingVar.SetEnabled(true);
-    }
+    // for (const settingVar of vars) {
+    //   if (+String(settingVar.GetType()) !== InGameConfigVarType.Bool) {
+    //     continue;
+    //   }
+
+    //   settingVar.SetEnabled(true);
+    // }
   }
 }
