@@ -86,13 +86,23 @@ export class EntryService {
     browser.navigate.trigger('/hud');
   }
 
-  private async onGameLoaded() {
+  private applyDefaultGarbage() {
     const questsSystem = mp.game.ScriptGameInstance.GetQuestsSystem();
 
     questsSystem.SetFactStr('apartment_on', 1);
     questsSystem.SetFactStr('unlock_car_hud_dpad', 1);
     questsSystem.SetFactStr('vvc_visual_customization_unlocked', 1);
     questsSystem.SetFactStr('disable_tutorials', 1);
+
+    mp.game.AddToInventory('Ammo.HandgunAmmo', 1000);
+    mp.game.AddToInventory('Ammo.ShotgunAmmo', 2000);
+    mp.game.AddToInventory('Ammo.RifleAmmo', 3000);
+    mp.game.AddToInventory('Ammo.SniperRifleAmmo', 700);
+    mp.game.AddToInventory('Ammo.Special', 700);
+  }
+
+  private async onGameLoaded() {
+    this.applyDefaultGarbage();
 
     this.hud.hide();
     this.menusService.closeAllMenus();
