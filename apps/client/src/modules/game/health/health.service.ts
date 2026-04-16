@@ -19,18 +19,15 @@ export class GHealthService {
   }
 
   resetToDefault() {
-    this.setMax(this.DEFAULT_HEALTH);
-    this.setCurrent(this.DEFAULT_HEALTH);
+    this.set(this.DEFAULT_HEALTH);
   }
 
   god(value: boolean) {
     if (value) {
-      this.setMax(99999999);
-      this.setCurrent(99999999);
+      this.set(99999999);
       this.statusEffectsService.add('BaseStatusEffect.Invulnerable');
     } else {
-      this.setCurrent(this.DEFAULT_HEALTH);
-      this.setMax(this.DEFAULT_HEALTH);
+      this.set(this.DEFAULT_HEALTH);
       this.statusEffectsService.remove('BaseStatusEffect.Invulnerable');
     }
 
@@ -88,8 +85,13 @@ export class GHealthService {
   }
 
   set(value: number) {
-    this.setMax(value);
-    this.setCurrent(value);
+    if (value > this.get()) {
+      this.setCurrent(value);
+      this.setMax(value);
+    } else {
+      this.setCurrent(value);
+      this.setMax(value);
+    }
   }
 
   get() {

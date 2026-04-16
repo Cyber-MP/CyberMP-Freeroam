@@ -54,16 +54,7 @@ export class Pvp extends BaseGameMode<'pvp'> {
   start() {
     this.spectatingService.unspectate();
 
-    this.healthService.set(this.HEALTH);
-
     this.initialPosition = mp.game.GetPlayer().GetWorldPosition();
-
-    this.statusEffectsService.add('GameplayRestriction.NoMovement');
-    this.statusEffectsService.add('GameplayRestriction.NoCombat');
-    this.statusEffectsService.add('GameplayRestriction.NoWeapons');
-    this.statusEffectsService.add('GameplayRestriction.BlockAllMenu');
-    this.statusEffectsService.add('GameplayRestriction.NoRadialMenus');
-    this.statusEffectsService.add('GameplayRestriction.NoHealing');
 
     this.mountDeathHandler();
   }
@@ -101,8 +92,16 @@ export class Pvp extends BaseGameMode<'pvp'> {
   async prepare(data: PvpPrepareDTO) {
     this.spawnService.spawn({
       position: data.startPoint,
+      health: this.HEALTH,
     });
     await this.loadingScreenService.waitForLoadingScreenToHide();
+
+    this.statusEffectsService.add('GameplayRestriction.NoMovement');
+    this.statusEffectsService.add('GameplayRestriction.NoCombat');
+    this.statusEffectsService.add('GameplayRestriction.NoWeapons');
+    this.statusEffectsService.add('GameplayRestriction.BlockAllMenu');
+    this.statusEffectsService.add('GameplayRestriction.NoRadialMenus');
+    this.statusEffectsService.add('GameplayRestriction.NoHealing');
 
     browser.hud.setGlobalPath.trigger('/hud/game-modes/pvp/');
     browser.navigate.trigger('/hud/game-modes/pvp/');

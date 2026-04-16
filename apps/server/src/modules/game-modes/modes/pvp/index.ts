@@ -29,7 +29,7 @@ import { PvpMaps } from './maps';
 
 export const zCreatePvpOptions = zCreateMatchOptions.extend({
   map: z.enum(PvpMapName).meta({ title: 'Map' }),
-  maxPlayers: z.number().min(2).max(20).meta({ default: 20 }),
+  maxPlayers: z.number().min(1).max(20).meta({ default: 20 }),
   healing: z.boolean().default(true).optional().meta({ title: 'Healing' }),
 });
 
@@ -122,7 +122,7 @@ export class Pvp extends BaseGameMode<
   private drawTimeout: ReturnType<typeof setTimeout> | null = null;
 
   private readonly COUNTDOWN_TIME = ms('5s');
-  private readonly DRAW_TIME = ms('20m');
+  private readonly DRAW_TIME = ms('10m');
 
   @inject(PolygonsService)
   private polygonsService!: PolygonsService;
