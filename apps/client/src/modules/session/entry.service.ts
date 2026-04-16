@@ -9,6 +9,7 @@ import { CefService } from '../cef/cef.service';
 import { GCameraService } from '../game/camera.service';
 import { GHealthService } from '../game/health/health.service';
 import { GHudService } from '../game/hud.service';
+import { GKeyboardService } from '../game/keyboard.service';
 import { GLoadingScreenService } from '../game/loading-screen.service';
 import { GMenusService } from '../game/menus.service';
 import { GPlayerService } from '../game/player.service';
@@ -44,6 +45,8 @@ export class EntryService {
     @inject(GStatusEffectsService)
     private readonly statusEffects: GStatusEffectsService,
     @inject(CefService) private readonly cefService: CefService,
+    @inject(GKeyboardService)
+    private readonly keyboardService: GKeyboardService,
     @inject(GCameraService) private readonly cameraService: GCameraService,
     @inject(LoggerService) private readonly logger: LoggerService,
     @inject(GPlayerService) private readonly playerService: GPlayerService,
@@ -68,13 +71,15 @@ export class EntryService {
     this.logger.info('Exiting entry screen and restoring gameplay state');
     this.toggleEntryRestrictions(false);
 
-    this.playerService.invisible(false);
+    // this.playerService.invisible(false);
     this.hud.show();
 
     if (this.cameraEntity) {
       this.cameraService.destroy(this.cameraEntity);
       this.cameraEntity = null;
     }
+
+    this.keyboardService.unsubscribe(this.onKeyPressed);
 
     browser.hud.setGlobalPath.trigger('/hud');
     // this.cefService.setLoadingRedirect('/hud');
@@ -100,11 +105,13 @@ export class EntryService {
 
     this.initCamera();
 
-    this.playerService.invisible(true);
+    // this.playerService.invisible(true);
 
     setTimeout(() => {
       browser.navigate.trigger('/entry');
     }, 100);
+
+    this.keyboardService.subscribe(this.onKeyPressed);
 
     this.logger.info('Fully initialized entry service, spawn player and etc ');
   }
@@ -137,6 +144,10 @@ export class EntryService {
       this.logger.fail(`Failed to initialize entry camera: ${err}`);
     }
   }
+
+  private onKeyPressed = () => {
+    this.enter();
+  };
 
   private toggleEntryRestrictions(active: boolean) {
     ENTRY_STATUS_EFFECTS.forEach((effect) => {
