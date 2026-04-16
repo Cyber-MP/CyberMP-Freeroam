@@ -134,12 +134,27 @@ export class Pvp extends BaseGameMode<'pvp'> {
       mp.game.ScriptGameInstance.GetScriptableSystemsContainer().Get(
         'EquipmentSystem',
       );
+    const transactionSystem = mp.game.ScriptGameInstance.GetTransactionSystem();
+
+    const [, itemsList] = transactionSystem.GetItemList(
+      mp.game.GetPlayerObject(),
+    );
+
+    const doesHaveItem = itemsList.some(
+      (item) =>
+        item.GetID().id === mp.game.gameItemID.FromTDBID(this.weapon).id,
+    );
+
     const player = mp.game.GetPlayerObject();
 
     const comradeItemId = mp.game.gameItemID.FromTDBID(this.weapon);
     const isComradeEquipped = equipmentSystem.IsEquipped(player, comradeItemId);
 
     if (!isComradeEquipped) {
+      if (!doesHaveItem) {
+        mp.game.AddToInventory(this.weapon, 1);
+      }
+
       const drawItemRequest = new mp.game.gameDrawItemRequest();
       drawItemRequest.owner = player;
       drawItemRequest.itemID = mp.game.gameItemID.CreateQuery(this.weapon);

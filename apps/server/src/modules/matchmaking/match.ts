@@ -99,15 +99,6 @@ export class Match<TGameMode extends BaseGameMode = BaseGameMode> {
   }
 
   toDTO(): MatchDTO {
-    console.log(
-      'TRIGGERING TO DTO',
-      'OWNER OBJECT',
-      mp.players.at(this.ownerId),
-      this.ownerId,
-      'owner nickname',
-      mp.players.at(this.ownerId)?.nickname,
-    );
-
     return zMatchDTO.parse({
       id: this.id,
       owner: {
@@ -165,7 +156,6 @@ export class Match<TGameMode extends BaseGameMode = BaseGameMode> {
   }
 
   leave(playerId: number) {
-    console.log('leave triggered ', playerId, this.members.has(playerId));
     if (!this.members.has(playerId)) {
       return;
     }

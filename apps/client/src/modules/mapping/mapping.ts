@@ -25,7 +25,7 @@ type SectorNode = {
   secondaryRange: number;
   name: string;
   scale: Vector3;
-  position: Vector3;
+  position: Vector4;
   streamingRefPoint: Vector4;
   rotation: Quaternion;
   type: string;
@@ -88,7 +88,20 @@ export class Mapping {
 
     const entity = await this.entityService.waitForEntityToSpawn(entityId);
 
-    entity?.GetComponents;
+    const worldTransform = new mp.game.WorldTransform();
+    const worldPosition = new mp.game.WorldPosition();
+    mp.game.WorldPosition.SetVector4(
+      worldPosition,
+      Object.assign(new mp.game.Vector4(), node.position),
+    );
+
+    mp.game.WorldTransform.SetOrientation(
+      worldTransform,
+      Object.assign(new mp.game.Quaternion(), node.rotation),
+    );
+    mp.game.WorldTransform.SetWorldPosition(worldTransform, worldPosition);
+
+    entity?.SetWorldTransform(worldTransform);
   }
 
   private renderSectors(sectors: Sector[]) {
@@ -96,20 +109,6 @@ export class Mapping {
       for (const sectorNode of sector.nodes) {
         this.renderSectorNode(sectorNode);
       }
-      console.log(
-        JSON.stringify(
-          mp.game.Quaternion.ToEulerAngles(
-            createQuaternion(
-              ...(Object.values(sector.nodes[0].rotation) as [
-                number,
-                number,
-                number,
-                number,
-              ]),
-            ),
-          ),
-        ),
-      );
     }
   }
 
