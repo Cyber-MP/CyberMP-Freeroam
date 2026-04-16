@@ -19,7 +19,7 @@ const DEFAULT_HUD_OPTIONS = {
   npc_names: true, // NPC Names
   wanted_level: true, // NCPD Wanted Level
   npc_nameplates: true, // NPC Nameplates
-  crouch_indicator: true, // Crouch Indicator
+  crouch_indicator: false, // Crouch Indicator
   minimap: true,
   healthbar: true,
   stamina_oxygen: true,
@@ -41,24 +41,6 @@ export class GHudService {
     });
   }
 
-  setDefaultHud() {
-    const group = this.system.GetGroup(this.hud_path);
-
-    for (const settingVar of group.GetVars(false)) {
-      if (+String(settingVar.GetType()) !== InGameConfigVarType.Bool) {
-        continue;
-      }
-
-      const varBool = settingVar as ConfigVarBool;
-
-      varBool.SetValue(
-        DEFAULT_HUD_OPTIONS[
-          varBool.GetName() as keyof typeof DEFAULT_HUD_OPTIONS
-        ] ?? false,
-      );
-    }
-  }
-
   hide() {
     const group = this.system.GetGroup(this.hud_path);
     const vars = group.GetVars(false);
@@ -75,17 +57,20 @@ export class GHudService {
   }
 
   show() {
-    this.setDefaultHud();
+    const group = this.system.GetGroup(this.hud_path);
 
-    // const group = this.system.GetGroup(this.hud_path);
-    // const vars = group.GetVars(false);
+    for (const settingVar of group.GetVars(false)) {
+      if (+String(settingVar.GetType()) !== InGameConfigVarType.Bool) {
+        continue;
+      }
 
-    // for (const settingVar of vars) {
-    //   if (+String(settingVar.GetType()) !== InGameConfigVarType.Bool) {
-    //     continue;
-    //   }
+      const varBool = settingVar as ConfigVarBool;
 
-    //   settingVar.SetEnabled(true);
-    // }
+      varBool.SetValue(
+        DEFAULT_HUD_OPTIONS[
+          varBool.GetName() as keyof typeof DEFAULT_HUD_OPTIONS
+        ] ?? false,
+      );
+    }
   }
 }

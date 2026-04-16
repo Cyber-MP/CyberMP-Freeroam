@@ -9,6 +9,7 @@ import { inject, injectable, postConstruct } from 'inversify';
 import { sleep } from 'radash';
 import { mp } from '../../mp';
 import { browser } from '../../rpc/browser';
+import { GHudService } from '../game/hud.service';
 import { GMenusService } from '../game/menus.service';
 import { GStatusEffectsService } from '../game/status-effects/status-effects.service';
 import { ChatCommandFlag, ChatService } from './chat.service';
@@ -22,6 +23,7 @@ export class BasicChatCommands {
     @inject(ChatService) private chatService: ChatService,
     @inject(GStatusEffectsService) private statusEffects: GStatusEffectsService,
     @inject(GMenusService) private menusService: GMenusService,
+    @inject(GHudService) private hudService: GHudService,
   ) {}
 
   private clear() {
@@ -171,6 +173,14 @@ export class BasicChatCommands {
     }
   }
 
+  private hideGameHud() {
+    this.hudService.hide();
+  }
+
+  private showGameHud() {
+    this.hudService.show();
+  }
+
   @postConstruct()
   private init() {
     this.chatService.addCommand({
@@ -196,6 +206,18 @@ export class BasicChatCommands {
       name: 'levelup',
       description: 'Levels up...',
       handler: this.levelUp.bind(this),
+    });
+
+    this.chatService.addCommand({
+      name: 'hide-game-hud',
+      description: 'Hides game HUD',
+      handler: this.hideGameHud.bind(this),
+    });
+
+    this.chatService.addCommand({
+      name: 'show-game-hud',
+      description: 'Shows game HUD',
+      handler: this.showGameHud.bind(this),
     });
   }
 }
