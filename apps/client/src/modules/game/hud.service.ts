@@ -1,10 +1,31 @@
 import { InGameConfigVarType } from '@cybermp/client-types/enums';
-import type { userSettingsUserSettings } from '@cybermp/client-types/game';
+import type {
+  ConfigVarBool,
+  userSettingsUserSettings,
+} from '@cybermp/client-types/game';
 import { eager } from '@freeroam/inversify';
 import { injectable, postConstruct } from 'inversify';
 import { mp } from '../../mp';
 
-// TODO: disable default hud hints
+const DEFAULT_HUD_OPTIONS = {
+  npc_healthbar: false, // Boss Health Bars
+  ammo_counter: true, // Ammo Counter
+  hud_markers: false, // Hints
+  action_buttons: false, // Action Buttons
+  activity_log: false, // Activity Log
+  crosshairs: true, // Crosshar
+  quest_tracker: false, // Target Marker
+  object_markers: true, // Job Tracker
+  npc_names: true, // NPC Names
+  wanted_level: true, // NCPD Wanted Level
+  npc_nameplates: true, // NPC Nameplates
+  crouch_indicator: false, // Crouch Indicator
+  minimap: true,
+  healthbar: true,
+  stamina_oxygen: true,
+  input_hints: false,
+  vehicle_hud: true,
+};
 
 @eager()
 @injectable()
@@ -29,20 +50,27 @@ export class GHudService {
         continue;
       }
 
-      settingVar.SetEnabled(false);
+      const varBool = settingVar as ConfigVarBool;
+
+      varBool.SetValue(false);
     }
   }
 
   show() {
     const group = this.system.GetGroup(this.hud_path);
-    const vars = group.GetVars(false);
 
-    for (const settingVar of vars) {
+    for (const settingVar of group.GetVars(false)) {
       if (+String(settingVar.GetType()) !== InGameConfigVarType.Bool) {
         continue;
       }
 
-      settingVar.SetEnabled(true);
+      const varBool = settingVar as ConfigVarBool;
+
+      varBool.SetValue(
+        DEFAULT_HUD_OPTIONS[
+          varBool.GetName() as keyof typeof DEFAULT_HUD_OPTIONS
+        ] ?? false,
+      );
     }
   }
 }

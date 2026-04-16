@@ -39,7 +39,7 @@ export const zCreateSumoOptions = zCreateMatchOptions.extend({
     .meta({ title: 'Vehicle Class' }),
   maxPlayers: z
     .number()
-    .min(1)
+    .min(2)
     .max(10)
     .meta({ default: 10, title: 'Max Players' }),
   forceFPP: z
@@ -276,7 +276,8 @@ export class Sumo extends BaseGameMode<
       return;
     }
 
-    return racer.lose();
+    racer.lose();
+    this.checkSurvivors();
   }
 
   async startCountdown() {

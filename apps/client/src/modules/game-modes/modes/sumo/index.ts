@@ -2,6 +2,7 @@ import { EInputAction, EInputKey } from '@cybermp/client-types/enums';
 import type { Vector4 } from '@cybermp/client-types/game';
 import { inject, injectable } from 'inversify';
 import { mp } from '../../../../mp';
+import { server } from '../../../../rpc';
 import { browser } from '../../../../rpc/browser';
 import { GHealthService } from '../../../game/health/health.service';
 import { GKeyboardService } from '../../../game/keyboard.service';
@@ -20,6 +21,7 @@ export class Sumo extends BaseGameMode<'sumo'> {
   private isAlive = true;
   private initialPosition!: Vector4;
   private countDownInterval: ReturnType<typeof setInterval> | undefined;
+  private vehicleCheckInterval: ReturnType<typeof setInterval> | undefined;
 
   constructor(
     @inject(GVehiclesService) private vehiclesService: GVehiclesService,
@@ -54,6 +56,7 @@ export class Sumo extends BaseGameMode<'sumo'> {
   end() {
     setTimeout(() => {
       this.unmountSpectateBinds();
+      this.unmountVehicleCheckInterval();
     });
 
     this.spectatingService.unspectate();
@@ -116,6 +119,7 @@ export class Sumo extends BaseGameMode<'sumo'> {
 
     this.isAlive = false;
 
+    this.unmountVehicleCheckInterval();
     this.mountSpectateBinds();
 
     this.spectateNextValidTarget();
@@ -175,10 +179,34 @@ export class Sumo extends BaseGameMode<'sumo'> {
   }
 
   release() {
+    this.mountVehicleCheckInterval();
     this.statusEffectsService.remove('GameplayRestriction.NoDriving');
 
     if (this.options.forceFPP) {
       this.statusEffectsService.add('GameplayRestriction.VehicleFPP');
+    }
+  }
+
+  onLose() {
+    server.gameModes.sumo.lose.trigger();
+  }
+
+  private mountVehicleCheckInterval() {
+    this.vehicleCheckInterval = setInterval(() => {
+      const mountedVehicle = mp.game.GetMountedVehicle(
+        mp.game.GetPlayerObject(),
+      );
+
+      if (!mountedVehicle) {
+        this.onLose();
+      }
+    }, 2000);
+  }
+
+  private unmountVehicleCheckInterval() {
+    if (this.vehicleCheckInterval) {
+      clearInterval(this.vehicleCheckInterval);
+      this.vehicleCheckInterval = undefined;
     }
   }
 
