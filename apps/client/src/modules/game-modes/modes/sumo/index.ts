@@ -173,7 +173,9 @@ export class Sumo extends BaseGameMode<'sumo'> {
     this.statusEffectsService.remove('GameplayRestriction.NoDriving');
   }
 
-  onLoose() {
+  onLose() {
+    console.log('ON LOSE');
+
     server.gameModes.sumo.lose.trigger();
   }
 
@@ -182,8 +184,11 @@ export class Sumo extends BaseGameMode<'sumo'> {
       const mountedVehicle = mp.game.GetMountedVehicle(
         mp.game.GetPlayerObject(),
       );
+
+      console.log('VEH INT', !mountedVehicle);
+
       if (!mountedVehicle) {
-        this.onLoose();
+        this.onLose();
       }
     }, 2000);
   }

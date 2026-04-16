@@ -260,6 +260,8 @@ export class Sumo extends BaseGameMode<
   }
 
   lose(playerId: number) {
+    console.log('SERVER LOSE');
+
     if (!this.released) {
       return;
     }
