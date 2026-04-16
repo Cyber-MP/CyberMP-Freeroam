@@ -1,10 +1,11 @@
 import { InGameConfigVarType } from '@cybermp/client-types/enums';
-import type { userSettingsUserSettings } from '@cybermp/client-types/game';
+import type {
+  ConfigVarBool,
+  userSettingsUserSettings,
+} from '@cybermp/client-types/game';
 import { eager } from '@freeroam/inversify';
 import { injectable, postConstruct } from 'inversify';
 import { mp } from '../../mp';
-
-// TODO: disable default hud hints
 
 const DEFAULT_HUD_OPTIONS = {
   npc_healthbar: false, // Boss Health Bars
@@ -48,21 +49,13 @@ export class GHudService {
         continue;
       }
 
-      console.log('+++', settingVar.GetName());
-      console.log(
-        '---',
+      const varBool = settingVar as ConfigVarBool;
+
+      varBool.SetValue(
         DEFAULT_HUD_OPTIONS[
-          settingVar.GetName() as keyof typeof DEFAULT_HUD_OPTIONS
+          varBool.GetName() as keyof typeof DEFAULT_HUD_OPTIONS
         ] ?? false,
       );
-
-      settingVar.SetVisible(
-        DEFAULT_HUD_OPTIONS[
-          settingVar.GetName() as keyof typeof DEFAULT_HUD_OPTIONS
-        ] ?? false,
-      );
-
-      console.log('string ', settingVar.IsDisabled());
     }
   }
 
@@ -75,7 +68,9 @@ export class GHudService {
         continue;
       }
 
-      settingVar.SetEnabled(false);
+      const varBool = settingVar as ConfigVarBool;
+
+      varBool.SetValue(false);
     }
   }
 
