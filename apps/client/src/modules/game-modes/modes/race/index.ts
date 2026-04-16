@@ -26,6 +26,7 @@ import {
 } from '../../../death/death.service';
 import { GHealthService } from '../../../game/health/health.service';
 import { GKeyboardService } from '../../../game/keyboard.service';
+import { GLoadingScreenService } from '../../../game/loading-screen.service';
 import { GStatusEffectsService } from '../../../game/status-effects/status-effects.service';
 import { GTeleportService } from '../../../game/teleport/teleport.service';
 import { GVehiclesService } from '../../../game/vehicles/vehicles.service';
@@ -121,6 +122,8 @@ export class Race extends BaseGameMode<'race'> {
     @inject(GKeyboardService) private keyboardService: GKeyboardService,
     @inject(DeathService) private deathService: DeathService,
     @inject(SpawnService) private spawnService: SpawnService,
+    @inject(GLoadingScreenService)
+    private loadingScreenService: GLoadingScreenService,
     @inject(SpectatingService) private spectatingService: SpectatingService,
   ) {
     super();
@@ -200,10 +203,11 @@ export class Race extends BaseGameMode<'race'> {
   }
 
   async prepare(data: RacePrepareDTO) {
-    await this.teleportService.teleportAsync(
-      ...data.startPoint.position,
-      data.startPoint.yaw,
-    );
+    this.spawnService.spawn({
+      position: [...data.startPoint.position, data.startPoint.yaw ?? 0],
+    });
+    
+    await this.loadingScreenService.waitForLoadingScreenToHide();
 
     browser.hud.setGlobalPath.trigger('/hud/game-modes/race/');
     browser.navigate.trigger('/hud/game-modes/race/');

@@ -5,9 +5,11 @@ import { mp } from '../../../../mp';
 import { browser } from '../../../../rpc/browser';
 import { GHealthService } from '../../../game/health/health.service';
 import { GKeyboardService } from '../../../game/keyboard.service';
+import { GLoadingScreenService } from '../../../game/loading-screen.service';
 import { GStatusEffectsService } from '../../../game/status-effects/status-effects.service';
 import { GTeleportService } from '../../../game/teleport/teleport.service';
 import { GVehiclesService } from '../../../game/vehicles/vehicles.service';
+import { SpawnService } from '../../../spawn/spawn.service';
 import { SpectatingService } from '../../../spectating/spectating.service';
 import { BaseGameMode } from '../../game-mode';
 import type { SumoPrepareDTO } from './dto';
@@ -22,6 +24,9 @@ export class Sumo extends BaseGameMode<'sumo'> {
   constructor(
     @inject(GVehiclesService) private vehiclesService: GVehiclesService,
     @inject(GTeleportService) private teleportService: GTeleportService,
+    @inject(SpawnService) private spawnService: SpawnService,
+    @inject(GLoadingScreenService)
+    private loadingScreenService: GLoadingScreenService,
     @inject(GHealthService) private healthService: GHealthService,
     @inject(GStatusEffectsService)
     private statusEffectsService: GStatusEffectsService,
@@ -77,7 +82,11 @@ export class Sumo extends BaseGameMode<'sumo'> {
   }
 
   async prepare(data: SumoPrepareDTO) {
-    await this.teleportService.teleportAsync(...data.startPoint);
+    this.spawnService.spawn({
+      position: data.startPoint,
+    });
+
+    await this.loadingScreenService.waitForLoadingScreenToHide();
 
     browser.hud.setGlobalPath.trigger('/hud/game-modes/sumo/');
     browser.navigate.trigger('/hud/game-modes/sumo/');

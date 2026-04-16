@@ -15,6 +15,7 @@ import {
 } from '../../../death/death.service';
 import { GHealthService } from '../../../game/health/health.service';
 import { GKeyboardService } from '../../../game/keyboard.service';
+import { GLoadingScreenService } from '../../../game/loading-screen.service';
 import { GStatusEffectsService } from '../../../game/status-effects/status-effects.service';
 import { GTeleportService } from '../../../game/teleport/teleport.service';
 import { SpawnService } from '../../../spawn/spawn.service';
@@ -44,6 +45,8 @@ export class Pvp extends BaseGameMode<'pvp'> {
     @inject(SpectatingService) private spectatingService: SpectatingService,
     @inject(DeathService) private deathService: DeathService,
     @inject(SpawnService) private spawnService: SpawnService,
+    @inject(GLoadingScreenService)
+    private loadingScreenService: GLoadingScreenService,
   ) {
     super();
   }
@@ -96,7 +99,10 @@ export class Pvp extends BaseGameMode<'pvp'> {
   }
 
   async prepare(data: PvpPrepareDTO) {
-    await this.teleportService.teleportAsync(...data.startPoint);
+    this.spawnService.spawn({
+      position: data.startPoint,
+    });
+    await this.loadingScreenService.waitForLoadingScreenToHide();
 
     browser.hud.setGlobalPath.trigger('/hud/game-modes/pvp/');
     browser.navigate.trigger('/hud/game-modes/pvp/');
