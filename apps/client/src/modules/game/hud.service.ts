@@ -50,13 +50,21 @@ export class GHudService {
         continue;
       }
 
-      // console.log('+++', settingVar.GetName());
+      console.log('+++', settingVar.GetName());
+      console.log(
+        '---',
+        DEFAULT_HUD_OPTIONS[
+          settingVar.GetName() as keyof typeof DEFAULT_HUD_OPTIONS
+        ] ?? false,
+      );
 
       settingVar.SetEnabled(
         DEFAULT_HUD_OPTIONS[
           settingVar.GetName() as keyof typeof DEFAULT_HUD_OPTIONS
         ] ?? false,
       );
+
+      console.log('string ', settingVar.IsDisabled());
     }
   }
 
