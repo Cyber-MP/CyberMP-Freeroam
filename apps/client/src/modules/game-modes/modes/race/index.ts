@@ -174,6 +174,7 @@ export class Race extends BaseGameMode<'race'> {
 
     this.statusEffectsService.remove('GameplayRestriction.NoCombat');
     this.statusEffectsService.remove('GameplayRestriction.NoWeapons');
+    this.statusEffectsService.remove('GameplayRestriction.VehicleFPP');
 
     browser.hud.setGlobalPath.trigger('/hud');
     browser.navigate.trigger('/hud/game-modes/race/results');
@@ -370,13 +371,9 @@ export class Race extends BaseGameMode<'race'> {
       .filter((r) => r.playerId !== mp.getPlayerServerId(1))
       .find((r) => !r.finished);
 
-    console.log('STARTING SPECTATING NEXT BEST TARGET', nextBest);
-
     if (nextBest) {
-      console.log('next best found start spectate of him');
       this.spectatingService.spectate(nextBest.playerId);
     } else {
-      console.log('next best not found unspectate');
       this.spectatingService.unspectate();
     }
   }
@@ -424,6 +421,10 @@ export class Race extends BaseGameMode<'race'> {
     if (this.options.combat) {
       this.statusEffectsService.remove('GameplayRestriction.NoCombat');
       this.statusEffectsService.remove('GameplayRestriction.NoWeapons');
+    }
+
+    if (this.options.forceFPP) {
+      this.statusEffectsService.add('GameplayRestriction.VehicleFPP');
     }
 
     this.createCheckpoint();

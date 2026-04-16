@@ -111,43 +111,45 @@ function RouteComponent() {
           <RiArrowLeftSLine />
         </Button>
       </Link>
-      <div className="w-64 flex flex-col gap-4">
-        {createOptions && joinSchema ? (
-          <FieldSet>
-            <JoinMatchForm
-              key={`${gameMode}-join`}
-              schema={joinSchema as any}
-              onSubmit={(s) => onJoinOptionsSubmit(s.formData)}
-            />
-          </FieldSet>
-        ) : (
-          <FieldSet className="flex flex-col gap-6">
-            <Field>
-              <FieldLabel>Game mode</FieldLabel>
-              <Select onValueChange={(v) => setGameMode(v as any)}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select game mode" />
-                </SelectTrigger>
-                <SelectContent>
-                  {gameModes.map((mode, index) => (
-                    <SelectItem key={mode} value={mode}>
-                      {mode}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </Field>
-
-            {gameMode && (
-              <CreateMatchForm
-                key={`${gameMode}-create`}
-                schema={createSchema as any}
-                formData={createOptions}
-                onSubmit={(s) => onCreateOptionsSubmit(s.formData)}
+      <div className="w-full overflow-y-scroll h-full flex items-center justify-center pt-12">
+        <div className="w-64 flex flex-col gap-4">
+          {createOptions && joinSchema ? (
+            <FieldSet>
+              <JoinMatchForm
+                key={`${gameMode}-join`}
+                schema={joinSchema as any}
+                onSubmit={(s) => onJoinOptionsSubmit(s.formData)}
               />
-            )}
-          </FieldSet>
-        )}
+            </FieldSet>
+          ) : (
+            <FieldSet className="flex flex-col gap-6">
+              <Field>
+                <FieldLabel>Game mode</FieldLabel>
+                <Select onValueChange={(v) => setGameMode(v as any)}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select game mode" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {gameModes.map((mode, index) => (
+                      <SelectItem key={mode} value={mode}>
+                        {mode}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </Field>
+
+              {gameMode && (
+                <CreateMatchForm
+                  key={`${gameMode}-create`}
+                  schema={createSchema as any}
+                  formData={createOptions}
+                  onSubmit={(s) => onCreateOptionsSubmit(s.formData)}
+                />
+              )}
+            </FieldSet>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -18,6 +18,9 @@ const createUiSchema: UiSchema = {
   healing: {
     'ui:widget': 'SwitchWidget',
   },
+  forceFPP: {
+    'ui:widget': 'SwitchWidget',
+  },
 };
 
 export const CreateMatchForm = ({

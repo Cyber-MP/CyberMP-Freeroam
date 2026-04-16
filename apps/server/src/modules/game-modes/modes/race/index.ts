@@ -41,6 +41,11 @@ export const zCreateRaceOptions = zCreateMatchOptions.extend({
     .meta({ title: 'Vehicle class' }),
   laps: z.number().min(1).max(10).meta({ default: 1 }).meta({ title: 'Laps' }),
   combat: z.boolean().default(false).optional().meta({ title: 'Combat' }),
+  forceFPP: z
+    .boolean()
+    .default(false)
+    .optional()
+    .meta({ title: 'First person view' }),
 });
 
 export const zJoinRaceOptions = zJoinMatchOptions.extend({

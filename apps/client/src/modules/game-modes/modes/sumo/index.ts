@@ -76,6 +76,7 @@ export class Sumo extends BaseGameMode<'sumo'> {
 
     this.statusEffectsService.remove('GameplayRestriction.NoCombat');
     this.statusEffectsService.remove('GameplayRestriction.NoWeapons');
+    this.statusEffectsService.remove('GameplayRestriction.VehicleFPP');
 
     browser.hud.setGlobalPath.trigger('/hud');
     browser.navigate.trigger('/hud');
@@ -175,6 +176,10 @@ export class Sumo extends BaseGameMode<'sumo'> {
 
   release() {
     this.statusEffectsService.remove('GameplayRestriction.NoDriving');
+
+    if (this.options.forceFPP) {
+      this.statusEffectsService.add('GameplayRestriction.VehicleFPP');
+    }
   }
 
   startCountdown(duration: number) {

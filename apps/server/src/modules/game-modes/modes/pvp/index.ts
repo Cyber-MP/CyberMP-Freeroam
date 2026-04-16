@@ -301,6 +301,8 @@ export class Pvp extends BaseGameMode<
     racer?.reset();
 
     this.fighters.delete(playerId);
+
+    this.checkSurvivors();
   }
 
   onPlayerJoin() {}

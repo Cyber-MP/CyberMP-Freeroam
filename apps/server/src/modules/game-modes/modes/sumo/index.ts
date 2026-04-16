@@ -42,6 +42,11 @@ export const zCreateSumoOptions = zCreateMatchOptions.extend({
     .min(1)
     .max(10)
     .meta({ default: 10, title: 'Max Players' }),
+  forceFPP: z
+    .boolean()
+    .default(false)
+    .optional()
+    .meta({ title: 'First person view' }),
 });
 
 export const zJoinSumoOptions = zJoinMatchOptions.extend({
@@ -322,8 +327,9 @@ export class Sumo extends BaseGameMode<
     const racer = this.racers.get(playerId);
 
     racer?.reset();
-
     this.racers.delete(playerId);
+
+    this.checkSurvivors();
   }
 
   onPlayerJoin() {}
