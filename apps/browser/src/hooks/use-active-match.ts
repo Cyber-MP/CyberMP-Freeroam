@@ -1,13 +1,10 @@
-import { useSuspenseQuery } from '@tanstack/react-query';
-import { isMatchMember, type Match } from '@/lib/match';
-import { serverQuery } from '@/rpc';
+import { isMatchMember } from '@/lib/match';
+import { useMatches } from './use-matches';
 import { usePlayerId } from './use-player-id';
 
 export const useActiveMatch = () => {
-  const { data: matches } = useSuspenseQuery<Match[]>(
-    serverQuery.matchmaking.getAll.queryOptions({ refetchInterval: 1000 }),
-  );
-  const playerId = usePlayerId() ?? -1;
+  const matches = useMatches();
+  const playerId = usePlayerId();
 
   return matches.find(
     (o) => isMatchMember(o, playerId) && o.status === 'ACTIVE',

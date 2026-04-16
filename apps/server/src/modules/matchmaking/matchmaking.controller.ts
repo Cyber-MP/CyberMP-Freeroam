@@ -1,13 +1,13 @@
 import type { InferRouterInputs } from '@cybermp/rpc-router/server';
 import { RpcApplyType, type RpcServerContext } from '@cybermp/rpc-server';
 import { eager } from '@freeroam/inversify';
+import { zMatchDTO } from '@freeroam/shared/matchmaking';
 import { inject, injectable, postConstruct } from 'inversify';
 import z from 'zod';
 import { mp } from '../../mp';
 import { r } from '../../rpc';
 import { zCreateMatchDTO } from './dto/create-match.dto';
 import { zJoinMatchDTO } from './dto/join-match.dto';
-import { zMatchDTO } from './match';
 import { MatchRepository } from './match.repository';
 import { MatchmakingService } from './matchmaking.service';
 import {

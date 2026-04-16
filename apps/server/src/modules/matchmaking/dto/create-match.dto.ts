@@ -1,5 +1,5 @@
 import z from 'zod';
-import { GameModeName } from '../../game-modes/game-mode';
+import { GameModeName } from '@freeroam/shared/game-modes';
 import { zCreatePvpOptions, zJoinPvpOptions } from '../../game-modes/modes/pvp';
 import {
   zCreateRaceOptions,

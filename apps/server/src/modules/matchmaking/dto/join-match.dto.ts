@@ -1,5 +1,5 @@
+import { zJoinMatchOptions } from '@freeroam/shared/matchmaking';
 import z from 'zod';
-import { zJoinMatchOptions } from '../match';
 
 export const zJoinMatchDTO = z.object({
   id: z.string(),

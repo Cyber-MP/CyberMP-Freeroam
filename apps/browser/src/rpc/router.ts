@@ -1,5 +1,6 @@
 import z from 'zod';
 import { setBodyVisibility, toggleBodyVisibility } from '../body';
+import { matchmakingContract } from '../hooks/use-matches';
 import { keysContract } from '../keys';
 import { copyToClipboard } from '../lib/clipboard';
 import { pvpContract } from '../routes/hud.game-modes/pvp/-contract';
@@ -20,6 +21,7 @@ export const rpcRouter = {
     console.log('test handler invoked');
   }),
   gameModes: { race: raceContract, sumo: sumoContract, pvp: pvpContract },
+  matchmaking: matchmakingContract,
   keys: keysContract,
   hints: hintsContract,
   chat: chatContract,

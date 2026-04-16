@@ -1,11 +1,11 @@
 import type { RpcClientContext } from '@cybermp/rpc-client';
 import { contract } from '@cybermp/rpc-router/server';
 import { eager } from '@freeroam/inversify';
+import type { MatchDTO } from '@freeroam/shared/matchmaking';
 import { inject, injectable, postConstruct } from 'inversify';
 import z from 'zod';
 import { r } from '../../rpc';
 import { GameModesService } from './game-modes.service';
-import type { MatchDTO } from './match';
 import { pvpContract } from './modes/pvp/controller';
 import { raceContract } from './modes/race/controller';
 import { sumoContract } from './modes/sumo/controller';

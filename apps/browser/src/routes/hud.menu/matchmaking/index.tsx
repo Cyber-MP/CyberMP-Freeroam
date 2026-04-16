@@ -1,10 +1,7 @@
+import type { MatchDTO, TMatchStatus } from '@freeroam/shared/matchmaking';
 import type Form from '@rjsf/core';
 import type { RJSFSchema } from '@rjsf/utils';
-import {
-  useMutation,
-  useQueryClient,
-  useSuspenseQuery,
-} from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { cva } from 'class-variance-authority';
 import { useMemo, useRef } from 'react';
@@ -29,8 +26,9 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useMatches } from '@/hooks/use-matches';
 import { usePlayerId } from '@/hooks/use-player-id';
-import { isMatchMember, type Match, type MatchStatus } from '@/lib/match';
+import { isMatchMember } from '@/lib/match';
 import { serverQuery } from '@/rpc';
 import { queryClient } from '@/tanstack-query';
 import { JoinMatchForm } from './-components/form';
@@ -81,11 +79,11 @@ const matchStatusVariants = cva('px-2 py-1 text-xs font-bold uppercase', {
       LOBBY: 'bg-green-500/20 text-green-500',
       ACTIVE: 'bg-yellow-500/20 text-yellow-500',
       ENDED: 'bg-red-500/20 text-red-500',
-    } as Record<MatchStatus, string>,
+    } satisfies Record<TMatchStatus, string>,
   },
 });
 
-const JoinMatch = (match: Match) => {
+const JoinMatch = (match: MatchDTO) => {
   const queryClient = useQueryClient();
   const joinMutation = useMutation(
     serverQuery.matchmaking.join.triggerMutationOptions({
@@ -158,7 +156,7 @@ const JoinMatch = (match: Match) => {
   );
 };
 
-const MatchComponent = (match: Match) => {
+const MatchComponent = (match: MatchDTO) => {
   const queryClient = useQueryClient();
   const leaveMutation = useMutation(
     serverQuery.matchmaking.leave.triggerMutationOptions({}),
@@ -269,9 +267,7 @@ const MatchComponent = (match: Match) => {
 };
 
 function RouteComponent() {
-  const { data: matches } = useSuspenseQuery<Match[]>(
-    serverQuery.matchmaking.getAll.queryOptions({ refetchInterval: 1000 }),
-  );
+  const matches = useMatches();
 
   const playerId = usePlayerId();
 

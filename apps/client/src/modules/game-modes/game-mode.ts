@@ -1,12 +1,11 @@
+import type { TGameModeName } from '@freeroam/shared/game-modes';
+import type { MatchDTO } from '@freeroam/shared/matchmaking';
 import type { ServerInputs } from '../../rpc';
-import type { MatchDTO } from './match';
 
 type GameModesOptions = ServerInputs['matchmaking']['create'];
 
-export type GameModeName = MatchDTO['modeName'];
-
 export abstract class BaseGameMode<
-  TName extends GameModeName = GameModeName,
+  TName extends TGameModeName = TGameModeName,
   USchema extends GameModesOptions = Extract<GameModesOptions, { name: TName }>,
 > {
   protected options!: USchema['createOptions'];
@@ -25,5 +24,5 @@ export abstract class BaseGameMode<
   abstract end(): void;
 }
 
-export type GameModeFactory = (name: GameModeName) => BaseGameMode;
+export type GameModeFactory = (name: TGameModeName) => BaseGameMode;
 export const GameModeFactorySymbol = Symbol.for('GameModeFactory');

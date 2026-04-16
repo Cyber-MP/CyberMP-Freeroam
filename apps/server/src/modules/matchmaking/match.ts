@@ -1,49 +1,16 @@
 import { generateUUID } from '@cybermp/rpc-server';
+import {
+  type MatchDTO,
+  MatchStatus,
+  type TMatchStatus,
+  zMatchDTO,
+} from '@freeroam/shared/matchmaking';
 import { inject, injectable } from 'inversify';
-import z from 'zod';
+import type z from 'zod';
 import { mp } from '../../mp';
 import { client } from '../../rpc';
 import { ChatCommandFlag, ChatService } from '../chat/chat.service';
-import { type BaseGameMode, GameModeName } from '../game-modes/game-mode';
-
-export const MatchStatus = {
-  LOBBY: 'LOBBY',
-  ACTIVE: 'ACTIVE',
-  ENDED: 'ENDED',
-} as const;
-
-export type TMatchStatus = (typeof MatchStatus)[keyof typeof MatchStatus];
-
-export const zCreateMatchOptions = z.looseObject({
-  maxPlayers: z
-    .number()
-    .min(1)
-    .max(20)
-    .meta({ default: 5, title: 'Max players' }),
-});
-
-export type CreateMatchOptions = z.infer<typeof zCreateMatchOptions>;
-
-export const zJoinMatchOptions = z.looseObject({});
-
-export type JoinMatchOptions = z.infer<typeof zJoinMatchOptions>;
-
-export const zMatchDTO = z.object({
-  id: z.string(),
-  owner: z.object({
-    id: z.number(),
-    nickname: z.string(),
-  }),
-  dimension: z.number(),
-  joinSchema: z.record(z.string(), z.unknown()),
-  createSchema: z.record(z.string(), z.unknown()),
-  modeName: z.enum(GameModeName),
-  options: zCreateMatchOptions,
-  members: z.record(z.number(), zJoinMatchOptions),
-  status: z.enum(MatchStatus),
-});
-
-export type MatchDTO = z.infer<typeof zMatchDTO>;
+import type { BaseGameMode } from '../game-modes/game-mode';
 
 type MatchConstructorOptions<TGameMode extends BaseGameMode> = {
   createOptions: z.infer<TGameMode['CREATE_OPTIONS_SCHEMA']>;
@@ -103,7 +70,7 @@ export class Match<TGameMode extends BaseGameMode = BaseGameMode> {
       id: this.id,
       owner: {
         id: this.ownerId,
-        nickname: mp.players.at(this.ownerId)?.nickname,
+        nickname: mp.players.at(this.ownerId)?.nickname ?? 'NOT FOUND',
       },
       joinSchema: this.mode
         .getJoinSchema(this.options)
@@ -173,7 +140,6 @@ export class Match<TGameMode extends BaseGameMode = BaseGameMode> {
     const newAuthor = this.members.keys().next().value;
     if (newAuthor) {
       this.ownerId = newAuthor;
-      console.log('setted new owner');
     } else {
       this.end();
     }

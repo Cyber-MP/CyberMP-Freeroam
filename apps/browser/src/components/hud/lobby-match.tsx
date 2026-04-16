@@ -1,16 +1,13 @@
 import { RiGamepadLine, RiUserLine } from '@remixicon/react';
-import { useSuspenseQuery } from '@tanstack/react-query';
 import { useMatchRoute } from '@tanstack/react-router';
 import { motion } from 'framer-motion';
+import { useMatches } from '@/hooks/use-matches';
 import { usePlayerId } from '@/hooks/use-player-id';
-import { isMatchMember, type Match } from '@/lib/match';
-import { serverQuery } from '@/rpc';
+import { isMatchMember } from '@/lib/match';
 import { CardAction, CardHeader, CardTitle } from '../ui/card';
 
 export const LobbyMatch = () => {
-  const { data: matches } = useSuspenseQuery<Match[]>(
-    serverQuery.matchmaking.getAll.queryOptions({ refetchInterval: 1000 }),
-  );
+  const matches = useMatches();
 
   const playerId = usePlayerId();
 
@@ -18,7 +15,7 @@ export const LobbyMatch = () => {
   const isHud = matchRoute({ to: '/hud' });
 
   const activeMatch = matches?.find(
-    (o) => o.status === 'LOBBY' && isMatchMember(o, playerId!),
+    (o) => o.status === 'LOBBY' && isMatchMember(o, playerId),
   );
 
   if (!activeMatch || !isHud) {

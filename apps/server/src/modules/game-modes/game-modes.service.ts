@@ -1,7 +1,7 @@
+import type { TGameModeName } from '@freeroam/shared/game-modes';
 import { injectable } from 'inversify';
 import z from 'zod';
 import type { zGameModesCreateSchemas } from './dto/game-modes-schemas.dto';
-import type { TGameModeName } from './game-mode';
 import { GameModes } from './modes';
 
 @injectable()

@@ -1,4 +1,5 @@
 import type { MpPlayer, MpVehicle, Vector3 } from '@cybermp/server-types';
+import { GameModeName } from '@freeroam/shared/game-modes';
 import {
   type RaceCheckpointNode,
   type RaceFinishedRacer,
@@ -9,6 +10,10 @@ import {
   type RaceStartPointNode,
   zRaceRacerDTO,
 } from '@freeroam/shared/game-modes/race';
+import {
+  zCreateMatchOptions,
+  zJoinMatchOptions,
+} from '@freeroam/shared/matchmaking';
 import { inject, injectable } from 'inversify';
 import ms from 'ms';
 import { sleep } from 'radash';
@@ -17,16 +22,12 @@ import z from 'zod';
 import { mp } from '../../../../mp';
 import { client } from '../../../../rpc';
 import { browser } from '../../../../rpc/browser';
-import {
-  type Match,
-  zCreateMatchOptions,
-  zJoinMatchOptions,
-} from '../../../matchmaking/match';
+import type { Match } from '../../../matchmaking/match';
 import {
   VEHICLES_DATA,
   type VehicleData,
 } from '../../../vehicles-spawner/vehicles.repository';
-import { BaseGameMode, GameModeName } from '../../game-mode';
+import { BaseGameMode } from '../../game-mode';
 import { RaceLapsMaps } from './maps';
 import { type PathTransform, RaceTrackCalculator } from './track-calculator';
 

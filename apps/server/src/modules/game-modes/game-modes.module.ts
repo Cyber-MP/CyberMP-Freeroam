@@ -1,10 +1,6 @@
+import { GameModeName, type TGameModeName } from '@freeroam/shared/game-modes';
 import { ContainerModule } from 'inversify';
-import {
-  type GameModeFactory,
-  GameModeFactorySymbol,
-  GameModeName,
-  type TGameModeName,
-} from './game-mode';
+import { type GameModeFactory, GameModeFactorySymbol } from './game-mode';
 import { GameModesController } from './game-modes.controller';
 import { GameModesService } from './game-modes.service';
 import { Pvp } from './modes/pvp';

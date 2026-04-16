@@ -1,3 +1,4 @@
+import type { MatchDTO } from '@freeroam/shared/matchmaking';
 import { inject, injectable, preDestroy } from 'inversify';
 import { ChatCommandFlag, ChatService } from '../chat/chat.service';
 import { LoggerService } from '../logger/logger.service';
@@ -6,7 +7,6 @@ import {
   type GameModeFactory,
   GameModeFactorySymbol,
 } from './game-mode';
-import type { MatchDTO } from './match';
 
 @injectable()
 export class GameModesService {

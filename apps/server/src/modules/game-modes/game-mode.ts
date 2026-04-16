@@ -1,17 +1,10 @@
-import type z from 'zod';
+import type { TGameModeName } from '@freeroam/shared/game-modes';
 import type {
-  Match,
   zCreateMatchOptions,
   zJoinMatchOptions,
-} from '../matchmaking/match';
-
-export const GameModeName = {
-  SUMO: 'sumo',
-  RACE: 'race',
-  PVP: 'pvp',
-} as const;
-
-export type TGameModeName = (typeof GameModeName)[keyof typeof GameModeName];
+} from '@freeroam/shared/matchmaking';
+import type z from 'zod';
+import type { Match } from '../matchmaking/match';
 
 export abstract class BaseGameMode<
   TCreateOptions extends
