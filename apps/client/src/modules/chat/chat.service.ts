@@ -1,6 +1,7 @@
 import { eager } from '@freeroam/inversify';
 import { injectable } from 'inversify';
 import z from 'zod';
+import { mp } from '../../mp';
 import { browser } from '../../rpc/browser';
 import { zChatCommandMetaDTO } from './dto/chat-command-meta';
 import type { ExecuteCommandDTO } from './dto/execute-command';
@@ -14,6 +15,7 @@ export type ChatCommand<Args extends z.ZodTuple> = {
 export enum ChatCommandFlag {
   None = 0,
   DisableInGameMode = 1 << 2,
+  Admin = 1 << 3,
 }
 
 export type ClientCommand<Args extends z.ZodTuple> = ChatCommand<Args> & {
@@ -51,8 +53,20 @@ export class ChatService {
     }
 
     if (command.flags && (this.commandsFlags & command.flags) !== 0) {
-      this.sendMessage(`Command /${command.name} is disabled right now.`);
-      return;
+      if (
+        command.flags & ChatCommandFlag.Admin &&
+        mp.meta.getLocalPlayerMeta('admin') !== true
+      ) {
+        this.sendMessage('You are not an admin ._.');
+        return;
+      }
+
+      if ((command.flags & ~ChatCommandFlag.Admin) !== 0) {
+        this.sendMessage(
+          `Command /${command.name} is disabled for you right now.`,
+        );
+        return;
+      }
     }
 
     if (!command.args) {
