@@ -143,9 +143,10 @@ export class Pvp extends BaseGameMode<'pvp'> {
   }
 
   private mountCheckWeaponInterval() {
-    this.checkWeaponInterval = setInterval(() => {
-      this.checkCurrentWeapon();
-    });
+    this.checkWeaponInterval = setInterval(
+      this.checkCurrentWeapon.bind(this),
+      500,
+    );
   }
 
   private unmountCheckWeaponInterval() {

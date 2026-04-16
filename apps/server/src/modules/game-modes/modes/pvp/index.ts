@@ -166,9 +166,12 @@ export class Pvp extends BaseGameMode<
   }
 
   private onPolygonLeave = (entity: MpAnyEntity) => {
+    console.log('ENTITY LEAVING POLYGON', entity.id);
     if (entity.type !== EntityType.Player) {
       return;
     }
+
+    console.log('PLAYER LEAVING POLYGON', entity.nickname);
 
     const fighter = this.fighters.get(entity.id);
 
@@ -208,7 +211,7 @@ export class Pvp extends BaseGameMode<
     for (const racer of this.fighters.values()) {
       browser.gameModes.pvp.startDrawTimer.trigger(
         racer.player.id,
-        this.DRAW_TIME,
+        Date.now() + this.DRAW_TIME,
       );
     }
 
@@ -277,7 +280,11 @@ export class Pvp extends BaseGameMode<
       clearTimeout(this.drawTimeout);
     }
 
-    this.polygon?.entityLeaveObserver.unsubscribe(this.onPolygonLeave);
+    if (this.polygon) {
+      this.polygon.entityLeaveObserver.unsubscribe(this.onPolygonLeave);
+      this.polygonsService.destroy(this.polygon);
+    }
+
     mp.events.off('playerDeath', this.onPlayerDeath);
 
     for (const racer of this.fighters.values()) {

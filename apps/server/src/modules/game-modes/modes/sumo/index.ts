@@ -305,7 +305,10 @@ export class Sumo extends BaseGameMode<
       clearTimeout(this.drawTimeout);
     }
 
-    this.polygon?.entityLeaveObserver.unsubscribe(this.onPolygonLeave);
+    if (this.polygon) {
+      this.polygon.entityLeaveObserver.unsubscribe(this.onPolygonLeave);
+      this.polygonsService.destroy(this.polygon);
+    }
 
     for (const racer of this.racers.values()) {
       racer.reset();
