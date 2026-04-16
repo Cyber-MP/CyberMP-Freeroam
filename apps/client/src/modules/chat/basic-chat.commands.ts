@@ -54,10 +54,10 @@ export class BasicChatCommands {
       const player = mp.game.GetPlayerObject();
 
       const addExpRequest = new mp.game.AddExperience();
-
       addExpRequest.Set(player, 50000, gamedataProficiencyType.Level, false);
-
       mp.game.PreventionSystem.QueueRequest(addExpRequest, 0);
+
+      await sleep(100);
 
       const arrData = [
         'Strength',
