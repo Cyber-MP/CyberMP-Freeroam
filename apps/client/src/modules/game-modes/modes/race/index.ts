@@ -206,7 +206,7 @@ export class Race extends BaseGameMode<'race'> {
     this.spawnService.spawn({
       position: [...data.startPoint.position, data.startPoint.yaw ?? 0],
     });
-    
+
     await this.loadingScreenService.waitForLoadingScreenToHide();
 
     browser.hud.setGlobalPath.trigger('/hud/game-modes/race/');
@@ -366,11 +366,17 @@ export class Race extends BaseGameMode<'race'> {
   }
 
   private spectateNextValidTarget() {
-    const nextBest = this.currentRanks.find((r) => !r.finished);
+    const nextBest = this.currentRanks
+      .filter((r) => r.playerId !== mp.getPlayerServerId(1))
+      .find((r) => !r.finished);
+
+    console.log('STARTING SPECTATING NEXT BEST TARGET', nextBest);
 
     if (nextBest) {
+      console.log('next best found start spectate of him');
       this.spectatingService.spectate(nextBest.playerId);
     } else {
+      console.log('next best not found unspectate');
       this.spectatingService.unspectate();
     }
   }
