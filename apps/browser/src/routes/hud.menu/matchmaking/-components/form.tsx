@@ -15,6 +15,9 @@ const createUiSchema: UiSchema = {
   combat: {
     'ui:widget': 'SwitchWidget',
   },
+  healing: {
+    'ui:widget': 'SwitchWidget',
+  },
 };
 
 export const CreateMatchForm = ({
