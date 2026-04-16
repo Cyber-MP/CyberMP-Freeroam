@@ -19,7 +19,8 @@ export class GHealthService {
   }
 
   resetToDefault() {
-    this.set(this.DEFAULT_HEALTH);
+    this.setMax(this.DEFAULT_HEALTH);
+    this.setCurrent(this.DEFAULT_HEALTH);
   }
 
   god(value: boolean) {
