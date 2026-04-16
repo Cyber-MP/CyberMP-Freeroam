@@ -66,6 +66,9 @@ type CommandSuggestionsProps = {
   onSuggestionSelected(
     currentSuggestion: ChatCommand | Snapshot<ChatCommand>,
     currentArgumentIndex: number,
+  ): boolean;
+  onSuggestionExecuted(
+    currentSuggestion: ChatCommand | Snapshot<ChatCommand>,
   ): void;
   input: string;
 };
@@ -73,6 +76,7 @@ type CommandSuggestionsProps = {
 const CommandSuggestions = ({
   suggestions,
   onSuggestionSelected,
+  onSuggestionExecuted,
   input,
 }: CommandSuggestionsProps) => {
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(0);
@@ -100,7 +104,9 @@ const CommandSuggestions = ({
     () => {
       const currentSuggestion = suggestions[selectedSuggestionIndex ?? 0];
 
-      onSuggestionSelected(currentSuggestion, currentArgumentIndex);
+      if (onSuggestionSelected(currentSuggestion, currentArgumentIndex)) {
+        onSuggestionExecuted(currentSuggestion);
+      }
     },
     {
       preventDefault: true,
@@ -315,11 +321,16 @@ const ChatInput = () => {
     if (inputCommand === suggestion.name && suggestion.args) {
       if (currentArgumentIndex < args.length - 1) {
         setInput((prev) => `${prev} `);
+        return false;
       }
     } else {
       setInput(`/${suggestion.name}${args.length ? ' ' : ''}`);
     }
 
+    return true;
+  };
+
+  const onSuggestionExecuted = (suggestion: ChatCommand) => {
     if (inputCommand === suggestion?.name) {
       onSubmit();
     }
@@ -342,6 +353,7 @@ const ChatInput = () => {
         <CommandSuggestions
           suggestions={commandSuggestions}
           onSuggestionSelected={onSuggestionSelected}
+          onSuggestionExecuted={onSuggestionExecuted}
           input={input}
         />
       )}
