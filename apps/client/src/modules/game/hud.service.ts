@@ -6,6 +6,8 @@ import { mp } from '../../mp';
 
 // TODO: disable default hud hints
 
+const DEFAULT_HUD_OPTIONS = [];
+
 @eager()
 @injectable()
 export class GHudService {
@@ -17,7 +19,28 @@ export class GHudService {
   private init() {
     mp.game.onGameLoaded(() => {
       this.system = mp.game.ScriptGameInstance.GetSettingsSystem();
+
+      this.setDefaultHud();
     });
+  }
+
+  setDefaultHud() {
+    const group = this.system.GetGroup(this.hud_path);
+
+    for (const settingVar of group.GetVars(false)) {
+      if (+String(settingVar.GetType()) !== InGameConfigVarType.Bool) {
+        continue;
+      }
+
+      console.log(
+        '+++',
+        settingVar.GetName(),
+        settingVar.GetDisplayName(),
+        settingVar.GetDisplayNameKey(0),
+      );
+
+      // settingVar.SetEnabled();
+    }
   }
 
   hide() {
