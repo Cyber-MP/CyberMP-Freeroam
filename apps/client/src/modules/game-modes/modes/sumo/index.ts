@@ -174,8 +174,6 @@ export class Sumo extends BaseGameMode<'sumo'> {
   }
 
   onLose() {
-    console.log('ON LOSE');
-
     server.gameModes.sumo.lose.trigger();
   }
 
@@ -184,8 +182,6 @@ export class Sumo extends BaseGameMode<'sumo'> {
       const mountedVehicle = mp.game.GetMountedVehicle(
         mp.game.GetPlayerObject(),
       );
-
-      console.log('VEH INT', !mountedVehicle);
 
       if (!mountedVehicle) {
         this.onLose();

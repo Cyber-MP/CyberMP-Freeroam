@@ -38,7 +38,7 @@ export const zCreateSumoOptions = zCreateMatchOptions.extend({
     .meta({ title: 'Vehicle Class' }),
   maxPlayers: z
     .number()
-    .min(1)
+    .min(2)
     .max(10)
     .meta({ default: 10, title: 'Max Players' }),
 });
@@ -260,8 +260,6 @@ export class Sumo extends BaseGameMode<
   }
 
   lose(playerId: number) {
-    console.log('SERVER LOSE');
-
     if (!this.released) {
       return;
     }
