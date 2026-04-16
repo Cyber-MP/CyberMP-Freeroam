@@ -34,18 +34,4 @@ export class AdminService {
 
     return player.getMeta('admin') === true;
   }
-
-  // public isAdminWithWarn(player: MpPlayer | number) {
-  //   const isAdmin = this.isAdmin(player);
-
-  //   if (!isAdmin) {
-  //     this.chatWarn(player);
-  //   }
-
-  //   return isAdmin;
-  // }
-
-  public chatWarn(player: MpPlayer | number) {
-    this.chatService.sendMessage(player, 'You are not an admin ._.');
-  }
 }
