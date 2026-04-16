@@ -18,6 +18,7 @@ export class Sumo extends BaseGameMode<'sumo'> {
   private isAlive = true;
   private initialPosition!: Vector4;
   private countDownInterval: ReturnType<typeof setInterval> | undefined;
+  private vehicleCheckInterval: ReturnType<typeof setInterval> | undefined;
 
   constructor(
     @inject(GVehiclesService) private vehiclesService: GVehiclesService,
@@ -106,6 +107,7 @@ export class Sumo extends BaseGameMode<'sumo'> {
 
     this.isAlive = false;
 
+    this.unmountVehicleCheckInterval();
     this.mountSpectateBinds();
 
     this.spectateNextValidTarget();
@@ -165,7 +167,26 @@ export class Sumo extends BaseGameMode<'sumo'> {
   }
 
   release() {
+    this.mountVehicleCheckInterval();
     this.statusEffectsService.remove('GameplayRestriction.NoDriving');
+  }
+
+  private mountVehicleCheckInterval() {
+    this.vehicleCheckInterval = setInterval(() => {
+      const mountedVehicle = mp.game.GetMountedVehicle(
+        mp.game.GetPlayerObject(),
+      );
+      if (!mountedVehicle) {
+        this.onDead();
+      }
+    }, 2000);
+  }
+
+  private unmountVehicleCheckInterval() {
+    if (this.vehicleCheckInterval) {
+      clearInterval(this.vehicleCheckInterval);
+      this.vehicleCheckInterval = undefined;
+    }
   }
 
   startCountdown(duration: number) {
