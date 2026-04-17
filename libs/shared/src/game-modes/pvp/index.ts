@@ -15,6 +15,10 @@ export const zPvpStartPoints = z.array(zPvpStartPoint);
 
 export enum PvpMapName {
   ROOF404 = 'roof404',
+  CONTAINERS = 'containers',
+  DITCH = 'ditch',
+  GRANDMALL = 'grand_mall',
+  WAREHOUSE = 'warehouse',
 }
 
 export const zPvpMap = z.object({

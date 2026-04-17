@@ -5,6 +5,7 @@ import {
   gamedataEquipmentArea,
 } from '@cybermp/client-types/enums';
 import type { Vector4 } from '@cybermp/client-types/game';
+import type { PvpMap } from '@freeroam/shared/game-modes/pvp';
 import { inject, injectable } from 'inversify';
 import { mp } from '../../../../mp';
 import { browser } from '../../../../rpc/browser';
@@ -18,6 +19,7 @@ import { GKeyboardService } from '../../../game/keyboard.service';
 import { GLoadingScreenService } from '../../../game/loading-screen.service';
 import { GStatusEffectsService } from '../../../game/status-effects/status-effects.service';
 import { GTeleportService } from '../../../game/teleport/teleport.service';
+import { MappingService } from '../../../mapping/mapping.service';
 import { SpawnService } from '../../../spawn/spawn.service';
 import { SpectatingService } from '../../../spectating/spectating.service';
 import { BaseGameMode } from '../../game-mode';
@@ -33,6 +35,7 @@ export class Pvp extends BaseGameMode<'pvp'> {
   private checkWeaponInterval: ReturnType<typeof setInterval> | undefined;
 
   private weapon!: string;
+  private map!: PvpMap;
 
   private HEALTH = 1000;
 
@@ -45,6 +48,7 @@ export class Pvp extends BaseGameMode<'pvp'> {
     @inject(SpectatingService) private spectatingService: SpectatingService,
     @inject(DeathService) private deathService: DeathService,
     @inject(SpawnService) private spawnService: SpawnService,
+    @inject(MappingService) private mappingService: MappingService,
     @inject(GLoadingScreenService)
     private loadingScreenService: GLoadingScreenService,
   ) {
@@ -60,6 +64,10 @@ export class Pvp extends BaseGameMode<'pvp'> {
   }
 
   end() {
+    if (this.map.mapping) {
+      this.mappingService.destroy(this.map.mapping as any);
+    }
+
     this.unmountCheckWeaponInterval();
     this.unmountDeathHandler();
 
@@ -90,6 +98,7 @@ export class Pvp extends BaseGameMode<'pvp'> {
   }
 
   async prepare(data: PvpPrepareDTO) {
+    console.log('SPAWNING ON START POINT', data.startPoint);
     this.spawnService.spawn({
       position: data.startPoint,
       health: this.HEALTH,
@@ -132,6 +141,11 @@ export class Pvp extends BaseGameMode<'pvp'> {
       );
 
     this.weapon = data.weapon;
+    this.map = data.map;
+
+    if (data.map.mapping) {
+      this.mappingService.create(data.map.mapping as any);
+    }
   }
 
   private checkCurrentWeapon() {
