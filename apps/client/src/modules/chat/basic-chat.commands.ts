@@ -181,6 +181,45 @@ export class BasicChatCommands {
     this.hudService.show();
   }
 
+  private vehicleBoost() {
+    const player = mp.game.GetPlayer();
+    const vehicle = player.GetMountedVehicle();
+    if (!vehicle) {
+      return this.chatService.sendMessage('You are not in a vehicle.');
+    }
+    const forward = vehicle.GetWorldForward();
+
+    const boostStrength = 40;
+
+    const boost = {
+      x: forward.x * boostStrength,
+      y: forward.y * boostStrength,
+      z: forward.z * boostStrength,
+    };
+
+    vehicle.AddLinelyVelocity(boost, { x: 0, y: 0, z: 0 });
+  }
+
+  private vehicleStop() {
+    const player = mp.game.GetPlayer();
+    const vehicle = player.GetMountedVehicle();
+    if (!vehicle) {
+      return this.chatService.sendMessage('You are not in a vehicle.');
+    }
+
+    vehicle.ChangeLinelyVelocity({ x: 0, y: 0, z: 0 }, { x: 0, y: 0, z: 0 }, 0);
+  }
+
+  private vehicleGravity() {
+    const player = mp.game.GetPlayer();
+    const vehicle = player.GetMountedVehicle();
+    if (!vehicle) {
+      return this.chatService.sendMessage('You are not in a vehicle.');
+    }
+
+    vehicle.EnableGravity(!vehicle.HasGravity());
+  }
+
   @postConstruct()
   private init() {
     this.chatService.addCommand({
@@ -193,6 +232,23 @@ export class BasicChatCommands {
       name: 'pos',
       description: 'Prints you current position',
       handler: this.pos.bind(this),
+    });
+    
+    this.chatService.addCommand({
+      name: 'vboost',
+      description: 'Prints you current position',
+      handler: this.vehicleBoost.bind(this),
+    });
+    this.chatService.addCommand({
+      name: 'vstop',
+      description: 'Stop vehicle velocity',
+      handler: this.vehicleStop.bind(this),
+    });
+
+    this.chatService.addCommand({
+      name: 'vgrav',
+      description: 'Toggle gravity on your current vehicle',
+      handler: this.vehicleGravity.bind(this),
     });
 
     this.chatService.addCommand({
