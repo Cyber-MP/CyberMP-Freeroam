@@ -10,7 +10,7 @@ import { mp } from '../../mp';
 const DEFAULT_HUD_OPTIONS = {
   npc_healthbar: false, // Boss Health Bars
   ammo_counter: true, // Ammo Counter
-  hud_markers: false, // Hints
+  hud_markers: true, // Hints
   action_buttons: false, // Action Buttons
   activity_log: false, // Activity Log
   crosshairs: true, // Crosshar
