@@ -17,14 +17,14 @@ export class NoclipCommands {
   private init() {
     this.chatService.addCommand({
       name: 'noclip',
-      flags: ChatCommandFlag.DisableInGameMode,
+      flags: ChatCommandFlag.DisableInGameMode | ChatCommandFlag.Admin,
       handler: () => {
         this.noclipService.toggle();
       },
     });
     this.chatService.addCommand({
       name: 'noclip-speed',
-      flags: ChatCommandFlag.DisableInGameMode,
+      flags: ChatCommandFlag.DisableInGameMode | ChatCommandFlag.Admin,
       args: z.tuple([z.coerce.number().meta({ title: 'value' })]),
       handler: (value) => {
         this.noclipService.setSpeed(value);
