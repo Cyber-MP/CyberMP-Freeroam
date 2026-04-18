@@ -67,7 +67,10 @@ export class ChatService {
       this.playersFlags.get(player.id) ?? ChatCommandFlag.None;
 
     if (command.flags) {
-      if (command.flags & ChatCommandFlag.Admin) {
+      if (
+        command.flags & ChatCommandFlag.Admin &&
+        !(playerFlags & ChatCommandFlag.Admin)
+      ) {
         this.sendMessage(player, 'You are not an admin ._.');
         return;
       }
