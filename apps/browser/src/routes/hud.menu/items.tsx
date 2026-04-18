@@ -22,7 +22,6 @@ import Q005_Johnny_Pants from '#/images/clothes/Q005_Johnny_Pants.webp?w=300&h=3
 import Q005_Johnny_Shirt from '#/images/clothes/Q005_Johnny_Shirt.webp?w=300&h=300&imagetools';
 import Q005_Johnny_Shoes from '#/images/clothes/Q005_Johnny_Shoes.webp?w=300&h=300&imagetools';
 import Q115_Custom_Predator_Armor from '#/images/clothes/Q115_Custom_Predator_Armor.webp?w=300&h=300&imagetools';
-import Q303_mask_h1 from '#/images/clothes/Q303_mask_h1.webp?w=300&h=300&imagetools';
 import SQ030_Diving_Suit from '#/images/clothes/SQ030_Diving_Suit.webp?w=300&h=300&imagetools';
 import SQ030_MaxTac_Chest from '#/images/clothes/SQ030_MaxTac_Chest.webp?w=300&h=300&imagetools';
 import SQ031_Samurai_Jacket from '#/images/clothes/SQ031_Samurai_Jacket.webp?w=300&h=300&imagetools';
@@ -31,15 +30,10 @@ import Tech_02_basic_02 from '#/images/clothes/Tech_02_basic_02.webp?w=300&h=300
 import TightJumpsuit_01_basic_01 from '#/images/clothes/TightJumpsuit_01_basic_01.webp?w=300&h=150&imagetools';
 import TightJumpsuit_01_rich_02 from '#/images/clothes/TightJumpsuit_01_rich_02.webp?w=300&h=150&imagetools';
 import Trauma_Team_Outfit from '#/images/clothes/Trauma_Team_Outfit.webp?w=300&h=300&imagetools';
-import Tshirt_12_basic_01 from '#/images/clothes/Tshirt_12_basic_01.webp?w=300&h=300&imagetools';
-import Tshirt_12_old_04 from '#/images/clothes/Tshirt_12_old_04.webp?w=300&h=300&imagetools';
-import Twitch_Drop_Specs from '#/images/clothes/Twitch_Drop_Specs.webp?w=300&h=300&imagetools';
 import Undershirt_03_basic_02 from '#/images/clothes/Undershirt_03_basic_02.webp?w=300&h=300&imagetools';
 import Vest_02_rich_02 from '#/images/clothes/Vest_02_rich_02.webp?w=300&h=300&imagetools';
 import Vest_04_rich_02 from '#/images/clothes/Vest_04_rich_02.webp?w=300&h=300&imagetools';
 import Vest_08_basic_01 from '#/images/clothes/Vest_08_basic_01.webp?w=300&h=300&imagetools';
-import Vest_21_rich_03 from '#/images/clothes/Vest_21_rich_03.webp?w=300&h=300&imagetools';
-import Vest_24_basic_01 from '#/images/clothes/Vest_24_basic_01.webp?w=300&h=300&imagetools';
 import Visor_01_basic_02 from '#/images/clothes/Visor_01_basic_02.webp?w=300&h=300&imagetools';
 import Visor_02_basic_01 from '#/images/clothes/Visor_02_basic_01.webp?w=300&h=300&imagetools';
 import BlackLaceV1 from '#/images/consumables/BlackLaceV1.webp?w=300&h=300&imagetools';
@@ -553,11 +547,6 @@ const DATA: Record<ItemCategory, Item[]> = {
   ],
   [ItemCategory.CLOTHES]: [
     {
-      key: 'Q303_mask_h1',
-      name: 'Amikiri Sound Cutter',
-      image: Q303_mask_h1,
-    },
-    {
       key: 'Q005_Johnny_Glasses',
       name: "Johnny's aviators",
       image: Q005_Johnny_Glasses,
@@ -628,11 +617,6 @@ const DATA: Record<ItemCategory, Item[]> = {
       image: Cop_01_Set_Jacket,
     },
     {
-      key: 'Twitch_Drop_Specs',
-      name: 'NUS infiltrator headgear',
-      image: Twitch_Drop_Specs,
-    },
-    {
       key: 'Vest_08_basic_01',
       name: 'Militech heavy tactical vest',
       image: Vest_08_basic_01,
@@ -648,16 +632,6 @@ const DATA: Record<ItemCategory, Item[]> = {
       image: TightJumpsuit_01_basic_01,
     },
     {
-      key: 'Vest_24_basic_01',
-      name: 'Militech tactical chest holster',
-      image: Vest_24_basic_01,
-    },
-    {
-      key: 'Vest_21_rich_03',
-      name: 'Breathable tac vest with elastic synth-silk',
-      image: Vest_21_rich_03,
-    },
-    {
       key: 'FormalPants_02_basic_01',
       name: 'Classic immuno-cotton corporate pants',
       image: FormalPants_02_basic_01,
@@ -666,16 +640,6 @@ const DATA: Record<ItemCategory, Item[]> = {
       key: 'Undershirt_03_basic_02',
       name: 'Bara Kaika syn-leather bustier',
       image: Undershirt_03_basic_02,
-    },
-    {
-      key: 'Tshirt_12_old_04',
-      name: 'Quick-dry composite t-shirt',
-      image: Tshirt_12_old_04,
-    },
-    {
-      key: 'Tshirt_12_basic_01',
-      name: 'Thermodynamic t-shirt with nanotube lining',
-      image: Tshirt_12_basic_01,
     },
     {
       key: 'FormalSkirt_01_basic_02',
