@@ -37,4 +37,19 @@ export class TeleportService {
 
     client.game.teleport.teleport.trigger(playerFrom, playerTo.position);
   }
+
+  public teleportAllToPlayer(playerTo: MpPlayer) {
+    for (const player of mp.players.toArray()) {
+      if (player.id === playerTo.id) {
+        continue;
+      }
+
+      if (this.matchmakingService.isOnActiveMatch(player)) {
+        continue;
+      }
+
+      player.dimension = playerTo.dimension;
+      client.game.teleport.teleport.trigger(player, playerTo.position);
+    }
+  }
 }

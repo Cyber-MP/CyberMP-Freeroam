@@ -75,7 +75,6 @@ export const ITEM_SPAWNER_KEYS = [
   'AdvancedBerserkC4MK5Plus',
   'AdvancedBerserkC2MK4Plus',
   // clothes
-  'Q303_mask_h1',
   'Q005_Johnny_Glasses',
   'SQ031_Samurai_Jacket',
   'Q005_Johnny_Shirt',
@@ -99,16 +98,11 @@ export const ITEM_SPAWNER_KEYS = [
   'SQ030_MaxTac_Chest',
   'Q115_Custom_Predator_Armor',
   'Cop_01_Set_Jacket',
-  'Twitch_Drop_Specs',
   'Vest_08_basic_01',
   'TightJumpsuit_01_rich_02',
   'TightJumpsuit_01_basic_01',
-  'Vest_24_basic_01',
-  'Vest_21_rich_03',
   'FormalPants_02_basic_01',
   'Undershirt_03_basic_02',
-  'Tshirt_12_old_04',
-  'Tshirt_12_basic_01',
   'FormalSkirt_01_basic_02',
   'Media_01_Set_Pants',
   'Pants_03_basic_03',
@@ -126,6 +120,12 @@ export const ITEM_SPAWNER_KEYS = [
   'FormalShoes_03_rich_02',
   'SQ030_Diving_Suit',
   'Trauma_Team_Outfit',
+  'Cap_03_old_01',
+  'Hat_04_basic_02',
+  'Hat_01_basic_01',
+  'TShirt_03_basic_01',
+  'TShirt_04_old_01',
+  'TShirt_05_old_05',
 ] as const;
 
 type ItemSpawnerKey = (typeof ITEM_SPAWNER_KEYS)[number];

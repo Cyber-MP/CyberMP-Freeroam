@@ -12,7 +12,7 @@ const DEFAULT_HUD_OPTIONS = {
   ammo_counter: true, // Ammo Counter
   hud_markers: true, // Hints
   action_buttons: false, // Action Buttons
-  activity_log: false, // Activity Log
+  activity_log: true, // Activity Log
   crosshairs: true, // Crosshar
   quest_tracker: false, // Target Marker
   object_markers: true, // Job Tracker

@@ -39,22 +39,16 @@ export class ChatService {
     const playerId = typeof player === 'number' ? player : player.id;
 
     const currentFlags = this.playersFlags.get(playerId);
-    if (currentFlags === undefined) {
-      return;
-    }
 
-    this.playersFlags.set(playerId, currentFlags | flag);
+    this.playersFlags.set(playerId, (currentFlags ?? 0) | flag);
   }
 
   removeCommandFlag(player: MpPlayer | number, flag: ChatCommandFlag) {
     const playerId = typeof player === 'number' ? player : player.id;
 
     const currentFlags = this.playersFlags.get(playerId);
-    if (currentFlags === undefined) {
-      return;
-    }
 
-    this.playersFlags.set(playerId, currentFlags & ~flag);
+    this.playersFlags.set(playerId, (currentFlags ?? 0) & ~flag);
   }
 
   executeCommand(player: MpPlayer, { name, args }: ExecuteCommandDTO) {
@@ -66,16 +60,24 @@ export class ChatService {
     const playerFlags =
       this.playersFlags.get(player.id) ?? ChatCommandFlag.None;
 
-    if (command.flags && (playerFlags & command.flags) !== 0) {
-      if (command.flags & ChatCommandFlag.Admin) {
+    if (command.flags) {
+      if (
+        command.flags & ChatCommandFlag.Admin &&
+        (playerFlags & ChatCommandFlag.Admin) === 0
+      ) {
         this.sendMessage(player, 'You are not an admin ._.');
-      } else {
-        this.sendMessage(
-          player,
-          `Command /${command.name} is disabled for you right now.`,
-        );
+        return;
       }
-      return;
+
+      if (command.flags && (playerFlags & command.flags) !== 0) {
+        if ((command.flags & ~ChatCommandFlag.Admin) !== 0) {
+          this.sendMessage(
+            player,
+            `Command /${command.name} is disabled for you right now.`,
+          );
+          return;
+        }
+      }
     }
 
     if (!command.args) {

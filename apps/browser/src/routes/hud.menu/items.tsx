@@ -5,6 +5,7 @@ import Boots_03_old_01 from '#/images/clothes/Boots_03_old_01.webp?w=300&h=300&i
 import Boots_07_basic_01 from '#/images/clothes/Boots_07_basic_01.webp?w=300&h=300&imagetools';
 import Boots_09_old_01 from '#/images/clothes/Boots_09_old_01.webp?w=300&h=300&imagetools';
 import Boots_09_rich_03 from '#/images/clothes/Boots_09_rich_03.webp?w=300&h=300&imagetools';
+import Cap_03_old_01 from '#/images/clothes/Cap_03_old_01.webp?w=300&h=300&imagetools';
 import CasualShoes_04_basic_02 from '#/images/clothes/CasualShoes_04_basic_02.webp?w=300&h=300&imagetools';
 import Cop_01_Set_Boots from '#/images/clothes/Cop_01_Set_Boots.webp?w=300&h=300&imagetools';
 import Cop_01_Set_Jacket from '#/images/clothes/Cop_01_Set_Jacket.webp?w=300&h=300&imagetools';
@@ -12,6 +13,8 @@ import FormalPants_02_basic_01 from '#/images/clothes/FormalPants_02_basic_01.we
 import FormalShoes_02_rich_01 from '#/images/clothes/FormalShoes_02_rich_01.webp?w=300&h=300&imagetools';
 import FormalShoes_03_rich_02 from '#/images/clothes/FormalShoes_03_rich_02.webp?w=300&h=300&imagetools';
 import FormalSkirt_01_basic_02 from '#/images/clothes/FormalSkirt_01_basic_02.webp?w=300&h=300&imagetools';
+import Hat_01_basic_01 from '#/images/clothes/Hat_01_basic_01.webp?w=300&h=300&imagetools';
+import Hat_04_basic_02 from '#/images/clothes/Hat_04_basic_02.webp?w=300&h=300&imagetools';
 import Media_01_Set_Pants from '#/images/clothes/Media_01_Set_Pants.webp?w=300&h=300&imagetools';
 import Pants_03_basic_03 from '#/images/clothes/Pants_03_basic_03.webp?w=300&h=300&imagetools';
 import Pants_03_rich_03 from '#/images/clothes/Pants_03_rich_03.webp?w=300&h=300&imagetools';
@@ -22,7 +25,6 @@ import Q005_Johnny_Pants from '#/images/clothes/Q005_Johnny_Pants.webp?w=300&h=3
 import Q005_Johnny_Shirt from '#/images/clothes/Q005_Johnny_Shirt.webp?w=300&h=300&imagetools';
 import Q005_Johnny_Shoes from '#/images/clothes/Q005_Johnny_Shoes.webp?w=300&h=300&imagetools';
 import Q115_Custom_Predator_Armor from '#/images/clothes/Q115_Custom_Predator_Armor.webp?w=300&h=300&imagetools';
-import Q303_mask_h1 from '#/images/clothes/Q303_mask_h1.webp?w=300&h=300&imagetools';
 import SQ030_Diving_Suit from '#/images/clothes/SQ030_Diving_Suit.webp?w=300&h=300&imagetools';
 import SQ030_MaxTac_Chest from '#/images/clothes/SQ030_MaxTac_Chest.webp?w=300&h=300&imagetools';
 import SQ031_Samurai_Jacket from '#/images/clothes/SQ031_Samurai_Jacket.webp?w=300&h=300&imagetools';
@@ -31,15 +33,13 @@ import Tech_02_basic_02 from '#/images/clothes/Tech_02_basic_02.webp?w=300&h=300
 import TightJumpsuit_01_basic_01 from '#/images/clothes/TightJumpsuit_01_basic_01.webp?w=300&h=150&imagetools';
 import TightJumpsuit_01_rich_02 from '#/images/clothes/TightJumpsuit_01_rich_02.webp?w=300&h=150&imagetools';
 import Trauma_Team_Outfit from '#/images/clothes/Trauma_Team_Outfit.webp?w=300&h=300&imagetools';
-import Tshirt_12_basic_01 from '#/images/clothes/Tshirt_12_basic_01.webp?w=300&h=300&imagetools';
-import Tshirt_12_old_04 from '#/images/clothes/Tshirt_12_old_04.webp?w=300&h=300&imagetools';
-import Twitch_Drop_Specs from '#/images/clothes/Twitch_Drop_Specs.webp?w=300&h=300&imagetools';
+import TShirt_03_basic_01 from '#/images/clothes/TShirt_03_basic_01.webp?w=300&h=300&imagetools';
+import TShirt_04_old_01 from '#/images/clothes/TShirt_04_old_01.webp?w=300&h=300&imagetools';
+import TShirt_05_old_05 from '#/images/clothes/TShirt_05_old_05.webp?w=300&h=300&imagetools';
 import Undershirt_03_basic_02 from '#/images/clothes/Undershirt_03_basic_02.webp?w=300&h=300&imagetools';
 import Vest_02_rich_02 from '#/images/clothes/Vest_02_rich_02.webp?w=300&h=300&imagetools';
 import Vest_04_rich_02 from '#/images/clothes/Vest_04_rich_02.webp?w=300&h=300&imagetools';
 import Vest_08_basic_01 from '#/images/clothes/Vest_08_basic_01.webp?w=300&h=300&imagetools';
-import Vest_21_rich_03 from '#/images/clothes/Vest_21_rich_03.webp?w=300&h=300&imagetools';
-import Vest_24_basic_01 from '#/images/clothes/Vest_24_basic_01.webp?w=300&h=300&imagetools';
 import Visor_01_basic_02 from '#/images/clothes/Visor_01_basic_02.webp?w=300&h=300&imagetools';
 import Visor_02_basic_01 from '#/images/clothes/Visor_02_basic_01.webp?w=300&h=300&imagetools';
 import BlackLaceV1 from '#/images/consumables/BlackLaceV1.webp?w=300&h=300&imagetools';
@@ -553,9 +553,19 @@ const DATA: Record<ItemCategory, Item[]> = {
   ],
   [ItemCategory.CLOTHES]: [
     {
-      key: 'Q303_mask_h1',
-      name: 'Amikiri Sound Cutter',
-      image: Q303_mask_h1,
+      key: 'Cap_03_old_01',
+      name: 'Worn beanie',
+      image: Cap_03_old_01,
+    },
+    {
+      key: 'Hat_04_basic_02',
+      name: 'Carbon-fiber conical hat',
+      image: Hat_04_basic_02,
+    },
+    {
+      key: 'Hat_01_basic_01',
+      name: 'Classic trilby with composite band',
+      image: Hat_01_basic_01,
     },
     {
       key: 'Q005_Johnny_Glasses',
@@ -628,9 +638,19 @@ const DATA: Record<ItemCategory, Item[]> = {
       image: Cop_01_Set_Jacket,
     },
     {
-      key: 'Twitch_Drop_Specs',
-      name: 'NUS infiltrator headgear',
-      image: Twitch_Drop_Specs,
+      key: 'TShirt_03_basic_01',
+      name: 'Extra-sturdy Deadly Lagoon tank top',
+      image: TShirt_03_basic_01,
+    },
+    {
+      key: 'TShirt_04_old_01',
+      name: 'High-tensile cutout tank',
+      image: TShirt_04_old_01,
+    },
+    {
+      key: 'TShirt_05_old_05',
+      name: 'Torn sturdimesh T-shirt',
+      image: TShirt_05_old_05,
     },
     {
       key: 'Vest_08_basic_01',
@@ -648,16 +668,6 @@ const DATA: Record<ItemCategory, Item[]> = {
       image: TightJumpsuit_01_basic_01,
     },
     {
-      key: 'Vest_24_basic_01',
-      name: 'Militech tactical chest holster',
-      image: Vest_24_basic_01,
-    },
-    {
-      key: 'Vest_21_rich_03',
-      name: 'Breathable tac vest with elastic synth-silk',
-      image: Vest_21_rich_03,
-    },
-    {
       key: 'FormalPants_02_basic_01',
       name: 'Classic immuno-cotton corporate pants',
       image: FormalPants_02_basic_01,
@@ -666,16 +676,6 @@ const DATA: Record<ItemCategory, Item[]> = {
       key: 'Undershirt_03_basic_02',
       name: 'Bara Kaika syn-leather bustier',
       image: Undershirt_03_basic_02,
-    },
-    {
-      key: 'Tshirt_12_old_04',
-      name: 'Quick-dry composite t-shirt',
-      image: Tshirt_12_old_04,
-    },
-    {
-      key: 'Tshirt_12_basic_01',
-      name: 'Thermodynamic t-shirt with nanotube lining',
-      image: Tshirt_12_basic_01,
     },
     {
       key: 'FormalSkirt_01_basic_02',
