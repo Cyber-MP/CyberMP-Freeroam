@@ -5,6 +5,7 @@ import Boots_03_old_01 from '#/images/clothes/Boots_03_old_01.webp?w=300&h=300&i
 import Boots_07_basic_01 from '#/images/clothes/Boots_07_basic_01.webp?w=300&h=300&imagetools';
 import Boots_09_old_01 from '#/images/clothes/Boots_09_old_01.webp?w=300&h=300&imagetools';
 import Boots_09_rich_03 from '#/images/clothes/Boots_09_rich_03.webp?w=300&h=300&imagetools';
+import Cap_03_old_01 from '#/images/clothes/Cap_03_old_01.webp?w=300&h=300&imagetools';
 import CasualShoes_04_basic_02 from '#/images/clothes/CasualShoes_04_basic_02.webp?w=300&h=300&imagetools';
 import Cop_01_Set_Boots from '#/images/clothes/Cop_01_Set_Boots.webp?w=300&h=300&imagetools';
 import Cop_01_Set_Jacket from '#/images/clothes/Cop_01_Set_Jacket.webp?w=300&h=300&imagetools';
@@ -12,6 +13,8 @@ import FormalPants_02_basic_01 from '#/images/clothes/FormalPants_02_basic_01.we
 import FormalShoes_02_rich_01 from '#/images/clothes/FormalShoes_02_rich_01.webp?w=300&h=300&imagetools';
 import FormalShoes_03_rich_02 from '#/images/clothes/FormalShoes_03_rich_02.webp?w=300&h=300&imagetools';
 import FormalSkirt_01_basic_02 from '#/images/clothes/FormalSkirt_01_basic_02.webp?w=300&h=300&imagetools';
+import Hat_01_basic_01 from '#/images/clothes/Hat_01_basic_01.webp?w=300&h=300&imagetools';
+import Hat_04_basic_02 from '#/images/clothes/Hat_04_basic_02.webp?w=300&h=300&imagetools';
 import Media_01_Set_Pants from '#/images/clothes/Media_01_Set_Pants.webp?w=300&h=300&imagetools';
 import Pants_03_basic_03 from '#/images/clothes/Pants_03_basic_03.webp?w=300&h=300&imagetools';
 import Pants_03_rich_03 from '#/images/clothes/Pants_03_rich_03.webp?w=300&h=300&imagetools';
@@ -30,6 +33,9 @@ import Tech_02_basic_02 from '#/images/clothes/Tech_02_basic_02.webp?w=300&h=300
 import TightJumpsuit_01_basic_01 from '#/images/clothes/TightJumpsuit_01_basic_01.webp?w=300&h=150&imagetools';
 import TightJumpsuit_01_rich_02 from '#/images/clothes/TightJumpsuit_01_rich_02.webp?w=300&h=150&imagetools';
 import Trauma_Team_Outfit from '#/images/clothes/Trauma_Team_Outfit.webp?w=300&h=300&imagetools';
+import TShirt_03_basic_01 from '#/images/clothes/TShirt_03_basic_01.webp?w=300&h=300&imagetools';
+import TShirt_04_old_01 from '#/images/clothes/TShirt_04_old_01.webp?w=300&h=300&imagetools';
+import TShirt_05_old_05 from '#/images/clothes/TShirt_05_old_05.webp?w=300&h=300&imagetools';
 import Undershirt_03_basic_02 from '#/images/clothes/Undershirt_03_basic_02.webp?w=300&h=300&imagetools';
 import Vest_02_rich_02 from '#/images/clothes/Vest_02_rich_02.webp?w=300&h=300&imagetools';
 import Vest_04_rich_02 from '#/images/clothes/Vest_04_rich_02.webp?w=300&h=300&imagetools';
@@ -547,6 +553,21 @@ const DATA: Record<ItemCategory, Item[]> = {
   ],
   [ItemCategory.CLOTHES]: [
     {
+      key: 'Cap_03_old_01',
+      name: 'Worn beanie',
+      image: Cap_03_old_01,
+    },
+    {
+      key: 'Hat_04_basic_02',
+      name: 'Carbon-fiber conical hat',
+      image: Hat_04_basic_02,
+    },
+    {
+      key: 'Hat_01_basic_01',
+      name: 'Classic trilby with composite band',
+      image: Hat_01_basic_01,
+    },
+    {
       key: 'Q005_Johnny_Glasses',
       name: "Johnny's aviators",
       image: Q005_Johnny_Glasses,
@@ -615,6 +636,21 @@ const DATA: Record<ItemCategory, Item[]> = {
       key: 'Cop_01_Set_Jacket',
       name: 'Heavy-duty aramid-reinforced badge coat',
       image: Cop_01_Set_Jacket,
+    },
+    {
+      key: 'TShirt_03_basic_01',
+      name: 'Extra-sturdy Deadly Lagoon tank top',
+      image: TShirt_03_basic_01,
+    },
+    {
+      key: 'TShirt_04_old_01',
+      name: 'High-tensile cutout tank',
+      image: TShirt_04_old_01,
+    },
+    {
+      key: 'TShirt_05_old_05',
+      name: 'Torn sturdimesh T-shirt',
+      image: TShirt_05_old_05,
     },
     {
       key: 'Vest_08_basic_01',

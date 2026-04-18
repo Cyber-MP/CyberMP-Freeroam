@@ -120,6 +120,12 @@ export const ITEM_SPAWNER_KEYS = [
   'FormalShoes_03_rich_02',
   'SQ030_Diving_Suit',
   'Trauma_Team_Outfit',
+  'Cap_03_old_01',
+  'Hat_04_basic_02',
+  'Hat_01_basic_01',
+  'TShirt_03_basic_01',
+  'TShirt_04_old_01',
+  'TShirt_05_old_05',
 ] as const;
 
 type ItemSpawnerKey = (typeof ITEM_SPAWNER_KEYS)[number];
