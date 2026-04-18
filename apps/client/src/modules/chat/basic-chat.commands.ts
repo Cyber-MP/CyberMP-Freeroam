@@ -7,6 +7,7 @@ import {
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
 import { sleep } from 'radash';
+import z from 'zod';
 import { mp } from '../../mp';
 import { browser } from '../../rpc/browser';
 import { GHudService } from '../game/hud.service';
@@ -36,6 +37,15 @@ export class BasicChatCommands {
 
     console.log(x, y, z, yaw);
     this.chatService.sendMessage(`${x} ${y} ${z} ${yaw}`);
+  }
+
+  private cpos() {
+    const { x, y, z } = mp.game.GetPlayer().GetWorldPosition();
+    const yaw = mp.game.GetPlayer().GetWorldYaw();
+
+    console.log(x, y, z, yaw);
+    this.chatService.sendMessage(`${x} ${y} ${z} ${yaw}`);
+    browser.copyToClipboard.trigger(`${x} ${y} ${z} ${yaw}`);
   }
 
   private fixWeapons() {
@@ -181,15 +191,13 @@ export class BasicChatCommands {
     this.hudService.show();
   }
 
-  private vehicleBoost() {
+  private vehicleBoost(boostStrength = 40) {
     const player = mp.game.GetPlayer();
     const vehicle = player.GetMountedVehicle();
     if (!vehicle) {
       return this.chatService.sendMessage('You are not in a vehicle.');
     }
     const forward = vehicle.GetWorldForward();
-
-    const boostStrength = 40;
 
     const boost = {
       x: forward.x * boostStrength,
@@ -233,18 +241,25 @@ export class BasicChatCommands {
       description: 'Prints you current position',
       handler: this.pos.bind(this),
     });
+    this.chatService.addCommand({
+      name: 'cpos',
+      description:
+        'Prints your current position in the world and copies to clipboard',
+      handler: this.cpos.bind(this),
+    });
 
     this.chatService.addCommand({
       name: 'vboost',
       flags: ChatCommandFlag.DisableInGameMode,
-
-      description: 'Prints you current position',
+      args: z.tuple([
+        z.coerce.number().meta({ title: 'strength' }).default(40).optional(),
+      ]),
+      description: 'Boosts your vehicle forward',
       handler: this.vehicleBoost.bind(this),
     });
     this.chatService.addCommand({
       name: 'vstop',
       flags: ChatCommandFlag.DisableInGameMode,
-
       description: 'Stop vehicle velocity',
       handler: this.vehicleStop.bind(this),
     });
