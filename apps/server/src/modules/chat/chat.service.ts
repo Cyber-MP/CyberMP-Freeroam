@@ -60,8 +60,6 @@ export class ChatService {
     const playerFlags =
       this.playersFlags.get(player.id) ?? ChatCommandFlag.None;
 
-    console.log('ME', playerFlags & ChatCommandFlag.Admin);
-
     if (command.flags) {
       if (
         command.flags & ChatCommandFlag.Admin &&
