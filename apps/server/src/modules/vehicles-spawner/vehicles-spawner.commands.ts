@@ -27,13 +27,24 @@ export class VehiclesSpawnerCommands {
     });
   }
 
+  private adminClearAllVehicles() {
+    this.vehiclesSpawnerService.clearAllVehicles();
+  }
+
   @postConstruct()
   private init() {
     this.chatService.addCommand({
       name: 'clearveh',
-      flags: ChatCommandFlag.DisableInGameMode,
       description: "Clear vehicles you've spawned",
+      flags: ChatCommandFlag.DisableInGameMode,
       handler: this.clearPlayerVehicles.bind(this),
+    });
+
+    this.chatService.addCommand({
+      name: 'admin-clearveh',
+      description: 'Clear all vehicles from the server',
+      flags: ChatCommandFlag.Admin,
+      handler: this.adminClearAllVehicles.bind(this),
     });
 
     mp.commands.add('basilisk1337', this.spawnBasilisk.bind(this));
