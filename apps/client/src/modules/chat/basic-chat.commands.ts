@@ -186,6 +186,7 @@ export class BasicChatCommands {
     this.chatService.addCommand({
       name: 'clear',
       description: 'Clears chat',
+      flags: ChatCommandFlag.Admin,
       handler: this.clear.bind(this),
     });
 
