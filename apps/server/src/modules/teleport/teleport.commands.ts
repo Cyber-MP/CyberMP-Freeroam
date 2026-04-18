@@ -6,7 +6,7 @@ import { TeleportService } from './teleport.service';
 
 @eager()
 @injectable()
-export class TeleportCommandsController {
+export class TeleportCommands {
   constructor(
     @inject(ChatService) private chatService: ChatService,
     @inject(TeleportService) private teleportService: TeleportService,
