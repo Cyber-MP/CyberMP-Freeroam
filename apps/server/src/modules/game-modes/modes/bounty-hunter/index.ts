@@ -18,7 +18,7 @@ import { BaseGameMode } from '../../game-mode';
 export const zCreateBountyHunterMatchOptions = zCreateMatchOptions.extend({
   maxPlayers: z
     .number()
-    .min(3)
+    .min(2)
     .max(20)
     .meta({ default: 20, title: 'Max players' }),
 });

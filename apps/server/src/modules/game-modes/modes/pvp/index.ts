@@ -29,7 +29,7 @@ import { PvpMaps } from './maps';
 
 export const zCreatePvpOptions = zCreateMatchOptions.extend({
   map: z.enum(PvpMapName).meta({ title: 'Map' }),
-  maxPlayers: z.number().min(1).max(20).meta({ default: 20 }),
+  maxPlayers: z.number().min(2).max(20).meta({ default: 20 }),
   healing: z.boolean().default(true).optional().meta({ title: 'Healing' }),
 });
 
