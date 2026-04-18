@@ -3,7 +3,6 @@ import { inject, injectable } from 'inversify';
 import { uid } from 'radash';
 import { createQuaternion } from '../../lib/vectors';
 import { mp } from '../../mp';
-import { GEntityService } from '../game/entity.service';
 import { GObjectsService } from '../game/objects.service';
 
 type SectorNodeData = {
@@ -54,7 +53,6 @@ export class Mapping {
 
   constructor(
     @inject(GObjectsService) private objectsService: GObjectsService,
-    @inject(GEntityService) private entityService: GEntityService,
   ) {}
 
   private async renderSectorNode(node: SectorNode) {
@@ -80,9 +78,7 @@ export class Mapping {
       ),
     );
 
-    console.log(rot.yaw);
-
-    const entityId = this.objectsService.create({
+    this.objectsService.create({
       skinHash: model,
       appHash: appearance,
       position: node.position,
@@ -90,23 +86,6 @@ export class Mapping {
       streaming: true,
       group: this.group,
     });
-
-    const entity = await this.entityService.waitForEntityToSpawn(entityId);
-
-    // const worldTransform = new mp.game.WorldTransform();
-    // const worldPosition = new mp.game.WorldPosition();
-    // mp.game.WorldPosition.SetVector4(
-    //   worldPosition,
-    //   Object.assign(new mp.game.Vector4(), node.position),
-    // );
-
-    // mp.game.WorldTransform.SetOrientation(
-    //   worldTransform,
-    //   Object.assign(new mp.game.Quaternion(), node.rotation),
-    // );
-    // mp.game.WorldTransform.SetWorldPosition(worldTransform, worldPosition);
-
-    // entity?.SetWorldTransform(worldTransform);
   }
 
   private renderSectors(sectors: Sector[]) {

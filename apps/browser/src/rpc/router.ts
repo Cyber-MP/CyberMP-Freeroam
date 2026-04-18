@@ -3,6 +3,7 @@ import { setBodyVisibility, toggleBodyVisibility } from '../body';
 import { matchmakingContract } from '../hooks/use-matches';
 import { keysContract } from '../keys';
 import { copyToClipboard } from '../lib/clipboard';
+import { bountyHunterContract } from '../routes/hud.game-modes/bounty-hunter/-contract';
 import { pvpContract } from '../routes/hud.game-modes/pvp/-contract';
 import { raceContract } from '../routes/hud.game-modes/race/-contract';
 import { sumoContract } from '../routes/hud.game-modes/sumo/-contract';
@@ -20,7 +21,12 @@ export const rpcRouter = {
   pingBrowser: r.procedure.input(z.string()).handler(() => {
     console.log('test handler invoked');
   }),
-  gameModes: { race: raceContract, sumo: sumoContract, pvp: pvpContract },
+  gameModes: {
+    race: raceContract,
+    sumo: sumoContract,
+    pvp: pvpContract,
+    bountyHunter: bountyHunterContract,
+  },
   matchmaking: matchmakingContract,
   keys: keysContract,
   hints: hintsContract,

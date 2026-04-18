@@ -14,6 +14,7 @@ import { ItemSpawnerModule } from './modules/item-spawner/item-spawner.module';
 import { LoggerModule } from './modules/logger/logger.module';
 import { LoggerService } from './modules/logger/logger.service';
 import { MappingModule } from './modules/mapping/mapping.module';
+import { NoclipModule } from './modules/noclip/noclip.module';
 import { PlayersMarkersModule } from './modules/players-markers/players-markers.module';
 import { PolygonsModule } from './modules/polygons/polygons.module';
 import { SessionInterceptor } from './modules/session/session.interceptor';
@@ -43,6 +44,7 @@ const modules: ContainerModule[] = [
   SpectatingModule,
   PlayersMarkersModule,
   ItemSpawnerModule,
+  NoclipModule,
 ];
 
 const coopWhen = async () => {

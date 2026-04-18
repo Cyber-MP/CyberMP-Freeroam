@@ -7,6 +7,7 @@ import {
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
 import { sleep } from 'radash';
+import z from 'zod';
 import { mp } from '../../mp';
 import { browser } from '../../rpc/browser';
 import { GHudService } from '../game/hud.service';
@@ -36,6 +37,15 @@ export class BasicChatCommands {
 
     console.log(x, y, z, yaw);
     this.chatService.sendMessage(`${x} ${y} ${z} ${yaw}`);
+  }
+
+  private cpos() {
+    const { x, y, z } = mp.game.GetPlayer().GetWorldPosition();
+    const yaw = mp.game.GetPlayer().GetWorldYaw();
+
+    console.log(x, y, z, yaw);
+    this.chatService.sendMessage(`${x} ${y} ${z} ${yaw}`);
+    browser.copyToClipboard.trigger(`${x} ${y} ${z} ${yaw}`);
   }
 
   private fixWeapons() {
@@ -181,6 +191,43 @@ export class BasicChatCommands {
     this.hudService.show();
   }
 
+  private vehicleBoost(boostStrength = 40) {
+    const player = mp.game.GetPlayer();
+    const vehicle = player.GetMountedVehicle();
+    if (!vehicle) {
+      return this.chatService.sendMessage('You are not in a vehicle.');
+    }
+    const forward = vehicle.GetWorldForward();
+
+    const boost = {
+      x: forward.x * boostStrength,
+      y: forward.y * boostStrength,
+      z: forward.z * boostStrength,
+    };
+
+    vehicle.AddLinelyVelocity(boost, { x: 0, y: 0, z: 0 });
+  }
+
+  private vehicleStop() {
+    const player = mp.game.GetPlayer();
+    const vehicle = player.GetMountedVehicle();
+    if (!vehicle) {
+      return this.chatService.sendMessage('You are not in a vehicle.');
+    }
+
+    vehicle.ChangeLinelyVelocity({ x: 0, y: 0, z: 0 }, { x: 0, y: 0, z: 0 }, 0);
+  }
+
+  private vehicleGravity() {
+    const player = mp.game.GetPlayer();
+    const vehicle = player.GetMountedVehicle();
+    if (!vehicle) {
+      return this.chatService.sendMessage('You are not in a vehicle.');
+    }
+
+    vehicle.EnableGravity(!vehicle.HasGravity());
+  }
+
   @postConstruct()
   private init() {
     this.chatService.addCommand({
@@ -193,6 +240,36 @@ export class BasicChatCommands {
       name: 'pos',
       description: 'Prints you current position',
       handler: this.pos.bind(this),
+    });
+    this.chatService.addCommand({
+      name: 'cpos',
+      description:
+        'Prints your current position in the world and copies to clipboard',
+      handler: this.cpos.bind(this),
+    });
+
+    this.chatService.addCommand({
+      name: 'vboost',
+      flags: ChatCommandFlag.DisableInGameMode,
+      args: z.tuple([
+        z.coerce.number().meta({ title: 'strength' }).default(40).optional(),
+      ]),
+      description: 'Boosts your vehicle forward',
+      handler: this.vehicleBoost.bind(this),
+    });
+    this.chatService.addCommand({
+      name: 'vstop',
+      flags: ChatCommandFlag.DisableInGameMode,
+      description: 'Stop vehicle velocity',
+      handler: this.vehicleStop.bind(this),
+    });
+
+    this.chatService.addCommand({
+      name: 'vgrav',
+      flags: ChatCommandFlag.DisableInGameMode,
+
+      description: 'Toggle gravity on your current vehicle',
+      handler: this.vehicleGravity.bind(this),
     });
 
     this.chatService.addCommand({
