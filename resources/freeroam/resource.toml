@@ -4,6 +4,7 @@ server_script = ["./server.js"]
 client_script = ["./client.js"]
 file = [
   "./assets/in_world_navigation.archive",
+  "./assets/de_dust2/*",
   "./browser/*",
   "./browser/assets/*"
 ]

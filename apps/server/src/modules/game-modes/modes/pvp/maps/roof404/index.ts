@@ -1,5 +1,5 @@
 import { type PvpMap, PvpMapName } from '@freeroam/shared/game-modes/pvp';
-// import mappingJson from './mapping.json';
+import mappingJson from './mapping.json';
 
 export const PVP_ROOF404_MAP: PvpMap = {
   name: PvpMapName.ROOF404,
@@ -33,5 +33,5 @@ export const PVP_ROOF404_MAP: PvpMap = {
     [-1394.0490722656, 1781.8793945313, 128.86090087891, -84.198661804199],
     [-1393.7523193359, 1766.73828125, 128.86090087891, -98.128677368164],
   ],
-  // mapping: mappingJson,
+  mapping: mappingJson,
 };

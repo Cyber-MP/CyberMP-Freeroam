@@ -14,7 +14,7 @@ export const zCreateMatchOptions = z.looseObject({
     .number()
     .min(1)
     .max(20)
-    .meta({ default: 5, title: 'Max players' }),
+    .meta({ default: 20, title: 'Max players' }),
 });
 
 export type CreateMatchOptions = z.infer<typeof zCreateMatchOptions>;

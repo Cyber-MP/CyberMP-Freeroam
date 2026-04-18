@@ -71,7 +71,11 @@ export class TimeService {
     try {
       this.setServerTime(await server.time.getCurrentTime.call());
     } catch (e) {
-      this.logger.error('Failed to fetch server time with error', e);
+      this.logger.error(
+        'Failed to fetch server time with error',
+        e,
+        (e as Error).message,
+      );
     }
   }
 

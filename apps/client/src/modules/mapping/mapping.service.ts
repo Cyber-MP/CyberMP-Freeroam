@@ -1,13 +1,11 @@
 import { eager } from '@freeroam/inversify';
-import { inject, injectable, postConstruct, preDestroy } from 'inversify';
-import { ChatService } from '../chat/chat.service';
+import { inject, injectable, preDestroy } from 'inversify';
 import {
   type Mapping,
   type MappingFactory,
   MappingFactorySymbol,
   type MappingProject,
 } from './mapping';
-import roof404 from './roof404.json';
 
 @eager()
 @injectable()
@@ -15,7 +13,6 @@ export class MappingService {
   private registry = new Map<string, Mapping>();
 
   constructor(
-    @inject(ChatService) private chatService: ChatService,
     @inject(MappingFactorySymbol) private mappingFactory: MappingFactory,
   ) {}
 
@@ -48,24 +45,5 @@ export class MappingService {
     for (const name of this.registry.keys()) {
       this.destroy(name);
     }
-  }
-
-  @postConstruct()
-  private init() {
-    this.chatService.addCommand({
-      name: 'create-mapping',
-      handler: () => {
-        this.create(roof404 as any);
-        console.log('created');
-      },
-    });
-
-    this.chatService.addCommand({
-      name: 'destroy-mapping',
-      handler: () => {
-        this.destroy(roof404 as any);
-        console.log('destroyed');
-      },
-    });
   }
 }

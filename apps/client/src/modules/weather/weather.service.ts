@@ -70,7 +70,11 @@ export class WeatherService {
     try {
       this.setServerWeather(await server.weather.getCurrentWeather.call());
     } catch (e) {
-      this.logger.error('Failed to fetch server weather with error', e);
+      this.logger.error(
+        'Failed to fetch server weather with error',
+        e,
+        (e as Error).message,
+      );
     }
   }
 

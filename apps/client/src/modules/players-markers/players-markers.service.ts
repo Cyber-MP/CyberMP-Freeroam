@@ -13,13 +13,6 @@ import { inject, injectable, postConstruct, preDestroy } from 'inversify';
 import { mp } from '../../mp';
 import { GEntityService } from '../game/entity.service';
 
-// TODO: rewrite this without ticking system but with RegisterMappinWithObject
-// const mappin =
-//   mp.game.ScriptGameInstance.GetMappinSystem().RegisterMappinWithObject(
-//     data,
-//     player,
-//   );
-
 @eager()
 @injectable()
 export class PlayersMarkersService {
@@ -95,15 +88,12 @@ export class PlayersMarkersService {
   private destroyMappin(playerId: number) {
     const mappinId = this.mappins.get(playerId);
     if (!mappinId) {
-      console.log('mappin id not found');
       return;
     }
 
     this.system.UnregisterMappin(mappinId);
 
     this.mappins.delete(playerId);
-
-    console.log('destroyed mapping');
   }
 
   @preDestroy()

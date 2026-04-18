@@ -12,7 +12,7 @@ export const zServerVector4 = z.tuple([
   z.number(),
   z.number(),
   z.number(),
-  z.number().optional(),
+  z.number(),
 ]);
 export const zServerEulerAngles = z.tuple([z.number(), z.number(), z.number()]);
 

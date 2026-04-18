@@ -167,12 +167,9 @@ export class Pvp extends BaseGameMode<
   }
 
   private onPolygonLeave = (entity: MpAnyEntity) => {
-    console.log('ENTITY LEAVING POLYGON', entity.id);
     if (entity.type !== EntityType.Player) {
       return;
     }
-
-    console.log('PLAYER LEAVING POLYGON', entity.nickname);
 
     const fighter = this.fighters.get(entity.id);
 
