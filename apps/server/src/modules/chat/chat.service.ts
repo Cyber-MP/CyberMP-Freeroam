@@ -66,16 +66,20 @@ export class ChatService {
     const playerFlags =
       this.playersFlags.get(player.id) ?? ChatCommandFlag.None;
 
-    if (command.flags && (playerFlags & command.flags) !== 0) {
+    if (command.flags) {
       if (command.flags & ChatCommandFlag.Admin) {
         this.sendMessage(player, 'You are not an admin ._.');
-      } else {
-        this.sendMessage(
-          player,
-          `Command /${command.name} is disabled for you right now.`,
-        );
       }
-      return;
+
+      if (command.flags && (playerFlags & command.flags) !== 0) {
+        if ((command.flags & ~ChatCommandFlag.Admin) !== 0) {
+          this.sendMessage(
+            player,
+            `Command /${command.name} is disabled for you right now.`,
+          );
+          return;
+        }
+      }
     }
 
     if (!command.args) {
