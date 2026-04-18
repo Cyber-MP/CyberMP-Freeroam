@@ -52,6 +52,11 @@ export class ChatService {
       return;
     }
 
+    console.log(
+      mp.meta.getLocalPlayerMeta('admin'),
+      typeof mp.meta.getLocalPlayerMeta('admin'),
+    );
+
     if (command.flags) {
       if (
         command.flags & ChatCommandFlag.Admin &&
