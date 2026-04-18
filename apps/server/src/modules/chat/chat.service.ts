@@ -39,22 +39,16 @@ export class ChatService {
     const playerId = typeof player === 'number' ? player : player.id;
 
     const currentFlags = this.playersFlags.get(playerId);
-    if (currentFlags === undefined) {
-      return;
-    }
 
-    this.playersFlags.set(playerId, currentFlags | flag);
+    this.playersFlags.set(playerId, (currentFlags ?? 0) | flag);
   }
 
   removeCommandFlag(player: MpPlayer | number, flag: ChatCommandFlag) {
     const playerId = typeof player === 'number' ? player : player.id;
 
     const currentFlags = this.playersFlags.get(playerId);
-    if (currentFlags === undefined) {
-      return;
-    }
 
-    this.playersFlags.set(playerId, currentFlags & ~flag);
+    this.playersFlags.set(playerId, (currentFlags ?? 0) & ~flag);
   }
 
   executeCommand(player: MpPlayer, { name, args }: ExecuteCommandDTO) {
