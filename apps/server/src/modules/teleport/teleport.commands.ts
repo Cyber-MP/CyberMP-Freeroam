@@ -19,9 +19,9 @@ export class TeleportChatCommandsController {
   @postConstruct()
   private init() {
     this.chatService.addCommand({
-      name: 'admin-teleport-all',
+      name: 'admin-tpall',
       description: 'Teleports all players to admin',
-      flags: ChatCommandFlag.Admin & ChatCommandFlag.DisableInGameMode,
+      flags: ChatCommandFlag.Admin | ChatCommandFlag.DisableInGameMode,
       handler: this.adminTeleportAll.bind(this),
     });
   }
