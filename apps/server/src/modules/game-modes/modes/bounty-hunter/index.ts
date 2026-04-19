@@ -24,7 +24,7 @@ import { BaseGameMode } from '../../game-mode';
 export const zCreateBountyHunterMatchOptions = zCreateMatchOptions.extend({
   maxPlayers: z
     .number()
-    .min(1)
+    .min(2)
     .max(20)
     .meta({ default: 20, title: 'Max players' }),
 });
@@ -43,7 +43,10 @@ class Victim {
   player!: MpPlayer;
   vehicle!: MpVehicle;
 
-  constructor(public id: number) {
+  constructor(
+    public id: number,
+    private match: Match<BountyHunter>,
+  ) {
     this.player = mp.players.at(this.id);
   }
 
@@ -53,11 +56,10 @@ class Victim {
         this.player,
         [...this.VICTIM_START_POSITION, this.VICTIM_START_POSITION_YAW],
         {},
-        { timeout: ms('40ms') },
+        { timeout: ms('30s') },
       )
       .catch(() => {
-        console.log('couldnt load player in time');
-        // this.match.end();
+        this.match.end();
       });
 
     this.vehicle = mp.vehicles.create({
@@ -67,8 +69,6 @@ class Victim {
       yaw: this.VICTIM_START_POSITION_YAW,
       health: 10_000_000,
     });
-
-    console.log('spawned vehicle');
   }
 
   toDTO() {
@@ -124,7 +124,7 @@ export class BountyHunter extends BaseGameMode<
   async start() {
     const victimId = this.generateVictimId();
 
-    this.victim = new Victim(victimId);
+    this.victim = new Victim(victimId, this.match);
     await this.victim.init();
 
     mp.events.on('playerDeath', this.onPlayerDeath);

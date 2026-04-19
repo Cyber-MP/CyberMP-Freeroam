@@ -63,17 +63,13 @@ export class BountyHunter extends BaseGameMode<'bounty_hunter'> {
   };
 
   updateData(data: BountyHunterData) {
-    console.log('INCOMING UPDATE DATA', data);
-
     const localPlayerId = mp.getPlayerServerId(1);
 
     this.victimData = data.victim;
 
     if (localPlayerId !== data.victim.id) {
-      console.log('WE ARE HUNTER');
       this.onHunter(data);
     } else {
-      console.log('WE ARE VICTIM');
       this.onVictim(data);
     }
   }
@@ -131,8 +127,6 @@ export class BountyHunter extends BaseGameMode<'bounty_hunter'> {
   start() {
     browser.hud.setGlobalPath.trigger('/hud/game-modes/bounty-hunter/');
     browser.navigate.trigger('/hud/game-modes/bounty-hunter/');
-
-    console.log('game mode started');
   }
 
   end() {
@@ -145,6 +139,8 @@ export class BountyHunter extends BaseGameMode<'bounty_hunter'> {
       const system = mp.game.ScriptGameInstance.GetMappinSystem();
       system.UnregisterMappin(this.victimMappin);
     }
+
+    this.healthService.resetToDefault();
 
     browser.hud.setGlobalPath.trigger('/hud');
     browser.navigate.trigger('/hud');
