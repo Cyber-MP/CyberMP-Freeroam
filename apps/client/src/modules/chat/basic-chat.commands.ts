@@ -128,21 +128,23 @@ export class BasicChatCommands {
         gamedataStatType.Reflexes,
       ];
 
-      for (const stat of perkStats) {
-        userData.statType = stat;
-        menu.SwitchMenu('new_perks', userData);
+      for (let i = 0; i < 2; i++) {
+        for (const stat of perkStats) {
+          userData.statType = stat;
+          menu.SwitchMenu('new_perks', userData);
 
-        await sleep(500);
+          await sleep(40);
 
-        for (let i = 0; i < gamedataNewPerkType.Count; i++) {
-          const buy = new mp.game.BuyNewPerk();
-          buy.Set(player, i);
-          devSystem.QueueRequest(buy);
+          for (let i = 0; i < gamedataNewPerkType.Count; i++) {
+            const buy = new mp.game.BuyNewPerk();
+            buy.Set(player, i);
+            devSystem.QueueRequest(buy);
 
-          await sleep(10);
+            await sleep(3);
+          }
+
+          await sleep(20);
         }
-
-        await sleep(1000);
       }
 
       await sleep(50);
