@@ -183,6 +183,7 @@ export class BasicChatCommands {
   //     this.isLevelupProcess = false;
   //   }
   // }
+
   private async levelUp() {
     if (this.isLevelupProcess) {
       this.chatService.sendMessage('Command is already in progress');
@@ -200,12 +201,11 @@ export class BasicChatCommands {
 
       const uiSystem = mp.game.ScriptGameInstance.GetUISystem();
 
-      // EXP
       const addExpRequest = new mp.game.AddExperience();
       addExpRequest.Set(player, 120000, gamedataProficiencyType.Level, false);
-      mp.game.PreventionSystem.QueueRequest(addExpRequest, 0);
+      mp.game.PreventionSystem.QueueRequest(addExpRequest, 1);
 
-      await sleep(500);
+      await sleep(100);
 
       const stats = [
         gamedataStatType.Strength,
@@ -219,14 +219,14 @@ export class BasicChatCommands {
         const req = new mp.game.SetAttribute();
         req.Set(player, 20, stat);
         devSystem.QueueRequest(req);
-        await sleep(100);
+        await sleep(2);
       }
 
       const devPointsRequest = new mp.game.questAddDevelopmentPointsRequest();
       devPointsRequest.Set(player, 2000, gamedataDevelopmentPointType.Primary);
       devSystem.QueueRequest(devPointsRequest);
 
-      await sleep(500);
+      await sleep(20);
 
       const startHub = new mp.game.StartHubMenuEvent();
       const closeHub = new mp.game.ForceCloseHubMenuEvent();
@@ -235,7 +235,7 @@ export class BasicChatCommands {
       startHub.SetStartMenu('new_perks', 'ico_character', userData);
       uiSystem.QueueEvent(startHub);
 
-      await sleep(700);
+      await sleep(20);
 
       const menu = this.menusService.globalMenuScenario;
       if (!menu) throw new Error();
@@ -253,26 +253,26 @@ export class BasicChatCommands {
         userData.statType = stat;
         menu.SwitchMenu('new_perks', userData);
 
-        await sleep(400);
+        await sleep(20);
 
         for (let i = 0; i < gamedataNewPerkType.Count; i++) {
           const buy = new mp.game.BuyNewPerk();
           buy.Set(player, i);
           devSystem.QueueRequest(buy);
 
-          await sleep(30);
+          await sleep(1);
         }
 
-        await sleep(200);
+        await sleep(20);
       }
 
-      await sleep(300);
+      await sleep(20);
       uiSystem.QueueEvent(closeHub);
-
-      this.chatService.sendMessage('Command applied');
     } catch {
       this.chatService.sendMessage('Command failed, try again');
     } finally {
+      this.chatService.sendMessage('Command applied');
+
       this.isLevelupProcess = false;
     }
   }
