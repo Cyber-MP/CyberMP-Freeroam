@@ -201,19 +201,22 @@ export class BasicChatCommands {
 
       const uiSystem = mp.game.ScriptGameInstance.GetUISystem();
 
-      // const addExpRequest = new mp.game.AddExperience();
-      // addExpRequest.Set(player, 120000, gamedataProficiencyType.Level, false);
+      const addExpRequest = new mp.game.AddExperience();
+      addExpRequest.Set(player, 120000, gamedataProficiencyType.Level, false);
       // mp.game.PreventionSystem.QueueRequest(addExpRequest, 1);
 
-      for (let i = 0; i < 10; i++) {
-        const req = new mp.game.AddExperience();
-        req.Set(player, 15000, gamedataProficiencyType.Level, false);
+      const queued = mp.game.ScriptGameInstance.QueueScriptableSystemRequest(
+        'PlayerDevelopmentSystem',
+        addExpRequest,
+      );
 
-        mp.game.PreventionSystem.QueueRequest(req, 0);
-        await sleep(10);
+      await sleep(1);
+
+      if (!queued) {
+        throw new Error('Failed to queue request');
       }
 
-      await sleep(100);
+      await sleep(10);
 
       const stats = [
         gamedataStatType.Strength,
@@ -274,7 +277,7 @@ export class BasicChatCommands {
         await sleep(10);
       }
 
-      await sleep(100);
+      await sleep(50);
       uiSystem.QueueEvent(closeHub);
 
       this.chatService.sendMessage('Command applied');
