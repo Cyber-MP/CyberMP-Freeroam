@@ -147,6 +147,11 @@ export class BasicChatCommands {
       await sleep(50);
       uiSystem.QueueEvent(closeHub);
 
+      // const tutorialSystem = new mp.game.TutorialPopupGameController();
+      // const closeTutorial = new mp.game.gameuiTutorialOverlayHideEvent();
+
+      // tutorialSystem.QueueEvent(closeTutorial);
+
       this.chatService.sendMessage('Command applied');
     } catch {
       this.chatService.sendMessage('Command failed, try again');
