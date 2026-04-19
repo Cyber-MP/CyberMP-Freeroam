@@ -1,4 +1,5 @@
 import {
+  EPlayerGender,
   gamedataDevelopmentPointType,
   gamedataNewPerkType,
   gamedataProficiencyType,
@@ -228,6 +229,17 @@ export class BasicChatCommands {
     vehicle.EnableGravity(!vehicle.HasGravity());
   }
 
+  private changeGender() {
+    const curGender = mp.game.GetPlayer().GetGender();
+
+    console.log('GENDER', curGender);
+
+    mp.game.ScriptGameInstance.GetCharacterCustomizationSystem().SetPlayerGender(
+      EPlayerGender.Female,
+      true,
+    );
+  }
+
   @postConstruct()
   private init() {
     this.chatService.addCommand({
@@ -295,6 +307,12 @@ export class BasicChatCommands {
       name: 'show-game-hud',
       description: 'Shows game HUD',
       handler: this.showGameHud.bind(this),
+    });
+
+    this.chatService.addCommand({
+      name: 'change-gender',
+      description: 'Changes your gender',
+      handler: this.changeGender.bind(this),
     });
   }
 }
