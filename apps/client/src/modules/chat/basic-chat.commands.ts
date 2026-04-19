@@ -128,20 +128,11 @@ export class BasicChatCommands {
         gamedataStatType.Reflexes,
       ];
 
-      for (const stat of perkStats) {
-        userData.statType = stat;
-        menu.SwitchMenu('new_perks', userData);
-
-        await sleep(10);
-      }
-
       // first cycle buy all skills, but UI don't update it for user, so next cycle do it
       for (let i = 0; i < 2; i++) {
         for (const stat of perkStats) {
-          // userData.statType = stat;
-          // menu.SwitchMenu('new_perks', userData);
-
-          await sleep(6);
+          userData.statType = stat;
+          menu.SwitchMenu('new_perks', userData);
 
           for (let i = 0; i < gamedataNewPerkType.Count; i++) {
             const buy = new mp.game.BuyNewPerk();
@@ -150,8 +141,6 @@ export class BasicChatCommands {
 
             await sleep(1);
           }
-
-          await sleep(6);
         }
       }
 
