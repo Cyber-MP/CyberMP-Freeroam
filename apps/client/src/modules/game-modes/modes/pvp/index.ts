@@ -101,7 +101,6 @@ export class Pvp extends BaseGameMode<'pvp'> {
   }
 
   async prepare(data: PvpPrepareDTO) {
-    console.log('SPAWNING ON START POINT', data.startPoint);
     this.spawnService.spawn({
       position: data.startPoint,
       health: this.HEALTH,
@@ -152,10 +151,6 @@ export class Pvp extends BaseGameMode<'pvp'> {
   }
 
   private checkCurrentWeapon() {
-    if (this.options.freeWeapons) {
-      return;
-    }
-
     const equipmentSystem =
       mp.game.ScriptGameInstance.GetScriptableSystemsContainer().Get(
         'EquipmentSystem',
@@ -196,6 +191,7 @@ export class Pvp extends BaseGameMode<'pvp'> {
 
   private mountCheckWeaponInterval() {
     if (this.options.freeWeapons) {
+      this.checkCurrentWeapon();
       return;
     }
 

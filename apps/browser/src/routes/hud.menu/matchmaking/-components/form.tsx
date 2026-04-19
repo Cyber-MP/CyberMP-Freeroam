@@ -21,6 +21,9 @@ const createUiSchema: UiSchema = {
   forceFPP: {
     'ui:widget': 'SwitchWidget',
   },
+  freeWeapons: {
+    'ui:widget': 'SwitchWidget',
+  },
 };
 
 export const CreateMatchForm = ({
