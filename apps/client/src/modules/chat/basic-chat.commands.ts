@@ -10,6 +10,7 @@ import { sleep } from 'radash';
 import z from 'zod';
 import { mp } from '../../mp';
 import { browser } from '../../rpc/browser';
+import { GAppearanceMenuService } from '../game/appearance-menu.service';
 import { GHudService } from '../game/hud.service';
 import { GMenusService } from '../game/menus.service';
 import { GStatusEffectsService } from '../game/status-effects/status-effects.service';
@@ -25,6 +26,8 @@ export class BasicChatCommands {
     @inject(GStatusEffectsService) private statusEffects: GStatusEffectsService,
     @inject(GMenusService) private menusService: GMenusService,
     @inject(GHudService) private hudService: GHudService,
+    @inject(GAppearanceMenuService)
+    private appearanceMenuService: GAppearanceMenuService,
   ) {}
 
   private clear() {
@@ -234,6 +237,12 @@ export class BasicChatCommands {
       name: 'clear',
       description: 'Clears chat',
       handler: this.clear.bind(this),
+    });
+
+    this.chatService.addCommand({
+      name: 'appearance',
+      description: 'Opens appearance menu',
+      handler: () => this.appearanceMenuService.open(),
     });
 
     this.chatService.addCommand({

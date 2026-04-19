@@ -57,12 +57,12 @@ export class SpawnService {
 
     const spawnPosition = this.getSpawnPosition();
 
-    mp.game.onInit(() => {
-      mp.game.ScriptGameInstance.GetMultiplayerSystem().SetDefaultSpawnPosition(
-        mp.game.Vector4.Vector4To3(createVector4(...spawnPosition)),
-        1,
-      );
-    });
+    // mp.game.onInit(() => {
+    //   mp.game.ScriptGameInstance.GetMultiplayerSystem().SetDefaultSpawnPosition(
+    //     mp.game.Vector4.Vector4To3(createVector4(...spawnPosition)),
+    //     1,
+    //   );
+    // });
 
     mp.game.onGameLoaded(() => {
       this.spawn({ position: spawnPosition });

@@ -1,4 +1,5 @@
 import { ContainerModule } from 'inversify';
+import { GAppearanceMenuService } from './appearance-menu.service';
 import { GCameraService } from './camera.service';
 import { GEntityService } from './entity.service';
 import { GHealthCommands } from './health/health.commands';
@@ -27,6 +28,7 @@ export const GameModule = new ContainerModule(({ bind }) => {
   bind(GCameraService).toSelf().inSingletonScope();
   bind(GPlayerService).toSelf().inSingletonScope();
   bind(GObjectsService).toSelf().inSingletonScope();
+  bind(GAppearanceMenuService).toSelf().inSingletonScope();
   bind(GEntityService).toSelf().inSingletonScope();
 
   bind(GVehiclesService).toSelf().inSingletonScope();
