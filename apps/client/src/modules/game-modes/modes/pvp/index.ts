@@ -69,7 +69,10 @@ export class Pvp extends BaseGameMode<'pvp'> {
     }
 
     this.unmountCheckWeaponInterval();
-    this.unmountDeathHandler();
+
+    setTimeout(() => {
+      this.unmountDeathHandler();
+    }, 1000);
 
     setTimeout(() => {
       this.unmountSpectateBinds();
