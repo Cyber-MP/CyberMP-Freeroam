@@ -97,7 +97,7 @@ export class BountyHunter extends BaseGameMode<
 
   private match!: Match<this>;
 
-  private readonly VICTIM_KILL_TIME = ms('30s');
+  private readonly VICTIM_KILL_TIME = ms('10m');
   private victim: Victim | null = null;
   private victimKillTimeout: ReturnType<typeof setTimeout> | null = null;
   private broadcastVictimPositionInterval: ReturnType<
