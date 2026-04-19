@@ -128,26 +128,6 @@ export class BasicChatCommands {
         gamedataStatType.Reflexes,
       ];
 
-      // first cycle buy all skills, but UI don't update it for user, so next cycle do it
-      // for (let i = 0; i < 2; i++) {
-      //   for (const stat of perkStats) {
-      //     userData.statType = stat;
-      //     menu.SwitchMenu('new_perks', userData);
-
-      //     await sleep(6);
-
-      //     for (let i = 0; i < gamedataNewPerkType.Count; i++) {
-      //       const buy = new mp.game.BuyNewPerk();
-      //       buy.Set(player, i);
-      //       devSystem.QueueRequest(buy);
-
-      //       await sleep(1);
-      //     }
-
-      //     await sleep(6);
-      //   }
-      // }
-
       for (const stat of perkStats) {
         userData.statType = stat;
         menu.SwitchMenu('new_perks', userData);
@@ -155,15 +135,23 @@ export class BasicChatCommands {
         await sleep(10);
       }
 
-      for (let j = 0; j < 5; j++) {
-        for (let i = 0; i < gamedataNewPerkType.Count; i++) {
-          const buyPerkRequest = new mp.game.BuyNewPerk();
-          buyPerkRequest.Set(player, i);
-          mp.game.ScriptGameInstance.GetScriptableSystemsContainer()
-            .Get('PlayerDevelopmentSystem')
-            .QueueRequest(buyPerkRequest);
+      // first cycle buy all skills, but UI don't update it for user, so next cycle do it
+      for (let i = 0; i < 2; i++) {
+        for (const stat of perkStats) {
+          // userData.statType = stat;
+          // menu.SwitchMenu('new_perks', userData);
 
-          await sleep(2);
+          await sleep(6);
+
+          for (let i = 0; i < gamedataNewPerkType.Count; i++) {
+            const buy = new mp.game.BuyNewPerk();
+            buy.Set(player, i);
+            devSystem.QueueRequest(buy);
+
+            await sleep(1);
+          }
+
+          await sleep(6);
         }
       }
 
