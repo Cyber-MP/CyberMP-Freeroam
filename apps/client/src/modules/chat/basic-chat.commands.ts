@@ -129,24 +129,40 @@ export class BasicChatCommands {
       ];
 
       // first cycle buy all skills, but UI don't update it for user, so next cycle do it
+      // for (let i = 0; i < 2; i++) {
+      //   for (const stat of perkStats) {
+      //     userData.statType = stat;
+      //     menu.SwitchMenu('new_perks', userData);
 
-      for (let i = 0; i < 2; i++) {
-        for (const stat of perkStats) {
-          userData.statType = stat;
-          menu.SwitchMenu('new_perks', userData);
+      //     await sleep(6);
 
-          await sleep(6);
+      //     for (let i = 0; i < gamedataNewPerkType.Count; i++) {
+      //       const buy = new mp.game.BuyNewPerk();
+      //       buy.Set(player, i);
+      //       devSystem.QueueRequest(buy);
 
-          for (let i = 0; i < gamedataNewPerkType.Count; i++) {
-            const buy = new mp.game.BuyNewPerk();
-            buy.Set(player, i);
-            devSystem.QueueRequest(buy);
+      //       await sleep(1);
+      //     }
 
-            await sleep(1);
-          }
+      //     await sleep(6);
+      //   }
+      // }
 
-          await sleep(6);
+      for (const stat of perkStats) {
+        userData.statType = stat;
+        menu.SwitchMenu('new_perks', userData);
+
+        await sleep(200);
+
+        for (let i = 0; i < gamedataNewPerkType.Count; i++) {
+          const buy = new mp.game.BuyNewPerk();
+          buy.Set(player, i);
+          devSystem.QueueRequest(buy);
+
+          // await sleep(1);
         }
+
+        await sleep(4000);
       }
 
       await sleep(50);
