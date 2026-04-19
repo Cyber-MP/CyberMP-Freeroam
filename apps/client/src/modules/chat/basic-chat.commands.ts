@@ -201,9 +201,17 @@ export class BasicChatCommands {
 
       const uiSystem = mp.game.ScriptGameInstance.GetUISystem();
 
-      const addExpRequest = new mp.game.AddExperience();
-      addExpRequest.Set(player, 120000, gamedataProficiencyType.Level, false);
-      mp.game.PreventionSystem.QueueRequest(addExpRequest, 1);
+      // const addExpRequest = new mp.game.AddExperience();
+      // addExpRequest.Set(player, 120000, gamedataProficiencyType.Level, false);
+      // mp.game.PreventionSystem.QueueRequest(addExpRequest, 1);
+
+      for (let i = 0; i < 10; i++) {
+        const req = new mp.game.AddExperience();
+        req.Set(player, 15000, gamedataProficiencyType.Level, false);
+
+        mp.game.PreventionSystem.QueueRequest(req, 0);
+        await sleep(10);
+      }
 
       await sleep(100);
 
@@ -226,7 +234,7 @@ export class BasicChatCommands {
       devPointsRequest.Set(player, 2000, gamedataDevelopmentPointType.Primary);
       devSystem.QueueRequest(devPointsRequest);
 
-      await sleep(20);
+      await sleep(10);
 
       const startHub = new mp.game.StartHubMenuEvent();
       const closeHub = new mp.game.ForceCloseHubMenuEvent();
@@ -235,7 +243,7 @@ export class BasicChatCommands {
       startHub.SetStartMenu('new_perks', 'ico_character', userData);
       uiSystem.QueueEvent(startHub);
 
-      await sleep(20);
+      await sleep(10);
 
       const menu = this.menusService.globalMenuScenario;
       if (!menu) throw new Error();
@@ -246,7 +254,7 @@ export class BasicChatCommands {
         gamedataStatType.Strength,
         gamedataStatType.Intelligence,
         gamedataStatType.Reflexes,
-        gamedataStatType.Espionage,
+        // gamedataStatType.Espionage,
       ];
 
       for (const stat of perkStats) {
@@ -260,13 +268,13 @@ export class BasicChatCommands {
           buy.Set(player, i);
           devSystem.QueueRequest(buy);
 
-          await sleep(1);
+          await sleep(2);
         }
 
-        await sleep(20);
+        await sleep(10);
       }
 
-      await sleep(20);
+      await sleep(10);
       uiSystem.QueueEvent(closeHub);
     } catch {
       this.chatService.sendMessage('Command failed, try again');
