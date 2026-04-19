@@ -183,7 +183,6 @@ export class BasicChatCommands {
   //     this.isLevelupProcess = false;
   //   }
   // }
-
   private async levelUp() {
     if (this.isLevelupProcess) {
       this.chatService.sendMessage('Command is already in progress');
@@ -199,8 +198,11 @@ export class BasicChatCommands {
           'PlayerDevelopmentSystem',
         );
 
+      const uiSystem = mp.game.ScriptGameInstance.GetUISystem();
+
+      // EXP
       const addExpRequest = new mp.game.AddExperience();
-      addExpRequest.Set(player, 50000, gamedataProficiencyType.Level, false);
+      addExpRequest.Set(player, 120000, gamedataProficiencyType.Level, false);
       mp.game.PreventionSystem.QueueRequest(addExpRequest, 0);
 
       await sleep(500);
@@ -217,7 +219,6 @@ export class BasicChatCommands {
         const req = new mp.game.SetAttribute();
         req.Set(player, 20, stat);
         devSystem.QueueRequest(req);
-
         await sleep(100);
       }
 
@@ -225,21 +226,52 @@ export class BasicChatCommands {
       devPointsRequest.Set(player, 2000, gamedataDevelopmentPointType.Primary);
       devSystem.QueueRequest(devPointsRequest);
 
-      await sleep(300);
+      await sleep(500);
 
-      for (let i = 0; i < gamedataNewPerkType.Count; i++) {
-        const buyPerkRequest = new mp.game.BuyNewPerk();
-        buyPerkRequest.Set(player, i);
-        devSystem.QueueRequest(buyPerkRequest);
+      const startHub = new mp.game.StartHubMenuEvent();
+      const closeHub = new mp.game.ForceCloseHubMenuEvent();
+      const userData = new mp.game.PerkUserData();
 
-        await sleep(50);
+      startHub.SetStartMenu('new_perks', 'ico_character', userData);
+      uiSystem.QueueEvent(startHub);
+
+      await sleep(700);
+
+      const menu = this.menusService.globalMenuScenario;
+      if (!menu) throw new Error();
+
+      const perkStats = [
+        gamedataStatType.Cool,
+        gamedataStatType.TechnicalAbility,
+        gamedataStatType.Strength,
+        gamedataStatType.Intelligence,
+        gamedataStatType.Reflexes,
+        gamedataStatType.Espionage,
+      ];
+
+      for (const stat of perkStats) {
+        userData.statType = stat;
+        menu.SwitchMenu('new_perks', userData);
+
+        await sleep(400);
+
+        for (let i = 0; i < gamedataNewPerkType.Count; i++) {
+          const buy = new mp.game.BuyNewPerk();
+          buy.Set(player, i);
+          devSystem.QueueRequest(buy);
+
+          await sleep(30);
+        }
+
+        await sleep(200);
       }
 
-      this.chatService.sendMessage('Command applied!');
-    } catch (e) {
-      this.chatService.sendMessage(
-        'Command not applied, try run it one more time!',
-      );
+      await sleep(300);
+      uiSystem.QueueEvent(closeHub);
+
+      this.chatService.sendMessage('Command applied');
+    } catch {
+      this.chatService.sendMessage('Command failed, try again');
     } finally {
       this.isLevelupProcess = false;
     }
