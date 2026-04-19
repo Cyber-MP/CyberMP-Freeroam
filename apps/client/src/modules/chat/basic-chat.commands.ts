@@ -139,10 +139,10 @@ export class BasicChatCommands {
           buy.Set(player, i);
           devSystem.QueueRequest(buy);
 
-          await sleep(2);
+          await sleep(4);
         }
 
-        await sleep(10);
+        await sleep(40);
       }
 
       await sleep(50);
