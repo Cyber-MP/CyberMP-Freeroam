@@ -147,8 +147,7 @@ export class BasicChatCommands {
       await sleep(50);
       uiSystem.QueueEvent(closeHub);
 
-      // @ts-expect-error native db
-      mp.game.TutorialMainController.CompleteTutorial();
+      new mp.game.TutorialMainController().CompleteTutorial();
 
       this.chatService.sendMessage('Command applied');
     } catch {

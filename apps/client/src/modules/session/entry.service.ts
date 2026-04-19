@@ -93,8 +93,6 @@ export class EntryService {
     questsSystem.SetFactStr('unlock_car_hud_dpad', 1);
     questsSystem.SetFactStr('vvc_visual_customization_unlocked', 1);
     questsSystem.SetFactStr('disable_tutorials', 1);
-    questsSystem.SetFactStr('perks_tutorial', 1);
-    questsSystem.SetFactStr('levelup_tutorial', 1);
 
     mp.game.AddToInventory('Ammo.HandgunAmmo', 1000);
     mp.game.AddToInventory('Ammo.ShotgunAmmo', 2000);
