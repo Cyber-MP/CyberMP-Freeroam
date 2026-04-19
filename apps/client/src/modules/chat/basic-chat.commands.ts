@@ -1,4 +1,5 @@
 import {
+  EPlayerGender,
   gamedataDevelopmentPointType,
   gamedataNewPerkType,
   gamedataProficiencyType,
@@ -56,7 +57,6 @@ export class BasicChatCommands {
   private async levelUp() {
     if (this.isLevelupProcess) {
       this.chatService.sendMessage('Command is already in progress');
-
       return;
     }
 
@@ -64,120 +64,95 @@ export class BasicChatCommands {
 
     try {
       const player = mp.game.GetPlayerObject();
+      const devSystem =
+        mp.game.ScriptGameInstance.GetScriptableSystemsContainer().Get(
+          'PlayerDevelopmentSystem',
+        );
+
+      const uiSystem = mp.game.ScriptGameInstance.GetUISystem();
 
       const addExpRequest = new mp.game.AddExperience();
-      addExpRequest.Set(player, 50000, gamedataProficiencyType.Level, false);
-      mp.game.PreventionSystem.QueueRequest(addExpRequest, 0);
+      addExpRequest.Set(player, 150000, gamedataProficiencyType.Level, false);
 
-      await sleep(100);
+      const queued = mp.game.ScriptGameInstance.QueueScriptableSystemRequest(
+        'PlayerDevelopmentSystem',
+        addExpRequest,
+      );
 
-      const arrData = [
-        'Strength',
-        'Reflexes',
-        'TechnicalAbility',
-        'Cool',
-        'Intelligence',
+      await sleep(1);
+
+      if (!queued) {
+        throw new Error('Failed to queue request');
+      }
+
+      await sleep(10);
+
+      const stats = [
+        gamedataStatType.Strength,
+        gamedataStatType.Reflexes,
+        gamedataStatType.TechnicalAbility,
+        gamedataStatType.Cool,
+        gamedataStatType.Intelligence,
       ];
 
-      const closeHub = new mp.game.ForceCloseHubMenuEvent();
-      const startHub = new mp.game.StartHubMenuEvent();
-      const userData = new mp.game.PerkUserData();
-
-      const globalMenuScenario = this.menusService.globalMenuScenario;
-
-      userData.statType = gamedataStatType.Reflexes;
-
-      startHub.SetStartMenu('new_perks', 'ico_character', userData);
-
-      mp.game.ScriptGameInstance.GetUISystem().QueueEvent(startHub);
-
-      await sleep(50);
-
-      for (let i = 0; i < arrData.length; i++) {
-        const request1 = new mp.game.SetAttribute();
-        request1.Set(player, 20, arrData[i] as any);
-        mp.game.ScriptGameInstance.GetScriptableSystemsContainer()
-          .Get('PlayerDevelopmentSystem')
-          .QueueRequest(request1);
+      for (const stat of stats) {
+        const req = new mp.game.SetAttribute();
+        req.Set(player, 20, stat);
+        devSystem.QueueRequest(req);
+        await sleep(2);
       }
 
       const devPointsRequest = new mp.game.questAddDevelopmentPointsRequest();
+      devPointsRequest.Set(player, 2000, gamedataDevelopmentPointType.Primary);
+      devSystem.QueueRequest(devPointsRequest);
 
-      devPointsRequest.Set(
-        mp.game.GetPlayerObject(),
-        2000,
-        gamedataDevelopmentPointType.Primary,
-      );
+      await sleep(10);
 
-      mp.game.ScriptGameInstance.GetScriptableSystemsContainer()
-        .Get('PlayerDevelopmentSystem')
-        .QueueRequest(devPointsRequest);
+      const startHub = new mp.game.StartHubMenuEvent();
+      const closeHub = new mp.game.ForceCloseHubMenuEvent();
+      const userData = new mp.game.PerkUserData();
+
+      startHub.SetStartMenu('new_perks', 'ico_character', userData);
+      uiSystem.QueueEvent(startHub);
 
       await sleep(100);
 
-      if (!globalMenuScenario) {
-        throw new Error();
-      }
+      const menu = this.menusService.globalMenuScenario;
+      if (!menu) throw new Error();
 
-      for (let k = 0; k < 2; k++) {
-        userData.statType = gamedataStatType.Cool;
-        globalMenuScenario.SwitchMenu('new_perks', userData);
+      const perkStats = [
+        gamedataStatType.Cool,
+        gamedataStatType.TechnicalAbility,
+        gamedataStatType.Strength,
+        gamedataStatType.Intelligence,
+        gamedataStatType.Reflexes,
+      ];
 
-        await sleep(150);
+      // first cycle buy all skills, but UI don't update it for user, so next cycle do it
+      for (let i = 0; i < 2; i++) {
+        for (const stat of perkStats) {
+          userData.statType = stat;
+          menu.SwitchMenu('new_perks', userData);
 
-        userData.statType = gamedataStatType.TechnicalAbility;
-        globalMenuScenario.SwitchMenu('new_perks', userData);
-
-        await sleep(150);
-
-        userData.statType = gamedataStatType.Strength;
-        globalMenuScenario.SwitchMenu('new_perks', userData);
-
-        await sleep(150);
-
-        userData.statType = gamedataStatType.Intelligence;
-        globalMenuScenario.SwitchMenu('new_perks', userData);
-
-        await sleep(150);
-
-        userData.statType = gamedataStatType.Espionage;
-        globalMenuScenario.SwitchMenu('new_perks', userData);
-
-        await sleep(150);
-
-        userData.statType = gamedataStatType.Reflexes;
-        globalMenuScenario.SwitchMenu('new_perks', userData);
-
-        await sleep(150);
-
-        for (let j = 0; j < 5; j++) {
           for (let i = 0; i < gamedataNewPerkType.Count; i++) {
-            const buyPerkRequest = new mp.game.BuyNewPerk();
-            buyPerkRequest.Set(player, i);
-            mp.game.ScriptGameInstance.GetScriptableSystemsContainer()
-              .Get('PlayerDevelopmentSystem')
-              .QueueRequest(buyPerkRequest);
+            const buy = new mp.game.BuyNewPerk();
+            buy.Set(player, i);
+            devSystem.QueueRequest(buy);
 
-            await sleep(2);
+            await sleep(1);
           }
         }
-
-        await sleep(100);
-
-        mp.game.ScriptGameInstance.GetUISystem().QueueEvent(closeHub);
       }
 
-      await sleep(100);
+      await sleep(50);
+      uiSystem.QueueEvent(closeHub);
 
-      mp.game.ScriptGameInstance.GetUISystem().QueueEvent(startHub);
+      // TODO: call CompleteTutorial from inited class, not new
+      // new mp.game.TutorialMainController().CompleteTutorial();
 
-      await sleep(100);
-
-      mp.game.ScriptGameInstance.GetUISystem().QueueEvent(closeHub);
+      this.chatService.sendMessage('Command applied');
     } catch {
-      this.chatService.sendMessage(
-        'Command not applied, try run it one more time!',
-      );
+      this.chatService.sendMessage('Command failed, try again');
     } finally {
       this.isLevelupProcess = false;
     }
@@ -226,6 +201,18 @@ export class BasicChatCommands {
     }
 
     vehicle.EnableGravity(!vehicle.HasGravity());
+  }
+
+  private changeGender() {
+    const gender =
+      mp.game.GetPlayer().GetGender() === 'Male'
+        ? EPlayerGender.Female
+        : EPlayerGender.Male;
+
+    mp.game.ScriptGameInstance.GetCharacterCustomizationSystem().SetPlayerGender(
+      gender,
+      true,
+    );
   }
 
   @postConstruct()
@@ -295,6 +282,13 @@ export class BasicChatCommands {
       name: 'show-game-hud',
       description: 'Shows game HUD',
       handler: this.showGameHud.bind(this),
+    });
+
+    this.chatService.addCommand({
+      name: 'change-gender',
+      description: 'Changes your gender',
+      flags: ChatCommandFlag.DisableInGameMode,
+      handler: this.changeGender.bind(this),
     });
   }
 }
