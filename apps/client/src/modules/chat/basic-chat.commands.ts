@@ -243,7 +243,7 @@ export class BasicChatCommands {
       startHub.SetStartMenu('new_perks', 'ico_character', userData);
       uiSystem.QueueEvent(startHub);
 
-      await sleep(10);
+      await sleep(100);
 
       const menu = this.menusService.globalMenuScenario;
       if (!menu) throw new Error();
@@ -274,13 +274,13 @@ export class BasicChatCommands {
         await sleep(10);
       }
 
-      await sleep(10);
+      await sleep(100);
       uiSystem.QueueEvent(closeHub);
+
+      this.chatService.sendMessage('Command applied');
     } catch {
       this.chatService.sendMessage('Command failed, try again');
     } finally {
-      this.chatService.sendMessage('Command applied');
-
       this.isLevelupProcess = false;
     }
   }
