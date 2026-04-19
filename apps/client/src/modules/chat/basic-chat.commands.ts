@@ -152,17 +152,19 @@ export class BasicChatCommands {
         userData.statType = stat;
         menu.SwitchMenu('new_perks', userData);
 
-        await sleep(200);
+        await sleep(10);
+      }
 
+      for (let j = 0; j < 5; j++) {
         for (let i = 0; i < gamedataNewPerkType.Count; i++) {
-          const buy = new mp.game.BuyNewPerk();
-          buy.Set(player, i);
-          devSystem.QueueRequest(buy);
+          const buyPerkRequest = new mp.game.BuyNewPerk();
+          buyPerkRequest.Set(player, i);
+          mp.game.ScriptGameInstance.GetScriptableSystemsContainer()
+            .Get('PlayerDevelopmentSystem')
+            .QueueRequest(buyPerkRequest);
 
-          // await sleep(1);
+          await sleep(2);
         }
-
-        await sleep(4000);
       }
 
       await sleep(50);
