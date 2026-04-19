@@ -54,136 +54,6 @@ export class BasicChatCommands {
     this.statusEffects.remove('GameplayRestriction.NoWeapons');
   }
 
-  // private async levelUp() {
-  //   if (this.isLevelupProcess) {
-  //     this.chatService.sendMessage('Command is already in progress');
-
-  //     return;
-  //   }
-
-  //   this.isLevelupProcess = true;
-
-  //   try {
-  //     const player = mp.game.GetPlayerObject();
-
-  //     const addExpRequest = new mp.game.AddExperience();
-  //     addExpRequest.Set(player, 50000, gamedataProficiencyType.Level, false);
-  //     mp.game.PreventionSystem.QueueRequest(addExpRequest, 0);
-
-  //     await sleep(100);
-
-  //     const arrData = [
-  //       'Strength',
-  //       'Reflexes',
-  //       'TechnicalAbility',
-  //       'Cool',
-  //       'Intelligence',
-  //     ];
-
-  //     const closeHub = new mp.game.ForceCloseHubMenuEvent();
-  //     const startHub = new mp.game.StartHubMenuEvent();
-  //     const userData = new mp.game.PerkUserData();
-
-  //     const globalMenuScenario = this.menusService.globalMenuScenario;
-
-  //     userData.statType = gamedataStatType.Reflexes;
-
-  //     startHub.SetStartMenu('new_perks', 'ico_character', userData);
-
-  //     mp.game.ScriptGameInstance.GetUISystem().QueueEvent(startHub);
-
-  //     await sleep(50);
-
-  //     for (let i = 0; i < arrData.length; i++) {
-  //       const request1 = new mp.game.SetAttribute();
-  //       request1.Set(player, 20, arrData[i] as any);
-  //       mp.game.ScriptGameInstance.GetScriptableSystemsContainer()
-  //         .Get('PlayerDevelopmentSystem')
-  //         .QueueRequest(request1);
-  //     }
-
-  //     const devPointsRequest = new mp.game.questAddDevelopmentPointsRequest();
-
-  //     devPointsRequest.Set(
-  //       mp.game.GetPlayerObject(),
-  //       2000,
-  //       gamedataDevelopmentPointType.Primary,
-  //     );
-
-  //     mp.game.ScriptGameInstance.GetScriptableSystemsContainer()
-  //       .Get('PlayerDevelopmentSystem')
-  //       .QueueRequest(devPointsRequest);
-
-  //     await sleep(100);
-
-  //     if (!globalMenuScenario) {
-  //       throw new Error();
-  //     }
-
-  //     for (let k = 0; k < 2; k++) {
-  //       userData.statType = gamedataStatType.Cool;
-  //       globalMenuScenario.SwitchMenu('new_perks', userData);
-
-  //       await sleep(150);
-
-  //       userData.statType = gamedataStatType.TechnicalAbility;
-  //       globalMenuScenario.SwitchMenu('new_perks', userData);
-
-  //       await sleep(150);
-
-  //       userData.statType = gamedataStatType.Strength;
-  //       globalMenuScenario.SwitchMenu('new_perks', userData);
-
-  //       await sleep(150);
-
-  //       userData.statType = gamedataStatType.Intelligence;
-  //       globalMenuScenario.SwitchMenu('new_perks', userData);
-
-  //       await sleep(150);
-
-  //       userData.statType = gamedataStatType.Espionage;
-  //       globalMenuScenario.SwitchMenu('new_perks', userData);
-
-  //       await sleep(150);
-
-  //       userData.statType = gamedataStatType.Reflexes;
-  //       globalMenuScenario.SwitchMenu('new_perks', userData);
-
-  //       await sleep(150);
-
-  //       for (let j = 0; j < 5; j++) {
-  //         for (let i = 0; i < gamedataNewPerkType.Count; i++) {
-  //           const buyPerkRequest = new mp.game.BuyNewPerk();
-  //           buyPerkRequest.Set(player, i);
-  //           mp.game.ScriptGameInstance.GetScriptableSystemsContainer()
-  //             .Get('PlayerDevelopmentSystem')
-  //             .QueueRequest(buyPerkRequest);
-
-  //           await sleep(2);
-  //         }
-  //       }
-
-  //       await sleep(100);
-
-  //       mp.game.ScriptGameInstance.GetUISystem().QueueEvent(closeHub);
-  //     }
-
-  //     await sleep(100);
-
-  //     mp.game.ScriptGameInstance.GetUISystem().QueueEvent(startHub);
-
-  //     await sleep(100);
-
-  //     mp.game.ScriptGameInstance.GetUISystem().QueueEvent(closeHub);
-  //   } catch {
-  //     this.chatService.sendMessage(
-  //       'Command not applied, try run it one more time!',
-  //     );
-  //   } finally {
-  //     this.isLevelupProcess = false;
-  //   }
-  // }
-
   private async levelUp() {
     if (this.isLevelupProcess) {
       this.chatService.sendMessage('Command is already in progress');
@@ -202,8 +72,7 @@ export class BasicChatCommands {
       const uiSystem = mp.game.ScriptGameInstance.GetUISystem();
 
       const addExpRequest = new mp.game.AddExperience();
-      addExpRequest.Set(player, 120000, gamedataProficiencyType.Level, false);
-      // mp.game.PreventionSystem.QueueRequest(addExpRequest, 1);
+      addExpRequest.Set(player, 150000, gamedataProficiencyType.Level, false);
 
       const queued = mp.game.ScriptGameInstance.QueueScriptableSystemRequest(
         'PlayerDevelopmentSystem',
@@ -257,7 +126,6 @@ export class BasicChatCommands {
         gamedataStatType.Strength,
         gamedataStatType.Intelligence,
         gamedataStatType.Reflexes,
-        // gamedataStatType.Espionage,
       ];
 
       for (const stat of perkStats) {
