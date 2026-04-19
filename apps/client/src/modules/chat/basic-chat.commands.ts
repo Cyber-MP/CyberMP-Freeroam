@@ -142,7 +142,7 @@ export class BasicChatCommands {
           await sleep(6);
         }
 
-        await sleep(60);
+        await sleep(200);
       }
 
       await sleep(50);
