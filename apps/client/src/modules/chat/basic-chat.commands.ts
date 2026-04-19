@@ -230,12 +230,13 @@ export class BasicChatCommands {
   }
 
   private changeGender() {
-    const curGender = mp.game.GetPlayer().GetGender();
-
-    console.log('GENDER', curGender);
+    const gender =
+      mp.game.GetPlayer().GetGender() === 'Male'
+        ? EPlayerGender.Female
+        : EPlayerGender.Male;
 
     mp.game.ScriptGameInstance.GetCharacterCustomizationSystem().SetPlayerGender(
-      EPlayerGender.Female,
+      gender,
       true,
     );
   }
@@ -312,6 +313,7 @@ export class BasicChatCommands {
     this.chatService.addCommand({
       name: 'change-gender',
       description: 'Changes your gender',
+      flags: ChatCommandFlag.DisableInGameMode,
       handler: this.changeGender.bind(this),
     });
   }
