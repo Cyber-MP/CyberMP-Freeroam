@@ -1,6 +1,7 @@
 import type { PlayerDeathEventData, Vector4 } from '@cybermp/server-types';
 import { GameModeName } from '@freeroam/shared/game-modes';
 import {
+  MatchStatus,
   zCreateMatchOptions,
   zJoinMatchOptions,
 } from '@freeroam/shared/matchmaking';
@@ -189,6 +190,10 @@ export class BountyHunter extends BaseGameMode<
   }
 
   onPlayerLeave(playerId: number) {
+    if (this.match.status !== MatchStatus.ACTIVE) {
+      return;
+    }
+
     if (playerId === this.victimId || this.match.members.size <= 1) {
       this.endMatch();
       return;
