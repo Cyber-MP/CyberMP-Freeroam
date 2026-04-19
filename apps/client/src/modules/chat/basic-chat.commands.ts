@@ -147,7 +147,8 @@ export class BasicChatCommands {
       await sleep(50);
       uiSystem.QueueEvent(closeHub);
 
-      new mp.game.TutorialMainController().CompleteTutorial();
+      // TODO: call CompleteTutorial from inited class, not new
+      // new mp.game.TutorialMainController().CompleteTutorial();
 
       this.chatService.sendMessage('Command applied');
     } catch {
