@@ -13,15 +13,16 @@ import { GHealthService } from '../../../game/health/health.service';
 import { GStatusEffectsService } from '../../../game/status-effects/status-effects.service';
 import { GVehiclesService } from '../../../game/vehicles/vehicles.service';
 import { BaseGameMode } from '../../game-mode';
-import type { BountyHunterVictimData } from './dto';
+import type { BountyHunterData } from './dto';
 
 @injectable()
 export class BountyHunter extends BaseGameMode<'bounty_hunter'> {
   private VICTIM_HEALTH = 1200;
 
   private remoteVictimPosition: ServerVector3 | null = null;
+
   private victimMappin: NewMappinID | null = null;
-  private victimData: BountyHunterVictimData | null = null;
+  private victimData: BountyHunterData['victim'] | null = null;
 
   private tickId: number | null = null;
 
@@ -61,22 +62,22 @@ export class BountyHunter extends BaseGameMode<'bounty_hunter'> {
     }
   };
 
-  updateVictimData(data: BountyHunterVictimData) {
+  updateData(data: BountyHunterData) {
     const localPlayerId = mp.getPlayerServerId(1);
 
-    this.victimData = data;
+    this.victimData = data.victim;
 
-    if (localPlayerId !== data.id) {
+    if (localPlayerId !== data.victim.id) {
       this.onHunter(data);
     } else {
       this.onVictim(data);
     }
   }
 
-  private onHunter(data: BountyHunterVictimData) {
+  private onHunter(data: BountyHunterData) {
     browser.gameModes.bountyHunter.setData.trigger({
       endTimestamp: data.endTimestamp,
-      hint: `KILL ${data.nickname} TO WIN`,
+      hint: `KILL ${data.victim.nickname} TO WIN`,
     });
 
     const system = mp.game.ScriptGameInstance.GetMappinSystem();
@@ -98,20 +99,20 @@ export class BountyHunter extends BaseGameMode<'bounty_hunter'> {
 
     this.victimMappin = system.RegisterMappin(
       mappinData,
-      createVector4(...data.position),
+      createVector4(...data.victim.position),
     );
     system.TrackMappin(this.victimMappin);
 
     this.tickId = mp.setTick(this.updateVictimMappinTick);
   }
 
-  private onVictim(data: BountyHunterVictimData) {
+  private onVictim(data: BountyHunterData) {
     this.healthService.set(this.VICTIM_HEALTH);
     this.statusEffectsService.add('GameplayRestriction.NoCombat');
     this.statusEffectsService.add('GameplayRestriction.NoWeapons');
     this.statusEffectsService.add('GameplayRestriction.NoHealing');
 
-    this.vehiclesService.requestSitInVehicle(data.vehicleId);
+    this.vehiclesService.requestSitInVehicle(data.victim.vehicleId);
 
     browser.gameModes.bountyHunter.setData.trigger({
       endTimestamp: data.endTimestamp,
@@ -138,6 +139,8 @@ export class BountyHunter extends BaseGameMode<'bounty_hunter'> {
       const system = mp.game.ScriptGameInstance.GetMappinSystem();
       system.UnregisterMappin(this.victimMappin);
     }
+
+    this.healthService.resetToDefault();
 
     browser.hud.setGlobalPath.trigger('/hud');
     browser.navigate.trigger('/hud');

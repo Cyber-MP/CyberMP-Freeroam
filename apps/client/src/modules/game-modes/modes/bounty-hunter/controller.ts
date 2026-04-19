@@ -1,4 +1,5 @@
 import type { InferRouterInputs } from '@cybermp/rpc-router/server';
+import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
 import { r } from '../../../../rpc';
 import {
@@ -7,12 +8,12 @@ import {
   type RpcActiveGameContext,
 } from '../../middleware/active-game.middleware';
 import type { BountyHunter } from '.';
-import { zBountyHunterVictimData, zBountyHunterVictimPosition } from './dto';
+import { zBountyHunterData, zBountyHunterVictimPosition } from './dto';
 
 export const bountyHunterContract = {
-  updateVictimData: r.contract
+  updateData: r.contract
     .context<RpcActiveGameContext<BountyHunter>>()
-    .input(zBountyHunterVictimData),
+    .input(zBountyHunterData),
   updateVictimPosition: r.contract
     .context<RpcActiveGameContext<BountyHunter>>()
     .input(zBountyHunterVictimPosition),
@@ -20,6 +21,7 @@ export const bountyHunterContract = {
 
 export type ContractInputs = InferRouterInputs<typeof bountyHunterContract>;
 
+@eager()
 @injectable()
 export class BountyHunterController {
   constructor(
@@ -27,13 +29,10 @@ export class BountyHunterController {
     private activeGameMiddleware: ActiveGameMiddleware,
   ) {}
 
-  private async updateVictimData(
-    context: RpcActiveGameContext<
-      BountyHunter,
-      ContractInputs['updateVictimData']
-    >,
+  private async updateData(
+    context: RpcActiveGameContext<BountyHunter, ContractInputs['updateData']>,
   ) {
-    context.mode.updateVictimData(context.data);
+    context.mode.updateData(context.data);
   }
 
   private async updateVictimPosition(
@@ -48,9 +47,9 @@ export class BountyHunterController {
   @postConstruct()
   private init() {
     r.implement(bountyHunterContract, {
-      updateVictimData: bountyHunterContract.updateVictimData.implement(
+      updateData: bountyHunterContract.updateData.implement(
         this.activeGameMiddleware,
-        this.updateVictimData.bind(this),
+        this.updateData.bind(this),
       ),
       updateVictimPosition: bountyHunterContract.updateVictimPosition.implement(
         this.activeGameMiddleware,

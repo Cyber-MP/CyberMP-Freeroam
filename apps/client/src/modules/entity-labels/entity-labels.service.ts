@@ -53,7 +53,10 @@ export class EntityLabelsService {
   }
 
   private onTick() {
-    const playerPos = mp.game.GetPlayer().GetWorldPosition();
+    const playerPos = mp.game.GetPlayer()?.GetWorldPosition();
+    if (!playerPos) {
+      return;
+    }
 
     for (const label of this.labels) {
       const labelPos = label.getPosition();

@@ -69,7 +69,10 @@ export class Pvp extends BaseGameMode<'pvp'> {
     }
 
     this.unmountCheckWeaponInterval();
-    this.unmountDeathHandler();
+
+    setTimeout(() => {
+      this.unmountDeathHandler();
+    }, 1000);
 
     setTimeout(() => {
       this.unmountSpectateBinds();
@@ -149,6 +152,10 @@ export class Pvp extends BaseGameMode<'pvp'> {
   }
 
   private checkCurrentWeapon() {
+    if (this.options.freeWeapons) {
+      return;
+    }
+
     const equipmentSystem =
       mp.game.ScriptGameInstance.GetScriptableSystemsContainer().Get(
         'EquipmentSystem',
@@ -188,6 +195,10 @@ export class Pvp extends BaseGameMode<'pvp'> {
   }
 
   private mountCheckWeaponInterval() {
+    if (this.options.freeWeapons) {
+      return;
+    }
+
     this.checkWeaponInterval = setInterval(
       this.checkCurrentWeapon.bind(this),
       500,

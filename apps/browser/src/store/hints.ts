@@ -4,7 +4,6 @@ import { r } from '../rpc';
 
 export const hintsState = proxy<Record<string, string>>({
   F2: 'Menu',
-  F3: 'Noclip',
   F6: 'Show/Hide HUD',
   T: 'Chat',
 });
