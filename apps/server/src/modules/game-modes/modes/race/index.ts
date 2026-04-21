@@ -338,8 +338,16 @@ class RanksTracker {
     });
 
     racersProgress.sort((a, b) => {
-      if (a.racer.finished && !b.racer.finished) return -1;
-      if (!a.racer.finished && b.racer.finished) return 1;
+      if (a.racer.finished && b.racer.finished) {
+        return (
+          (a.racer.finishTimestamp ?? 0) - (b.racer.finishTimestamp ?? 0) * -1
+        );
+      }
+
+      if (a.racer.finished || b.racer.finished) {
+        return a.racer.finished ? 1 : -1;
+      }
+
       return b.progress - a.progress;
     });
 
