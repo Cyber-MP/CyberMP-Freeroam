@@ -525,7 +525,12 @@ export class Race extends BaseGameMode<
       });
 
     for (const racer of this.racers.values()) {
-      browser.gameModes.race.setResults.trigger(racer.player, finalResults);
+      try {
+        browser.gameModes.race.setResults.trigger(racer.player, finalResults);
+      } catch (e) {
+        console.log('RACE END() network error', (e as any).message);
+      }
+
       racer.reset();
     }
 
