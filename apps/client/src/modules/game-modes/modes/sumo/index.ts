@@ -103,7 +103,7 @@ export class Sumo extends BaseGameMode<'sumo'> {
 
     if (!this.livingIds.includes(mp.getPlayerServerId(1))) {
       this.onDead();
-    } else {
+
       const current = this.spectatingService.getSpectatedPlayerId();
 
       if (current && !this.livingIds.includes(current)) {
