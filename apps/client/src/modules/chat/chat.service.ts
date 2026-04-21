@@ -52,15 +52,6 @@ export class ChatService {
       return;
     }
 
-    console.log(
-      'CHAT DEBUG',
-      command.flags,
-      ChatCommandFlag.Admin,
-      // @ts-expect-error DEBUG
-      command.flags & ChatCommandFlag.Admin,
-      mp.meta.getLocalPlayerMeta('admin'),
-    );
-
     if (command.flags) {
       if (
         (command.flags & ChatCommandFlag.Admin) !== 0 &&
