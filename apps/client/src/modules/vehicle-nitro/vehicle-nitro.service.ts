@@ -50,11 +50,15 @@ export class VehicleNitroService {
       return;
     }
 
+    console.log('1');
+
     console.log(String(this.isMinCapacityPenalty));
 
     if (this.isMinCapacityPenalty) {
       return;
     }
+
+    console.log('2');
 
     console.log(String(this.capacity - this.capacityByUse < 0));
 
@@ -62,6 +66,8 @@ export class VehicleNitroService {
       this.isMinCapacityPenalty = true;
       this.capacity = this.capacityByUse;
     }
+
+    console.log('3');
 
     this.lastBoostTimestamp = Date.now();
     this.capacityRegenAvailable = false;
@@ -71,10 +77,14 @@ export class VehicleNitroService {
       clearTimeout(this.regenPenaltyTimeout);
     }
 
+    console.log('4');
+
     this.regenPenaltyTimeout = setTimeout(() => {
       this.capacityRegenAvailable = true;
       this.regenPenaltyTimeout = null;
     }, this.regenPenalty);
+
+    console.log('5');
 
     // BOOST
     const player = mp.game.GetPlayer();
