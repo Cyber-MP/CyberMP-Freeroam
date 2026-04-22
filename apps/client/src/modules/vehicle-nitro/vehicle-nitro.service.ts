@@ -11,7 +11,7 @@ import { GKeyboardService } from '../game/keyboard.service';
 export class VehicleNitroService {
   public force = 1.75; // force applied to vehicle when boosting
   public capacityByUse = 0.25; // capacity consumed per use
-  public maxSpeed = 228; // 400 => vehicle try to use breakes, 450 => stop immediately
+  public maxSpeed = 350; // (KM/PH) 400 => vehicle try to use breakes, 450 => stop immediately
 
   private capacity = 100; // 0 ... 100
   private minCapacityPenalty = 25; // on player reaches 0 capacity, they should wait for this value before boost again
@@ -56,9 +56,9 @@ export class VehicleNitroService {
     const player = mp.game.GetPlayer();
     const vehicle = player.GetMountedVehicle();
 
-    const currentSpeed = this.getSpeed(vehicle);
+    if (!vehicle.isOnGround) return;
 
-    console.log(currentSpeed);
+    const currentSpeed = this.getSpeed(vehicle);
 
     if (currentSpeed > this.maxSpeed) {
       return;

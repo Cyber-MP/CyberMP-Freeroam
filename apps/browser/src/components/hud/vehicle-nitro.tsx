@@ -1,17 +1,20 @@
-import { useQuery } from '@tanstack/react-query';
-import ms from 'ms';
+// import { useQuery } from '@tanstack/react-query';
+// import ms from 'ms';
 import { memo } from 'react';
-import { clientQuery } from '@/rpc';
+
+// import { clientQuery } from '@/rpc';
 
 const VehicleNitro = memo(() => {
-  const info = useQuery(
-    clientQuery.vehicleNitro.info.queryOptions({
-      refetchInterval: ms('1s'),
-    }),
-  );
+  // const info = useQuery(
+  //   clientQuery.vehicleNitro.info.queryOptions({
+  //     refetchInterval: ms('1s'),
+  //   }),
+  // );
+
+  const info = { data: { capacity: 50, isAvailable: true, isPenalty: false } };
 
   return (
-    <div className="absolute left-20 bottom-20 flex items-center justify-center bg-blue-400">
+    <div className="absolute left-20 top-20 flex items-center justify-center bg-blue-400">
       <span>{info.data?.capacity}</span>
       <span>{info.data?.isAvailable.toString()}</span>
       <span>{info.data?.isPenalty.toString()}</span>

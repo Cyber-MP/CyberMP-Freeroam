@@ -29,7 +29,7 @@ export class VehicleNitroCommands {
   private init() {
     this.chat.addCommand({
       name: 'nitro-force',
-      description: 'Sets nitro force',
+      description: 'Sets nitro force (10 is too much)',
       args: z.tuple([
         z.coerce.number().meta({ title: 'force' }).min(0).max(70),
       ]),
@@ -40,7 +40,11 @@ export class VehicleNitroCommands {
       name: 'nitro-maxspeed',
       description: 'Sets nitro max speed',
       args: z.tuple([
-        z.coerce.number().meta({ title: 'max speed' }).min(0).max(450),
+        z.coerce
+          .number()
+          .meta({ title: 'max speed, 450 KM/PH is game limit' })
+          .min(0)
+          .max(450),
       ]),
       handler: this.nitroMaxSpeed.bind(this),
     });
@@ -48,7 +52,7 @@ export class VehicleNitroCommands {
     this.chat.addCommand({
       name: 'nitro-by-use',
       description:
-        'Sets how much nitro is used per boost (boost applies 10 times per second)',
+        'Sets how much nitro is used per boost (set to 0 for free boost)',
       args: z.tuple([
         z.coerce.number().meta({ title: 'nitro by use' }).min(0).max(100),
       ]),

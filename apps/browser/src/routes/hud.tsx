@@ -5,11 +5,6 @@ import {
   useNavigate,
 } from '@tanstack/react-router';
 import { useHotkeys } from 'react-hotkeys-hook';
-import { Brand } from '@/components/hud/brand';
-import { Chat } from '@/components/hud/chat';
-import { Hints } from '@/components/hud/hints';
-import { KillFeed } from '@/components/hud/kill-feed';
-import { LobbyMatch } from '@/components/hud/lobby-match';
 import { VehicleNitro } from '@/components/hud/vehicle-nitro';
 import { hudState } from '@/store/hud';
 
@@ -31,11 +26,11 @@ function RouteComponent() {
 
   return (
     <div>
-      <Brand />
+      {/*<Brand />
       <Chat />
       <KillFeed />
       <Hints />
-      <LobbyMatch />
+      <LobbyMatch />*/}
       <VehicleNitro />
       <Outlet />
     </div>
