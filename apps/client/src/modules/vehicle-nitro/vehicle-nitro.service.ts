@@ -46,7 +46,7 @@ export class VehicleNitroService {
 
     console.log(String(this.lastBoostTimestamp + this.boostTime < Date.now()));
 
-    if (this.lastBoostTimestamp + this.boostTime < Date.now()) {
+    if (this.lastBoostTimestamp + this.boostTime > Date.now()) {
       return;
     }
 
