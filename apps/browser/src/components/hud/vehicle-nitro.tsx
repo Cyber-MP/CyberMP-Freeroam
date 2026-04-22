@@ -27,7 +27,7 @@ const VehicleNitro = memo(() => {
       <div className="relative h-6 w-full bg-black/50 backdrop-blur-sm">
         <div
           className={`
-            h-full transition-all duration-500
+            h-full transition-all duration-1000
             ${color}
           `}
           style={{ width: `${capacity}%` }}
