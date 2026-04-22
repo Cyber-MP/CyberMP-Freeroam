@@ -42,21 +42,19 @@ export class VehicleNitroService {
   }
 
   boost() {
-    console.log(
-      JSON.stringify({
-        1: this.lastBoostTimestamp,
-        2: this.boostTime,
-        3: this.isMinCapacityPenalty,
-      }),
-    );
+    console.log(String(this.lastBoostTimestamp + this.boostTime < Date.now()));
 
     if (this.lastBoostTimestamp + this.boostTime < Date.now()) {
       return;
     }
 
+    console.log(String(this.isMinCapacityPenalty));
+
     if (this.isMinCapacityPenalty) {
       return;
     }
+
+    console.log(String(this.capacity - this.capacityByUse < 0));
 
     if (this.capacity - this.capacityByUse < 0) {
       this.isMinCapacityPenalty = true;
