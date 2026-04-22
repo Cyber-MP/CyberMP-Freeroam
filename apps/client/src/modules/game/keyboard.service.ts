@@ -41,7 +41,11 @@ export class GKeyboardService {
 
     const callbacks = this.binds.get(key) ?? [];
 
+    console.log('KEYBOARD CALLBACKS', key, callbacks.entries());
+
     for (const cb of callbacks) {
+      console.log('KEYBOARD CALLBACK+', cb.name);
+
       cb(action);
     }
   }
@@ -59,8 +63,6 @@ export class GKeyboardService {
   }
 
   bindKey(key: CyberEnums.EInputKey, callback: BindCallback) {
-    console.log('KEYBOARD BIND', key);
-
     if (this.binds.has(key)) {
       this.binds.get(key)?.add(callback);
     } else {
@@ -69,8 +71,6 @@ export class GKeyboardService {
   }
 
   unbindKey(key: CyberEnums.EInputKey, callback: BindCallback) {
-    console.log('KEYBOARD UNBIND', key);
-
     const callbacks = this.binds.get(key);
     if (!callbacks || !callbacks.size) {
       return;
