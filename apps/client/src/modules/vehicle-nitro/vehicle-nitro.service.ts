@@ -43,9 +43,11 @@ export class VehicleNitroService {
 
   boost() {
     console.log(
-      this.lastBoostTimestamp,
-      this.boostTime,
-      this.isMinCapacityPenalty,
+      JSON.stringify({
+        1: this.lastBoostTimestamp,
+        2: this.boostTime,
+        3: this.isMinCapacityPenalty,
+      }),
     );
 
     if (this.lastBoostTimestamp + this.boostTime < Date.now()) {
@@ -165,7 +167,9 @@ export class VehicleNitroService {
 
   @postConstruct()
   private async init() {
-    this.mountVehicleInterval();
-    this.capacityRegen();
+    mp.game.onGameLoaded(() => {
+      this.mountVehicleInterval();
+      this.capacityRegen();
+    });
   }
 }
