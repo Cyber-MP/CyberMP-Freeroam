@@ -44,9 +44,11 @@ export class VehicleNitroService {
     const player = mp.game.GetPlayer();
     const vehicle = player.GetMountedVehicle();
 
-    console.log(vehicle.GetCurrentSpeed());
+    const currentSpeed = vehicle.GetCurrentSpeed() * 3.6;
 
-    if (vehicle.GetCurrentSpeed() > this.maxSpeed) {
+    console.log(currentSpeed);
+
+    if (currentSpeed > this.maxSpeed) {
       return;
     }
 
