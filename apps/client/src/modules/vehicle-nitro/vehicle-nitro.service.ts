@@ -56,7 +56,7 @@ export class VehicleNitroService {
     const player = mp.game.GetPlayer();
     const vehicle = player.GetMountedVehicle();
 
-    if (!vehicle.isOnGround) return;
+    if (!vehicle.IsOnGround()) return;
 
     const currentSpeed = this.getSpeed(vehicle);
 
