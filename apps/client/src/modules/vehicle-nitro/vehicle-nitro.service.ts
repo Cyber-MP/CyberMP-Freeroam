@@ -134,9 +134,9 @@ export class VehicleNitroService {
   }
 
   private mountVehicleInterval() {
-    const player = mp.game.GetPlayerObject();
-
     this.vehicleMountInterval = setInterval(() => {
+      const player = mp.game.GetPlayerObject();
+
       const vehicle = mp.game.GetMountedVehicle(player);
 
       if (vehicle) {

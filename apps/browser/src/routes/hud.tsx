@@ -10,6 +10,7 @@ import { Chat } from '@/components/hud/chat';
 import { Hints } from '@/components/hud/hints';
 import { KillFeed } from '@/components/hud/kill-feed';
 import { LobbyMatch } from '@/components/hud/lobby-match';
+import { VehicleNitro } from '@/components/hud/vehicle-nitro';
 import { hudState } from '@/store/hud';
 
 export const Route = createFileRoute('/hud')({
@@ -35,6 +36,7 @@ function RouteComponent() {
       <KillFeed />
       <Hints />
       <LobbyMatch />
+      <VehicleNitro />
       <Outlet />
     </div>
   );
