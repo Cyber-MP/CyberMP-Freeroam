@@ -42,6 +42,16 @@ export class VehicleNitroService {
   }
 
   boost(): void {
+    console.log(
+      'BOOST',
+      'lBT:',
+      this.lastBoostTimestamp,
+      'bT:',
+      this.boostTime,
+      'isMCP:',
+      this.isMinCapacityPenalty,
+    );
+
     if (this.lastBoostTimestamp + this.boostTime > Date.now()) {
       return;
     }
@@ -52,7 +62,6 @@ export class VehicleNitroService {
 
     if (this.capacity - this.capacityByUse < 0) {
       this.isMinCapacityPenalty = true;
-      return;
     }
 
     this.lastBoostTimestamp = Date.now();
@@ -84,19 +93,27 @@ export class VehicleNitroService {
   }
 
   mountBoostKey() {
+    console.log('mountBoostKey');
+
     this.keyboardService.bindKey(this.boostKey, this.boost);
   }
 
   unmountBoostKey() {
+    console.log('unmountBoostKey');
+
     this.keyboardService.unbindKey(this.boostKey, this.boost);
   }
 
   private capacityRegen() {
+    console.log('capacityRegen');
+
     if (this.capacityRegenInterval) {
       return;
     }
 
     this.capacityRegenInterval = setInterval(() => {
+      console.log('REGEN INTERVAL');
+
       if (!this.isInVehicle) {
         return;
       }
@@ -112,6 +129,8 @@ export class VehicleNitroService {
   }
 
   private onVehicleEnter() {
+    console.log('onVehicleEnter');
+
     if (this.isInVehicle) {
       return;
     }
@@ -124,6 +143,8 @@ export class VehicleNitroService {
   }
 
   private onVehicleLeave() {
+    console.log('onVehicleLeave');
+
     if (!this.isInVehicle) {
       return;
     }
@@ -134,7 +155,11 @@ export class VehicleNitroService {
   }
 
   private mountVehicleInterval() {
+    console.log('mountVehicleInterval');
+
     this.vehicleMountInterval = setInterval(() => {
+      console.log('VEHICLE MOUNT INTERVAL');
+
       const player = mp.game.GetPlayerObject();
 
       const vehicle = mp.game.GetMountedVehicle(player);
