@@ -10,12 +10,12 @@ import { GKeyboardService } from '../game/keyboard.service';
 @injectable()
 export class VehicleNitroService {
   public force = 1.75; // force applied to vehicle when boosting
-  public capacityByUse = 0.25; // capacity consumed per use
+  public capacityByUse = 0.75; // capacity consumed per use
   public maxSpeed = 350; // (KM/PH) 400 => vehicle try to use breakes, 450 => stop immediately
+  public capacityRegenRate = 8.75; // 'value' per second
 
   private capacity = 100; // 0 ... 100
   private minCapacityPenalty = 25; // on player reaches 0 capacity, they should wait for this value before boost again
-  private capacityRegenRate = 4.5; // 'value' per second
   private regenPenalty = ms('4s'); // capacity regen timeout after boost
   private boostTime = ms('0.10s'); // applies boost every 'value' seconds
   private boostInterval: ReturnType<typeof setInterval> | null = null;

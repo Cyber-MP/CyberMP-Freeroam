@@ -6,11 +6,9 @@ import { clientQuery } from '@/rpc';
 const VehicleNitro = memo(() => {
   const info = useQuery(
     clientQuery.vehicleNitro.info.queryOptions({
-      refetchInterval: ms('1s'),
+      refetchInterval: ms('0.5s'),
     }),
   );
-
-  // const info = { data: { capacity: 30, isAvailable: true, isPenalty: false } };
 
   if (!info.data?.isAvailable) return null;
 

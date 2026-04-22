@@ -25,6 +25,10 @@ export class VehicleNitroCommands {
     this.vehicleNitroService.capacityByUse = byUse;
   };
 
+  private nitroRegen = (regen: number) => {
+    this.vehicleNitroService.capacityRegenRate = regen;
+  };
+
   @postConstruct()
   private init() {
     this.chat.addCommand({
@@ -57,6 +61,15 @@ export class VehicleNitroCommands {
         z.coerce.number().meta({ title: 'nitro by use' }).min(0).max(100),
       ]),
       handler: this.nitroByUse.bind(this),
+    });
+
+    this.chat.addCommand({
+      name: 'nitro-regen',
+      description: 'Sets nitro regen rate',
+      args: z.tuple([
+        z.coerce.number().meta({ title: 'regen rate' }).min(0).max(100),
+      ]),
+      handler: this.nitroRegen.bind(this),
     });
   }
 }
