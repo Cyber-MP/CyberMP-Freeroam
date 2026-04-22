@@ -42,6 +42,8 @@ export class VehicleNitroService {
   }
 
   boost() {
+    console.log('bredberi');
+
     console.log(String(this.lastBoostTimestamp + this.boostTime < Date.now()));
 
     if (this.lastBoostTimestamp + this.boostTime < Date.now()) {
