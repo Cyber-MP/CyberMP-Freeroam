@@ -9,23 +9,23 @@ import { GKeyboardService } from '../game/keyboard.service';
 @eager()
 @injectable()
 export class VehicleNitroService {
-  public force = 1.75; // force applied to vehicle when boosting
-  public capacityByUse = 0.75; // capacity consumed per use
+  public force = 2.25; // force applied to vehicle when boosting
+  public capacityByUse = 1.75; // capacity consumed per use
   public maxSpeed = 350; // (KM/PH) 400 => vehicle try to use breakes, 450 => stop immediately
-  public capacityRegenRate = 8.75; // 'value' per second
+  public capacityRegenRate = 1; // 'value' per second
 
   private capacity = 100; // 0 ... 100
   private minCapacityPenalty = 25; // on player reaches 0 capacity, they should wait for this value before boost again
-  private regenPenalty = ms('4s'); // capacity regen timeout after boost
-  private boostTime = ms('0.10s'); // applies boost every 'value' seconds
+  private regenPenalty = ms('3s'); // capacity regen timeout after boost
+  private boostTime = ms('0.1s'); // applies boost every 'value' seconds
   private boostInterval: ReturnType<typeof setInterval> | null = null;
   private vehicleMountInterval: ReturnType<typeof setInterval> | null = null;
   private vehicleMountTime = ms('0.25s');
   private isInVehicle = false;
   private capacityRegenInterval: ReturnType<typeof setInterval> | null = null;
-  private capacityRegenTime = ms('1s');
+  private capacityRegenTime = ms('0.1s');
   private capacityRegenAvailable = false;
-  private boostKey = EInputKey.IK_E;
+  private boostKey = EInputKey.IK_LShift;
   private regenPenaltyTimeout: ReturnType<typeof setTimeout> | null = null;
   private isMinCapacityPenalty = false;
 
@@ -99,18 +99,12 @@ export class VehicleNitroService {
   };
 
   private handleBoost = (action: EInputAction) => {
-    console.log('BOOST', action);
-
     if (action === EInputAction.IACT_Press) {
-      console.log('interval set');
       this.boostInterval = setInterval(this.boost, this.boostTime);
     }
 
     if (action === EInputAction.IACT_Release) {
-      console.log('interval remove 1');
-
       if (this.boostInterval) {
-        console.log('interval remove 2');
         clearInterval(this.boostInterval);
         this.boostInterval = null;
       }
