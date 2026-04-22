@@ -41,7 +41,7 @@ export class VehicleNitroService {
     };
   }
 
-  boost(): void {
+  boost() {
     console.log(
       'BOOST',
       'lBT:',
@@ -95,13 +95,15 @@ export class VehicleNitroService {
   mountBoostKey() {
     console.log('mountBoostKey');
 
-    this.keyboardService.bindKey(this.boostKey, this.boost);
+    this.keyboardService.bindKey(EInputKey.IK_E, this.boost);
+    this.keyboardService.bindKey(EInputKey.IK_G, this.boost);
   }
 
   unmountBoostKey() {
     console.log('unmountBoostKey');
 
-    this.keyboardService.unbindKey(this.boostKey, this.boost);
+    this.keyboardService.unbindKey(EInputKey.IK_E, this.boost);
+    this.keyboardService.unbindKey(EInputKey.IK_G, this.boost);
   }
 
   private capacityRegen() {
@@ -112,8 +114,6 @@ export class VehicleNitroService {
     }
 
     this.capacityRegenInterval = setInterval(() => {
-      console.log('REGEN INTERVAL');
-
       if (!this.isInVehicle) {
         return;
       }
@@ -129,8 +129,6 @@ export class VehicleNitroService {
   }
 
   private onVehicleEnter() {
-    console.log('onVehicleEnter');
-
     if (this.isInVehicle) {
       return;
     }
@@ -143,8 +141,6 @@ export class VehicleNitroService {
   }
 
   private onVehicleLeave() {
-    console.log('onVehicleLeave');
-
     if (!this.isInVehicle) {
       return;
     }
@@ -155,11 +151,7 @@ export class VehicleNitroService {
   }
 
   private mountVehicleInterval() {
-    console.log('mountVehicleInterval');
-
     this.vehicleMountInterval = setInterval(() => {
-      console.log('VEHICLE MOUNT INTERVAL');
-
       const player = mp.game.GetPlayerObject();
 
       const vehicle = mp.game.GetMountedVehicle(player);
