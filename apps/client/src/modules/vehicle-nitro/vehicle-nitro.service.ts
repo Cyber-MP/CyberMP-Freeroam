@@ -25,7 +25,7 @@ export class VehicleNitroService {
   private capacityRegenInterval: ReturnType<typeof setInterval> | null = null;
   private capacityRegenTime = ms('0.1s');
   private capacityRegenAvailable = false;
-  private boostKey = EInputKey.IK_LShift;
+  private boostKey = EInputKey.IK_X;
   private regenPenaltyTimeout: ReturnType<typeof setTimeout> | null = null;
   private isMinCapacityPenalty = false;
 
@@ -157,6 +157,11 @@ export class VehicleNitroService {
     }
 
     this.isInVehicle = false;
+
+    if (this.boostInterval) {
+      clearInterval(this.boostInterval);
+      this.boostInterval = null;
+    }
 
     this.unmountBoostKey();
   }
