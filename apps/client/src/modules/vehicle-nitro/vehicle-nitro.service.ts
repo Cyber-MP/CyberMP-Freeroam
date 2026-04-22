@@ -1,4 +1,5 @@
 import { EInputAction, EInputKey } from '@cybermp/client-types/enums';
+import type { vehicleBaseObject } from '@cybermp/client-types/game';
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
 import ms from 'ms';
@@ -40,11 +41,22 @@ export class VehicleNitroService {
     };
   }
 
+  getSpeed(vehicle: vehicleBaseObject) {
+    const multiplier =
+      mp.game.ScriptGameInstance.GetStatsDataSystem().GetValueFromCurve(
+        'vehicle_ui',
+        vehicle.GetCurrentSpeed(),
+        'speed_to_multiplier',
+      );
+
+    return vehicle.GetCurrentSpeed() * multiplier * 1.61;
+  }
+
   boost = () => {
     const player = mp.game.GetPlayer();
     const vehicle = player.GetMountedVehicle();
 
-    const currentSpeed = vehicle.GetCurrentSpeed() * 3.6;
+    const currentSpeed = this.getSpeed(vehicle);
 
     console.log(currentSpeed);
 
