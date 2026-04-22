@@ -84,7 +84,7 @@ export class VehicleNitroService {
 
     if (action === EInputAction.IACT_Press) {
       console.log('interval set');
-      this.boostInterval = setInterval(() => this.boost, this.boostTime);
+      this.boostInterval = setInterval(this.boost, this.boostTime);
     }
 
     if (action === EInputAction.IACT_Release) {
