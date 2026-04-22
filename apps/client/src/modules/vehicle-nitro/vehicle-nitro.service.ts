@@ -1,4 +1,4 @@
-import { EInputKey } from '@cybermp/client-types/enums';
+import { EInputAction, EInputKey } from '@cybermp/client-types/enums';
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
 import ms from 'ms';
@@ -8,16 +8,16 @@ import { GKeyboardService } from '../game/keyboard.service';
 @eager()
 @injectable()
 export class VehicleNitroService {
+  public force = 1.75; // force applied to vehicle when boosting
+  public capacityByUse = 1; // capacity consumed per use
+  public maxSpeed = 228; // 400 => vehicle try to use breakes, 450 => stop immediately
+
   private capacity = 100; // 0 ... 100
   private minCapacityPenalty = 25; // on player reaches 0 capacity, they should wait for this value before boost again
   private capacityRegenRate = 1.75; // 'value' per second
   private regenPenalty = ms('4s'); // capacity regen timeout after boost
-  private boostTime = ms('0.25s'); // applies boost every 'value' seconds
-
-  public force = 32; // force applied to vehicle when boosting
-  public capacityByUse = 1; // capacity consumed per use
-  public maxSpeed = 228; // 400 => vehicle try to use breakes, 450 => stop immediately
-
+  private boostTime = ms('0.10s'); // applies boost every 'value' seconds
+  private boostInterval: ReturnType<typeof setInterval> | null = null;
   private vehicleMountInterval: ReturnType<typeof setInterval> | null = null;
   private vehicleMountTime = ms('0.25s');
   private isInVehicle = false;
@@ -25,7 +25,6 @@ export class VehicleNitroService {
   private capacityRegenTime = ms('1s');
   private capacityRegenAvailable = false;
   private boostKey = EInputKey.IK_E;
-  private lastBoostTimestamp = Date.now();
   private regenPenaltyTimeout: ReturnType<typeof setTimeout> | null = null;
   private isMinCapacityPenalty = false;
 
@@ -41,35 +40,16 @@ export class VehicleNitroService {
     };
   }
 
-  boost() {
-    console.log('bredberi');
-
-    console.log(String(this.lastBoostTimestamp + this.boostTime < Date.now()));
-
-    // if (this.lastBoostTimestamp + this.boostTime > Date.now()) {
-    //   return;
-    // }
-
-    console.log('1');
-
-    console.log(String(this.isMinCapacityPenalty));
-
+  boost = () => {
     if (this.isMinCapacityPenalty) {
       return;
     }
-
-    console.log('2');
-
-    console.log(String(this.capacity - this.capacityByUse < 0));
 
     if (this.capacity - this.capacityByUse < 0) {
       this.isMinCapacityPenalty = true;
       this.capacity = this.capacityByUse;
     }
 
-    console.log('3');
-
-    this.lastBoostTimestamp = Date.now();
     this.capacityRegenAvailable = false;
     this.capacity -= this.capacityByUse;
 
@@ -77,14 +57,10 @@ export class VehicleNitroService {
       clearTimeout(this.regenPenaltyTimeout);
     }
 
-    console.log('4');
-
     this.regenPenaltyTimeout = setTimeout(() => {
       this.capacityRegenAvailable = true;
       this.regenPenaltyTimeout = null;
     }, this.regenPenalty);
-
-    console.log('5');
 
     // BOOST
     const player = mp.game.GetPlayer();
@@ -99,23 +75,30 @@ export class VehicleNitroService {
     };
 
     vehicle.AddLinelyVelocity(boost, { x: 0, y: 0, z: 0 });
-  }
+  };
+
+  private handleBoost = (action: EInputAction) => {
+    if (action === EInputAction.IACT_Press) {
+      this.boostInterval = setInterval(() => this.boost, this.boostTime);
+    }
+
+    if (action === EInputAction.IACT_Release) {
+      if (this.boostInterval) {
+        clearInterval(this.boostInterval);
+        this.boostInterval = null;
+      }
+    }
+  };
 
   mountBoostKey() {
-    console.log('mountBoostKey');
-
-    this.keyboardService.bindKey(this.boostKey, this.boost);
+    this.keyboardService.bindKey(this.boostKey, this.handleBoost);
   }
 
   unmountBoostKey() {
-    console.log('unmountBoostKey');
-
-    this.keyboardService.unbindKey(this.boostKey, this.boost);
+    this.keyboardService.unbindKey(this.boostKey, this.handleBoost);
   }
 
   private capacityRegen() {
-    console.log('capacityRegen');
-
     if (this.capacityRegenInterval) {
       return;
     }
