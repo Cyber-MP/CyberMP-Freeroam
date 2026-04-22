@@ -42,19 +42,13 @@ export class VehicleNitroService {
   }
 
   boost() {
-    console.log('nu i bred');
-
     console.log(
-      'BOOST',
-      'lBT:',
       this.lastBoostTimestamp,
-      'bT:',
       this.boostTime,
-      'isMCP:',
       this.isMinCapacityPenalty,
     );
 
-    if (this.lastBoostTimestamp + this.boostTime > Date.now()) {
+    if (this.lastBoostTimestamp + this.boostTime < Date.now()) {
       return;
     }
 
@@ -64,6 +58,7 @@ export class VehicleNitroService {
 
     if (this.capacity - this.capacityByUse < 0) {
       this.isMinCapacityPenalty = true;
+      this.capacity = this.capacityByUse;
     }
 
     this.lastBoostTimestamp = Date.now();

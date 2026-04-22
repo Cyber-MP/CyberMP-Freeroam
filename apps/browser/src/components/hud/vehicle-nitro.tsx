@@ -13,8 +13,8 @@ const VehicleNitro = memo(() => {
   return (
     <div className="absolute left-20 bottom-20 flex items-center justify-center bg-blue-400">
       <span>{info.data?.capacity}</span>
-      <span>{info.data?.isAvailable}</span>
-      <span>{info.data?.isPenalty}</span>
+      <span>{info.data?.isAvailable.toString()}</span>
+      <span>{info.data?.isPenalty.toString()}</span>
     </div>
   );
 });
