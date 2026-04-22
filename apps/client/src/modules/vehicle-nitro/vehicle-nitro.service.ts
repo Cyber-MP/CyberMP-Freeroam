@@ -41,6 +41,8 @@ export class VehicleNitroService {
   }
 
   boost = () => {
+    console.log('boostinngngg');
+
     if (this.isMinCapacityPenalty) {
       return;
     }
@@ -78,12 +80,18 @@ export class VehicleNitroService {
   };
 
   private handleBoost = (action: EInputAction) => {
+    console.log('BOOST', action);
+
     if (action === EInputAction.IACT_Press) {
+      console.log('interval set');
       this.boostInterval = setInterval(() => this.boost, this.boostTime);
     }
 
     if (action === EInputAction.IACT_Release) {
+      console.log('interval remove 1');
+
       if (this.boostInterval) {
+        console.log('interval remove 2');
         clearInterval(this.boostInterval);
         this.boostInterval = null;
       }
