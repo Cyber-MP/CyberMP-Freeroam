@@ -11,6 +11,7 @@ import { itemSpawnerContract } from '../modules/item-spawner/item-spawner.contro
 import { sessionContract } from '../modules/session/session.controller';
 import { spawnContract } from '../modules/spawn/spawn.controller';
 import { timeContract } from '../modules/time/time.controller';
+import { VehicleNitroContract } from '../modules/vehicle-nitro/vehicle-nitro.controller';
 import { weatherContract } from '../modules/weather/weather.controller';
 import { mp } from '../mp';
 import { r } from './rpc-router';
@@ -36,6 +37,7 @@ export const router = {
     .handler(() => {
       return mp.getPlayerServerId(1);
     }),
+  vehicleNitro: VehicleNitroContract,
 };
 
 export type ClientRouter = typeof router;

@@ -22,6 +22,7 @@ import { SessionModule } from './modules/session/session.module';
 import { SpawnModule } from './modules/spawn/spawn.module';
 import { SpectatingModule } from './modules/spectating/spectating.module';
 import { TimeModule } from './modules/time/time.module';
+import { VehicleNitroModule } from './modules/vehicle-nitro/vehicle-nitro.module';
 import { WeatherModule } from './modules/weather/weather.module';
 import { mp } from './mp';
 import { r, rpc } from './rpc';
@@ -45,6 +46,7 @@ const modules: ContainerModule[] = [
   PlayersMarkersModule,
   ItemSpawnerModule,
   NoclipModule,
+  VehicleNitroModule,
 ];
 
 const coopWhen = async () => {
