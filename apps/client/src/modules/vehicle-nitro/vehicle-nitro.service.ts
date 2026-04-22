@@ -42,6 +42,8 @@ export class VehicleNitroService {
   }
 
   boost() {
+    console.log('nu i bred');
+
     console.log(
       'BOOST',
       'lBT:',

@@ -31,8 +31,6 @@ export class GKeyboardService {
   ) {
     this.observer.notify(key, action);
 
-    console.log('KEYBOARD', key, action);
-
     if (action === CyberEnums.EInputAction.IACT_Press) {
       this.pressedKeys.add(key);
     } else if (action === CyberEnums.EInputAction.IACT_Release) {
@@ -41,11 +39,7 @@ export class GKeyboardService {
 
     const callbacks = this.binds.get(key) ?? [];
 
-    console.log('KEYBOARD CALLBACKS', key, callbacks.entries());
-
     for (const cb of callbacks) {
-      console.log('KEYBOARD CALLBACK+', cb.name);
-
       cb(action);
     }
   }
