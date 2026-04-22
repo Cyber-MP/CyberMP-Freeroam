@@ -1,7 +1,7 @@
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
 import z from 'zod';
-import { ChatService } from '../chat/chat.service';
+import { ChatCommandFlag, ChatService } from '../chat/chat.service';
 import { VehicleNitroService } from './vehicle-nitro.service';
 
 @eager()
@@ -37,6 +37,7 @@ export class VehicleNitroCommands {
       args: z.tuple([
         z.coerce.number().meta({ title: 'force' }).min(0).max(70),
       ]),
+      flags: ChatCommandFlag.Admin,
       handler: this.nitroForce.bind(this),
     });
 
@@ -50,6 +51,7 @@ export class VehicleNitroCommands {
           .min(0)
           .max(450),
       ]),
+      flags: ChatCommandFlag.Admin,
       handler: this.nitroMaxSpeed.bind(this),
     });
 
@@ -60,6 +62,7 @@ export class VehicleNitroCommands {
       args: z.tuple([
         z.coerce.number().meta({ title: 'nitro by use' }).min(0).max(100),
       ]),
+      flags: ChatCommandFlag.Admin,
       handler: this.nitroByUse.bind(this),
     });
 
@@ -69,6 +72,7 @@ export class VehicleNitroCommands {
       args: z.tuple([
         z.coerce.number().meta({ title: 'regen rate' }).min(0).max(100),
       ]),
+      flags: ChatCommandFlag.Admin,
       handler: this.nitroRegen.bind(this),
     });
   }
