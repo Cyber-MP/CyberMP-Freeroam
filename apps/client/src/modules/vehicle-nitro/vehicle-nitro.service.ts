@@ -28,7 +28,6 @@ export class VehicleNitroService {
   private lastBoostTimestamp = Date.now();
   private regenPenaltyTimeout: ReturnType<typeof setTimeout> | null = null;
   private isMinCapacityPenalty = false;
-  private boostFunc: (() => void) | null = null;
 
   constructor(
     @inject(GKeyboardService) private keyboardService: GKeyboardService,
@@ -96,17 +95,13 @@ export class VehicleNitroService {
   mountBoostKey() {
     console.log('mountBoostKey');
 
-    this.boostFunc = this.boost;
-
-    this.keyboardService.bindKey(this.boostKey, this.boostFunc);
+    this.keyboardService.bindKey(this.boostKey, this.boost);
   }
 
   unmountBoostKey() {
     console.log('unmountBoostKey');
 
-    if (this.boostFunc) {
-      this.keyboardService.unbindKey(this.boostKey, this.boostFunc);
-    }
+    this.keyboardService.unbindKey(this.boostKey, this.boost);
   }
 
   private capacityRegen() {
@@ -156,6 +151,10 @@ export class VehicleNitroService {
   private mountVehicleInterval() {
     this.vehicleMountInterval = setInterval(() => {
       const player = mp.game.GetPlayerObject();
+
+      if (!player) {
+        return;
+      }
 
       const vehicle = mp.game.GetMountedVehicle(player);
 
