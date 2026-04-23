@@ -1,7 +1,14 @@
+import {
+  gamedataDevelopmentPointType,
+  gamedataNewPerkType,
+  gamedataProficiencyType,
+  gamedataStatType,
+} from '@cybermp/client-types/enums';
 import { inject, injectable } from 'inversify';
 import { sleep } from 'radash';
 import { mp } from '../../mp';
 import { GHealthService } from './health/health.service';
+import { GMenusService } from './menus.service';
 import { GStatusEffectsService } from './status-effects/status-effects.service';
 
 @injectable()
@@ -18,9 +25,91 @@ export class GPlayerService {
 
   constructor(
     @inject(GHealthService) private readonly healthService: GHealthService,
+    @inject(GMenusService) private readonly menusService: GMenusService,
     @inject(GStatusEffectsService)
     private readonly statusEffects: GStatusEffectsService,
   ) {}
+
+  async levelUp() {
+    const player = mp.game.GetPlayerObject();
+    const uiSystem = mp.game.ScriptGameInstance.GetUISystem();
+    const devSystem =
+      mp.game.ScriptGameInstance.GetScriptableSystemsContainer().Get(
+        'PlayerDevelopmentSystem',
+      );
+
+    const arrData = [
+      gamedataStatType.Strength,
+      gamedataStatType.Reflexes,
+      gamedataStatType.TechnicalAbility,
+      gamedataStatType.Cool,
+      gamedataStatType.Intelligence,
+      gamedataStatType.Espionage,
+    ];
+
+    const closeHub = new mp.game.ForceCloseHubMenuEvent();
+    const startHub = new mp.game.StartHubMenuEvent();
+    const userData = new mp.game.PerkUserData();
+
+    const globalMenuScenario = this.menusService.globalMenuScenario;
+
+    userData.statType = gamedataStatType.Reflexes;
+
+    startHub.SetStartMenu('new_perks', 'ico_character', userData);
+
+    uiSystem.QueueEvent(startHub);
+
+    await sleep(50);
+
+    for (const skill of arrData) {
+      const attrReq = new mp.game.SetAttribute();
+
+      attrReq.Set(player, 20, skill);
+
+      devSystem.QueueRequest(attrReq);
+    }
+
+    const devPointsReq = new mp.game.questAddDevelopmentPointsRequest();
+
+    devPointsReq.Set(player, 2000, gamedataDevelopmentPointType.Primary);
+
+    devSystem.QueueRequest(devPointsReq);
+
+    await sleep(100);
+
+    if (!globalMenuScenario) {
+      throw new Error('Global menu scenario not applied');
+    }
+
+    for (const skill of arrData) {
+      userData.statType = skill;
+      globalMenuScenario.SwitchMenu('new_perks', userData);
+
+      await sleep(150);
+
+      for (let j = 0; j < 5; j++) {
+        for (let i = 0; i < gamedataNewPerkType.Count; i++) {
+          const buyPerkRequest = new mp.game.BuyNewPerk();
+
+          buyPerkRequest.Set(player, i);
+
+          devSystem.QueueRequest(buyPerkRequest);
+        }
+      }
+    }
+
+    await sleep(100);
+
+    uiSystem.QueueEvent(closeHub);
+
+    const addExpRequest = new mp.game.AddExperience();
+    addExpRequest.Set(player, 150000, gamedataProficiencyType.Level, false);
+
+    mp.game.ScriptGameInstance.QueueScriptableSystemRequest(
+      'PlayerDevelopmentSystem',
+      addExpRequest,
+    );
+  }
 
   invisible(value: boolean) {
     const components = mp.game.GetPlayer().GetComponents();
