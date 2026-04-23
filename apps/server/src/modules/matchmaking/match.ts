@@ -6,11 +6,13 @@ import {
   zMatchDTO,
 } from '@freeroam/shared/matchmaking';
 import { inject, injectable } from 'inversify';
+import { tryit } from 'radash';
 import type z from 'zod';
 import { mp } from '../../mp';
 import { client } from '../../rpc';
 import { ChatCommandFlag, ChatService } from '../chat/chat.service';
 import type { BaseGameMode } from '../game-modes/game-mode';
+import { LoggerService } from '../logger/logger.service';
 
 type MatchConstructorOptions<TGameMode extends BaseGameMode> = {
   createOptions: z.infer<TGameMode['CREATE_OPTIONS_SCHEMA']>;
@@ -42,6 +44,9 @@ export class Match<TGameMode extends BaseGameMode = BaseGameMode> {
   @inject(ChatService)
   private chatService!: ChatService;
 
+  @inject(LoggerService)
+  private loggerService!: LoggerService;
+
   _init(
     {
       dimension,
@@ -63,6 +68,7 @@ export class Match<TGameMode extends BaseGameMode = BaseGameMode> {
     this.members.set(ownerId, joinOptions);
 
     this.mode.init(this);
+    this.loggerService.setContext(`Match:${this.mode.name}:${this.id}`);
   }
 
   toDTO(): MatchDTO {
@@ -102,7 +108,10 @@ export class Match<TGameMode extends BaseGameMode = BaseGameMode> {
     return true;
   }
 
-  join(playerId: number, options: z.infer<TGameMode['JOIN_OPTIONS_SCHEMA']>) {
+  async join(
+    playerId: number,
+    options: z.infer<TGameMode['JOIN_OPTIONS_SCHEMA']>,
+  ) {
     if (!this.canJoin(playerId)) {
       return false;
     }
@@ -116,19 +125,37 @@ export class Match<TGameMode extends BaseGameMode = BaseGameMode> {
       playerId,
       joinOptions.data as z.infer<TGameMode['JOIN_OPTIONS_SCHEMA']>,
     );
-    this.mode.onPlayerJoin(playerId);
+
+    const [err] = (await tryit(() => this.mode.onPlayerJoin(playerId)))();
+    if (err) {
+      this.loggerService.warn(
+        'Error happen during game mode onPlayerJoin callback',
+        err,
+        err.message,
+      );
+    }
+
     this.hooks?.onPlayerJoin?.(playerId);
 
     return true;
   }
 
-  leave(playerId: number) {
+  async leave(playerId: number) {
     if (!this.members.has(playerId)) {
       return;
     }
 
     this.members.delete(playerId);
-    this.mode.onPlayerLeave(playerId);
+
+    const [err] = (await tryit(() => this.mode.onPlayerLeave(playerId)))();
+    if (err) {
+      this.loggerService.warn(
+        'Error happen during game mode onPlayerLeave callback',
+        err,
+        err.message,
+      );
+    }
+
     this.hooks?.onPlayerLeave?.(playerId);
 
     client.gameModes.end.trigger(playerId);
@@ -145,7 +172,7 @@ export class Match<TGameMode extends BaseGameMode = BaseGameMode> {
     }
   }
 
-  start() {
+  async start() {
     if (this.status !== MatchStatus.LOBBY) {
       return false;
     }
@@ -168,16 +195,31 @@ export class Match<TGameMode extends BaseGameMode = BaseGameMode> {
       );
     }
 
-    this.mode.start();
+    const [err] = (await tryit(() => this.mode.start()))();
+    if (err) {
+      this.loggerService.warn(
+        'Error happen during game mode start',
+        err,
+        err.message,
+      );
+    }
+
     this.hooks?.onStart?.();
 
     return true;
   }
 
-  end() {
+  async end() {
     this.status = MatchStatus.ENDED;
 
-    this.mode.end();
+    const [err] = (await tryit(() => this.mode.end()))();
+    if (err) {
+      this.loggerService.warn(
+        'Error happen during game mode end',
+        err,
+        err.message,
+      );
+    }
 
     for (const playerId of this.members.keys()) {
       client.gameModes.end.trigger(playerId);
