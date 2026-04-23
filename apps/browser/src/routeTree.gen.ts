@@ -21,7 +21,6 @@ import { Route as HudMenuMatchmakingIndexRouteImport } from './routes/hud.menu/m
 import { Route as HudGameModesSumoIndexRouteImport } from './routes/hud.game-modes/sumo/index'
 import { Route as HudGameModesRaceIndexRouteImport } from './routes/hud.game-modes/race/index'
 import { Route as HudGameModesPvpIndexRouteImport } from './routes/hud.game-modes/pvp/index'
-import { Route as HudGameModesBountyHunterIndexRouteImport } from './routes/hud.game-modes/bounty-hunter/index'
 import { Route as HudMenuMatchmakingCreateRouteImport } from './routes/hud.menu/matchmaking/create'
 import { Route as HudGameModesRaceResultsRouteImport } from './routes/hud.game-modes/race/results'
 
@@ -85,12 +84,6 @@ const HudGameModesPvpIndexRoute = HudGameModesPvpIndexRouteImport.update({
   path: '/game-modes/pvp/',
   getParentRoute: () => HudRoute,
 } as any)
-const HudGameModesBountyHunterIndexRoute =
-  HudGameModesBountyHunterIndexRouteImport.update({
-    id: '/game-modes/bounty-hunter/',
-    path: '/game-modes/bounty-hunter/',
-    getParentRoute: () => HudRoute,
-  } as any)
 const HudMenuMatchmakingCreateRoute =
   HudMenuMatchmakingCreateRouteImport.update({
     id: '/matchmaking/create',
@@ -114,7 +107,6 @@ export interface FileRoutesByFullPath {
   '/hud/menu/': typeof HudMenuIndexRoute
   '/hud/game-modes/race/results': typeof HudGameModesRaceResultsRoute
   '/hud/menu/matchmaking/create': typeof HudMenuMatchmakingCreateRoute
-  '/hud/game-modes/bounty-hunter/': typeof HudGameModesBountyHunterIndexRoute
   '/hud/game-modes/pvp/': typeof HudGameModesPvpIndexRoute
   '/hud/game-modes/race/': typeof HudGameModesRaceIndexRoute
   '/hud/game-modes/sumo/': typeof HudGameModesSumoIndexRoute
@@ -130,7 +122,6 @@ export interface FileRoutesByTo {
   '/hud/menu': typeof HudMenuIndexRoute
   '/hud/game-modes/race/results': typeof HudGameModesRaceResultsRoute
   '/hud/menu/matchmaking/create': typeof HudMenuMatchmakingCreateRoute
-  '/hud/game-modes/bounty-hunter': typeof HudGameModesBountyHunterIndexRoute
   '/hud/game-modes/pvp': typeof HudGameModesPvpIndexRoute
   '/hud/game-modes/race': typeof HudGameModesRaceIndexRoute
   '/hud/game-modes/sumo': typeof HudGameModesSumoIndexRoute
@@ -148,7 +139,6 @@ export interface FileRoutesById {
   '/hud/menu/': typeof HudMenuIndexRoute
   '/hud/game-modes/race/results': typeof HudGameModesRaceResultsRoute
   '/hud/menu/matchmaking/create': typeof HudMenuMatchmakingCreateRoute
-  '/hud/game-modes/bounty-hunter/': typeof HudGameModesBountyHunterIndexRoute
   '/hud/game-modes/pvp/': typeof HudGameModesPvpIndexRoute
   '/hud/game-modes/race/': typeof HudGameModesRaceIndexRoute
   '/hud/game-modes/sumo/': typeof HudGameModesSumoIndexRoute
@@ -167,7 +157,6 @@ export interface FileRouteTypes {
     | '/hud/menu/'
     | '/hud/game-modes/race/results'
     | '/hud/menu/matchmaking/create'
-    | '/hud/game-modes/bounty-hunter/'
     | '/hud/game-modes/pvp/'
     | '/hud/game-modes/race/'
     | '/hud/game-modes/sumo/'
@@ -183,7 +172,6 @@ export interface FileRouteTypes {
     | '/hud/menu'
     | '/hud/game-modes/race/results'
     | '/hud/menu/matchmaking/create'
-    | '/hud/game-modes/bounty-hunter'
     | '/hud/game-modes/pvp'
     | '/hud/game-modes/race'
     | '/hud/game-modes/sumo'
@@ -200,7 +188,6 @@ export interface FileRouteTypes {
     | '/hud/menu/'
     | '/hud/game-modes/race/results'
     | '/hud/menu/matchmaking/create'
-    | '/hud/game-modes/bounty-hunter/'
     | '/hud/game-modes/pvp/'
     | '/hud/game-modes/race/'
     | '/hud/game-modes/sumo/'
@@ -300,13 +287,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HudGameModesPvpIndexRouteImport
       parentRoute: typeof HudRoute
     }
-    '/hud/game-modes/bounty-hunter/': {
-      id: '/hud/game-modes/bounty-hunter/'
-      path: '/game-modes/bounty-hunter'
-      fullPath: '/hud/game-modes/bounty-hunter/'
-      preLoaderRoute: typeof HudGameModesBountyHunterIndexRouteImport
-      parentRoute: typeof HudRoute
-    }
     '/hud/menu/matchmaking/create': {
       id: '/hud/menu/matchmaking/create'
       path: '/matchmaking/create'
@@ -347,7 +327,6 @@ const HudMenuRouteRouteWithChildren = HudMenuRouteRoute._addFileChildren(
 interface HudRouteChildren {
   HudMenuRouteRoute: typeof HudMenuRouteRouteWithChildren
   HudGameModesRaceResultsRoute: typeof HudGameModesRaceResultsRoute
-  HudGameModesBountyHunterIndexRoute: typeof HudGameModesBountyHunterIndexRoute
   HudGameModesPvpIndexRoute: typeof HudGameModesPvpIndexRoute
   HudGameModesRaceIndexRoute: typeof HudGameModesRaceIndexRoute
   HudGameModesSumoIndexRoute: typeof HudGameModesSumoIndexRoute
@@ -356,7 +335,6 @@ interface HudRouteChildren {
 const HudRouteChildren: HudRouteChildren = {
   HudMenuRouteRoute: HudMenuRouteRouteWithChildren,
   HudGameModesRaceResultsRoute: HudGameModesRaceResultsRoute,
-  HudGameModesBountyHunterIndexRoute: HudGameModesBountyHunterIndexRoute,
   HudGameModesPvpIndexRoute: HudGameModesPvpIndexRoute,
   HudGameModesRaceIndexRoute: HudGameModesRaceIndexRoute,
   HudGameModesSumoIndexRoute: HudGameModesSumoIndexRoute,

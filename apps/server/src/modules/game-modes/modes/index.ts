@@ -1,6 +1,5 @@
-import { BountyHunter } from './bounty-hunter';
 import { Pvp } from './pvp';
 import { Race } from './race';
 import { Sumo } from './sumo';
 
-export const GameModes = [Race, Sumo, Pvp, BountyHunter];
+export const GameModes = [Race, Sumo, Pvp];
