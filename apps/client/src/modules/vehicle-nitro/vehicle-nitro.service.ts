@@ -34,10 +34,18 @@ export class VehicleNitroService {
     @inject(GKeyboardService) private keyboardService: GKeyboardService,
   ) {}
 
+  enable() {
+    this.isEnabled = true;
+  }
+
+  disable() {
+    this.isEnabled = false;
+  }
+
   info() {
     return {
       isPenalty: this.isMinCapacityPenalty,
-      isAvailable: this.isInVehicle,
+      isAvailable: this.isEnabled && this.isInVehicle,
       capacity: this.capacity,
     };
   }

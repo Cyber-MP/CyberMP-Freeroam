@@ -14,8 +14,6 @@ export const zBoostInfo = z.object({
 
 export const VehicleNitroContract = {
   info: contract.method(RpcApplyType.REGISTER).output(zBoostInfo).build(),
-  disable: contract.output(z.void()).build(),
-  enable: contract.output(z.void()).build(),
 };
 
 @eager()
@@ -30,20 +28,10 @@ export class VehicleNitroController {
     return this.vehicleNitroService.info();
   }
 
-  private disable() {
-    this.vehicleNitroService.isEnabled = false;
-  }
-
-  private enable() {
-    this.vehicleNitroService.isEnabled = true;
-  }
-
   @postConstruct()
   private init() {
     r.implement<typeof VehicleNitroContract>(VehicleNitroContract, {
       info: this.info.bind(this),
-      disable: this.disable.bind(this),
-      enable: this.enable.bind(this),
     });
   }
 }
