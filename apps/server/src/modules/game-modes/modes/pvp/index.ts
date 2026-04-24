@@ -164,8 +164,8 @@ export class Pvp extends BaseGameMode<
 
     const livingIds = [...this.fighters.values()].map((r) => r.player.id);
 
-    for (const racerId of livingIds) {
-      client.gameModes.pvp.updateLivingIds.trigger(racerId, livingIds);
+    for (const fighterId of livingIds) {
+      client.gameModes.pvp.updateLivingIds.trigger(fighterId, livingIds);
     }
 
     await this.startCountdown();
@@ -195,10 +195,10 @@ export class Pvp extends BaseGameMode<
   };
 
   private checkSurvivors() {
-    const living = [...this.fighters.values()].filter((racer) => racer.alive);
+    const living = [...this.fighters.values()].filter((fighter) => fighter.alive);
 
     if (living.length >= 2) {
-      const livingIds = living.map((racer) => racer.player.id);
+      const livingIds = living.map((fighter) => fighter.player.id);
 
       for (const playerId of [...this.fighters.keys()]) {
         client.gameModes.pvp.updateLivingIds.trigger(playerId, livingIds);
@@ -211,9 +211,9 @@ export class Pvp extends BaseGameMode<
   }
 
   release() {
-    for (const racer of this.fighters.values()) {
+    for (const fighter of this.fighters.values()) {
       browser.gameModes.pvp.startDrawTimer.trigger(
-        racer.player.id,
+        fighter.player.id,
         Date.now() + this.DRAW_TIME,
       );
     }
@@ -242,18 +242,18 @@ export class Pvp extends BaseGameMode<
       return;
     }
 
-    const racer = this.fighters.get(playerId);
+    const fighter = this.fighters.get(playerId);
 
-    if (!racer) {
+    if (!fighter) {
       return;
     }
 
-    return racer.lose();
+    return fighter.lose();
   }
 
   async startCountdown() {
-    for (const racer of this.fighters.keys()) {
-      client.gameModes.pvp.startCountdown.trigger(racer, this.COUNTDOWN_TIME);
+    for (const fighter of this.fighters.keys()) {
+      client.gameModes.pvp.startCountdown.trigger(fighter, this.COUNTDOWN_TIME);
     }
 
     await sleep(this.COUNTDOWN_TIME);
@@ -290,17 +290,17 @@ export class Pvp extends BaseGameMode<
 
     mp.events.off('playerDeath', this.onPlayerDeath);
 
-    for (const racer of this.fighters.values()) {
-      racer.reset();
+    for (const fighter of this.fighters.values()) {
+      fighter.reset();
     }
 
     this.fighters.clear();
   }
 
   onPlayerLeave(playerId: number): void {
-    const racer = this.fighters.get(playerId);
+    const fighter = this.fighters.get(playerId);
 
-    racer?.reset();
+    fighter?.reset();
 
     this.fighters.delete(playerId);
 
