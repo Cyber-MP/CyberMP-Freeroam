@@ -48,7 +48,6 @@ const VehicleNitro = memo(() => {
         .nx-penalty { animation: nx-tick 0.3s infinite; }
       `}</style>
 
-      {/* Outer shell */}
       <div
         className="relative border bg-black/85 p-1.5"
         style={{
@@ -60,7 +59,6 @@ const VehicleNitro = memo(() => {
           clipPath: 'polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%)',
         }}
       >
-        {/* Corner accents */}
         {['tl', 'tr', 'bl', 'br'].map((pos) => (
           <div
             key={pos}
@@ -82,7 +80,6 @@ const VehicleNitro = memo(() => {
           />
         ))}
 
-        {/* Header */}
         <div className="flex items-center gap-1 px-1.5 py-0.5 border-b border-white/5">
           <div
             className="nx-dot w-1 h-1 rounded-full"
@@ -125,7 +122,6 @@ const VehicleNitro = memo(() => {
           </span>
         </div>
 
-        {/* Bar */}
         <div className="relative h-[18px] bg-black/60 overflow-hidden">
           <div
             className={`h-full nx-bar-${colorClass}`}
@@ -135,7 +131,6 @@ const VehicleNitro = memo(() => {
             }}
           />
 
-          {/* Scanline */}
           <div
             className="nx-scanline absolute top-0 left-0 right-0 h-1/4 pointer-events-none"
             style={{
@@ -144,7 +139,6 @@ const VehicleNitro = memo(() => {
             }}
           />
 
-          {/* Segment dividers */}
           <div className="absolute inset-0 flex pointer-events-none">
             {Array.from({ length: 10 }).map((_, i) => (
               <div
@@ -154,7 +148,6 @@ const VehicleNitro = memo(() => {
             ))}
           </div>
 
-          {/* Readout */}
           <div className="absolute inset-0 flex items-center justify-between px-1.5 pointer-events-none">
             <span
               className="font-mono text-xs tracking-[2px] opacity-60"
@@ -184,7 +177,6 @@ const VehicleNitro = memo(() => {
           </div>
         </div>
 
-        {/* Pips */}
         <div className="flex gap-[3px] px-1.5 py-0.5 border-t border-white/5">
           {Array.from({ length: 10 }).map((_, i) => (
             <div
