@@ -1,16 +1,21 @@
-import type { TGameModeName } from '@freeroam/shared/game-modes';
-import { injectable } from 'inversify';
+import { GameModeName, type TGameModeName } from '@freeroam/shared/game-modes';
+import { inject, injectable } from 'inversify';
 import z from 'zod';
 import type { zGameModesCreateSchemas } from './dto/game-modes-schemas.dto';
-import { GameModes } from './modes';
+import { type GameModeFactory, GameModeFactorySymbol } from './game-mode';
 
 @injectable()
 export class GameModesService {
-  getJoinSchema(modeName: TGameModeName, createOptions: any) {
-    const GameModeClass = GameModes.find((m) => new m().name === modeName);
-    if (!GameModeClass) throw new Error(`Game mode ${modeName} not found`);
+  constructor(
+    @inject(GameModeFactorySymbol)
+    private gameModeFactory: GameModeFactory,
+  ) {}
 
-    const instance = new GameModeClass();
+  getJoinSchema(modeName: TGameModeName, createOptions: any) {
+    const instance = this.gameModeFactory(modeName);
+    if (!instance) {
+      throw new Error(`Game mode ${modeName} not found`);
+    }
 
     const dynamicZodSchema = instance.getJoinSchema(createOptions);
 
@@ -20,8 +25,8 @@ export class GameModesService {
   getCreateSchemas() {
     const result: z.infer<typeof zGameModesCreateSchemas> = {} as any;
 
-    for (const GameMode of GameModes) {
-      const instance = new GameMode();
+    for (const name of Object.values(GameModeName)) {
+      const instance = this.gameModeFactory(name);
 
       result[instance.name] = z.toJSONSchema(instance.CREATE_OPTIONS_SCHEMA, {
         target: 'draft-07',
