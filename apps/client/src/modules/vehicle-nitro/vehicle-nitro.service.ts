@@ -29,6 +29,7 @@ export class VehicleNitroService {
   private boostKey = EInputKey.IK_X;
   private regenPenaltyTimeout: ReturnType<typeof setTimeout> | null = null;
   private isMinCapacityPenalty = false;
+  private defaultFOV = 0;
 
   constructor(
     @inject(GKeyboardService) private keyboardService: GKeyboardService,
@@ -96,6 +97,10 @@ export class VehicleNitroService {
 
     // BOOST
 
+    const camera = player.GetFPPCameraComponent();
+    const boostFOV = this.defaultFOV + 15;
+    camera.SetFOV(boostFOV);
+
     const forward = vehicle.GetWorldForward();
 
     const boost = {
@@ -158,6 +163,10 @@ export class VehicleNitroService {
     }
 
     this.isInVehicle = true;
+    const player = mp.game.GetPlayer();
+    const camera = player.GetFPPCameraComponent();
+    this.defaultFOV = camera.GetFOV();
+
     this.capacity = 100;
     this.capacityRegenAvailable = true;
 
@@ -170,6 +179,10 @@ export class VehicleNitroService {
     }
 
     this.isInVehicle = false;
+
+    const player = mp.game.GetPlayer();
+    const camera = player.GetFPPCameraComponent();
+    camera.SetFOV(this.defaultFOV);
 
     if (this.boostInterval) {
       clearInterval(this.boostInterval);
