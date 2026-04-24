@@ -7,6 +7,8 @@ import {
   ActiveGameMiddlewareSymbol,
   activeGameMiddleware,
 } from './middleware/active-game.middleware';
+import { Cyberpsycho } from './modes/cyberpsycho';
+import { CyberpsychoController } from './modes/cyberpsycho/controller';
 import { Pvp } from './modes/pvp';
 import { PvpController } from './modes/pvp/controller';
 import { Race } from './modes/race';
@@ -30,6 +32,9 @@ export const GameModesModule = new ContainerModule(({ bind }) => {
 
   bind(GameModeName.PVP).to(Pvp).inRequestScope();
   bind(PvpController).toSelf().inSingletonScope();
+
+  bind(GameModeName.CYBERPSYCHO).to(Cyberpsycho).inRequestScope();
+  bind(CyberpsychoController).toSelf().inSingletonScope();
 
   bind(ActiveGameMiddlewareSymbol).toDynamicValue(activeGameMiddleware);
   bind<GameModeFactory>(GameModeFactorySymbol).toFactory((c) => {

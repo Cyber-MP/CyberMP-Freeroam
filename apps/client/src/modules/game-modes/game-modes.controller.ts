@@ -6,6 +6,7 @@ import { inject, injectable, postConstruct } from 'inversify';
 import z from 'zod';
 import { r } from '../../rpc';
 import { GameModesService } from './game-modes.service';
+import { cyberpsychoContract } from './modes/cyberpsycho/controller';
 import { pvpContract } from './modes/pvp/controller';
 import { raceContract } from './modes/race/controller';
 import { sumoContract } from './modes/sumo/controller';
@@ -18,6 +19,7 @@ export const gameModesContract = {
   race: raceContract,
   sumo: sumoContract,
   pvp: pvpContract,
+  cyberpsycho: cyberpsychoContract,
 };
 
 @eager()
