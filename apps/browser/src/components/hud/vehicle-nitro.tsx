@@ -25,7 +25,7 @@ const VehicleNitro = memo(() => {
   const filledPips = Math.round(capacity / 10);
 
   return (
-    <div className="absolute left-24 bottom-24 w-64 perspective-[400px] -skew-x-2 -rotate-3">
+    <div className="absolute left-24 bottom-16 w-64 perspective-[400px] -skew-x-2 -rotate-3">
       <style>{`
         @keyframes nx-scanline {
           0% { transform: translateY(-100%); }
