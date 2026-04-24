@@ -13,6 +13,7 @@ export class VehicleNitroService {
   public capacityByUse = 1.75; // capacity consumed per use
   public maxSpeed = 350; // (KM/PH) 400 => vehicle try to use breakes, 450 => stop immediately
   public capacityRegenRate = 1; // 'value' per second
+  public isEnabled = true;
 
   private capacity = 100; // 0 ... 100
   private minCapacityPenalty = 25; // on player reaches 0 capacity, they should wait for this value before boost again
@@ -99,6 +100,10 @@ export class VehicleNitroService {
   };
 
   private handleBoost = (action: EInputAction) => {
+    if (!this.isEnabled) {
+      return;
+    }
+
     if (action === EInputAction.IACT_Press) {
       this.boostInterval = setInterval(this.boost, this.boostTime);
     }
