@@ -177,7 +177,9 @@ export class VehicleNitroService {
     FPPcamera.SetFOV(this.playerFPPFOV);
   }
 
-  private lerpTPPFOV(increase: boolean) {
+  private lerpTPPFOV = (increase: boolean) => {
+    console.log('LERPTTP');
+
     if (!this.gameTPPCamera) {
       return;
     }
@@ -190,8 +192,10 @@ export class VehicleNitroService {
 
     this.gameTPPCamera.SetFOV(this.playerCurTPPFOV);
 
+    console.log('LERPTTP success');
+
     return this.playerTPPFOV === this.playerCurTPPFOV;
-  }
+  };
 
   private mountLerpInterval = () => {
     console.log('PRE LERP');
