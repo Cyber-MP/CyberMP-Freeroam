@@ -123,9 +123,12 @@ export class VehicleNitroService {
   private setBoostFOV() {
     const player = mp.game.GetPlayer();
     const FPPcamera = player.GetFPPCameraComponent();
+    this.playerFPPFOV = FPPcamera.GetFOV();
     FPPcamera.SetFOV(this.playerFPPFOV + 15);
 
     if (this.gameTPPCamera) {
+      this.playerTPPFOV = this.gameTPPCamera.GetFOV();
+
       this.gameTPPCamera.SetFOV(this.playerTPPFOV + 15);
     }
   }
