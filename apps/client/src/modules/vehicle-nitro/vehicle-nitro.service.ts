@@ -183,15 +183,19 @@ export class VehicleNitroService {
       return;
     }
 
-    this.playerCurTPPFOV = mp.game.LerpF(
-      0.1,
-      this.playerCurTPPFOV,
-      increase ? this.playerTPPFOV + 15 : this.playerTPPFOV,
+    this.playerCurTPPFOV = Number(
+      mp.game
+        .LerpF(
+          0.1,
+          this.playerCurTPPFOV,
+          increase ? this.playerTPPFOV + 15 : this.playerTPPFOV,
+        )
+        .toFixed(4),
     );
 
     this.gameTPPCamera.SetFOV(this.playerCurTPPFOV);
 
-    return this.playerTPPFOV === Number(this.playerCurTPPFOV.toFixed(3));
+    return this.playerTPPFOV === this.playerCurTPPFOV;
   };
 
   private mountLerpInterval = () => {
