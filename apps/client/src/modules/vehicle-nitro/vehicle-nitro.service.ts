@@ -39,6 +39,8 @@ export class VehicleNitroService {
   private playerTPPFOV = 0;
   private playerCurTPPFOV = 0;
   private gameTPPCamera: vehicleTPPCameraComponent | null = null;
+  private lerpInterval: ReturnType<typeof setInterval> | null = null;
+  private lerpTime = ms('0.1s');
 
   constructor(
     @inject(GKeyboardService) private keyboardService: GKeyboardService,
@@ -181,13 +183,30 @@ export class VehicleNitroService {
     }
 
     this.playerCurTPPFOV = mp.game.LerpF(
-      0.2,
+      0.1,
       this.playerCurTPPFOV,
       increase ? this.playerTPPFOV + 15 : this.playerTPPFOV,
     );
 
     this.gameTPPCamera.SetFOV(this.playerCurTPPFOV);
+
+    return this.playerTPPFOV === this.playerCurTPPFOV;
   }
+
+  private mountLerpInterval = () => {
+    if (this.lerpInterval) {
+      return;
+    }
+
+    this.lerpInterval = setInterval(() => {
+      if (this.lerpTPPFOV(this.isBoosting)) {
+        if (this.lerpInterval) {
+          clearInterval(this.lerpInterval);
+          this.lerpInterval = null;
+        }
+      }
+    }, this.lerpTime);
+  };
 
   private handleBoost = (action: EInputAction) => {
     if (action === EInputAction.IACT_Press) {
@@ -203,7 +222,7 @@ export class VehicleNitroService {
         this.notifyBrowser();
       }
 
-      this.lerpTPPFOV(true);
+      this.mountLerpInterval();
     }
 
     if (action === EInputAction.IACT_Release) {
@@ -258,12 +277,9 @@ export class VehicleNitroService {
     this.isInVehicle = true;
     this.capacity = 100;
     this.capacityRegenAvailable = true;
-
     this.notifyBrowser();
-
     this.saveFOVValues();
     this.gameTPPCamera = this.getTPPCamera();
-
     this.mountBoostKey();
   }
 
@@ -281,7 +297,6 @@ export class VehicleNitroService {
     }
 
     this.notifyBrowser();
-
     this.unmountBoostKey();
   }
 
@@ -297,10 +312,6 @@ export class VehicleNitroService {
 
       if (vehicle) {
         this.onVehicleEnter();
-
-        if (this.isEnabled && !this.isBoosting) {
-          this.lerpTPPFOV(false);
-        }
       } else {
         this.onVehicleLeave();
       }
