@@ -40,7 +40,7 @@ export class VehicleNitroService {
   private playerCurTPPFOV = 0;
   private gameTPPCamera: vehicleTPPCameraComponent | null = null;
   private lerpInterval: ReturnType<typeof setInterval> | null = null;
-  private lerpTime = ms('0.1s');
+  private lerpTime = ms('0.01s');
 
   constructor(
     @inject(GKeyboardService) private keyboardService: GKeyboardService,
@@ -278,8 +278,8 @@ export class VehicleNitroService {
     this.capacity = 100;
     this.capacityRegenAvailable = true;
     this.notifyBrowser();
-    this.saveFOVValues();
     this.gameTPPCamera = this.getTPPCamera();
+    this.saveFOVValues();
     this.mountBoostKey();
   }
 
