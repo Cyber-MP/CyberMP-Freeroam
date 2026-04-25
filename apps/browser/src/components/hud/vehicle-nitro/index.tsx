@@ -101,7 +101,7 @@ const VehicleNitro = memo(() => {
               ],
             }}
             transition={{
-              width: { duration: 0.8, ease: [0.4, 0, 0.2, 1] },
+              width: { duration: 0.5, ease: 'linear' },
               opacity: { duration: isPenalty ? 1.5 : 3, repeat: Infinity },
               boxShadow: { duration: isPenalty ? 0.8 : 2, repeat: Infinity },
             }}

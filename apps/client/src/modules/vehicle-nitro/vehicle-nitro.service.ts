@@ -1,5 +1,8 @@
 import { EInputAction, EInputKey } from '@cybermp/client-types/enums';
-import type { vehicleBaseObject } from '@cybermp/client-types/game';
+import type {
+  vehicleBaseObject,
+  vehicleTPPCameraComponent,
+} from '@cybermp/client-types/game';
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
 import ms from 'ms';
@@ -30,8 +33,9 @@ export class VehicleNitroService {
   private boostKey = EInputKey.IK_E;
   private regenPenaltyTimeout: ReturnType<typeof setTimeout> | null = null;
   private isMinCapacityPenalty = false;
-  private defaultFOV = 0;
-  private notifyBrowserIndex = 0; // 0 ... 5, call notifyBrowser every 5th update
+  private playerFPPFOV = 0;
+  private playerTPPFOV = 0;
+  private gameTPPCamera: vehicleTPPCameraComponent | null = null;
 
   constructor(
     @inject(GKeyboardService) private keyboardService: GKeyboardService,
@@ -45,14 +49,6 @@ export class VehicleNitroService {
     this.isEnabled = false;
   }
 
-  notifyBrowserSafe() {
-    this.notifyBrowserIndex = (this.notifyBrowserIndex + 1) % 5;
-
-    if (this.notifyBrowserIndex === 0) {
-      this.notifyBrowser();
-    }
-  }
-
   notifyBrowser() {
     browser.vehicleNitro.update.trigger({
       isPenalty: this.isMinCapacityPenalty,
@@ -61,7 +57,7 @@ export class VehicleNitroService {
     });
   }
 
-  getSpeed(vehicle: vehicleBaseObject) {
+  getVehicleSpeed(vehicle: vehicleBaseObject) {
     const multiplier =
       mp.game.ScriptGameInstance.GetStatsDataSystem().GetValueFromCurve(
         'vehicle_ui',
@@ -72,13 +68,25 @@ export class VehicleNitroService {
     return vehicle.GetCurrentSpeed() * multiplier * 1.61;
   }
 
+  private vehicleBoost(vehicle: vehicleBaseObject) {
+    const forward = vehicle.GetWorldForward();
+
+    const boost = {
+      x: forward.x * this.force,
+      y: forward.y * this.force,
+      z: forward.z * this.force,
+    };
+
+    vehicle.AddLinelyVelocity(boost, { x: 0, y: 0, z: 0 });
+  }
+
   boost = () => {
     const player = mp.game.GetPlayer();
     const vehicle = player.GetMountedVehicle();
 
     if (!vehicle.IsOnGround()) return;
 
-    const currentSpeed = this.getSpeed(vehicle);
+    const currentSpeed = this.getVehicleSpeed(vehicle);
 
     if (currentSpeed > this.maxSpeed) {
       return;
@@ -103,26 +111,34 @@ export class VehicleNitroService {
     this.regenPenaltyTimeout = setTimeout(() => {
       this.capacityRegenAvailable = true;
       this.regenPenaltyTimeout = null;
+
+      this.notifyBrowser();
     }, this.regenPenalty);
 
-    // BOOST
+    this.vehicleBoost(vehicle);
 
-    const camera = player.GetFPPCameraComponent();
-    const boostFOV = this.defaultFOV + 15;
-    camera.SetFOV(boostFOV);
-
-    const forward = vehicle.GetWorldForward();
-
-    const boost = {
-      x: forward.x * this.force,
-      y: forward.y * this.force,
-      z: forward.z * this.force,
-    };
-
-    vehicle.AddLinelyVelocity(boost, { x: 0, y: 0, z: 0 });
-
-    this.notifyBrowserSafe();
+    this.notifyBrowser();
   };
+
+  private setBoostFOV() {
+    const player = mp.game.GetPlayer();
+    const FPPcamera = player.GetFPPCameraComponent();
+    FPPcamera.SetFOV(this.playerFPPFOV + 15);
+
+    if (this.gameTPPCamera) {
+      this.gameTPPCamera.SetFOV(this.playerTPPFOV + 15);
+    }
+  }
+
+  private setDefaultFOV() {
+    const player = mp.game.GetPlayer();
+    const FPPcamera = player.GetFPPCameraComponent();
+    FPPcamera.SetFOV(this.playerFPPFOV);
+
+    if (this.gameTPPCamera) {
+      this.gameTPPCamera.SetFOV(this.playerTPPFOV);
+    }
+  }
 
   private handleBoost = (action: EInputAction) => {
     if (!this.isEnabled) {
@@ -133,6 +149,8 @@ export class VehicleNitroService {
       if (!this.boostInterval) {
         this.boostInterval = setInterval(this.boost, this.boostTime);
 
+        this.setBoostFOV();
+
         this.notifyBrowser();
       }
     }
@@ -142,9 +160,7 @@ export class VehicleNitroService {
         clearInterval(this.boostInterval);
         this.boostInterval = null;
 
-        const player = mp.game.GetPlayer();
-        const camera = player.GetFPPCameraComponent();
-        camera.SetFOV(this.defaultFOV);
+        this.setDefaultFOV();
 
         this.notifyBrowser();
       }
@@ -176,7 +192,7 @@ export class VehicleNitroService {
       if (this.capacityRegenAvailable) {
         this.capacity = Math.min(this.capacity + this.capacityRegenRate, 100);
 
-        this.notifyBrowserSafe();
+        this.notifyBrowser();
       }
     }, this.capacityRegenTime);
   }
@@ -190,11 +206,9 @@ export class VehicleNitroService {
     this.capacity = 100;
     this.capacityRegenAvailable = true;
 
-    const player = mp.game.GetPlayer();
-    const camera = player.GetFPPCameraComponent();
-    this.defaultFOV = camera.GetFOV();
-
     this.notifyBrowser();
+
+    this.getTPPCamera();
 
     this.mountBoostKey();
   }
@@ -232,6 +246,18 @@ export class VehicleNitroService {
         this.onVehicleLeave();
       }
     }, this.vehicleMountTime);
+  }
+
+  getTPPCamera() {
+    const components = mp.game.GetPlayer().GetComponents();
+
+    for (const c of components) {
+      if (c.IsA('vehicleTPPCameraComponent')) {
+        const camera = c as vehicleTPPCameraComponent;
+
+        return camera;
+      }
+    }
   }
 
   @postConstruct()
