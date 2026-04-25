@@ -194,7 +194,7 @@ export class VehicleNitroService {
 
     console.log('LERPTTP success', this.playerCurTPPFOV, this.playerTPPFOV);
 
-    return this.playerTPPFOV === this.playerCurTPPFOV;
+    return this.playerTPPFOV === Number(this.playerCurTPPFOV.toFixed(3));
   };
 
   private mountLerpInterval = () => {
