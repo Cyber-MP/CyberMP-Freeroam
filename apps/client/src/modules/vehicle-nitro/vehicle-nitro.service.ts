@@ -178,7 +178,7 @@ export class VehicleNitroService {
   }
 
   private lerpTPPFOV = (increase: boolean) => {
-    console.log('LERPTTP');
+    console.log('LERPTTP', increase);
 
     if (!this.gameTPPCamera) {
       return;
