@@ -141,6 +141,8 @@ export class VehicleNitroService {
         return camera;
       }
     }
+
+    return null;
   }
 
   private setBoostFOV() {
@@ -148,6 +150,8 @@ export class VehicleNitroService {
     const FPPcamera = player.GetFPPCameraComponent();
     this.playerFPPFOV = FPPcamera.GetFOV();
     FPPcamera.SetFOV(this.playerFPPFOV + 15);
+
+    console.log('TPPCamera', this.gameTPPCamera);
 
     if (this.gameTPPCamera) {
       this.playerTPPFOV = this.gameTPPCamera.GetFOV();
@@ -236,7 +240,7 @@ export class VehicleNitroService {
 
     this.notifyBrowser();
 
-    this.getTPPCamera();
+    this.gameTPPCamera = this.getTPPCamera();
 
     this.mountBoostKey();
   }
