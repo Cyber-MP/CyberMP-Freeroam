@@ -194,9 +194,13 @@ export class VehicleNitroService {
   }
 
   private mountLerpInterval = () => {
+    console.log('PRE LERP');
+
     if (this.lerpInterval) {
       return;
     }
+
+    console.log('POST LERP');
 
     this.lerpInterval = setInterval(() => {
       if (this.lerpTPPFOV(this.isBoosting)) {
