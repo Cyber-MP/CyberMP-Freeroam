@@ -126,7 +126,7 @@ export class Match<TGameMode extends BaseGameMode = BaseGameMode> {
       joinOptions.data as z.infer<TGameMode['JOIN_OPTIONS_SCHEMA']>,
     );
 
-    const [err] = (await tryit(() => this.mode.onPlayerJoin(playerId)))();
+    const [err] = await tryit(() => this.mode.onPlayerJoin(playerId))();
     if (err) {
       this.loggerService.warn(
         'Error happen during game mode onPlayerJoin callback',
@@ -147,7 +147,7 @@ export class Match<TGameMode extends BaseGameMode = BaseGameMode> {
 
     this.members.delete(playerId);
 
-    const [err] = (await tryit(() => this.mode.onPlayerLeave(playerId)))();
+    const [err] = await tryit(() => this.mode.onPlayerLeave(playerId))();
     if (err) {
       this.loggerService.warn(
         'Error happen during game mode onPlayerLeave callback',
@@ -195,7 +195,7 @@ export class Match<TGameMode extends BaseGameMode = BaseGameMode> {
       );
     }
 
-    const [err] = (await tryit(() => this.mode.start()))();
+    const [err] = await tryit(() => this.mode.start())();
     if (err) {
       this.loggerService.warn(
         'Error happen during game mode start',
@@ -212,7 +212,7 @@ export class Match<TGameMode extends BaseGameMode = BaseGameMode> {
   async end() {
     this.status = MatchStatus.ENDED;
 
-    const [err] = (await tryit(() => this.mode.end()))();
+    const [err] = await tryit(() => this.mode.end())();
     if (err) {
       this.loggerService.warn(
         'Error happen during game mode end',

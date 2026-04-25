@@ -1,11 +1,13 @@
 import { RiArrowLeftSLine } from '@remixicon/react';
+import type Form from '@rjsf/core';
+import type { RJSFSchema } from '@rjsf/utils';
 import {
   useMutation,
   useQueryClient,
   useSuspenseQuery,
 } from '@tanstack/react-query';
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { DefaultPendingPage } from '@/components/default-pending-page';
 import { Button } from '@/components/ui/button';
 import { Field, FieldLabel, FieldSet } from '@/components/ui/field';
@@ -65,6 +67,9 @@ function RouteComponent() {
   const gameModes = Object.keys(createGameModeSchemas);
   const createSchema = gameMode ? createGameModeSchemas[gameMode] : null;
 
+  const createFormRef = useRef<Form<any, RJSFSchema, any>>(null);
+  const joinFormRef = useRef<Form<any, RJSFSchema, any>>(null);
+
   const onJoinOptionsSubmit = (formData: Record<string, unknown>) => {
     mutation.mutate([
       {
@@ -114,13 +119,25 @@ function RouteComponent() {
       <div className="w-full overflow-y-scroll h-full flex items-center justify-center pt-12">
         <div className="w-64 flex flex-col gap-4">
           {createOptions && joinSchema ? (
-            <FieldSet>
+            <div className="flex flex-col gap-4">
               <JoinMatchForm
+                ref={joinFormRef}
                 key={`${gameMode}-join`}
+                uiSchema={{
+                  'ui:submitButtonOptions': {
+                    norender: true,
+                  },
+                }}
                 schema={joinSchema as any}
                 onSubmit={(s) => onJoinOptionsSubmit(s.formData)}
               />
-            </FieldSet>
+              <Button
+                onClick={() => joinFormRef?.current?.submit()}
+                className="absolute bottom-4 right-4"
+              >
+                CREATE
+              </Button>
+            </div>
           ) : (
             <FieldSet className="flex flex-col gap-6">
               <Field>
@@ -140,12 +157,26 @@ function RouteComponent() {
               </Field>
 
               {gameMode && (
-                <CreateMatchForm
-                  key={`${gameMode}-create`}
-                  schema={createSchema as any}
-                  formData={createOptions}
-                  onSubmit={(s) => onCreateOptionsSubmit(s.formData)}
-                />
+                <div className="flex flex-col gap-4">
+                  <CreateMatchForm
+                    ref={createFormRef}
+                    key={`${gameMode}-create`}
+                    schema={createSchema as any}
+                    formData={createOptions}
+                    uiSchema={{
+                      'ui:submitButtonOptions': {
+                        norender: true,
+                      },
+                    }}
+                    onSubmit={(s) => onCreateOptionsSubmit(s.formData)}
+                  />
+                  <Button
+                    onClick={() => createFormRef?.current?.submit()}
+                    className="absolute bottom-4 right-4"
+                  >
+                    CREATE
+                  </Button>
+                </div>
               )}
             </FieldSet>
           )}
