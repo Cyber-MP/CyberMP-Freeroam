@@ -9,6 +9,7 @@ import ms from 'ms';
 import { mp } from '../../mp';
 import { browser } from '../../rpc/browser';
 import { GKeyboardService } from '../game/keyboard.service';
+import { GStatusEffectsService } from '../game/status-effects/status-effects.service';
 
 @eager()
 @injectable()
@@ -17,8 +18,8 @@ export class VehicleNitroService {
   public capacityByUse = 2.25; // capacity consumed per use
   public maxSpeed = 350; // (KM/PH) 400 => vehicle try to use breakes, 450 => stop immediately
   public capacityRegenRate = 1.75; // 'value' per second
-  public isEnabled = true;
 
+  private isEnabled = true;
   private capacity = 100; // 0 ... 100
   private minCapacityPenalty = 30; // on player reaches 0 capacity, they should wait for this value before boost again
   private regenPenalty = ms('2.75s'); // capacity regen timeout after boost
@@ -39,14 +40,20 @@ export class VehicleNitroService {
 
   constructor(
     @inject(GKeyboardService) private keyboardService: GKeyboardService,
+    @inject(GStatusEffectsService)
+    private statusEffectsService: GStatusEffectsService,
   ) {}
 
   enable() {
     this.isEnabled = true;
+
+    this.notifyBrowser();
   }
 
   disable() {
     this.isEnabled = false;
+
+    this.notifyBrowser();
   }
 
   notifyBrowser() {
@@ -81,6 +88,10 @@ export class VehicleNitroService {
   }
 
   boost = () => {
+    if (!this.isEnabled) {
+      return;
+    }
+
     const player = mp.game.GetPlayer();
     const vehicle = player.GetMountedVehicle();
 
@@ -120,6 +131,18 @@ export class VehicleNitroService {
     this.notifyBrowser();
   };
 
+  getTPPCamera() {
+    const components = mp.game.GetPlayer().GetComponents();
+
+    for (const c of components) {
+      if (c.IsA('vehicleTPPCameraComponent')) {
+        const camera = c as vehicleTPPCameraComponent;
+
+        return camera;
+      }
+    }
+  }
+
   private setBoostFOV() {
     const player = mp.game.GetPlayer();
     const FPPcamera = player.GetFPPCameraComponent();
@@ -144,11 +167,11 @@ export class VehicleNitroService {
   }
 
   private handleBoost = (action: EInputAction) => {
-    if (!this.isEnabled) {
-      return;
-    }
-
     if (action === EInputAction.IACT_Press) {
+      if (this.statusEffectsService.has('GameplayRestriction.NoDriving')) {
+        return;
+      }
+
       if (!this.boostInterval) {
         this.boostInterval = setInterval(this.boost, this.boostTime);
 
@@ -192,7 +215,7 @@ export class VehicleNitroService {
         this.isMinCapacityPenalty = false;
       }
 
-      if (this.capacityRegenAvailable) {
+      if (this.capacityRegenAvailable && this.capacity < 100) {
         this.capacity = Math.min(this.capacity + this.capacityRegenRate, 100);
 
         this.notifyBrowser();
@@ -249,18 +272,6 @@ export class VehicleNitroService {
         this.onVehicleLeave();
       }
     }, this.vehicleMountTime);
-  }
-
-  getTPPCamera() {
-    const components = mp.game.GetPlayer().GetComponents();
-
-    for (const c of components) {
-      if (c.IsA('vehicleTPPCameraComponent')) {
-        const camera = c as vehicleTPPCameraComponent;
-
-        return camera;
-      }
-    }
   }
 
   @postConstruct()

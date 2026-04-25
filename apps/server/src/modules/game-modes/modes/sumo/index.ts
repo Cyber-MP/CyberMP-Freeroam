@@ -47,6 +47,11 @@ export const zCreateSumoOptions = zCreateMatchOptions.extend({
     .default(false)
     .optional()
     .meta({ title: 'First person view' }),
+  nitro: z
+    .boolean()
+    .default(false)
+    .optional()
+    .meta({ title: 'Boost for vehicles' }),
 });
 
 export const zJoinSumoOptions = zJoinMatchOptions.extend({

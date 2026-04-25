@@ -27,7 +27,7 @@ const VehicleNitro = memo(() => {
       : '#00d3f2';
 
   return (
-    <div className="absolute left-20 bottom-12 w-52 perspective-near -skew-x-2 -rotate-3 transition-opacity duration-150">
+    <div className="absolute left-24 bottom-12 w-52 perspective-near -skew-x-2 -rotate-3 transition-opacity duration-150">
       <div
         className="relative bg-black/85 p-1 border"
         style={{
@@ -67,13 +67,13 @@ const VehicleNitro = memo(() => {
           />
           <span
             className="font-mono text-[10px] tracking-widest uppercase opacity-50"
-            style={{ color: color }}
+            style={{ color }}
           >
             nitro sys
           </span>
           <motion.span
             className="font-mono text-sm tracking-widest ml-auto opacity-70"
-            style={{ color: color }}
+            style={{ color }}
             animate={isPenalty ? { opacity: [1, 0.2, 1] } : {}}
             transition={{ duration: 0.3, repeat: Infinity }}
           >
@@ -129,13 +129,13 @@ const VehicleNitro = memo(() => {
           <div className="absolute inset-0 flex items-center justify-between px-1 pointer-events-none">
             <span
               className="font-mono text-[10px] tracking-widest opacity-60"
-              style={{ color: color }}
+              style={{ color }}
             >
               NITRO
             </span>
             <span
               className="font-mono text-[10px] font-bold tracking-wider"
-              style={{ textShadow: `0 0 5px ${color}`, color: color }}
+              style={{ textShadow: `0 0 5px ${color}`, color }}
             >
               {capacity}%
             </span>
