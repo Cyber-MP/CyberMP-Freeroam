@@ -26,6 +26,7 @@ import type { Polygon } from '../../../polygons/polygon';
 import { PolygonsService } from '../../../polygons/polygons.service';
 import { BaseGameMode } from '../../game-mode';
 import { CyberpsychoWeapons } from './data';
+import { CyberpsychoMaps } from './maps';
 
 export const zCreateCyberpsychoOptions = zCreateMatchOptions.extend({
   map: z.enum(CyberpsychoMapName).meta({ title: 'Map' }),
@@ -87,6 +88,7 @@ class Fighter {
       .call(
         this.player,
         {
+          isPsycho: this.isPsycho,
           psychoId: this.psychoId,
           map: structuredClone(this.map),
           weapon: this.weapon,
@@ -144,7 +146,7 @@ export class Cyberpsycho extends BaseGameMode<
 
   init(match: Match<this>): void {
     this.match = match;
-    // this.map = PvpMaps.find((o) => o.name === this.match.options.map)!;
+    this.map = CyberpsychoMaps.find((o) => o.name === this.match.options.map)!;
     this.dimension = match.dimension;
   }
 

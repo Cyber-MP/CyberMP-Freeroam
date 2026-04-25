@@ -14,7 +14,7 @@ export const zCyberpsychoStartPoint = z.tuple([
 export const zCyberpsychoStartPoints = z.array(zCyberpsychoStartPoint);
 
 export enum CyberpsychoMapName {
-  TEST = 'test',
+  ARASAKA = 'arasaka',
 }
 
 export const zCyberpsychoMap = z.object({

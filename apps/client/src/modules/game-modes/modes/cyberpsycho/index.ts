@@ -17,6 +17,7 @@ import {
 import { GHealthService } from '../../../game/health/health.service';
 import { GKeyboardService } from '../../../game/keyboard.service';
 import { GLoadingScreenService } from '../../../game/loading-screen.service';
+import { GPlayerService } from '../../../game/player.service';
 import { GStatusEffectsService } from '../../../game/status-effects/status-effects.service';
 import { GTeleportService } from '../../../game/teleport/teleport.service';
 import { MappingService } from '../../../mapping/mapping.service';
@@ -29,6 +30,7 @@ import type { CyberpsychoPrepareDTO } from './dto';
 export class Cyberpsycho extends BaseGameMode<'cyberpsycho'> {
   private livingIds: number[] = [];
   private isAlive = true;
+  private isPsycho = false;
   private initialPosition!: Vector4;
 
   private countDownInterval: ReturnType<typeof setInterval> | undefined;
@@ -37,7 +39,9 @@ export class Cyberpsycho extends BaseGameMode<'cyberpsycho'> {
   private weapon!: string;
   private map!: CyberpsychoMap;
 
-  private HEALTH = 1000;
+  private BASE_HEALTH = 3000;
+
+  private PSYCHO_CYBERWARE = {};
 
   constructor(
     @inject(GTeleportService) private teleportService: GTeleportService,
@@ -51,8 +55,48 @@ export class Cyberpsycho extends BaseGameMode<'cyberpsycho'> {
     @inject(MappingService) private mappingService: MappingService,
     @inject(GLoadingScreenService)
     private loadingScreenService: GLoadingScreenService,
+    @inject(GPlayerService)
+    private playerService: GPlayerService,
   ) {
     super();
+  }
+
+  calculatePsychoHealth() {
+    const players = Object.keys(this.members).length || 1;
+
+    let health = this.BASE_HEALTH * players ** 0.8;
+
+    if (this.options.healing) {
+      health *= 1.3; // +30%
+    }
+
+    const MIN_HEALTH = this.BASE_HEALTH * 1.5;
+    if (health < MIN_HEALTH) {
+      health = MIN_HEALTH;
+    }
+
+    const MAX_HEALTH = this.BASE_HEALTH * 12;
+    if (health > MAX_HEALTH) {
+      health = MAX_HEALTH;
+    }
+
+    return Math.round(health);
+  }
+
+  calculateFighterHealth() {
+    const players = Object.keys(this.members).length || 1;
+
+    let health = 800;
+
+    if (players <= 3) {
+      health *= 1.2;
+    }
+
+    if (this.options.healing) {
+      health *= 1.2;
+    }
+
+    return Math.round(health);
   }
 
   start() {
@@ -100,10 +144,36 @@ export class Cyberpsycho extends BaseGameMode<'cyberpsycho'> {
     browser.navigate.trigger('/hud');
   }
 
+  private prepareWeapons() {
+    const localPlayerObject = mp.game.GetPlayerObject();
+    const localPlayer = mp.game.GetPlayer();
+
+    // Unequip all weapons
+    for (let i = 0; i < 3; i++) {
+      mp.game.EquipmentSystem.RequestUnequipItem(
+        localPlayerObject,
+        gamedataEquipmentArea.Weapon,
+        i,
+      );
+    }
+
+    const eqSystem =
+      mp.game.ScriptGameInstance.GetScriptableSystemsContainer().Get(
+        'EquipmentSystem',
+      );
+
+    // eqSystem.EquipCyberwareByTDBID(
+    //   localPlayer,
+    //   'Items.AdvancedBoostedTendonsLegendary',
+    // );
+  }
+
   async prepare(data: CyberpsychoPrepareDTO) {
     this.spawnService.spawn({
       position: data.startPoint,
-      health: this.HEALTH,
+      health: data.isPsycho
+        ? this.calculatePsychoHealth()
+        : this.calculateFighterHealth(),
     });
     await this.loadingScreenService.waitForLoadingScreenToHide();
 
@@ -117,33 +187,13 @@ export class Cyberpsycho extends BaseGameMode<'cyberpsycho'> {
     browser.hud.setGlobalPath.trigger('/hud/game-modes/cyberpsycho/');
     browser.navigate.trigger('/hud/game-modes/cyberpsycho/');
 
-    const localPlayerObject = mp.game.GetPlayerObject();
-    const localPlayer = mp.game.GetPlayer();
+    await this.playerService.levelUp();
 
-    mp.game.EquipmentSystem.RequestUnequipItem(
-      localPlayerObject,
-      gamedataEquipmentArea.Weapon,
-      0,
-    );
-    mp.game.EquipmentSystem.RequestUnequipItem(
-      localPlayerObject,
-      gamedataEquipmentArea.Weapon,
-      1,
-    );
-    mp.game.EquipmentSystem.RequestUnequipItem(
-      localPlayerObject,
-      gamedataEquipmentArea.Weapon,
-      2,
-    );
-    mp.game.ScriptGameInstance.GetScriptableSystemsContainer()
-      .Get('EquipmentSystem')
-      .EquipCyberwareByTDBID(
-        localPlayer,
-        'Items.AdvancedBoostedTendonsLegendary',
-      );
+    this.prepareWeapons();
 
     this.weapon = data.weapon;
     this.map = data.map;
+    this.isPsycho = data.isPsycho;
 
     if (data.map.mapping) {
       this.mappingService.create(data.map.mapping as any);
@@ -190,11 +240,6 @@ export class Cyberpsycho extends BaseGameMode<'cyberpsycho'> {
   }
 
   private mountCheckWeaponInterval() {
-    if (this.options.freeWeapons) {
-      this.checkCurrentWeapon();
-      return;
-    }
-
     this.checkWeaponInterval = setInterval(
       this.checkCurrentWeapon.bind(this),
       500,
@@ -224,8 +269,9 @@ export class Cyberpsycho extends BaseGameMode<'cyberpsycho'> {
 
   updateLivingIds(data: number[]) {
     this.livingIds = data;
+    const localPlayerId = mp.getPlayerServerId(1);
 
-    if (!this.livingIds.includes(mp.getPlayerServerId(1))) {
+    if (!this.livingIds.includes(localPlayerId)) {
       this.onDead();
     } else {
       const current = this.spectatingService.getSpectatedPlayerId();
