@@ -26,7 +26,7 @@ export class VehicleNitroService {
   private capacityRegenInterval: ReturnType<typeof setInterval> | null = null;
   private capacityRegenTime = ms('0.1s');
   private capacityRegenAvailable = false;
-  private boostKey = EInputKey.IK_X;
+  private boostKey = EInputKey.IK_E;
   private regenPenaltyTimeout: ReturnType<typeof setTimeout> | null = null;
   private isMinCapacityPenalty = false;
   private defaultFOV = 0;
@@ -125,6 +125,10 @@ export class VehicleNitroService {
       if (this.boostInterval) {
         clearInterval(this.boostInterval);
         this.boostInterval = null;
+
+        const player = mp.game.GetPlayer();
+        const camera = player.GetFPPCameraComponent();
+        camera.SetFOV(this.defaultFOV);
       }
     }
   };
@@ -163,12 +167,12 @@ export class VehicleNitroService {
     }
 
     this.isInVehicle = true;
+    this.capacity = 100;
+    this.capacityRegenAvailable = true;
+
     const player = mp.game.GetPlayer();
     const camera = player.GetFPPCameraComponent();
     this.defaultFOV = camera.GetFOV();
-
-    this.capacity = 100;
-    this.capacityRegenAvailable = true;
 
     this.mountBoostKey();
   }
@@ -179,10 +183,6 @@ export class VehicleNitroService {
     }
 
     this.isInVehicle = false;
-
-    const player = mp.game.GetPlayer();
-    const camera = player.GetFPPCameraComponent();
-    camera.SetFOV(this.defaultFOV);
 
     if (this.boostInterval) {
       clearInterval(this.boostInterval);

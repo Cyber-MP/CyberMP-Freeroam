@@ -1,18 +1,22 @@
-import { useQuery } from '@tanstack/react-query';
-import ms from 'ms';
-import { memo } from 'react';
-import { clientQuery } from '@/rpc';
+import { useImplement } from '@cybermp/rpc-router-react';
+import { memo, useState } from 'react';
+import type z from 'zod';
+import { vehicleNitroContract, type zVehicleNitroUpdate } from './contract';
 
 const VehicleNitro = memo(() => {
-  const info = useQuery(
-    clientQuery.vehicleNitro.info.queryOptions({
-      refetchInterval: ms('0.5s'),
-    }),
-  );
+  const [state, setState] = useState<z.infer<
+    typeof zVehicleNitroUpdate
+  > | null>({ capacity: 24, isAvailable: true, isPenalty: false });
 
-  if (!info.data?.isAvailable) return null;
+  useImplement(vehicleNitroContract.update, ({ data }) => {
+    setState(data);
+  });
 
-  const { capacity, isPenalty } = info.data;
+  if (!state?.isAvailable) {
+    return null;
+  }
+
+  const { capacity, isPenalty } = state;
 
   const colorClass = isPenalty
     ? 'red'
@@ -25,7 +29,7 @@ const VehicleNitro = memo(() => {
   const filledPips = Math.round(capacity / 10);
 
   return (
-    <div className="absolute left-24 bottom-16 w-64 perspective-[400px] -skew-x-2 -rotate-3">
+    <div className="absolute left-24 bottom-16 w-64 perspective-near -skew-x-2 -rotate-3">
       <style>{`
         @keyframes nx-scanline {
           0% { transform: translateY(-100%); }
@@ -109,7 +113,7 @@ const VehicleNitro = memo(() => {
             nitro sys
           </span>
           <span
-            className={`font-mono text-[8px] tracking-widest ml-auto opacity-70 ${isPenalty ? 'nx-penalty' : ''}`}
+            className={`font-mono text-lg tracking-widest ml-auto opacity-70 ${isPenalty ? 'nx-penalty' : ''}`}
             style={{
               color: isPenalty
                 ? '#ff4466'
@@ -150,7 +154,7 @@ const VehicleNitro = memo(() => {
 
           <div className="absolute inset-0 flex items-center justify-between px-1.5 pointer-events-none">
             <span
-              className="font-mono text-xs tracking-[2px] opacity-60"
+              className="font-mono text-xs tracking-widest opacity-60"
               style={{
                 color: isPenalty
                   ? '#ff4466'
@@ -162,7 +166,7 @@ const VehicleNitro = memo(() => {
               NITRO
             </span>
             <span
-              className="font-mono text-xs font-bold tracking-[1px]"
+              className="font-mono text-xs font-bold tracking-wider"
               style={{
                 color: isPenalty
                   ? '#ff4466'
@@ -177,11 +181,11 @@ const VehicleNitro = memo(() => {
           </div>
         </div>
 
-        <div className="flex gap-[3px] px-1.5 py-0.5 border-t border-white/5">
+        <div className="flex gap-1 px-1.5 py-0.5 border-t border-white/5">
           {Array.from({ length: 10 }).map((_, i) => (
             <div
               key={i as number}
-              className="h-[3px] flex-1 rounded-[1px]"
+              className="h-1 flex-1 rounded-xs"
               style={{
                 background:
                   i < filledPips
