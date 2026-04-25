@@ -77,7 +77,11 @@ const VehicleNitro = memo(() => {
             animate={isPenalty ? { opacity: [1, 0.2, 1] } : {}}
             transition={{ duration: 0.3, repeat: Infinity }}
           >
-            {isPenalty ? 'PENALTY' : colorClass === 'yellow' ? 'LOW' : 'NX-7'}
+            {isPenalty
+              ? 'PENALTY'
+              : colorClass === 'yellow'
+                ? 'L0W'
+                : 'CH4RGED'}
           </motion.span>
         </div>
 
