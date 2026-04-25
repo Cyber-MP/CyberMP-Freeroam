@@ -31,6 +31,7 @@ export class VehicleNitroService {
   private regenPenaltyTimeout: ReturnType<typeof setTimeout> | null = null;
   private isMinCapacityPenalty = false;
   private defaultFOV = 0;
+  private notifyBrowserIndex = 0; // 0 ... 5, call notifyBrowser every 5th update
 
   constructor(
     @inject(GKeyboardService) private keyboardService: GKeyboardService,
@@ -42,6 +43,14 @@ export class VehicleNitroService {
 
   disable() {
     this.isEnabled = false;
+  }
+
+  notifyBrowserSafe() {
+    this.notifyBrowserIndex = (this.notifyBrowserIndex + 1) % 5;
+
+    if (this.notifyBrowserIndex === 0) {
+      this.notifyBrowser();
+    }
   }
 
   notifyBrowser() {
@@ -112,7 +121,7 @@ export class VehicleNitroService {
 
     vehicle.AddLinelyVelocity(boost, { x: 0, y: 0, z: 0 });
 
-    this.notifyBrowser();
+    this.notifyBrowserSafe();
   };
 
   private handleBoost = (action: EInputAction) => {
@@ -162,6 +171,8 @@ export class VehicleNitroService {
 
       if (this.capacityRegenAvailable) {
         this.capacity = Math.min(this.capacity + this.capacityRegenRate, 100);
+
+        this.notifyBrowserSafe();
       }
     }, this.capacityRegenTime);
   }
