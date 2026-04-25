@@ -115,6 +115,7 @@ export class VehicleNitroService {
 
     if (this.capacity - this.capacityByUse < 0) {
       this.isMinCapacityPenalty = true;
+      this.isBoosting = false;
       this.capacity = this.capacityByUse;
     }
 
@@ -178,8 +179,6 @@ export class VehicleNitroService {
   }
 
   private lerpTPPFOV = (increase: boolean) => {
-    console.log('LERPTTP', increase);
-
     if (!this.gameTPPCamera) {
       return;
     }
@@ -192,19 +191,13 @@ export class VehicleNitroService {
 
     this.gameTPPCamera.SetFOV(this.playerCurTPPFOV);
 
-    console.log('LERPTTP success', this.playerCurTPPFOV, this.playerTPPFOV);
-
     return this.playerTPPFOV === Number(this.playerCurTPPFOV.toFixed(3));
   };
 
   private mountLerpInterval = () => {
-    console.log('PRE LERP');
-
     if (this.lerpInterval) {
       return;
     }
-
-    console.log('POST LERP');
 
     this.lerpInterval = setInterval(() => {
       if (this.lerpTPPFOV(this.isBoosting)) {
@@ -223,8 +216,8 @@ export class VehicleNitroService {
       }
 
       if (!this.boostInterval) {
-        this.boost();
         this.boostInterval = setInterval(this.boost, this.boostTime);
+        this.boost();
 
         this.setBoostFOV();
 
