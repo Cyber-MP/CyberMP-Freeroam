@@ -4,20 +4,21 @@ import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
 import ms from 'ms';
 import { mp } from '../../mp';
+import { browser } from '../../rpc/browser';
 import { GKeyboardService } from '../game/keyboard.service';
 
 @eager()
 @injectable()
 export class VehicleNitroService {
-  public force = 2.25; // force applied to vehicle when boosting
-  public capacityByUse = 1.75; // capacity consumed per use
+  public force = 3.25; // force applied to vehicle when boosting
+  public capacityByUse = 2.25; // capacity consumed per use
   public maxSpeed = 350; // (KM/PH) 400 => vehicle try to use breakes, 450 => stop immediately
-  public capacityRegenRate = 1; // 'value' per second
+  public capacityRegenRate = 1.75; // 'value' per second
   public isEnabled = true;
 
   private capacity = 100; // 0 ... 100
-  private minCapacityPenalty = 25; // on player reaches 0 capacity, they should wait for this value before boost again
-  private regenPenalty = ms('3s'); // capacity regen timeout after boost
+  private minCapacityPenalty = 30; // on player reaches 0 capacity, they should wait for this value before boost again
+  private regenPenalty = ms('2.75s'); // capacity regen timeout after boost
   private boostTime = ms('0.1s'); // applies boost every 'value' seconds
   private boostInterval: ReturnType<typeof setInterval> | null = null;
   private vehicleMountInterval: ReturnType<typeof setInterval> | null = null;
@@ -43,12 +44,12 @@ export class VehicleNitroService {
     this.isEnabled = false;
   }
 
-  info() {
-    return {
+  notifyBrowser() {
+    browser.vehicleNitro.update.trigger({
       isPenalty: this.isMinCapacityPenalty,
       isAvailable: this.isEnabled && this.isInVehicle,
       capacity: this.capacity,
-    };
+    });
   }
 
   getSpeed(vehicle: vehicleBaseObject) {
@@ -110,6 +111,8 @@ export class VehicleNitroService {
     };
 
     vehicle.AddLinelyVelocity(boost, { x: 0, y: 0, z: 0 });
+
+    this.notifyBrowser();
   };
 
   private handleBoost = (action: EInputAction) => {
@@ -129,6 +132,8 @@ export class VehicleNitroService {
         const player = mp.game.GetPlayer();
         const camera = player.GetFPPCameraComponent();
         camera.SetFOV(this.defaultFOV);
+
+        this.notifyBrowser();
       }
     }
   };
@@ -174,6 +179,8 @@ export class VehicleNitroService {
     const camera = player.GetFPPCameraComponent();
     this.defaultFOV = camera.GetFOV();
 
+    this.notifyBrowser();
+
     this.mountBoostKey();
   }
 
@@ -188,6 +195,8 @@ export class VehicleNitroService {
       clearInterval(this.boostInterval);
       this.boostInterval = null;
     }
+
+    this.notifyBrowser();
 
     this.unmountBoostKey();
   }

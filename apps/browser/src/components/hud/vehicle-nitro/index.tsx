@@ -1,72 +1,45 @@
 import { useImplement } from '@cybermp/rpc-router-react';
+import { motion } from 'framer-motion';
 import { memo, useState } from 'react';
 import type z from 'zod';
 import { vehicleNitroContract, type zVehicleNitroUpdate } from './contract';
 
 const VehicleNitro = memo(() => {
-  const [state, setState] = useState<z.infer<
-    typeof zVehicleNitroUpdate
-  > | null>({ capacity: 24, isAvailable: true, isPenalty: false });
+  const [state, setState] = useState<z.infer<typeof zVehicleNitroUpdate>>({
+    capacity: 100,
+    isAvailable: false,
+    isPenalty: false,
+  });
 
   useImplement(vehicleNitroContract.update, ({ data }) => {
     setState(data);
   });
 
-  if (!state?.isAvailable) {
-    return null;
-  }
+  if (!state?.isAvailable) return null;
 
   const { capacity, isPenalty } = state;
+  const colorClass = isPenalty ? 'red' : capacity < 30 ? 'yellow' : 'cyan';
 
-  const colorClass = isPenalty
-    ? 'red'
-    : capacity < 25
-      ? 'yellow'
-      : capacity < 50
-        ? 'yellow'
-        : 'cyan';
-
-  const filledPips = Math.round(capacity / 10);
+  const color = isPenalty
+    ? '#ff4466'
+    : colorClass === 'yellow'
+      ? '#ffe600'
+      : '#00d3f2';
 
   return (
-    <div className="absolute left-24 bottom-16 w-64 perspective-near -skew-x-2 -rotate-3">
-      <style>{`
-        @keyframes nx-scanline {
-          0% { transform: translateY(-100%); }
-          100% { transform: translateY(400%); }
-        }
-        @keyframes nx-flicker {
-          0%, 95%, 100% { opacity: 1; }
-          96% { opacity: 0.7; }
-          98% { opacity: 0.85; }
-        }
-        @keyframes nx-pulse-cyan { 0%, 100% { box-shadow: 0 0 4px 1px cyan; } 50% { box-shadow: 0 0 10px 3px cyan; } }
-        @keyframes nx-pulse-yellow { 0%, 100% { box-shadow: 0 0 4px 1px #ffe600; } 50% { box-shadow: 0 0 10px 3px #ffe600; } }
-        @keyframes nx-pulse-red { 0%, 100% { box-shadow: 0 0 4px 1px #ff4466; } 50% { box-shadow: 0 0 12px 4px #ff4466; } }
-        @keyframes nx-tick { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
-        .nx-dot { animation: nx-tick var(--dot-speed, 1s) infinite; }
-        .nx-bar-cyan { background: linear-gradient(90deg, rgba(0,200,200,0.9), cyan); animation: nx-flicker 3s infinite, nx-pulse-cyan 2s infinite; }
-        .nx-bar-yellow { background: linear-gradient(90deg, rgba(200,180,0,0.9), #ffe600); animation: nx-flicker 3s infinite, nx-pulse-yellow 2s infinite; }
-        .nx-bar-red { background: linear-gradient(90deg, rgba(200,0,30,0.9), #ff4466); animation: nx-flicker 1.5s infinite, nx-pulse-red 0.8s infinite; }
-        .nx-scanline { animation: nx-scanline 2.5s linear infinite; }
-        .nx-penalty { animation: nx-tick 0.3s infinite; }
-      `}</style>
-
+    <div className="absolute left-20 bottom-12 w-52 perspective-near -skew-x-2 -rotate-3 transition-opacity duration-150">
       <div
-        className="relative border bg-black/85 p-1.5"
+        className="relative bg-black/85 p-1 border"
         style={{
-          borderColor: isPenalty
-            ? 'rgba(255,68,102,0.4)'
-            : colorClass === 'yellow'
-              ? 'rgba(255,230,0,0.25)'
-              : 'rgba(0,255,255,0.25)',
-          clipPath: 'polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%)',
+          clipPath: 'polygon(5px 0%, 100% 0%, calc(100% - 5px) 100%, 0% 100%)',
+          borderColor: color,
+          opacity: state.isAvailable ? 1 : 0,
         }}
       >
-        {['tl', 'tr', 'bl', 'br'].map((pos) => (
+        {(['tl', 'tr', 'bl', 'br'] as const).map((pos) => (
           <div
             key={pos}
-            className="absolute w-1.5 h-1.5"
+            className="absolute w-1.5 h-1.5 opacity-85"
             style={{
               top: pos.includes('t') ? 0 : undefined,
               bottom: pos.includes('b') ? 0 : undefined,
@@ -74,73 +47,74 @@ const VehicleNitro = memo(() => {
               right: pos.includes('r') ? 0 : undefined,
               borderStyle: 'solid',
               borderWidth: `${pos.includes('t') ? '1.5px' : 0} ${pos.includes('r') ? '1.5px' : 0} ${pos.includes('b') ? '1.5px' : 0} ${pos.includes('l') ? '1.5px' : 0}`,
-              borderColor: isPenalty
-                ? '#ff4466'
-                : colorClass === 'yellow'
-                  ? '#ffe600'
-                  : 'cyan',
-              opacity: 0.85,
+              borderColor: color,
             }}
           />
         ))}
 
-        <div className="flex items-center gap-1 px-1.5 py-0.5 border-b border-white/5">
-          <div
-            className="nx-dot w-1 h-1 rounded-full"
+        <div className="flex items-center gap-1 px-1 py-0.5 border-b border-white/5">
+          <motion.div
+            className="w-1 h-1 rounded-full"
+            animate={{ opacity: [1, 0.2, 1] }}
             style={{
-              background: isPenalty
-                ? '#ff4466'
-                : colorClass === 'yellow'
-                  ? '#ffe600'
-                  : 'cyan',
-              ['--dot-speed' as string]: isPenalty
-                ? '0.3s'
-                : colorClass === 'yellow'
-                  ? '0.5s'
-                  : '1s',
+              backgroundColor: color,
+            }}
+            transition={{
+              duration: isPenalty ? 0.3 : colorClass === 'yellow' ? 0.5 : 1,
+              repeat: Infinity,
+              ease: 'easeInOut',
             }}
           />
           <span
-            className="font-mono text-xs tracking-1 uppercase opacity-50"
-            style={{
-              color: isPenalty
-                ? '#ff4466'
-                : colorClass === 'yellow'
-                  ? '#ffe600'
-                  : 'cyan',
-            }}
+            className="font-mono text-[10px] tracking-widest uppercase opacity-50"
+            style={{ color: color }}
           >
             nitro sys
           </span>
-          <span
-            className={`font-mono text-lg tracking-widest ml-auto opacity-70 ${isPenalty ? 'nx-penalty' : ''}`}
-            style={{
-              color: isPenalty
-                ? '#ff4466'
-                : colorClass === 'yellow'
-                  ? '#ffe600'
-                  : 'rgba(0,255,255,0.4)',
-            }}
+          <motion.span
+            className="font-mono text-sm tracking-widest ml-auto opacity-70"
+            style={{ color: color }}
+            animate={isPenalty ? { opacity: [1, 0.2, 1] } : {}}
+            transition={{ duration: 0.3, repeat: Infinity }}
           >
             {isPenalty ? 'PENALTY' : colorClass === 'yellow' ? 'LOW' : 'NX-7'}
-          </span>
+          </motion.span>
         </div>
 
-        <div className="relative h-[18px] bg-black/60 overflow-hidden">
-          <div
-            className={`h-full nx-bar-${colorClass}`}
+        <div className="relative h-[15px] bg-black/60 overflow-hidden">
+          <motion.div
+            className="h-full"
             style={{
+              background: isPenalty
+                ? 'linear-gradient(90deg, rgba(200,0,30,0.9), #ff4466)'
+                : colorClass === 'yellow'
+                  ? 'linear-gradient(90deg, rgba(200,180,0,0.9), #ffe600)'
+                  : 'linear-gradient(90deg, rgba(0,200,200,0.9), cyan)',
+            }}
+            animate={{
               width: `${capacity}%`,
-              transition: 'width 0.8s cubic-bezier(0.4,0,0.2,1)',
+              opacity: [1, 0.7, 0.85, 1],
+              boxShadow: [
+                `0 0 3px 1px ${color}`,
+                `0 0 8px 2px ${color}`,
+                `0 0 3px 1px ${color}`,
+              ],
+            }}
+            transition={{
+              width: { duration: 0.8, ease: [0.4, 0, 0.2, 1] },
+              opacity: { duration: isPenalty ? 1.5 : 3, repeat: Infinity },
+              boxShadow: { duration: isPenalty ? 0.8 : 2, repeat: Infinity },
             }}
           />
 
-          <div
-            className="nx-scanline absolute top-0 left-0 right-0 h-1/4 pointer-events-none"
+          <motion.div
+            className="absolute top-0 left-0 right-0 h-1/4 pointer-events-none"
             style={{
               background:
                 'linear-gradient(transparent, rgba(255,255,255,0.04), transparent)',
             }}
+            animate={{ y: ['-100%', '400%'] }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: 'linear' }}
           />
 
           <div className="absolute inset-0 flex pointer-events-none">
@@ -152,49 +126,30 @@ const VehicleNitro = memo(() => {
             ))}
           </div>
 
-          <div className="absolute inset-0 flex items-center justify-between px-1.5 pointer-events-none">
+          <div className="absolute inset-0 flex items-center justify-between px-1 pointer-events-none">
             <span
-              className="font-mono text-xs tracking-widest opacity-60"
-              style={{
-                color: isPenalty
-                  ? '#ff4466'
-                  : colorClass === 'yellow'
-                    ? '#ffe600'
-                    : 'cyan',
-              }}
+              className="font-mono text-[10px] tracking-widest opacity-60"
+              style={{ color: color }}
             >
               NITRO
             </span>
             <span
-              className="font-mono text-xs font-bold tracking-wider"
-              style={{
-                color: isPenalty
-                  ? '#ff4466'
-                  : colorClass === 'yellow'
-                    ? '#ffe600'
-                    : '#00ffff',
-                textShadow: `0 0 6px ${isPenalty ? '#ff4466' : colorClass === 'yellow' ? '#ffe600' : 'cyan'}`,
-              }}
+              className="font-mono text-[10px] font-bold tracking-wider"
+              style={{ textShadow: `0 0 5px ${color}`, color: color }}
             >
               {capacity}%
             </span>
           </div>
         </div>
 
-        <div className="flex gap-1 px-1.5 py-0.5 border-t border-white/5">
+        <div className="flex gap-1 px-1 py-0.5 border-t border-white/5">
           {Array.from({ length: 10 }).map((_, i) => (
             <div
               key={i as number}
-              className="h-1 flex-1 rounded-xs"
+              className="h-0.5 flex-1 rounded-xs"
               style={{
-                background:
-                  i < filledPips
-                    ? isPenalty
-                      ? '#ff4466'
-                      : colorClass === 'yellow'
-                        ? '#ffe600'
-                        : 'cyan'
-                    : 'rgba(255,255,255,0.08)',
+                backgroundColor:
+                  i < Math.round(capacity / 10) ? color : '#ffffff20',
               }}
             />
           ))}
