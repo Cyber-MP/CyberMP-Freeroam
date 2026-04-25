@@ -223,6 +223,7 @@ export class VehicleNitroService {
       }
 
       if (!this.boostInterval) {
+        this.boost();
         this.boostInterval = setInterval(this.boost, this.boostTime);
 
         this.setBoostFOV();
