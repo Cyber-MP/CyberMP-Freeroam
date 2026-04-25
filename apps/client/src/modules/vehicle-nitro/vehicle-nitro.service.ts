@@ -36,6 +36,7 @@ export class VehicleNitroService {
   private isMinCapacityPenalty = false;
   private playerFPPFOV = 0;
   private playerTPPFOV = 0;
+  private playerCurTPPFOV = 0;
   private gameTPPCamera: vehicleTPPCameraComponent | null = null;
 
   constructor(
@@ -151,14 +152,12 @@ export class VehicleNitroService {
     this.playerFPPFOV = FPPcamera.GetFOV();
     FPPcamera.SetFOV(this.playerFPPFOV + 15);
 
-    console.log('TPPCamera', this.gameTPPCamera);
-
     if (this.gameTPPCamera) {
       this.playerTPPFOV = this.gameTPPCamera.GetFOV();
 
-      console.log('TPPFOV', this.playerTPPFOV);
-
-      this.gameTPPCamera.SetFOV(this.playerTPPFOV + 15);
+      if (!this.playerCurTPPFOV) {
+        this.playerCurTPPFOV = this.playerTPPFOV;
+      }
     }
   }
 
@@ -166,10 +165,20 @@ export class VehicleNitroService {
     const player = mp.game.GetPlayer();
     const FPPcamera = player.GetFPPCameraComponent();
     FPPcamera.SetFOV(this.playerFPPFOV);
+  }
 
-    if (this.gameTPPCamera) {
-      this.gameTPPCamera.SetFOV(this.playerTPPFOV);
+  private lerpTPPFOV(increase: boolean) {
+    if (!this.gameTPPCamera) {
+      return;
     }
+
+    this.playerCurTPPFOV = mp.game.LerpF(
+      0.5,
+      this.playerCurTPPFOV,
+      increase ? this.playerTPPFOV + 15 : this.playerTPPFOV,
+    );
+
+    this.gameTPPCamera.SetFOV(this.playerCurTPPFOV);
   }
 
   private handleBoost = (action: EInputAction) => {
@@ -185,6 +194,8 @@ export class VehicleNitroService {
 
         this.notifyBrowser();
       }
+
+      this.lerpTPPFOV(true);
     }
 
     if (action === EInputAction.IACT_Release) {
@@ -196,6 +207,8 @@ export class VehicleNitroService {
 
         this.notifyBrowser();
       }
+
+      this.lerpTPPFOV(false);
     }
   };
 
