@@ -130,7 +130,11 @@ export class VehicleNitroService {
     }
 
     if (action === EInputAction.IACT_Press) {
-      this.boostInterval = setInterval(this.boost, this.boostTime);
+      if (!this.boostInterval) {
+        this.boostInterval = setInterval(this.boost, this.boostTime);
+
+        this.notifyBrowser();
+      }
     }
 
     if (action === EInputAction.IACT_Release) {
