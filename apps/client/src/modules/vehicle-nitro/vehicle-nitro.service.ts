@@ -192,7 +192,7 @@ export class VehicleNitroService {
 
     this.gameTPPCamera.SetFOV(this.playerCurTPPFOV);
 
-    console.log('LERPTTP success');
+    console.log('LERPTTP success', this.playerCurTPPFOV, this.playerTPPFOV);
 
     return this.playerTPPFOV === this.playerCurTPPFOV;
   };
