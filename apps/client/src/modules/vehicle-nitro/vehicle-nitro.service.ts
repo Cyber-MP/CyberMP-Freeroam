@@ -18,6 +18,7 @@ export class VehicleNitroService {
   public capacityByUse = 2.25; // capacity consumed per use
   public maxSpeed = 350; // (KM/PH) 400 => vehicle try to use breakes, 450 => stop immediately
   public capacityRegenRate = 1.75; // 'value' per second
+  public isBoosting = false;
 
   private isEnabled = true;
   private capacity = 100; // 0 ... 100
@@ -77,6 +78,8 @@ export class VehicleNitroService {
   }
 
   private vehicleBoost(vehicle: vehicleBaseObject) {
+    this.isBoosting = true;
+
     const forward = vehicle.GetWorldForward();
 
     const boost = {
@@ -146,11 +149,10 @@ export class VehicleNitroService {
     return null;
   }
 
-  private setBoostFOV() {
+  private saveFOVValues() {
     const player = mp.game.GetPlayer();
     const FPPcamera = player.GetFPPCameraComponent();
     this.playerFPPFOV = FPPcamera.GetFOV();
-    FPPcamera.SetFOV(this.playerFPPFOV + 15);
 
     if (this.gameTPPCamera) {
       this.playerTPPFOV = this.gameTPPCamera.GetFOV();
@@ -159,6 +161,12 @@ export class VehicleNitroService {
         this.playerCurTPPFOV = this.playerTPPFOV;
       }
     }
+  }
+
+  private setBoostFOV() {
+    const player = mp.game.GetPlayer();
+    const FPPcamera = player.GetFPPCameraComponent();
+    FPPcamera.SetFOV(this.playerFPPFOV + 15);
   }
 
   private setDefaultFOV() {
@@ -173,7 +181,7 @@ export class VehicleNitroService {
     }
 
     this.playerCurTPPFOV = mp.game.LerpF(
-      0.5,
+      0.2,
       this.playerCurTPPFOV,
       increase ? this.playerTPPFOV + 15 : this.playerTPPFOV,
     );
@@ -203,12 +211,12 @@ export class VehicleNitroService {
         clearInterval(this.boostInterval);
         this.boostInterval = null;
 
+        this.isBoosting = false;
+
         this.setDefaultFOV();
 
         this.notifyBrowser();
       }
-
-      this.lerpTPPFOV(false);
     }
   };
 
@@ -253,6 +261,7 @@ export class VehicleNitroService {
 
     this.notifyBrowser();
 
+    this.saveFOVValues();
     this.gameTPPCamera = this.getTPPCamera();
 
     this.mountBoostKey();
@@ -264,6 +273,7 @@ export class VehicleNitroService {
     }
 
     this.isInVehicle = false;
+    this.isBoosting = false;
 
     if (this.boostInterval) {
       clearInterval(this.boostInterval);
@@ -287,6 +297,10 @@ export class VehicleNitroService {
 
       if (vehicle) {
         this.onVehicleEnter();
+
+        if (this.isEnabled && !this.isBoosting) {
+          this.lerpTPPFOV(false);
+        }
       } else {
         this.onVehicleLeave();
       }

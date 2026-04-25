@@ -141,7 +141,7 @@ const VehicleNitro = memo(() => {
               className="font-mono text-[10px] font-bold tracking-wider"
               style={{ textShadow: `0 0 5px ${color}`, color }}
             >
-              {capacity}%
+              {capacity.toFixed(0)}%
             </span>
           </div>
         </div>
