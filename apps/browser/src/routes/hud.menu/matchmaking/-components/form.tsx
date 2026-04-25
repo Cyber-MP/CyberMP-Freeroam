@@ -24,6 +24,9 @@ const createUiSchema: UiSchema = {
   freeWeapons: {
     'ui:widget': 'SwitchWidget',
   },
+  nitro: {
+    'ui:widget': 'SwitchWidget',
+  },
 };
 
 export const CreateMatchForm = ({

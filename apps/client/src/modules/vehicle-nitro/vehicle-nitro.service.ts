@@ -152,6 +152,8 @@ export class VehicleNitroService {
     if (this.gameTPPCamera) {
       this.playerTPPFOV = this.gameTPPCamera.GetFOV();
 
+      console.log('TPPFOV', this.playerTPPFOV);
+
       this.gameTPPCamera.SetFOV(this.playerTPPFOV + 15);
     }
   }
