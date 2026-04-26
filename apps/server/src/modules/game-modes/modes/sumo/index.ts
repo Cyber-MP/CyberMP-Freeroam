@@ -228,17 +228,17 @@ export class Sumo extends BaseGameMode<
   private checkSurvivors() {
     const living = [...this.racers.values()].filter((racer) => racer.alive);
 
-    if (living.length >= 2) {
-      const livingIds = living.map((racer) => racer.player.id);
+    // if (living.length >= 2) {
+    const livingIds = living.map((racer) => racer.player.id);
 
-      for (const playerId of [...this.racers.keys()]) {
-        client.gameModes.sumo.updateLivingIds.trigger(playerId, livingIds);
-      }
+    for (const playerId of [...this.racers.keys()]) {
+      client.gameModes.sumo.updateLivingIds.trigger(playerId, livingIds);
     }
+    // }
 
-    if (living.length <= 1) {
-      this.endMatch(living[0]?.player.id);
-    }
+    // if (living.length <= 1) {
+    //   this.endMatch(living[0]?.player.id);
+    // }
   }
 
   release() {

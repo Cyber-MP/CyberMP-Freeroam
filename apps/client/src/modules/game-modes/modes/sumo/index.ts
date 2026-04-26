@@ -1,6 +1,7 @@
 import { EInputAction, EInputKey } from '@cybermp/client-types/enums';
 import type { Vector4 } from '@cybermp/client-types/game';
 import { inject, injectable } from 'inversify';
+import ms from 'ms';
 import { mp } from '../../../../mp';
 import { server } from '../../../../rpc';
 import { browser } from '../../../../rpc/browser';
@@ -106,9 +107,13 @@ export class Sumo extends BaseGameMode<'sumo'> {
   }
 
   updateLivingIds(data: number[]) {
+    console.log('UPDATELIVINGIDS', JSON.stringify(data));
+
     this.livingIds = data;
 
     if (!this.livingIds.includes(mp.getPlayerServerId(1))) {
+      console.log('dead');
+
       this.onDead();
 
       const current = this.spectatingService.getSpectatedPlayerId();
@@ -211,7 +216,7 @@ export class Sumo extends BaseGameMode<'sumo'> {
       if (!mountedVehicle) {
         this.onLose();
       }
-    }, 2000);
+    }, ms('2s'));
   }
 
   private unmountVehicleCheckInterval() {
@@ -243,6 +248,6 @@ export class Sumo extends BaseGameMode<'sumo'> {
       } else {
         browser.gameModes.sumo.setCountdownText.trigger(String(remaining));
       }
-    }, 100);
+    }, ms('0.1s'));
   }
 }
