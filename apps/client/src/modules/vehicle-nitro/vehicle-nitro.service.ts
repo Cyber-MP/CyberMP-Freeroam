@@ -79,6 +79,10 @@ export class VehicleNitroService {
       return;
     }
 
+    if (!this.isInVehicle) {
+      return;
+    }
+
     browser.hints.add.trigger({
       E: 'Nitro',
     });
