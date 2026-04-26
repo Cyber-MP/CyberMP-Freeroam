@@ -340,9 +340,7 @@ class RanksTracker {
 
     racersProgress.sort((a, b) => {
       if (a.racer.finished && b.racer.finished) {
-        return (
-          (a.racer.finishTimestamp ?? 0) - (b.racer.finishTimestamp ?? 0) * -1
-        );
+        return (a.racer.finishTimestamp ?? 0) - (b.racer.finishTimestamp ?? 0);
       }
 
       if (a.racer.finished || b.racer.finished) {
