@@ -1,5 +1,6 @@
 import z from 'zod';
 import { setBodyVisibility, toggleBodyVisibility } from '../body';
+import { vehicleNitroContract } from '../components/hud/vehicle-nitro/contract';
 import { matchmakingContract } from '../hooks/use-matches';
 import { keysContract } from '../keys';
 import { copyToClipboard } from '../lib/clipboard';
@@ -34,6 +35,8 @@ export const rpcRouter = {
   killFeed: killFeedContract,
   hud: hudContract,
   loadingOverlay: loadingOverlayContract,
+  toast: toastContract,
+  vehicleNitro: vehicleNitroContract,
 
   copyToClipboard: r.procedure.input(z.string()).handler((c) => {
     copyToClipboard(c.data);
@@ -56,7 +59,6 @@ export const rpcRouter = {
     setBodyVisibility(true);
   }),
   toggleVisibility: r.procedure.handler(toggleBodyVisibility),
-  toast: toastContract,
 };
 
 export type BrowserRouter = typeof rpcRouter;

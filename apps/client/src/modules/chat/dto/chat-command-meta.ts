@@ -10,6 +10,7 @@ export const zChatCommandMetaDTO = z.object({
         z.object({
           type: z.enum(['string', 'number', 'boolean']),
           title: z.string().optional(),
+          optional: z.boolean().optional(),
         }),
       ),
     })

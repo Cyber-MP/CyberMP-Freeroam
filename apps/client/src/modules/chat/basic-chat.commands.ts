@@ -248,7 +248,11 @@ export class BasicChatCommands {
       name: 'vboost',
       flags: ChatCommandFlag.DisableInGameMode,
       args: z.tuple([
-        z.coerce.number().meta({ title: 'strength' }).default(40).optional(),
+        z.coerce
+          .number()
+          .meta({ title: 'strength', optional: true })
+          .default(40)
+          .optional(),
       ]),
       description: 'Boosts your vehicle forward',
       handler: this.vehicleBoost.bind(this),

@@ -52,16 +52,19 @@ export class ChatService {
       return;
     }
 
-    if (command.flags && (this.commandsFlags & command.flags) !== 0) {
+    if (command.flags) {
       if (
-        command.flags & ChatCommandFlag.Admin &&
+        (command.flags & ChatCommandFlag.Admin) !== 0 &&
         mp.meta.getLocalPlayerMeta('admin') !== true
       ) {
         this.sendMessage('You are not an admin ._.');
         return;
       }
 
-      if ((command.flags & ~ChatCommandFlag.Admin) !== 0) {
+      if (
+        (this.commandsFlags & command.flags) !== 0 &&
+        (command.flags & ~ChatCommandFlag.Admin) !== 0
+      ) {
         this.sendMessage(
           `Command /${command.name} is disabled for you right now.`,
         );

@@ -26,7 +26,12 @@ export class TimeCommands {
       name: 'time',
       args: z.tuple([
         z.coerce.number().meta({ title: 'hours' }).min(0).max(24),
-        z.coerce.number().meta({ title: 'minutes' }).min(0).max(60).optional(),
+        z.coerce
+          .number()
+          .meta({ title: 'minutes', optional: true })
+          .min(0)
+          .max(60)
+          .optional(),
       ]),
       handler: this.setClientTime.bind(this),
       description: 'Sets local client time',

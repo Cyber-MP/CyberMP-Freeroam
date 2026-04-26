@@ -12,6 +12,7 @@ import { GTeleportService } from '../../../game/teleport/teleport.service';
 import { GVehiclesService } from '../../../game/vehicles/vehicles.service';
 import { SpawnService } from '../../../spawn/spawn.service';
 import { SpectatingService } from '../../../spectating/spectating.service';
+import { VehicleNitroService } from '../../../vehicle-nitro/vehicle-nitro.service';
 import { BaseGameMode } from '../../game-mode';
 import type { SumoPrepareDTO } from './dto';
 
@@ -34,6 +35,8 @@ export class Sumo extends BaseGameMode<'sumo'> {
     private statusEffectsService: GStatusEffectsService,
     @inject(GKeyboardService) private keyboardService: GKeyboardService,
     @inject(SpectatingService) private spectatingService: SpectatingService,
+    @inject(VehicleNitroService)
+    private vehicleNitroService: VehicleNitroService,
   ) {
     super();
   }
@@ -51,6 +54,8 @@ export class Sumo extends BaseGameMode<'sumo'> {
 
     this.statusEffectsService.add('GameplayRestriction.NoCombat');
     this.statusEffectsService.add('GameplayRestriction.NoWeapons');
+
+    this.vehicleNitroService.disable();
   }
 
   end() {
@@ -81,6 +86,8 @@ export class Sumo extends BaseGameMode<'sumo'> {
     this.statusEffectsService.remove('GameplayRestriction.NoWeapons');
     this.statusEffectsService.remove('GameplayRestriction.VehicleFPP');
 
+    this.vehicleNitroService.enable();
+
     browser.hud.setGlobalPath.trigger('/hud');
     browser.navigate.trigger('/hud');
   }
@@ -103,7 +110,7 @@ export class Sumo extends BaseGameMode<'sumo'> {
 
     if (!this.livingIds.includes(mp.getPlayerServerId(1))) {
       this.onDead();
-    } else {
+
       const current = this.spectatingService.getSpectatedPlayerId();
 
       if (current && !this.livingIds.includes(current)) {
@@ -184,6 +191,10 @@ export class Sumo extends BaseGameMode<'sumo'> {
 
     if (this.options.forceFPP) {
       this.statusEffectsService.add('GameplayRestriction.VehicleFPP');
+    }
+
+    if (this.options.nitro) {
+      this.vehicleNitroService.enable();
     }
   }
 
