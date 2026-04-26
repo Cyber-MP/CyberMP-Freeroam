@@ -114,12 +114,12 @@ export class VehicleNitroService {
     }
 
     if (this.isMinCapacityPenalty) {
+      this.isBoosting = false;
       return;
     }
 
     if (this.capacity - this.capacityByUse < 0) {
       this.isMinCapacityPenalty = true;
-      this.isBoosting = false;
       this.capacity = this.capacityByUse;
     }
 
@@ -215,7 +215,7 @@ export class VehicleNitroService {
     }, this.lerpTime);
   };
 
-  private handleBoost = (action: EInputAction) => {
+  private onBoostKeyInput = (action: EInputAction) => {
     if (action === EInputAction.IACT_Press) {
       if (this.statusEffectsService.has('GameplayRestriction.NoDriving')) {
         return;
@@ -246,11 +246,11 @@ export class VehicleNitroService {
   };
 
   mountBoostKey() {
-    this.keyboardService.bindKey(this.boostKey, this.handleBoost);
+    this.keyboardService.bindKey(this.boostKey, this.onBoostKeyInput);
   }
 
   unmountBoostKey() {
-    this.keyboardService.unbindKey(this.boostKey, this.handleBoost);
+    this.keyboardService.unbindKey(this.boostKey, this.onBoostKeyInput);
   }
 
   private capacityRegen() {
