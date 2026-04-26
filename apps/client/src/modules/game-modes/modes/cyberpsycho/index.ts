@@ -41,7 +41,13 @@ export class Cyberpsycho extends BaseGameMode<'cyberpsycho'> {
 
   private BASE_HEALTH = 3000;
 
-  private PSYCHO_CYBERWARE = {};
+  private PSYCHO_WEAPON = 'Items.AdvancedMantisBladesLegendaryPlus';
+
+  private PSYCHO_CYBERWARE = [
+    this.PSYCHO_WEAPON,
+    'Items.AdvancedBoostedTendonsLegendaryPlus',
+    'Items.AdvancedBerserkC3MK5Plus',
+  ];
 
   constructor(
     @inject(GTeleportService) private teleportService: GTeleportService,
@@ -157,18 +163,38 @@ export class Cyberpsycho extends BaseGameMode<'cyberpsycho'> {
       );
     }
 
+    if (!this.isPsycho) {
+      return;
+    }
+
     const eqSystem =
       mp.game.ScriptGameInstance.GetScriptableSystemsContainer().Get(
         'EquipmentSystem',
       );
 
-    // eqSystem.EquipCyberwareByTDBID(
-    //   localPlayer,
-    //   'Items.AdvancedBoostedTendonsLegendary',
-    // );
+    const transactionSystem = mp.game.ScriptGameInstance.GetTransactionSystem();
+
+    const [, itemsList] = transactionSystem.GetItemList(
+      mp.game.GetPlayerObject(),
+    );
+
+    for (const targetId of this.PSYCHO_CYBERWARE) {
+      const doesHaveItem = itemsList.some(
+        (item) => item.GetID().id === mp.game.gameItemID.FromTDBID(targetId).id,
+      );
+      if (!doesHaveItem) {
+        mp.game.AddToInventory(targetId, 1);
+      }
+
+      eqSystem.EquipCyberwareByTDBID(localPlayer, targetId);
+    }
   }
 
   async prepare(data: CyberpsychoPrepareDTO) {
+    this.isPsycho = data.isPsycho;
+    this.weapon = data.isPsycho ? this.PSYCHO_WEAPON : data.weapon;
+    this.map = data.map;
+
     this.spawnService.spawn({
       position: data.startPoint,
       health: data.isPsycho
@@ -190,10 +216,6 @@ export class Cyberpsycho extends BaseGameMode<'cyberpsycho'> {
     await this.playerService.levelUp();
 
     this.prepareWeapons();
-
-    this.weapon = data.weapon;
-    this.map = data.map;
-    this.isPsycho = data.isPsycho;
 
     if (data.map.mapping) {
       this.mappingService.create(data.map.mapping as any);
