@@ -304,6 +304,13 @@ export class VehicleNitroService {
       return;
     }
 
+    const player = mp.game.GetPlayer();
+    const vehicle = player.GetMountedVehicle();
+
+    if (!vehicle.IsPlayerDriver()) {
+      return;
+    }
+
     this.isInVehicle = true;
     this.capacity = 100;
     this.capacityRegenAvailable = true;
