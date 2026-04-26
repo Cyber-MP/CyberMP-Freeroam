@@ -10,3 +10,5 @@ export const zVehicleNitroUpdate = z.object({
 export const vehicleNitroContract = {
   update: contract.input(zVehicleNitroUpdate).build(),
 };
+
+export type VehicleNitroUpdate = z.infer<typeof zVehicleNitroUpdate>;

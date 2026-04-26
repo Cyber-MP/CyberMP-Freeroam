@@ -1,11 +1,10 @@
 import { useImplement } from '@cybermp/rpc-router-react';
 import { motion } from 'framer-motion';
 import { memo, useState } from 'react';
-import type z from 'zod';
-import { vehicleNitroContract, type zVehicleNitroUpdate } from './contract';
+import { type VehicleNitroUpdate, vehicleNitroContract } from './contract';
 
-const VehicleNitro = memo(() => {
-  const [state, setState] = useState<z.infer<typeof zVehicleNitroUpdate>>({
+export const VehicleNitro = memo(() => {
+  const [state, setState] = useState<VehicleNitroUpdate>({
     capacity: 100,
     isAvailable: false,
     isPenalty: false,
@@ -15,7 +14,9 @@ const VehicleNitro = memo(() => {
     setState(data);
   });
 
-  if (!state?.isAvailable) return null;
+  if (!state?.isAvailable) {
+    return null;
+  }
 
   const { capacity, isPenalty } = state;
   const colorClass = isPenalty ? 'red' : capacity < 30 ? 'yellow' : 'cyan';
@@ -162,6 +163,3 @@ const VehicleNitro = memo(() => {
     </div>
   );
 });
-
-VehicleNitro.displayName = 'VehicleNitro';
-export { VehicleNitro };

@@ -38,9 +38,11 @@ export class VehicleNitroService {
   private playerFPPFOV = 0;
   private playerTPPFOV = 0;
   private playerCurTPPFOV = 0;
+  private FOVIncrease = 15;
   private gameTPPCamera: vehicleTPPCameraComponent | null = null;
   private lerpInterval: ReturnType<typeof setInterval> | null = null;
   private lerpTime = ms('0.01s');
+  private lerpTPPFOVRate = 0.1;
 
   constructor(
     @inject(GKeyboardService) private keyboardService: GKeyboardService,
@@ -101,7 +103,9 @@ export class VehicleNitroService {
     const player = mp.game.GetPlayer();
     const vehicle = player.GetMountedVehicle();
 
-    if (!vehicle.IsOnGround()) return;
+    if (!vehicle.IsOnGround()) {
+      return;
+    }
 
     const currentSpeed = this.getVehicleSpeed(vehicle);
 
@@ -169,7 +173,7 @@ export class VehicleNitroService {
   private setBoostFOV() {
     const player = mp.game.GetPlayer();
     const FPPcamera = player.GetFPPCameraComponent();
-    FPPcamera.SetFOV(this.playerFPPFOV + 15);
+    FPPcamera.SetFOV(this.playerFPPFOV + this.FOVIncrease);
   }
 
   private setDefaultFOV() {
@@ -186,9 +190,9 @@ export class VehicleNitroService {
     this.playerCurTPPFOV = Number(
       mp.game
         .LerpF(
-          0.1,
+          this.lerpTPPFOVRate,
           this.playerCurTPPFOV,
-          increase ? this.playerTPPFOV + 15 : this.playerTPPFOV,
+          increase ? this.playerTPPFOV + this.FOVIncrease : this.playerTPPFOV,
         )
         .toFixed(4),
     );
@@ -204,11 +208,9 @@ export class VehicleNitroService {
     }
 
     this.lerpInterval = setInterval(() => {
-      if (this.lerpTPPFOV(this.isBoosting)) {
-        if (this.lerpInterval) {
-          clearInterval(this.lerpInterval);
-          this.lerpInterval = null;
-        }
+      if (this.lerpTPPFOV(this.isBoosting) && this.lerpInterval) {
+        clearInterval(this.lerpInterval);
+        this.lerpInterval = null;
       }
     }, this.lerpTime);
   };
@@ -231,17 +233,15 @@ export class VehicleNitroService {
       this.mountLerpInterval();
     }
 
-    if (action === EInputAction.IACT_Release) {
-      if (this.boostInterval) {
-        clearInterval(this.boostInterval);
-        this.boostInterval = null;
+    if (action === EInputAction.IACT_Release && this.boostInterval) {
+      clearInterval(this.boostInterval);
+      this.boostInterval = null;
 
-        this.isBoosting = false;
+      this.isBoosting = false;
 
-        this.setDefaultFOV();
+      this.setDefaultFOV();
 
-        this.notifyBrowser();
-      }
+      this.notifyBrowser();
     }
   };
 
