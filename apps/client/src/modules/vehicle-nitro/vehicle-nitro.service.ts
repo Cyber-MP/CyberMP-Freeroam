@@ -70,6 +70,18 @@ export class VehicleNitroService {
     });
   }
 
+  enableBrowserHint() {
+    browser.hints.add.trigger({
+      E: 'Nitro',
+    });
+  }
+
+  disableBrowserHint() {
+    browser.hints.remove.trigger({
+      E: 'Nitro',
+    });
+  }
+
   getVehicleSpeed(vehicle: vehicleBaseObject) {
     const multiplier =
       mp.game.ScriptGameInstance.GetStatsDataSystem().GetValueFromCurve(
@@ -283,10 +295,12 @@ export class VehicleNitroService {
     this.isInVehicle = true;
     this.capacity = 100;
     this.capacityRegenAvailable = true;
-    this.notifyBrowser();
     this.gameTPPCamera = this.getTPPCamera();
     this.saveFOVValues();
     this.mountBoostKey();
+
+    this.notifyBrowser();
+    this.enableBrowserHint();
   }
 
   private onVehicleLeave() {
@@ -302,8 +316,10 @@ export class VehicleNitroService {
       this.boostInterval = null;
     }
 
-    this.notifyBrowser();
     this.unmountBoostKey();
+
+    this.notifyBrowser();
+    this.disableBrowserHint();
   }
 
   private mountVehicleInterval() {
