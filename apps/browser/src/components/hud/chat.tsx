@@ -318,7 +318,7 @@ const ChatInput = () => {
   ) => {
     const args = getCommandArguments(suggestion);
 
-    console.log(JSON.stringify(args.at(currentArgumentIndex)));
+    console.log(args.at(currentArgumentIndex)?.required);
 
     if (inputCommand === suggestion.name && suggestion.args) {
       if (currentArgumentIndex < args.length - 1) {
