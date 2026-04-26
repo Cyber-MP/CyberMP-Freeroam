@@ -166,9 +166,13 @@ export class Sumo extends BaseGameMode<'sumo'> {
   }
 
   private spectateNextValidTarget() {
+    console.log('spectate next valid target');
+
     if (this.livingIds[0]) {
+      console.log('target [0]');
       this.spectatingService.spectate(this.livingIds[0]);
     } else {
+      console.log('unspectate');
       this.spectatingService.unspectate();
     }
   }
