@@ -112,11 +112,11 @@ export class Sumo extends BaseGameMode<'sumo'> {
     if (!this.livingIds.includes(mp.getPlayerServerId(1))) {
       this.onDead();
 
-      // const current = this.spectatingService.getSpectatedPlayerId();
+      const current = this.spectatingService.getSpectatedPlayerId();
 
-      // if (current && !this.livingIds.includes(current)) {
-      //   this.spectateNextValidTarget();
-      // }
+      if (current && !this.livingIds.includes(current)) {
+        this.spectateNextValidTarget();
+      }
     }
   }
 
@@ -162,8 +162,6 @@ export class Sumo extends BaseGameMode<'sumo'> {
   }
 
   private spectateNextValidTarget() {
-    console.log('spectate next valid target');
-
     if (this.livingIds[0]) {
       this.spectatingService.spectate(this.livingIds[0]);
     } else {
