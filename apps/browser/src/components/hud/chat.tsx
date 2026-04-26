@@ -320,8 +320,13 @@ const ChatInput = () => {
 
     if (inputCommand === suggestion.name && suggestion.args) {
       if (currentArgumentIndex < args.length - 1) {
-        setInput((prev) => `${prev} `);
-        return false;
+        if (!args.at(currentArgumentIndex)?.required) {
+          setInput((prev) => `${prev} `);
+          return true;
+        } else {
+          setInput((prev) => `${prev} `);
+          return false;
+        }
       }
     } else {
       setInput(`/${suggestion.name}${args.length ? ' ' : ''}`);
