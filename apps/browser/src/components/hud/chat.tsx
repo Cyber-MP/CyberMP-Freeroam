@@ -318,11 +318,11 @@ const ChatInput = () => {
   ) => {
     const args = getCommandArguments(suggestion);
 
-    console.log(args.at(currentArgumentIndex)?.required);
+    console.log(args.at(currentArgumentIndex)?.optional);
 
     if (inputCommand === suggestion.name && suggestion.args) {
       if (currentArgumentIndex < args.length - 1) {
-        if (!args.at(currentArgumentIndex)?.required) {
+        if (!args.at(currentArgumentIndex + 1)?.optional) {
           setInput((prev) => `${prev} `);
           return true;
         } else {
