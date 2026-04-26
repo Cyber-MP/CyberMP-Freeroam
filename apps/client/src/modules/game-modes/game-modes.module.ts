@@ -7,8 +7,8 @@ import {
   ActiveGameMiddlewareSymbol,
   activeGameMiddleware,
 } from './middleware/active-game.middleware';
-import { BountyHunter } from './modes/bounty-hunter';
-import { BountyHunterController } from './modes/bounty-hunter/controller';
+import { Cyberpsycho } from './modes/cyberpsycho';
+import { CyberpsychoController } from './modes/cyberpsycho/controller';
 import { Pvp } from './modes/pvp';
 import { PvpController } from './modes/pvp/controller';
 import { Race } from './modes/race';
@@ -33,8 +33,8 @@ export const GameModesModule = new ContainerModule(({ bind }) => {
   bind(GameModeName.PVP).to(Pvp).inRequestScope();
   bind(PvpController).toSelf().inSingletonScope();
 
-  bind(GameModeName.BOUNTY_HUNTER).to(BountyHunter).inRequestScope();
-  bind(BountyHunterController).toSelf().inSingletonScope();
+  bind(GameModeName.CYBERPSYCHO).to(Cyberpsycho).inRequestScope();
+  bind(CyberpsychoController).toSelf().inSingletonScope();
 
   bind(ActiveGameMiddlewareSymbol).toDynamicValue(activeGameMiddleware);
   bind<GameModeFactory>(GameModeFactorySymbol).toFactory((c) => {

@@ -4,7 +4,7 @@ import { vehicleNitroContract } from '../components/hud/vehicle-nitro/contract';
 import { matchmakingContract } from '../hooks/use-matches';
 import { keysContract } from '../keys';
 import { copyToClipboard } from '../lib/clipboard';
-import { bountyHunterContract } from '../routes/hud.game-modes/bounty-hunter/-contract';
+import { cyberpsychoContract } from '../routes/hud.game-modes/cyberpsycho/-contract';
 import { pvpContract } from '../routes/hud.game-modes/pvp/-contract';
 import { raceContract } from '../routes/hud.game-modes/race/-contract';
 import { sumoContract } from '../routes/hud.game-modes/sumo/-contract';
@@ -26,7 +26,7 @@ export const rpcRouter = {
     race: raceContract,
     sumo: sumoContract,
     pvp: pvpContract,
-    bountyHunter: bountyHunterContract,
+    cyberpsycho: cyberpsychoContract,
   },
   matchmaking: matchmakingContract,
   keys: keysContract,

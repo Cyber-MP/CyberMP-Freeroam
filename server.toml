@@ -11,6 +11,8 @@ resources = ["hotreload", "freeroam"]
 
 ep2_dlc_enabled = false
 
+cef_debug = true
+
 [core]
 nametags = true
 disable_switch_seats = true

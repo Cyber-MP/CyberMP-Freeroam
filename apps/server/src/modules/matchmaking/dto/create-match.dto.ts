@@ -1,7 +1,9 @@
 import { GameModeName } from '@freeroam/shared/game-modes';
-import { zJoinMatchOptions } from '@freeroam/shared/matchmaking';
 import z from 'zod';
-import { zCreateBountyHunterMatchOptions } from '../../game-modes/modes/bounty-hunter';
+import {
+  zCreateCyberpsychoOptions,
+  zJoinCyberpsychoOptions,
+} from '../../game-modes/modes/cyberpsycho';
 import { zCreatePvpOptions, zJoinPvpOptions } from '../../game-modes/modes/pvp';
 import {
   zCreateRaceOptions,
@@ -29,8 +31,8 @@ export const zCreateMatchDTO = z.union([
     joinOptions: zJoinPvpOptions,
   }),
   z.object({
-    name: z.literal(GameModeName.BOUNTY_HUNTER),
-    createOptions: zCreateBountyHunterMatchOptions,
-    joinOptions: zJoinMatchOptions,
+    name: z.literal(GameModeName.CYBERPSYCHO),
+    createOptions: zCreateCyberpsychoOptions,
+    joinOptions: zJoinCyberpsychoOptions,
   }),
 ]);

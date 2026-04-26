@@ -1,4 +1,4 @@
-export const PvpWeapons = {
+export const CyberpsychoWeapons = {
   'Items.Preset_Silverhand_3516': 'Silverhand 3516',
   'Items.Preset_Nue_Maiko': 'Death and Taxes',
   'Items.Preset_Yukimura_Default': 'HJKE-11 Yukimura',

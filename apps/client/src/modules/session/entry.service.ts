@@ -2,6 +2,7 @@ import type { ServerVector3 } from '@cybermp/client-types';
 import type { entEntity } from '@cybermp/client-types/game';
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
+import { retry } from 'radash';
 import { createQuaternion } from '../../lib/vectors';
 import { mp } from '../../mp';
 import { browser } from '../../rpc/browser';
@@ -113,10 +114,9 @@ export class EntryService {
 
     await this.loadingScreen.waitForLoadingScreenToHide(200, 1000);
 
-    this.initCamera();
+    retry({ times: 5, delay: 500 }, this.initCamera.bind(this));
 
-    // this.playerService.invisible(true);
-
+    // Todo: remove this with cefReady event
     setTimeout(() => {
       browser.navigate.trigger('/entry');
     }, 100);

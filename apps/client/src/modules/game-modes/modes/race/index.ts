@@ -169,7 +169,7 @@ export class Race extends BaseGameMode<'race'> {
 
     setTimeout(() => {
       this.teleportService.teleport(this.initialPosition);
-    });
+    }, 500);
 
     this.statusEffectsService.remove(
       'GameplayRestriction.VehicleCombatBlockExit',

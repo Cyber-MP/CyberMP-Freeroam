@@ -3,7 +3,7 @@ import { ContainerModule } from 'inversify';
 import { type GameModeFactory, GameModeFactorySymbol } from './game-mode';
 import { GameModesController } from './game-modes.controller';
 import { GameModesService } from './game-modes.service';
-import { BountyHunter } from './modes/bounty-hunter';
+import { Cyberpsycho } from './modes/cyberpsycho';
 import { Pvp } from './modes/pvp';
 import { Race } from './modes/race';
 import { RaceController } from './modes/race/controller';
@@ -23,7 +23,8 @@ export const GameModesModule = new ContainerModule(({ bind }) => {
   bind(SumoController).toSelf().inSingletonScope();
 
   bind(GameModeName.PVP).to(Pvp).inRequestScope();
-  bind(GameModeName.BOUNTY_HUNTER).to(BountyHunter).inRequestScope();
+
+  bind(GameModeName.CYBERPSYCHO).to(Cyberpsycho).inRequestScope();
 
   bind<GameModeFactory>(GameModeFactorySymbol).toFactory((c) => {
     return (name: TGameModeName) => {
