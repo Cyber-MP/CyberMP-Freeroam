@@ -306,13 +306,6 @@ export class VehicleNitroService {
     this.unmountBoostKey();
   }
 
-  private observeMountInVehicle() {
-    mp.game.observe('vehicleBaseObject', 'OnMountingEvent', (e) => {
-      console.log('mount event', e);
-    });
-  }
-
-  // TODO: remove
   private mountVehicleInterval() {
     this.vehicleMountInterval = setInterval(() => {
       const player = mp.game.GetPlayerObject();
@@ -336,8 +329,6 @@ export class VehicleNitroService {
     mp.game.onGameLoaded(() => {
       this.mountVehicleInterval();
       this.capacityRegen();
-
-      this.observeMountInVehicle();
     });
   }
 }
