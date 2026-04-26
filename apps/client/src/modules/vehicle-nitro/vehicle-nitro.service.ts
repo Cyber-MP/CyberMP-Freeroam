@@ -54,12 +54,16 @@ export class VehicleNitroService {
     this.isEnabled = true;
 
     this.notifyBrowser();
+
+    this.enableBrowserHint();
   }
 
   disable() {
     this.isEnabled = false;
 
     this.notifyBrowser();
+
+    this.disableBrowserHint();
   }
 
   notifyBrowser() {
@@ -71,6 +75,10 @@ export class VehicleNitroService {
   }
 
   enableBrowserHint() {
+    if (!this.isEnabled) {
+      return;
+    }
+
     browser.hints.add.trigger({
       E: 'Nitro',
     });
