@@ -125,7 +125,7 @@ export class Sumo extends BaseGameMode<'sumo'> {
   }
 
   private onDead() {
-    if (this.isAlive) {
+    if (!this.isAlive) {
       return;
     }
 
