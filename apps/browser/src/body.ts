@@ -9,3 +9,7 @@ export const toggleBodyVisibility = () => {
     document.body.dataset.visible = 'true';
   }
 };
+
+export const getHudVisibility = () => {
+  return document.body.dataset.visible === 'true';
+};

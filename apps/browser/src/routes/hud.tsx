@@ -5,6 +5,7 @@ import {
   useNavigate,
 } from '@tanstack/react-router';
 import { useHotkeys } from 'react-hotkeys-hook';
+import { getHudVisibility } from '@/body';
 import { Brand } from '@/components/hud/brand';
 import { Chat } from '@/components/hud/chat';
 import { Hints } from '@/components/hud/hints';
@@ -27,7 +28,10 @@ export const Route = createFileRoute('/hud')({
 function RouteComponent() {
   const navigate = useNavigate();
 
-  useHotkeys('f2', () => navigate({ to: '/hud/menu' }), { scopes: 'hud' });
+  useHotkeys('f2', () => navigate({ to: '/hud/menu' }), {
+    scopes: 'hud',
+    ignoreEventWhen: getHudVisibility,
+  });
 
   return (
     <div>
