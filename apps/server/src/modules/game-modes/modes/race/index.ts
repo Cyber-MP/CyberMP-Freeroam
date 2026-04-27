@@ -46,6 +46,7 @@ export const zCreateRaceOptions = zCreateMatchOptions.extend({
     .default(false)
     .optional()
     .meta({ title: 'First person view' }),
+  nitro: z.boolean().default(false).optional().meta({ title: 'Nitro' }),
 });
 
 export const zJoinRaceOptions = zJoinMatchOptions.extend({
@@ -338,8 +339,16 @@ class RanksTracker {
     });
 
     racersProgress.sort((a, b) => {
-      if (a.racer.finished && !b.racer.finished) return -1;
-      if (!a.racer.finished && b.racer.finished) return 1;
+      if (a.racer.finished && b.racer.finished) {
+        return (
+          (a.racer.finishTimestamp ?? 0) - (b.racer.finishTimestamp ?? 0) * -1
+        );
+      }
+
+      if (a.racer.finished || b.racer.finished) {
+        return a.racer.finished ? 1 : -1;
+      }
+
       return b.progress - a.progress;
     });
 
@@ -518,6 +527,7 @@ export class Race extends BaseGameMode<
 
     for (const racer of this.racers.values()) {
       browser.gameModes.race.setResults.trigger(racer.player, finalResults);
+
       racer.reset();
     }
 
