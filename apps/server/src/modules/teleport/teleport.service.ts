@@ -38,9 +38,14 @@ export class TeleportService {
     client.game.teleport.teleport.trigger(playerFrom, playerTo.position);
   }
 
-  public teleportAllToPlayer(playerTo: MpPlayer) {
+  public teleportAll(
+    playerTo: MpPlayer,
+    position: { x?: number; y?: number; z?: number } = {},
+  ) {
+    const positionTo = { ...playerTo.position, ...position };
+
     for (const player of mp.players.toArray()) {
-      if (player.id === playerTo.id) {
+      if (player.id === playerTo.id && !position) {
         continue;
       }
 
@@ -49,7 +54,7 @@ export class TeleportService {
       }
 
       player.dimension = playerTo.dimension;
-      client.game.teleport.teleport.trigger(player, playerTo.position);
+      client.game.teleport.teleport.trigger(player, positionTo);
     }
   }
 }

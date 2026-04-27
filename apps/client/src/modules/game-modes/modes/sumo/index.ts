@@ -1,6 +1,7 @@
 import { EInputAction, EInputKey } from '@cybermp/client-types/enums';
 import type { Vector4 } from '@cybermp/client-types/game';
 import { inject, injectable } from 'inversify';
+import ms from 'ms';
 import { mp } from '../../../../mp';
 import { server } from '../../../../rpc';
 import { browser } from '../../../../rpc/browser';
@@ -120,7 +121,7 @@ export class Sumo extends BaseGameMode<'sumo'> {
   }
 
   private onDead() {
-    if (this.isAlive) {
+    if (!this.isAlive) {
       return;
     }
 
@@ -211,7 +212,7 @@ export class Sumo extends BaseGameMode<'sumo'> {
       if (!mountedVehicle) {
         this.onLose();
       }
-    }, 2000);
+    }, ms('2s'));
   }
 
   private unmountVehicleCheckInterval() {
@@ -243,6 +244,6 @@ export class Sumo extends BaseGameMode<'sumo'> {
       } else {
         browser.gameModes.sumo.setCountdownText.trigger(String(remaining));
       }
-    }, 100);
+    }, ms('0.1s'));
   }
 }

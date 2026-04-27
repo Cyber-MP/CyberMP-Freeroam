@@ -1,5 +1,6 @@
 import { EInputAction, EInputKey } from '@cybermp/client-types/enums';
 import z from 'zod';
+import { getHudVisibility } from './body';
 import { r } from './rpc';
 
 const keyCodeToName: Record<number, string> = {
@@ -62,6 +63,10 @@ export const keysContract = {
   incomingKeyPressed: r.procedure
     .input(z.object({ action: z.enum(EInputAction), key: z.enum(EInputKey) }))
     .handler((c) => {
+      if (!getHudVisibility()) {
+        return;
+      }
+
       const { action, key } = c.data;
 
       if (action === EInputAction.IACT_Press) {

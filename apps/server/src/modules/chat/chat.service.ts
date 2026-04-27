@@ -69,14 +69,12 @@ export class ChatService {
         return;
       }
 
-      if (command.flags && (playerFlags & command.flags) !== 0) {
-        if ((command.flags & ~ChatCommandFlag.Admin) !== 0) {
-          this.sendMessage(
-            player,
-            `Command /${command.name} is disabled for you right now.`,
-          );
-          return;
-        }
+      if ((playerFlags & command.flags & ~ChatCommandFlag.Admin) !== 0) {
+        this.sendMessage(
+          player,
+          `Command /${command.name} is disabled for you right now.`,
+        );
+        return;
       }
     }
 

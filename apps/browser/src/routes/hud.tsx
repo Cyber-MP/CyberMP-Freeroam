@@ -27,7 +27,9 @@ export const Route = createFileRoute('/hud')({
 function RouteComponent() {
   const navigate = useNavigate();
 
-  useHotkeys('f2', () => navigate({ to: '/hud/menu' }), { scopes: 'hud' });
+  useHotkeys('f2', () => navigate({ to: '/hud/menu' }), {
+    scopes: 'hud',
+  });
 
   return (
     <div>
