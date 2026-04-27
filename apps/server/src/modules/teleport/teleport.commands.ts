@@ -28,24 +28,9 @@ export class TeleportCommands {
       name: 'admin-tpall',
       description: 'Teleports all players to admin, or to a specified position',
       args: z.tuple([
-        z.coerce
-          .number()
-          .meta({ title: 'x', optional: true })
-          .min(0)
-          .max(24)
-          .optional(),
-        z.coerce
-          .number()
-          .meta({ title: 'y', optional: true })
-          .min(0)
-          .max(60)
-          .optional(),
-        z.coerce
-          .number()
-          .meta({ title: 'z', optional: true })
-          .min(0)
-          .max(60)
-          .optional(),
+        z.coerce.number().meta({ title: 'x', optional: true }).optional(),
+        z.coerce.number().meta({ title: 'y', optional: true }).optional(),
+        z.coerce.number().meta({ title: 'z', optional: true }).optional(),
       ]),
       flags: ChatCommandFlag.Admin | ChatCommandFlag.DisableInGameMode,
       handler: this.adminTeleportAll.bind(this),
