@@ -237,7 +237,7 @@ export class Pvp extends BaseGameMode<'pvp'> {
   }
 
   private onDead() {
-    if (this.isAlive) {
+    if (!this.isAlive) {
       return;
     }
 
