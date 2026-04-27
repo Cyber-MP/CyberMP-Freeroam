@@ -1,5 +1,5 @@
 import { RpcError } from '@cybermp/rpc-server';
-import type { MpPlayer } from '@cybermp/server-types';
+import type { MpPlayer, Vector3 } from '@cybermp/server-types';
 import { inject, injectable } from 'inversify';
 import { mp } from '../../mp';
 import { client } from '../../rpc';
@@ -38,11 +38,12 @@ export class TeleportService {
     client.game.teleport.teleport.trigger(playerFrom, playerTo.position);
   }
 
-  public teleportAll(
-    playerTo: MpPlayer,
-    position: { x?: number; y?: number; z?: number } = {},
-  ) {
-    const positionTo = { ...playerTo.position, ...position };
+  public teleportAll(playerTo: MpPlayer, position: Partial<Vector3> = []) {
+    const positionTo = [
+      position[0] ?? playerTo.position[0],
+      position[1] ?? playerTo.position[1],
+      position[2] ?? playerTo.position[2],
+    ] as Vector3;
 
     for (const player of mp.players.toArray()) {
       if (player.id === playerTo.id && !position) {
