@@ -2,7 +2,11 @@ import { GameModeName, type TGameModeName } from '@freeroam/shared/game-modes';
 import { inject, injectable } from 'inversify';
 import z from 'zod';
 import type { zGameModesCreateSchemas } from './dto/game-modes-schemas.dto';
-import { type GameModeFactory, GameModeFactorySymbol } from './game-mode';
+import {
+  type BaseGameMode,
+  type GameModeFactory,
+  GameModeFactorySymbol,
+} from './game-mode';
 
 @injectable()
 export class GameModesService {
@@ -26,7 +30,13 @@ export class GameModesService {
     const result: z.infer<typeof zGameModesCreateSchemas> = {} as any;
 
     for (const name of Object.values(GameModeName)) {
-      const instance = this.gameModeFactory(name);
+      let instance: BaseGameMode;
+
+      try {
+        instance = this.gameModeFactory(name);
+      } catch {
+        continue;
+      }
 
       result[instance.name] = z.toJSONSchema(instance.CREATE_OPTIONS_SCHEMA, {
         target: 'draft-07',
