@@ -38,7 +38,7 @@ export class TeleportService {
     client.game.teleport.teleport.trigger(playerFrom, playerTo.position);
   }
 
-  public teleportAllToPlayer(
+  public teleportAll(
     playerTo: MpPlayer,
     position: { x?: number; y?: number; z?: number } = {},
   ) {
