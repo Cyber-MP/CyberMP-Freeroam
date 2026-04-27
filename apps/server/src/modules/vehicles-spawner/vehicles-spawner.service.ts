@@ -72,7 +72,7 @@ export class VehiclesSpawnerService {
       player,
       modelHash,
       appearanceHash,
-      health: 1000,
+      health: 3000,
       sitInVehicle: true,
     });
   }
@@ -82,7 +82,7 @@ export class VehiclesSpawnerService {
     modelHash,
     appearanceHash,
     sitInVehicle = false,
-    health = 1000,
+    health = 3000,
   }: {
     player: MpPlayer;
     modelHash: GameHash;
