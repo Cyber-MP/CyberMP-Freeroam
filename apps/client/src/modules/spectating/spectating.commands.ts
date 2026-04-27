@@ -25,7 +25,7 @@ export class SpectatingCommands {
     this.chatService.addCommand({
       name: 'unspectate',
       handler: () => {
-        this.spectatingService.unspectate();
+        this.spectatingService.unspectate(true);
       },
     });
   }

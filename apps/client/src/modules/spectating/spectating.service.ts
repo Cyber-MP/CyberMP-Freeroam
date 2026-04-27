@@ -16,12 +16,15 @@ import { GLoadingScreenService } from '../game/loading-screen.service';
 import { GPlayerService } from '../game/player.service';
 import { GStatusEffectsService } from '../game/status-effects/status-effects.service';
 import { GTeleportService } from '../game/teleport/teleport.service';
+import { GVehiclesService } from '../game/vehicles/vehicles.service';
 
 const logger = throttle({ interval: 1000 }, console.log);
 
 @eager()
 @injectable()
 export class SpectatingService {
+  private initialPosition: Vector4 | null = null;
+
   private spectateIntervalId: ReturnType<typeof setInterval> | null = null;
   private spectatedPlayerId: number | null = null;
   private spectatedPlayerGameId: number | null = null;
@@ -40,16 +43,21 @@ export class SpectatingService {
   ] as const;
 
   constructor(
-    @inject(GEntityService) private entity: GEntityService,
-    @inject(GHealthService) private health: GHealthService,
-    @inject(GStatusEffectsService) private status: GStatusEffectsService,
-    @inject(GTeleportService) private teleport: GTeleportService,
-    @inject(GLoadingScreenService) private loading: GLoadingScreenService,
-    @inject(GPlayerService) private player: GPlayerService,
+    @inject(GEntityService) private entityService: GEntityService,
+    @inject(GHealthService) private healthService: GHealthService,
+    @inject(GStatusEffectsService) private statusEffects: GStatusEffectsService,
+    @inject(GTeleportService) private teleportService: GTeleportService,
+    @inject(GLoadingScreenService)
+    private loadingScreenService: GLoadingScreenService,
+    @inject(GPlayerService) private playerService: GPlayerService,
+    @inject(GVehiclesService) private vehiclesService: GVehiclesService,
   ) {}
 
   private async onTick() {
-    if (!this.spectatedPlayerId) {
+    if (
+      !this.spectatedPlayerId ||
+      mp.meta.getPlayerMeta(this.spectatedPlayerId, 'spectating')
+    ) {
       this.unspectate();
       return;
     }
@@ -62,7 +70,7 @@ export class SpectatingService {
       return;
     }
 
-    this.teleport.teleport({
+    this.teleportService.teleport({
       ...targetPos,
       z: targetPos.z + this.TELEPORT_OFFSET,
       y: targetPos.y + this.TELEPORT_OFFSET,
@@ -70,13 +78,15 @@ export class SpectatingService {
 
     if (!this.cameraComponent) {
       this.setupCamera(this.spectatedPlayerId);
-    } else if (this.loading.getCurrentState() !== ELoadingScreenState.Hidden) {
-      await this.loading.waitForLoadingScreenToHide();
+    } else if (
+      this.loadingScreenService.getCurrentState() !== ELoadingScreenState.Hidden
+    ) {
+      await this.loadingScreenService.waitForLoadingScreenToHide();
 
       this.setupCamera(this.spectatedPlayerId);
     } else {
       const gameId = mp.getPlayerGameIdByNetworkId(this.spectatedPlayerId);
-      const entity = this.entity.findById(gameId);
+      const entity = this.entityService.findById(gameId);
       if (!entity) {
         return;
       }
@@ -119,7 +129,7 @@ export class SpectatingService {
       return;
     }
 
-    const entity = this.entity.findById(gameId);
+    const entity = this.entityService.findById(gameId);
     if (!entity) {
       return;
     }
@@ -140,7 +150,7 @@ export class SpectatingService {
   private async getPlayerPosition(playerId: number): Promise<Vector4 | null> {
     const gameId = mp.getPlayerGameIdByNetworkId(playerId);
     if (gameId) {
-      const entity = this.entity.findById(gameId);
+      const entity = this.entityService.findById(gameId);
       const pos = entity?.GetWorldPosition();
       if (pos) {
         return pos;
@@ -157,21 +167,28 @@ export class SpectatingService {
 
   spectate(playerId: number) {
     const localPlayerId = mp.getPlayerServerId(1);
-    if (this.spectatedPlayerId === playerId || playerId === localPlayerId) {
+    if (
+      this.spectatedPlayerId === playerId ||
+      playerId === localPlayerId ||
+      mp.meta.getPlayerMeta(playerId, 'spectating')
+    ) {
       return;
     }
 
+    this.vehiclesService.requestLeaveVehicle();
     this.unspectate();
 
+    this.initialPosition = mp.game.GetPlayer().GetWorldPosition();
     this.spectatedPlayerId = playerId;
 
     this.applySpectatorState(true);
     this.spectateIntervalId = setInterval(this.onTick.bind(this), 100);
+    mp.meta.setPlayerMeta(localPlayerId, 'spectating', true, true);
 
     logger(`Started spectating player: ${playerId}`);
   }
 
-  unspectate() {
+  unspectate(restorePos = false) {
     if (this.spectateIntervalId !== null) {
       clearInterval(this.spectateIntervalId);
       this.spectateIntervalId = null;
@@ -186,17 +203,29 @@ export class SpectatingService {
       mp.game.GetPlayer().FindComponentByName('camera') as gameCameraComponent
     ).Activate();
     this.cameraComponent = null;
+
+    mp.meta.setPlayerMeta(mp.getPlayerServerId(1), 'spectating', false, true);
+
+    if (restorePos) {
+      setTimeout(() => {
+        if (!this.initialPosition) {
+          return;
+        }
+
+        this.teleportService.teleport(this.initialPosition);
+      }, 100);
+    }
   }
 
   private applySpectatorState(active: boolean) {
-    this.player.invisible(active);
-    this.health.god(active);
+    this.playerService.invisible(active);
+    this.healthService.god(active);
 
     for (const flag of this.STATUS_EFFECTS) {
       if (active) {
-        this.status.add(flag);
+        this.statusEffects.add(flag);
       } else {
-        this.status.remove(flag);
+        this.statusEffects.remove(flag);
       }
     }
   }
