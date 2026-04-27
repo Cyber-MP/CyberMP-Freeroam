@@ -13,6 +13,8 @@ import { type VehicleModel, VehiclesRepository } from './vehicles.repository';
 export class VehiclesSpawnerService {
   private playersVehiclesMap = new Map<number, Set<number>>();
 
+  private readonly defaultVehicleHealth = 2000;
+
   constructor(
     @inject(MatchmakingService) private matchmakingService: MatchmakingService,
 
@@ -72,7 +74,7 @@ export class VehiclesSpawnerService {
       player,
       modelHash,
       appearanceHash,
-      health: 3000,
+      health: this.defaultVehicleHealth,
       sitInVehicle: true,
     });
   }
@@ -82,7 +84,7 @@ export class VehiclesSpawnerService {
     modelHash,
     appearanceHash,
     sitInVehicle = false,
-    health = 3000,
+    health = this.defaultVehicleHealth,
   }: {
     player: MpPlayer;
     modelHash: GameHash;
