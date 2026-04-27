@@ -45,7 +45,7 @@ export class TeleportService {
     const positionTo = { ...playerTo.position, ...position };
 
     for (const player of mp.players.toArray()) {
-      if (player.id === playerTo.id) {
+      if (player.id === playerTo.id && !position) {
         continue;
       }
 
