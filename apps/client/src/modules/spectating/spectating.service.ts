@@ -68,14 +68,6 @@ export class SpectatingService {
       y: targetPos.y + this.TELEPORT_OFFSET,
     });
 
-    const currentSpectatedPlayerGameId = mp.getPlayerGameIdByNetworkId(
-      this.spectatedPlayerId,
-    );
-    if (currentSpectatedPlayerGameId !== this.spectatedPlayerGameId) {
-      this.setupCamera(currentSpectatedPlayerGameId);
-      this.spectatedPlayerGameId = currentSpectatedPlayerGameId;
-    }
-
     if (!this.cameraComponent) {
       this.setupCamera(this.spectatedPlayerId);
     } else if (this.loading.getCurrentState() !== ELoadingScreenState.Hidden) {
@@ -109,6 +101,15 @@ export class SpectatingService {
       }
 
       this.cameraComponent.SetLocalPosition(newPosition);
+    }
+
+    const currentSpectatedPlayerGameId = mp.getPlayerGameIdByNetworkId(
+      this.spectatedPlayerId,
+    );
+    if (currentSpectatedPlayerGameId !== this.spectatedPlayerGameId) {
+      logger('game id not match, resetuping camera');
+      this.setupCamera(this.spectatedPlayerId);
+      this.spectatedPlayerGameId = currentSpectatedPlayerGameId;
     }
   }
 
