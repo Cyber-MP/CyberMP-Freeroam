@@ -205,6 +205,10 @@ export class Sumo extends BaseGameMode<'sumo'> {
 
   private mountVehicleCheckInterval() {
     this.vehicleCheckInterval = setInterval(() => {
+      if (!this.isAlive) {
+        return;
+      }
+
       const mountedVehicle = mp.game.GetMountedVehicle(
         mp.game.GetPlayerObject(),
       );
