@@ -344,7 +344,7 @@ class RanksTracker {
       }
 
       if (a.racer.finished || b.racer.finished) {
-        return a.racer.finished ? 1 : -1;
+        return a.racer.finished ? -1 : 1;
       }
 
       return b.progress - a.progress;

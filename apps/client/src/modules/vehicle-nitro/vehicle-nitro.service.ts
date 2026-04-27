@@ -127,7 +127,7 @@ export class VehicleNitroService {
     const player = mp.game.GetPlayer();
     const vehicle = player.GetMountedVehicle();
 
-    if (!vehicle.IsOnGround()) {
+    if (!vehicle || (vehicle && !vehicle.IsOnGround())) {
       return;
     }
 
