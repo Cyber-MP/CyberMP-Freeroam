@@ -168,7 +168,9 @@ export class Race extends BaseGameMode<'race'> {
     this.checkpoint.destroy();
 
     setTimeout(() => {
-      this.teleportService.teleport(this.initialPosition);
+      this.spawnService.spawn({
+        position: this.initialPosition,
+      });
     }, 500);
 
     this.statusEffectsService.remove(

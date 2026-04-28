@@ -84,17 +84,19 @@ export class Pvp extends BaseGameMode<'pvp'> {
     }
 
     setTimeout(() => {
-      this.teleportService.teleport(this.initialPosition);
+      this.spawnService.spawn({
+        position: this.initialPosition,
+      });
+
+      this.statusEffectsService.remove('GameplayRestriction.NoMovement');
+      this.statusEffectsService.remove('GameplayRestriction.NoCombat');
+      this.statusEffectsService.remove('GameplayRestriction.NoWeapons');
+      this.statusEffectsService.remove('GameplayRestriction.BlockAllMenu');
+      this.statusEffectsService.remove('GameplayRestriction.NoRadialMenus');
+      this.statusEffectsService.remove('GameplayRestriction.NoHealing');
     });
 
     this.healthService.resetToDefault();
-
-    this.statusEffectsService.remove('GameplayRestriction.NoMovement');
-    this.statusEffectsService.remove('GameplayRestriction.NoCombat');
-    this.statusEffectsService.remove('GameplayRestriction.NoWeapons');
-    this.statusEffectsService.remove('GameplayRestriction.BlockAllMenu');
-    this.statusEffectsService.remove('GameplayRestriction.NoRadialMenus');
-    this.statusEffectsService.remove('GameplayRestriction.NoHealing');
 
     browser.hud.setGlobalPath.trigger('/hud');
     browser.navigate.trigger('/hud');
@@ -240,6 +242,10 @@ export class Pvp extends BaseGameMode<'pvp'> {
     if (!this.isAlive) {
       return;
     }
+
+    this.spawnService.spawn({
+      position: mp.game.GetPlayer().GetWorldPosition(),
+    });
 
     this.isAlive = false;
 
