@@ -1,4 +1,5 @@
 import { EPlayerGender } from '@cybermp/client-types/enums';
+import type { Door } from '@cybermp/client-types/game';
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
 import { retry } from 'radash';
@@ -110,7 +111,25 @@ export class BasicChatCommands {
       mp.game.GetPlayerObject(),
     );
 
-    console.log(lookAtObject.GetClassName());
+    if (!lookAtObject) {
+      return;
+    }
+
+    if (lookAtObject.IsA('FakeDoor')) {
+      mp.despawnLocalObject(lookAtObject.GetEntityID().hash);
+
+      // this.chatService.sendMessage(
+      //   'You are looking at a FAKE door. It cannot be opened.',
+      // );
+      return;
+    }
+
+    if (lookAtObject.IsA('Door')) {
+      (lookAtObject as unknown as Door).OpenDoor();
+      return;
+    }
+
+    this.chatService.sendMessage('This is not a door.');
   }
 
   @postConstruct()
