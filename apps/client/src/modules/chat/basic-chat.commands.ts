@@ -116,11 +116,11 @@ export class BasicChatCommands {
     }
 
     if (lookAtObject.IsA('FakeDoor')) {
-      mp.despawnLocalObject(lookAtObject.GetEntityID().hash);
+      lookAtObject.Dispose();
 
-      // this.chatService.sendMessage(
-      //   'You are looking at a FAKE door. It cannot be opened.',
-      // );
+      this.chatService.sendMessage(
+        'You are looking at a FAKE door. It cannot be opened.',
+      );
       return;
     }
 
