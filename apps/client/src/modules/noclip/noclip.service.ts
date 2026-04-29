@@ -85,10 +85,18 @@ export class NoclipService {
   };
 
   private onTick = () => {
-    if (!this.active) return;
+    if (!this.active) {
+      return;
+    }
 
     const player = mp.game.GetPlayer();
-    if (player.GetMountedVehicle()) return;
+    if (!player) {
+      return;
+    }
+
+    if (player.GetMountedVehicle()) {
+      return;
+    }
 
     const dt = 0.025;
     const speed = this.settings.speed * dt * 15;

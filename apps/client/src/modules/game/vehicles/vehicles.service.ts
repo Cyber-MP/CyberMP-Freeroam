@@ -69,6 +69,10 @@ export class GVehiclesService {
   }
 
   requestLeaveVehicle(instant = true) {
+    if (!mp.game.GetPlayerObject()) {
+      return;
+    }
+
     const vehicle = mp.game.GetMountedVehicle(mp.game.GetPlayerObject());
     if (!vehicle) {
       return;
@@ -150,6 +154,10 @@ export class GVehiclesService {
   }
 
   fixCurrentVehicle() {
+    if (!mp.game.GetPlayerObject()) {
+      return;
+    }
+
     const vehicle = mp.game.GetMountedVehicle(mp.game.GetPlayerObject());
 
     this.fixVehicle(vehicle);

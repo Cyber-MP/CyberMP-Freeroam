@@ -100,10 +100,7 @@ export class BasicChatCommands {
         ? EPlayerGender.Female
         : EPlayerGender.Male;
 
-    mp.game.ScriptGameInstance.GetCharacterCustomizationSystem().SetPlayerGender(
-      gender,
-      true,
-    );
+    this.playerService.changeGender(gender);
   }
 
   @postConstruct()
@@ -116,6 +113,7 @@ export class BasicChatCommands {
 
     this.chatService.addCommand({
       name: 'appearance',
+      flags: ChatCommandFlag.DisableInGameMode,
       description: 'Opens appearance menu',
       handler: () => this.appearanceMenuService.open(),
     });

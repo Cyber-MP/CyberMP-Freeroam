@@ -1,12 +1,14 @@
 import {
+  type EPlayerGender,
   gamedataDevelopmentPointType,
   gamedataNewPerkType,
   gamedataProficiencyType,
   gamedataStatType,
 } from '@cybermp/client-types/enums';
-import { inject, injectable } from 'inversify';
+import { inject, injectable, postConstruct } from 'inversify';
 import { sleep } from 'radash';
 import { mp } from '../../mp';
+import { SpawnService } from '../spawn/spawn.service';
 import { GHealthService } from './health/health.service';
 import { GMenusService } from './menus.service';
 import { GStatusEffectsService } from './status-effects/status-effects.service';
@@ -28,7 +30,31 @@ export class GPlayerService {
     @inject(GMenusService) private readonly menusService: GMenusService,
     @inject(GStatusEffectsService)
     private readonly statusEffects: GStatusEffectsService,
+    @inject(SpawnService)
+    private readonly spawnService: SpawnService,
   ) {}
+
+  @postConstruct()
+  private init() {
+    mp.game.onGameLoaded(() => {
+      mp.game.observe(
+        'gameuiICharacterCustomizationSystem',
+        'OnPlayerGenderChanged',
+        () => {
+          this.spawnService.spawn({
+            position: mp.game.GetPlayer().GetWorldPosition(),
+          });
+        },
+      );
+    });
+  }
+
+  changeGender(gender: EPlayerGender) {
+    mp.game.ScriptGameInstance.GetCharacterCustomizationSystem().SetPlayerGender(
+      gender,
+      true,
+    );
+  }
 
   async levelUp() {
     const player = mp.game.GetPlayerObject();
