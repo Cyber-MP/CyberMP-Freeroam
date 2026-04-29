@@ -117,9 +117,9 @@ export class VehicleNitroService {
       z = q.k,
       w = q.r;
     return {
-      x: 2 * (x * z + w * y),
-      y: 2 * (y * z - w * x),
-      z: 1 - 2 * (x * x + y * y),
+      x: 2 * (x * y - w * z),
+      y: 1 - 2 * (x * x + z * z),
+      z: 2 * (y * z + w * x),
     };
   }
 
