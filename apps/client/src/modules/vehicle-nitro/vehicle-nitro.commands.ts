@@ -17,6 +17,10 @@ export class VehicleNitroCommands {
     this.vehicleNitroService.force = force;
   };
 
+  private nitroCheckGround = (checkGround: boolean) => {
+    this.vehicleNitroService.checkIsOnGround = checkGround;
+  };
+
   private nitroMaxSpeed = (maxSpeed: number) => {
     this.vehicleNitroService.maxSpeed = maxSpeed;
   };
@@ -34,23 +38,23 @@ export class VehicleNitroCommands {
     this.chat.addCommand({
       name: 'nitro-force',
       description: 'Sets nitro force (10 is too much)',
-      args: z.tuple([
-        z.coerce.number().meta({ title: 'force' }).min(0).max(70),
-      ]),
+      args: z.tuple([z.coerce.number().meta({ title: 'force' }).min(0)]),
       flags: ChatCommandFlag.Admin,
       handler: this.nitroForce.bind(this),
     });
 
     this.chat.addCommand({
+      name: 'nitro-check-ground',
+      description: 'Use nitro in air, fly to the moon',
+      args: z.tuple([z.stringbool().meta({ title: 'check-ground' })]),
+      flags: ChatCommandFlag.Admin,
+      handler: this.nitroCheckGround.bind(this),
+    });
+
+    this.chat.addCommand({
       name: 'nitro-maxspeed',
       description: 'Sets nitro max speed',
-      args: z.tuple([
-        z.coerce
-          .number()
-          .meta({ title: 'max speed, 450 KM/PH is game limit' })
-          .min(0)
-          .max(450),
-      ]),
+      args: z.tuple([z.coerce.number().meta({ title: 'max speed' }).min(0)]),
       flags: ChatCommandFlag.Admin,
       handler: this.nitroMaxSpeed.bind(this),
     });
