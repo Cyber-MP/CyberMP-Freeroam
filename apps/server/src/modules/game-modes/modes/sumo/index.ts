@@ -253,8 +253,6 @@ export class Sumo extends BaseGameMode<
       dimension: this.dimension,
       height: this.map.height,
       vertices: this.map.vertices,
-      // TODO: remove in prod
-      visible: true,
     });
 
     this.polygon.entityLeaveObserver.subscribe(this.onPolygonLeave);

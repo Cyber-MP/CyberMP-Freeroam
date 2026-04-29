@@ -195,7 +195,9 @@ export class Pvp extends BaseGameMode<
   };
 
   private checkSurvivors() {
-    const living = [...this.fighters.values()].filter((fighter) => fighter.alive);
+    const living = [...this.fighters.values()].filter(
+      (fighter) => fighter.alive,
+    );
 
     if (living.length >= 2) {
       const livingIds = living.map((fighter) => fighter.player.id);
@@ -222,8 +224,6 @@ export class Pvp extends BaseGameMode<
       dimension: this.dimension,
       height: this.map.height,
       vertices: this.map.vertices,
-      // TODO: remove in prod
-      visible: true,
     });
 
     this.polygon.entityLeaveObserver.subscribe(this.onPolygonLeave);

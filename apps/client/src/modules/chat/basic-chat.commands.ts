@@ -134,7 +134,7 @@ export class BasicChatCommands {
 
     this.chatService.addCommand({
       name: 'vboost',
-      flags: ChatCommandFlag.DisableInGameMode,
+      flags: ChatCommandFlag.Admin | ChatCommandFlag.DisableInGameMode,
       args: z.tuple([
         z.coerce
           .number()
@@ -147,14 +147,14 @@ export class BasicChatCommands {
     });
     this.chatService.addCommand({
       name: 'vstop',
-      flags: ChatCommandFlag.DisableInGameMode,
+      flags: ChatCommandFlag.Admin | ChatCommandFlag.DisableInGameMode,
       description: 'Stop vehicle velocity',
       handler: this.vehicleStop.bind(this),
     });
 
     this.chatService.addCommand({
       name: 'vgrav',
-      flags: ChatCommandFlag.DisableInGameMode,
+      flags: ChatCommandFlag.Admin | ChatCommandFlag.DisableInGameMode,
 
       description: 'Toggle gravity on your current vehicle',
       handler: this.vehicleGravity.bind(this),

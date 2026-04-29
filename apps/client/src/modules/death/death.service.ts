@@ -5,6 +5,7 @@ import { mp } from '../../mp';
 import { browser } from '../../rpc/browser';
 import { GHealthService } from '../game/health/health.service';
 import { GHudService } from '../game/hud.service';
+import { GMenusService } from '../game/menus.service';
 import { GStatusEffectsService } from '../game/status-effects/status-effects.service';
 
 export class DeathEvent {
@@ -26,6 +27,7 @@ export class DeathService {
     @inject(GHealthService) private healthService: GHealthService,
     @inject(GHudService) private hudService: GHudService,
     @inject(GStatusEffectsService) private statusEffects: GStatusEffectsService,
+    @inject(GMenusService) private menuServce: GMenusService,
   ) {}
 
   private onGameLoaded() {
@@ -52,6 +54,8 @@ export class DeathService {
 
     this.dead = true;
     this.statusEffects.add('GameplayRestriction.NoCameraControl');
+
+    this.menuServce.closeAllMenus();
 
     this.hudService.hide();
     browser.navigate.trigger('/death');
