@@ -48,7 +48,7 @@ export class VehicleNitroCommands {
     this.chat.addCommand({
       name: 'nitro-check-ground',
       description: 'Use nitro in air, fly to the moon',
-      args: z.tuple([z.coerce.boolean().meta({ title: 'check-ground' })]),
+      args: z.tuple([z.stringbool().meta({ title: 'check-ground' })]),
       flags: ChatCommandFlag.Admin,
       handler: this.nitroCheckGround.bind(this),
     });
