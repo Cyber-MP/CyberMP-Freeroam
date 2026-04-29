@@ -18,8 +18,6 @@ export class VehicleNitroCommands {
   };
 
   private nitroCheckGround = (checkGround: boolean) => {
-    console.log('NITRO_CHECK_GROUND', checkGround);
-
     this.vehicleNitroService.checkIsOnGround = checkGround;
   };
 
