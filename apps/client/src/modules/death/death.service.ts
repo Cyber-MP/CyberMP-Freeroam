@@ -1,3 +1,4 @@
+import { ELoadingScreenState } from '@cybermp/client-types/enums';
 import { inject, postConstruct } from 'inversify';
 import { sleep } from 'radash';
 import { Observer } from '../../lib/observer';
@@ -5,6 +6,7 @@ import { mp } from '../../mp';
 import { browser } from '../../rpc/browser';
 import { GHealthService } from '../game/health/health.service';
 import { GHudService } from '../game/hud.service';
+import { GLoadingScreenService } from '../game/loading-screen.service';
 import { GMenusService } from '../game/menus.service';
 import { GStatusEffectsService } from '../game/status-effects/status-effects.service';
 
@@ -28,16 +30,26 @@ export class DeathService {
     @inject(GHudService) private hudService: GHudService,
     @inject(GStatusEffectsService) private statusEffects: GStatusEffectsService,
     @inject(GMenusService) private menuServce: GMenusService,
+    @inject(GLoadingScreenService)
+    private loadingScreenService: GLoadingScreenService,
   ) {}
 
   private onGameLoaded() {
     setInterval(() => {
+      if (
+        !mp.game.GetPlayer() ||
+        this.loadingScreenService.getCurrentState() !==
+          ELoadingScreenState.Hidden
+      ) {
+        return;
+      }
+
       if (this.healthService.get() <= 0) {
         this.onDeath();
       } else if (this.dead) {
         this.onRevive();
       }
-    }, 300);
+    }, 250);
   }
 
   private onDeath() {

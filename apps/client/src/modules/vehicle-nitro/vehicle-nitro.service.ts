@@ -144,6 +144,10 @@ export class VehicleNitroService {
     }
 
     const player = mp.game.GetPlayer();
+    if (!player) {
+      return
+    }
+    
     const vehicle = player.GetMountedVehicle();
 
     if (!vehicle) {
