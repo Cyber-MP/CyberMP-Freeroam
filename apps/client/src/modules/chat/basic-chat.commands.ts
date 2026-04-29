@@ -103,6 +103,16 @@ export class BasicChatCommands {
     this.playerService.changeGender(gender);
   }
 
+  private openDoor() {
+    const targetingSystem = mp.game.ScriptGameInstance.GetTargetingSystem();
+
+    const lookAtObject = targetingSystem.GetLookAtObject(
+      mp.game.GetPlayerObject(),
+    );
+
+    console.log(lookAtObject.GetClassName());
+  }
+
   @postConstruct()
   private init() {
     this.chatService.addCommand({
@@ -189,6 +199,13 @@ export class BasicChatCommands {
       description: 'Changes your gender',
       flags: ChatCommandFlag.DisableInGameMode,
       handler: this.changeGender.bind(this),
+    });
+
+    this.chatService.addCommand({
+      name: 'open-door',
+      description: 'Opens the door you are looking at',
+      flags: ChatCommandFlag.DisableInGameMode,
+      handler: this.openDoor.bind(this),
     });
   }
 }
