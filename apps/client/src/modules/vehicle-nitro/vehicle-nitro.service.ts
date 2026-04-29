@@ -19,6 +19,7 @@ export class VehicleNitroService {
   public maxSpeed = 350; // (KM/PH) 400 => vehicle try to use breakes, 450 => stop immediately
   public capacityRegenRate = 1.75; // 'value' per second
   public isBoosting = false;
+  public checkIsOnGround = true;
 
   private isEnabled = true;
   private capacity = 100; // 0 ... 100
@@ -105,10 +106,28 @@ export class VehicleNitroService {
     return vehicle.GetCurrentSpeed() * multiplier * 1.61;
   }
 
+  private getForwardFromQuaternion(q: {
+    i: number;
+    j: number;
+    k: number;
+    r: number;
+  }) {
+    const x = q.i,
+      y = q.j,
+      z = q.k,
+      w = q.r;
+    return {
+      x: 2 * (x * z + w * y),
+      y: 2 * (y * z - w * x),
+      z: 1 - 2 * (x * x + y * y),
+    };
+  }
+
   private vehicleBoost(vehicle: vehicleBaseObject) {
     this.isBoosting = true;
 
-    const forward = vehicle.GetWorldForward();
+    const q = vehicle.GetWorldTransform().Orientation;
+    const forward = this.getForwardFromQuaternion(q);
 
     const boost = {
       x: forward.x * this.force,
@@ -127,8 +146,14 @@ export class VehicleNitroService {
     const player = mp.game.GetPlayer();
     const vehicle = player.GetMountedVehicle();
 
-    if (!vehicle || (vehicle && !vehicle.IsOnGround())) {
+    if (!vehicle) {
       return;
+    }
+
+    if (this.checkIsOnGround) {
+      if (!vehicle.IsOnGround()) {
+        return;
+      }
     }
 
     const currentSpeed = this.getVehicleSpeed(vehicle);
