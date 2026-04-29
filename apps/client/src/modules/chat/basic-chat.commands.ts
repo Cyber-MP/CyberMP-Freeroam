@@ -112,15 +112,12 @@ export class BasicChatCommands {
     );
 
     if (!lookAtObject) {
+      this.chatService.sendMessage('This is not a game object');
       return;
     }
 
     if (lookAtObject.IsA('FakeDoor')) {
       lookAtObject.Dispose();
-
-      this.chatService.sendMessage(
-        'You are looking at a FAKE door. It cannot be opened.',
-      );
       return;
     }
 
@@ -129,7 +126,7 @@ export class BasicChatCommands {
       return;
     }
 
-    this.chatService.sendMessage('This is not a door.');
+    this.chatService.sendMessage('This is not a door');
   }
 
   @postConstruct()
