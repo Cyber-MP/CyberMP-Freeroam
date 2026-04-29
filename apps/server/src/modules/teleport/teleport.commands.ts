@@ -19,9 +19,7 @@ export class TeleportCommands {
     y?: number,
     z?: number,
   ) {
-    console.log('tpall', z, y, z);
-
-    this.teleportService.teleportAll(player, [x, y, z]);
+    this.teleportService.teleportAll(player, x, y, z);
   }
 
   @postConstruct()

@@ -38,15 +38,15 @@ export class TeleportService {
     client.game.teleport.teleport.trigger(playerFrom, playerTo.position);
   }
 
-  public teleportAll(playerTo: MpPlayer, position: Partial<Vector3> = []) {
+  public teleportAll(playerTo: MpPlayer, x?: number, y?: number, z?: number) {
     const positionTo = [
-      position[0] ?? playerTo.position[0],
-      position[1] ?? playerTo.position[1],
-      position[2] ?? playerTo.position[2],
+      x ?? playerTo.position[0],
+      y ?? playerTo.position[1],
+      z ?? playerTo.position[2],
     ] as Vector3;
 
     for (const player of mp.players.toArray()) {
-      if (player.id === playerTo.id && !position) {
+      if (player.id === playerTo.id) {
         continue;
       }
 
