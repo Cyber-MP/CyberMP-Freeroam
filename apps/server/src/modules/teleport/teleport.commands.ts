@@ -19,7 +19,7 @@ export class TeleportCommands {
     y?: number,
     z?: number,
   ) {
-    this.teleportService.teleportAll(player, [x, y, z]);
+    this.teleportService.teleportAll(player, x, y, z);
   }
 
   @postConstruct()

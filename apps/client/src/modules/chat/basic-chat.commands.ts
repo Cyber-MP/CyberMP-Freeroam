@@ -1,4 +1,5 @@
 import { EPlayerGender } from '@cybermp/client-types/enums';
+import type { Door } from '@cybermp/client-types/game';
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
 import { retry } from 'radash';
@@ -103,6 +104,31 @@ export class BasicChatCommands {
     this.playerService.changeGender(gender);
   }
 
+  private openDoor() {
+    const targetingSystem = mp.game.ScriptGameInstance.GetTargetingSystem();
+
+    const lookAtObject = targetingSystem.GetLookAtObject(
+      mp.game.GetPlayerObject(),
+    );
+
+    if (!lookAtObject) {
+      this.chatService.sendMessage('This is not a game object');
+      return;
+    }
+
+    if (lookAtObject.IsA('FakeDoor')) {
+      lookAtObject.Dispose();
+      return;
+    }
+
+    if (lookAtObject.IsA('Door')) {
+      (lookAtObject as unknown as Door).OpenDoor();
+      return;
+    }
+
+    this.chatService.sendMessage('This is not a door');
+  }
+
   @postConstruct()
   private init() {
     this.chatService.addCommand({
@@ -189,6 +215,13 @@ export class BasicChatCommands {
       description: 'Changes your gender',
       flags: ChatCommandFlag.DisableInGameMode,
       handler: this.changeGender.bind(this),
+    });
+
+    this.chatService.addCommand({
+      name: 'open-door',
+      description: 'Opens the door you are looking at',
+      flags: ChatCommandFlag.DisableInGameMode,
+      handler: this.openDoor.bind(this),
     });
   }
 }
