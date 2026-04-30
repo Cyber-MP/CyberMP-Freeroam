@@ -239,7 +239,7 @@ export class BasicChatCommands {
       args: z.tuple([
         z
           .stringbool()
-          .meta({ title: 'force delete if not openable' })
+          .meta({ title: 'force', optional: true })
           .optional()
           .default(false),
       ]),
