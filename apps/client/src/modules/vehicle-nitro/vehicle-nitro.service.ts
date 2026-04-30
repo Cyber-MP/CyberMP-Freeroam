@@ -63,8 +63,7 @@ export class VehicleNitroService {
         return;
       }
 
-      Object.assign(this, NITRO_PRESETS[preset]);
-      return;
+      preset = NITRO_PRESETS[preset];
     }
 
     Object.assign(this, preset);
@@ -89,6 +88,7 @@ export class VehicleNitroService {
   enterGameMode() {
     this.disable();
     this.savePreset();
+    this.applyPreset('default');
   }
 
   leaveGameMode() {
