@@ -87,11 +87,10 @@ export class VehicleNitroCommands {
 
     this.chat.addCommand({
       name: 'nitro-preset',
-      description: 'Load nitro preset',
+      description: 'Load nitro preset "default, free, glide, explosion"',
       args: z.tuple([
         z.enum(['default', 'free', 'glide', 'explosion']).meta({
           title: 'preset',
-          description: 'default, free, glide, explosion',
         }),
       ]),
       flags: ChatCommandFlag.DisableInGameMode,

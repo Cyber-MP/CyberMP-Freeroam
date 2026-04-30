@@ -19,10 +19,10 @@ import {
 @eager()
 @injectable()
 export class VehicleNitroService {
-  public force = 3.25; // force applied to vehicle when boosting
-  public capacityByUse = 2.25; // capacity consumed per use
-  public maxSpeed = 350; // (KM/PH) 400 => vehicle try to use breakes, 450 => stop immediately
-  public capacityRegenRate = 1.75; // 'value' per second
+  public force = 0;
+  public capacityByUse = 0;
+  public maxSpeed = 0;
+  public capacityRegenRate = 0;
   public isBoosting = false;
   public checkIsOnGround = true;
 
@@ -418,5 +418,7 @@ export class VehicleNitroService {
       this.mountVehicleInterval();
       this.capacityRegen();
     });
+
+    this.loadPreset('default');
   }
 }
