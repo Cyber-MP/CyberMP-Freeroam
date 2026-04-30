@@ -122,7 +122,18 @@ export class BasicChatCommands {
     }
 
     if (lookAtObject.IsA('Door')) {
-      (lookAtObject as unknown as Door).OpenDoor();
+      const door = lookAtObject as unknown as Door;
+      const ps = door.GetDevicePS();
+
+      if (ps.IsSealed()) {
+        ps.ToggleSealOnDoor();
+      }
+
+      if (!ps.IsLocked()) {
+        ps.ToggleLockOnDoor();
+      }
+
+      door.OpenDoor();
       return;
     }
 
