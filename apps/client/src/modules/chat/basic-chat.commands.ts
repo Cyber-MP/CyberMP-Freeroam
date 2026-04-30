@@ -116,6 +116,8 @@ export class BasicChatCommands {
       return;
     }
 
+    console.log(lookAtObject.GetClassName());
+
     if (lookAtObject.IsA('FakeDoor')) {
       lookAtObject.Dispose();
       return;
