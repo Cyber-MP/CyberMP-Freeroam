@@ -104,7 +104,7 @@ export class BasicChatCommands {
     this.playerService.changeGender(gender);
   }
 
-  private openDoor() {
+  private openDoor(force: boolean = false) {
     const targetingSystem = mp.game.ScriptGameInstance.GetTargetingSystem();
 
     const lookAtObject = targetingSystem.GetLookAtObject(
@@ -115,8 +115,6 @@ export class BasicChatCommands {
       this.chatService.sendMessage('This is not a game object');
       return;
     }
-
-    console.log(lookAtObject.GetClassName());
 
     if (lookAtObject.IsA('FakeDoor')) {
       lookAtObject.Dispose();
@@ -136,6 +134,11 @@ export class BasicChatCommands {
       }
 
       door.OpenDoor();
+
+      if (force) {
+        door.Dispose();
+      }
+
       return;
     }
 
@@ -233,6 +236,13 @@ export class BasicChatCommands {
     this.chatService.addCommand({
       name: 'open-door',
       description: 'Opens the door you are looking at',
+      args: z.tuple([
+        z
+          .stringbool()
+          .meta({ title: 'force delete if not openable' })
+          .optional()
+          .default(false),
+      ]),
       flags: ChatCommandFlag.DisableInGameMode,
       handler: this.openDoor.bind(this),
     });
