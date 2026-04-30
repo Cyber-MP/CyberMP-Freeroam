@@ -29,6 +29,13 @@ export class GVehiclesCommands {
     });
 
     this.chatService.addCommand({
+      name: 'admin-getout',
+      description: "Get's you out of current vehicle in case you stuck",
+      flags: ChatCommandFlag.Admin,
+      handler: this.getOut.bind(this),
+    });
+
+    this.chatService.addCommand({
       name: 'repair',
       description: 'Fixes your current vehicle',
       flags: ChatCommandFlag.DisableInGameMode,
