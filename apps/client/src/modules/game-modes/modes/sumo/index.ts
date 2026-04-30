@@ -73,19 +73,19 @@ export class Sumo extends BaseGameMode<'sumo'> {
 
     setTimeout(() => {
       this.teleportService.teleport(this.initialPosition);
-    });
+
+      this.statusEffectsService.remove(
+        'GameplayRestriction.VehicleCombatBlockExit',
+      );
+      this.statusEffectsService.remove('GameplayRestriction.NoDriving');
+      this.statusEffectsService.remove('GameplayRestriction.NoMovement');
+
+      this.statusEffectsService.remove('GameplayRestriction.NoCombat');
+      this.statusEffectsService.remove('GameplayRestriction.NoWeapons');
+      this.statusEffectsService.remove('GameplayRestriction.VehicleFPP');
+    }, 500);
 
     this.healthService.god(false);
-
-    this.statusEffectsService.remove(
-      'GameplayRestriction.VehicleCombatBlockExit',
-    );
-    this.statusEffectsService.remove('GameplayRestriction.NoDriving');
-    this.statusEffectsService.remove('GameplayRestriction.NoMovement');
-
-    this.statusEffectsService.remove('GameplayRestriction.NoCombat');
-    this.statusEffectsService.remove('GameplayRestriction.NoWeapons');
-    this.statusEffectsService.remove('GameplayRestriction.VehicleFPP');
 
     this.vehicleNitroService.enable();
 
