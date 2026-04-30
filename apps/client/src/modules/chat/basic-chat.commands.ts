@@ -104,7 +104,7 @@ export class BasicChatCommands {
     this.playerService.changeGender(gender);
   }
 
-  private openDoor(force: boolean = false) {
+  private openDoor(force: string = '') {
     const targetingSystem = mp.game.ScriptGameInstance.GetTargetingSystem();
 
     const lookAtObject = targetingSystem.GetLookAtObject(
@@ -235,13 +235,14 @@ export class BasicChatCommands {
 
     this.chatService.addCommand({
       name: 'open-door',
-      description: 'Opens the door you are looking at',
+      description:
+        'Opens the door you are looking at (force deletes if not openable)',
       args: z.tuple([
         z
-          .stringbool()
+          .string()
           .meta({ title: 'force', optional: true })
           .optional()
-          .default(false),
+          .default('true'),
       ]),
       flags: ChatCommandFlag.DisableInGameMode,
       handler: this.openDoor.bind(this),
