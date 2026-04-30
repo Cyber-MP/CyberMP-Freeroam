@@ -94,7 +94,7 @@ export class Pvp extends BaseGameMode<'pvp'> {
       this.statusEffectsService.remove('GameplayRestriction.BlockAllMenu');
       this.statusEffectsService.remove('GameplayRestriction.NoRadialMenus');
       this.statusEffectsService.remove('GameplayRestriction.NoHealing');
-    });
+    }, 500);
 
     this.healthService.resetToDefault();
 
