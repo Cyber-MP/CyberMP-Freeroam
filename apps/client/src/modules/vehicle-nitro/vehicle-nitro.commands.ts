@@ -2,7 +2,7 @@ import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
 import z from 'zod';
 import { ChatCommandFlag, ChatService } from '../chat/chat.service';
-import type { NitroPresetNames } from './vehicle-nitro.repository';
+import { NitroPresetNames } from './vehicle-nitro.presets';
 import { VehicleNitroService } from './vehicle-nitro.service';
 
 @eager()
@@ -14,29 +14,29 @@ export class VehicleNitroCommands {
     @inject(ChatService) private chat: ChatService,
   ) {}
 
-  private nitroForce = (force: number) => {
-    this.vehicleNitroService.force = force;
-  };
+  private nitroForce(force: number) {
+    this.vehicleNitroService.currentPreset.force = force;
+  }
 
-  private nitroCheckGround = (checkGround: boolean) => {
-    this.vehicleNitroService.checkIsOnGround = checkGround;
-  };
+  private nitroCheckGround(checkGround: boolean) {
+    this.vehicleNitroService.currentPreset.checkIsOnGround = checkGround;
+  }
 
-  private nitroMaxSpeed = (maxSpeed: number) => {
-    this.vehicleNitroService.maxSpeed = maxSpeed;
-  };
+  private nitroMaxSpeed(maxSpeed: number) {
+    this.vehicleNitroService.currentPreset.maxSpeed = maxSpeed;
+  }
 
-  private nitroByUse = (byUse: number) => {
-    this.vehicleNitroService.capacityByUse = byUse;
-  };
+  private nitroByUse(byUse: number) {
+    this.vehicleNitroService.currentPreset.capacityByUse = byUse;
+  }
 
-  private nitroRegen = (regen: number) => {
-    this.vehicleNitroService.capacityRegenRate = regen;
-  };
+  private nitroRegen(regen: number) {
+    this.vehicleNitroService.currentPreset.capacityRegenRate = regen;
+  }
 
-  private nitroPreset = (presetName: NitroPresetNames) => {
+  private nitroPreset(presetName: (typeof NitroPresetNames)[number]) {
     this.vehicleNitroService.applyPreset(presetName);
-  };
+  }
 
   @postConstruct()
   private init() {
@@ -87,9 +87,9 @@ export class VehicleNitroCommands {
 
     this.chat.addCommand({
       name: 'nitro-preset',
-      description: 'Load nitro preset "default, free, glide, explosion"',
+      description: `Load nitro preset "${NitroPresetNames.join('", "')}"`,
       args: z.tuple([
-        z.enum(['default', 'free', 'glide', 'explosion']).meta({
+        z.enum(NitroPresetNames).meta({
           title: 'preset',
         }),
       ]),

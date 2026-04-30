@@ -6,9 +6,17 @@ export type NitroPreset = {
   checkIsOnGround: boolean;
 };
 
-export type NitroPresetNames = 'default' | 'glide' | 'explosion' | 'free';
+export const NitroPresetNames = [
+  'default',
+  'glide',
+  'explosion',
+  'free',
+] as const;
 
-export const NITRO_PRESETS: Record<NitroPresetNames, NitroPreset> = {
+export const NITRO_PRESETS: Record<
+  (typeof NitroPresetNames)[number],
+  NitroPreset
+> = {
   default: {
     force: 3.25,
     capacityByUse: 2.25,

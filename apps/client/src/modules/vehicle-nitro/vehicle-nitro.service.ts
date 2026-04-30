@@ -14,17 +14,19 @@ import {
   NITRO_PRESETS,
   type NitroPreset,
   type NitroPresetNames,
-} from './vehicle-nitro.repository';
+} from './vehicle-nitro.presets';
 
 @eager()
 @injectable()
 export class VehicleNitroService {
-  public force = 0;
-  public capacityByUse = 0;
-  public maxSpeed = 0;
-  public capacityRegenRate = 0;
   public isBoosting = false;
-  public checkIsOnGround = true;
+  public currentPreset: NitroPreset = {
+    force: 0,
+    capacityByUse: 0,
+    maxSpeed: 0,
+    capacityRegenRate: 0,
+    checkIsOnGround: true,
+  };
 
   private isEnabled = true;
   private capacity = 100; // 0 ... 100
@@ -57,59 +59,37 @@ export class VehicleNitroService {
     private statusEffectsService: GStatusEffectsService,
   ) {}
 
-  applyPreset(preset: NitroPresetNames | NitroPreset) {
-    if (typeof preset === 'string') {
-      if (!NITRO_PRESETS[preset]) {
-        return;
-      }
-
-      preset = NITRO_PRESETS[preset];
+  applyPreset(preset: (typeof NitroPresetNames)[number]) {
+    if (!NITRO_PRESETS[preset]) {
+      return;
     }
 
-    Object.assign(this, preset);
+    this.currentPreset = NITRO_PRESETS[preset];
   }
 
-  savePreset() {
-    this.savedPreset = {
-      force: this.force,
-      capacityByUse: this.capacityByUse,
-      maxSpeed: this.maxSpeed,
-      capacityRegenRate: this.capacityRegenRate,
-      checkIsOnGround: this.checkIsOnGround,
-    };
-  }
-
-  loadPreset() {
-    if (this.savedPreset) {
-      this.applyPreset(this.savedPreset);
-    }
-  }
-
-  enterGameMode() {
-    this.disable();
-    this.savePreset();
-    this.applyPreset('default');
-  }
-
-  leaveGameMode() {
-    this.enable();
-    this.loadPreset();
-  }
-
-  enable() {
+  enable(loadPreset: boolean = false) {
     this.isEnabled = true;
 
     this.notifyBrowser();
 
     this.enableBrowserHint();
+
+    if (loadPreset && this.savedPreset) {
+      this.currentPreset = this.savedPreset;
+    }
   }
 
-  disable() {
+  disable(savePreset: boolean = false) {
     this.isEnabled = false;
 
     this.notifyBrowser();
 
     this.disableBrowserHint();
+
+    if (savePreset) {
+      this.savedPreset = this.currentPreset;
+      this.applyPreset('default');
+    }
   }
 
   notifyBrowser() {
@@ -175,9 +155,9 @@ export class VehicleNitroService {
     const forward = this.getForwardFromQuaternion(q);
 
     const boost = {
-      x: forward.x * this.force,
-      y: forward.y * this.force,
-      z: forward.z * this.force,
+      x: forward.x * this.currentPreset.force,
+      y: forward.y * this.currentPreset.force,
+      z: forward.z * this.currentPreset.force,
     };
 
     vehicle.AddLinelyVelocity(boost, { x: 0, y: 0, z: 0 });
@@ -199,7 +179,7 @@ export class VehicleNitroService {
       return;
     }
 
-    if (this.checkIsOnGround) {
+    if (this.currentPreset.checkIsOnGround) {
       if (!vehicle.IsOnGround()) {
         return;
       }
@@ -207,7 +187,7 @@ export class VehicleNitroService {
 
     const currentSpeed = this.getVehicleSpeed(vehicle);
 
-    if (currentSpeed > this.maxSpeed) {
+    if (currentSpeed > this.currentPreset.maxSpeed) {
       return;
     }
 
@@ -216,13 +196,13 @@ export class VehicleNitroService {
       return;
     }
 
-    if (this.capacity - this.capacityByUse < 0) {
+    if (this.capacity - this.currentPreset.capacityByUse < 0) {
       this.isMinCapacityPenalty = true;
-      this.capacity = this.capacityByUse;
+      this.capacity = this.currentPreset.capacityByUse;
     }
 
     this.capacityRegenAvailable = false;
-    this.capacity -= this.capacityByUse;
+    this.capacity -= this.currentPreset.capacityByUse;
 
     if (this.regenPenaltyTimeout) {
       clearTimeout(this.regenPenaltyTimeout);
@@ -366,7 +346,10 @@ export class VehicleNitroService {
       }
 
       if (this.capacityRegenAvailable && this.capacity < 100) {
-        this.capacity = Math.min(this.capacity + this.capacityRegenRate, 100);
+        this.capacity = Math.min(
+          this.capacity + this.currentPreset.capacityRegenRate,
+          100,
+        );
 
         this.notifyBrowser();
       }
