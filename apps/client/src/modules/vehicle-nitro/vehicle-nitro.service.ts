@@ -49,7 +49,7 @@ export class VehicleNitroService {
   private lerpInterval: ReturnType<typeof setInterval> | null = null;
   private lerpTime = ms('0.01s');
   private lerpTPPFOVRate = 0.1;
-  private lastPreset: NitroPreset | null = null;
+  private savedPreset: NitroPreset | null = null;
 
   constructor(
     @inject(GKeyboardService) private keyboardService: GKeyboardService,
@@ -57,22 +57,43 @@ export class VehicleNitroService {
     private statusEffectsService: GStatusEffectsService,
   ) {}
 
-  loadPreset(presetName: NitroPresetNames, save: boolean = false) {
-    if (!NITRO_PRESETS[presetName]) {
+  applyPreset(preset: NitroPresetNames | NitroPreset) {
+    if (typeof preset === 'string') {
+      if (!NITRO_PRESETS[preset]) {
+        return;
+      }
+
+      Object.assign(this, NITRO_PRESETS[preset]);
       return;
     }
 
-    Object.assign(this, NITRO_PRESETS[presetName]);
+    Object.assign(this, preset);
+  }
 
-    if (save) {
-      this.lastPreset = NITRO_PRESETS[presetName];
+  savePreset() {
+    this.savedPreset = {
+      force: this.force,
+      capacityByUse: this.capacityByUse,
+      maxSpeed: this.maxSpeed,
+      capacityRegenRate: this.capacityRegenRate,
+      checkIsOnGround: this.checkIsOnGround,
+    };
+  }
+
+  loadPreset() {
+    if (this.savedPreset) {
+      this.applyPreset(this.savedPreset);
     }
   }
 
-  loadLastPreset() {
-    if (this.lastPreset) {
-      Object.assign(this, this.lastPreset);
-    }
+  enterGameMode() {
+    this.disable();
+    this.savePreset();
+  }
+
+  leaveGameMode() {
+    this.enable();
+    this.loadPreset();
   }
 
   enable() {
@@ -419,6 +440,6 @@ export class VehicleNitroService {
       this.capacityRegen();
     });
 
-    this.loadPreset('default');
+    this.applyPreset('default');
   }
 }

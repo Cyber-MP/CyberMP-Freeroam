@@ -35,7 +35,7 @@ export class VehicleNitroCommands {
   };
 
   private nitroPreset = (presetName: NitroPresetNames) => {
-    this.vehicleNitroService.loadPreset(presetName, true);
+    this.vehicleNitroService.applyPreset(presetName);
   };
 
   @postConstruct()
