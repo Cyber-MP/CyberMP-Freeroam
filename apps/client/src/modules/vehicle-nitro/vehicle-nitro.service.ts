@@ -10,6 +10,11 @@ import { mp } from '../../mp';
 import { browser } from '../../rpc/browser';
 import { GKeyboardService } from '../game/keyboard.service';
 import { GStatusEffectsService } from '../game/status-effects/status-effects.service';
+import {
+  NITRO_PRESETS,
+  type NitroPreset,
+  type NitroPresetNames,
+} from './vehicle-nitro.repository';
 
 @eager()
 @injectable()
@@ -44,12 +49,31 @@ export class VehicleNitroService {
   private lerpInterval: ReturnType<typeof setInterval> | null = null;
   private lerpTime = ms('0.01s');
   private lerpTPPFOVRate = 0.1;
+  private lastPreset: NitroPreset | null = null;
 
   constructor(
     @inject(GKeyboardService) private keyboardService: GKeyboardService,
     @inject(GStatusEffectsService)
     private statusEffectsService: GStatusEffectsService,
   ) {}
+
+  loadPreset(presetName: NitroPresetNames, save: boolean = false) {
+    if (!NITRO_PRESETS[presetName]) {
+      return;
+    }
+
+    Object.assign(this, NITRO_PRESETS[presetName]);
+
+    if (save) {
+      this.lastPreset = NITRO_PRESETS[presetName];
+    }
+  }
+
+  loadLastPreset() {
+    if (this.lastPreset) {
+      Object.assign(this, this.lastPreset);
+    }
+  }
 
   enable() {
     this.isEnabled = true;
@@ -145,9 +169,9 @@ export class VehicleNitroService {
 
     const player = mp.game.GetPlayer();
     if (!player) {
-      return
+      return;
     }
-    
+
     const vehicle = player.GetMountedVehicle();
 
     if (!vehicle) {

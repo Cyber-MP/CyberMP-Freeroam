@@ -2,6 +2,7 @@ import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
 import z from 'zod';
 import { ChatCommandFlag, ChatService } from '../chat/chat.service';
+import type { NitroPresetNames } from './vehicle-nitro.repository';
 import { VehicleNitroService } from './vehicle-nitro.service';
 
 @eager()
@@ -31,6 +32,10 @@ export class VehicleNitroCommands {
 
   private nitroRegen = (regen: number) => {
     this.vehicleNitroService.capacityRegenRate = regen;
+  };
+
+  private nitroPreset = (presetName: NitroPresetNames) => {
+    this.vehicleNitroService.loadPreset(presetName, true);
   };
 
   @postConstruct()
@@ -78,6 +83,19 @@ export class VehicleNitroCommands {
       ]),
       flags: ChatCommandFlag.Admin,
       handler: this.nitroRegen.bind(this),
+    });
+
+    this.chat.addCommand({
+      name: 'nitro-preset',
+      description: 'Load nitro preset',
+      args: z.tuple([
+        z.enum(['default', 'free', 'glide', 'explosion']).meta({
+          title: 'preset',
+          description: 'default, free, glide, explosion',
+        }),
+      ]),
+      flags: ChatCommandFlag.DisableInGameMode,
+      handler: this.nitroPreset.bind(this),
     });
   }
 }
