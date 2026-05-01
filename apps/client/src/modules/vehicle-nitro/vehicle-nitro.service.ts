@@ -202,7 +202,7 @@ export class NitroCamera {
       clearTimeout(this.clearTimeout);
     }
 
-    for (let i = 0; i++; i < 10) {
+    for (let i = 0; i < 10; i++) {
       console.log('for', rand, i);
 
       this.lerpTPPFOV(true);
