@@ -13,10 +13,9 @@ export const NitroPresetNames = [
   'free',
 ] as const;
 
-export const NITRO_PRESETS: Record<
-  (typeof NitroPresetNames)[number],
-  NitroPreset
-> = {
+export type NitroPresetName = (typeof NitroPresetNames)[number];
+
+export const NITRO_PRESETS: Record<NitroPresetName, NitroPreset> = {
   default: {
     force: 3.25,
     capacityByUse: 2.25,

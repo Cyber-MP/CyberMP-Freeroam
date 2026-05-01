@@ -13,20 +13,14 @@ import { GStatusEffectsService } from '../game/status-effects/status-effects.ser
 import {
   NITRO_PRESETS,
   type NitroPreset,
-  type NitroPresetNames,
+  type NitroPresetName,
 } from './vehicle-nitro.presets';
 
 @eager()
 @injectable()
 export class VehicleNitroService {
   public isBoosting = false;
-  public currentPreset: NitroPreset = {
-    force: 0,
-    capacityByUse: 0,
-    maxSpeed: 0,
-    capacityRegenRate: 0,
-    checkIsOnGround: true,
-  };
+  public currentPreset: NitroPreset = NITRO_PRESETS.default;
 
   private isEnabled = true;
   private capacity = 100; // 0 ... 100
@@ -59,7 +53,7 @@ export class VehicleNitroService {
     private statusEffectsService: GStatusEffectsService,
   ) {}
 
-  applyPreset(preset: (typeof NitroPresetNames)[number]) {
+  applyPreset(preset: NitroPresetName) {
     if (!NITRO_PRESETS[preset]) {
       return;
     }
@@ -331,7 +325,7 @@ export class VehicleNitroService {
     this.keyboardService.unbindKey(this.boostKey, this.onBoostKeyInput);
   }
 
-  private capacityRegen() {
+  private mountCapacityRegenInterval() {
     if (this.capacityRegenInterval) {
       return;
     }
@@ -424,9 +418,7 @@ export class VehicleNitroService {
   private async init() {
     mp.game.onGameLoaded(() => {
       this.mountVehicleInterval();
-      this.capacityRegen();
+      this.mountCapacityRegenInterval();
     });
-
-    this.applyPreset('default');
   }
 }

@@ -2,7 +2,10 @@ import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
 import z from 'zod';
 import { ChatCommandFlag, ChatService } from '../chat/chat.service';
-import { NitroPresetNames } from './vehicle-nitro.presets';
+import {
+  type NitroPresetName,
+  NitroPresetNames,
+} from './vehicle-nitro.presets';
 import { VehicleNitroService } from './vehicle-nitro.service';
 
 @eager()
@@ -34,7 +37,7 @@ export class VehicleNitroCommands {
     this.vehicleNitroService.currentPreset.capacityRegenRate = regen;
   }
 
-  private nitroPreset(presetName: (typeof NitroPresetNames)[number]) {
+  private nitroPreset(presetName: NitroPresetName) {
     this.vehicleNitroService.applyPreset(presetName);
   }
 
