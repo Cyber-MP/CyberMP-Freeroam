@@ -14,6 +14,10 @@ import { GVehiclesService } from '../../../game/vehicles/vehicles.service';
 import { SpawnService } from '../../../spawn/spawn.service';
 import { SpectatingService } from '../../../spectating/spectating.service';
 import { VehicleNitroService } from '../../../vehicle-nitro/vehicle-nitro.service';
+import {
+  type NitroPreset,
+  VehicleNitroPresetRepository,
+} from '../../../vehicle-nitro/vehicle-nitro-preset.repository';
 import { BaseGameMode } from '../../game-mode';
 import type { SumoPrepareDTO } from './dto';
 
@@ -24,6 +28,7 @@ export class Sumo extends BaseGameMode<'sumo'> {
   private initialPosition!: Vector4;
   private countDownInterval: ReturnType<typeof setInterval> | undefined;
   private vehicleCheckInterval: ReturnType<typeof setInterval> | undefined;
+  private initialNitroPreset: NitroPreset | null = null;
 
   constructor(
     @inject(GVehiclesService) private vehiclesService: GVehiclesService,
@@ -38,6 +43,8 @@ export class Sumo extends BaseGameMode<'sumo'> {
     @inject(SpectatingService) private spectatingService: SpectatingService,
     @inject(VehicleNitroService)
     private vehicleNitroService: VehicleNitroService,
+    @inject(VehicleNitroPresetRepository)
+    private nitroPresetRepo: VehicleNitroPresetRepository,
   ) {
     super();
   }
@@ -56,6 +63,7 @@ export class Sumo extends BaseGameMode<'sumo'> {
     this.statusEffectsService.add('GameplayRestriction.NoCombat');
     this.statusEffectsService.add('GameplayRestriction.NoWeapons');
 
+    this.initialNitroPreset = this.nitroPresetRepo.getCurrentPreset();
     this.vehicleNitroService.disable();
   }
 
@@ -86,6 +94,10 @@ export class Sumo extends BaseGameMode<'sumo'> {
     }, 500);
 
     this.healthService.god(false);
+
+    if (this.initialNitroPreset) {
+      this.nitroPresetRepo.applyPreset(this.initialNitroPreset);
+    }
 
     this.vehicleNitroService.enable();
 
@@ -195,6 +207,7 @@ export class Sumo extends BaseGameMode<'sumo'> {
     }
 
     if (this.options.nitro) {
+      this.nitroPresetRepo.applyPreset('default');
       this.vehicleNitroService.enable();
     }
   }

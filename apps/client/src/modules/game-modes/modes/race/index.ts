@@ -33,6 +33,10 @@ import { GVehiclesService } from '../../../game/vehicles/vehicles.service';
 import { SpawnService } from '../../../spawn/spawn.service';
 import { SpectatingService } from '../../../spectating/spectating.service';
 import { VehicleNitroService } from '../../../vehicle-nitro/vehicle-nitro.service';
+import {
+  type NitroPreset,
+  VehicleNitroPresetRepository,
+} from '../../../vehicle-nitro/vehicle-nitro-preset.repository';
 import { BaseGameMode } from '../../game-mode';
 import { RaceCheckpoint } from './checkpoint';
 import type { RacePrepareDTO } from './dto';
@@ -113,6 +117,8 @@ export class Race extends BaseGameMode<'race'> {
 
   private navigation = new TrackPathNavigation();
 
+  private initialNitroPreset: NitroPreset | null = null;
+
   constructor(
     @inject(GVehiclesService) private vehiclesService: GVehiclesService,
     @inject(GTeleportService) private teleportService: GTeleportService,
@@ -128,6 +134,8 @@ export class Race extends BaseGameMode<'race'> {
     @inject(SpectatingService) private spectatingService: SpectatingService,
     @inject(VehicleNitroService)
     private vehicleNitroService: VehicleNitroService,
+    @inject(VehicleNitroPresetRepository)
+    private nitroPresetRepo: VehicleNitroPresetRepository,
   ) {
     super();
   }
@@ -147,6 +155,7 @@ export class Race extends BaseGameMode<'race'> {
     this.statusEffectsService.add('GameplayRestriction.NoCombat');
     this.statusEffectsService.add('GameplayRestriction.NoWeapons');
 
+    this.initialNitroPreset = this.nitroPresetRepo.getCurrentPreset();
     this.vehicleNitroService.disable();
   }
 
@@ -182,6 +191,10 @@ export class Race extends BaseGameMode<'race'> {
     this.statusEffectsService.remove('GameplayRestriction.NoCombat');
     this.statusEffectsService.remove('GameplayRestriction.NoWeapons');
     this.statusEffectsService.remove('GameplayRestriction.VehicleFPP');
+
+    if (this.initialNitroPreset) {
+      this.nitroPresetRepo.applyPreset(this.initialNitroPreset);
+    }
 
     this.vehicleNitroService.enable();
 
@@ -437,6 +450,7 @@ export class Race extends BaseGameMode<'race'> {
     }
 
     if (this.options.nitro) {
+      this.nitroPresetRepo.applyPreset('default');
       this.vehicleNitroService.enable();
     }
 

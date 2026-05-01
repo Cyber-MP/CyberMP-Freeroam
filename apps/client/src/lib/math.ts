@@ -1,4 +1,9 @@
-import type { Vector2, Vector3, Vector4 } from '@cybermp/client-types/game';
+import type {
+  Quaternion,
+  Vector2,
+  Vector3,
+  Vector4,
+} from '@cybermp/client-types/game';
 import { mp } from '../mp';
 import { createVector3 } from './vectors';
 
@@ -80,4 +85,16 @@ export const getAngleSumBetweenPositionAndVertices = (
     anglesum += Math.acos(costheta);
   }
   return anglesum;
+};
+
+export const getForwardFromQuaternion = (q: Quaternion) => {
+  const x = q.i,
+    y = q.j,
+    z = q.k,
+    w = q.r;
+  return {
+    x: 2 * (x * y - w * z),
+    y: 1 - 2 * (x * x + z * z),
+    z: 2 * (y * z + w * x),
+  };
 };

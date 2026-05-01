@@ -104,7 +104,7 @@ export class BasicChatCommands {
     this.playerService.changeGender(gender);
   }
 
-  private openDoor() {
+  private openDoor(force: string = '') {
     const targetingSystem = mp.game.ScriptGameInstance.GetTargetingSystem();
 
     const lookAtObject = targetingSystem.GetLookAtObject(
@@ -122,7 +122,23 @@ export class BasicChatCommands {
     }
 
     if (lookAtObject.IsA('Door')) {
-      (lookAtObject as unknown as Door).OpenDoor();
+      const door = lookAtObject as unknown as Door;
+      const ps = door.GetDevicePS();
+
+      if (ps.IsSealed()) {
+        ps.ToggleSealOnDoor();
+      }
+
+      if (!ps.IsLocked()) {
+        ps.ToggleLockOnDoor();
+      }
+
+      door.OpenDoor();
+
+      if (force) {
+        door.Dispose();
+      }
+
       return;
     }
 
@@ -219,7 +235,15 @@ export class BasicChatCommands {
 
     this.chatService.addCommand({
       name: 'open-door',
-      description: 'Opens the door you are looking at',
+      description:
+        'Opens the door you are looking at (force deletes if not openable)',
+      args: z.tuple([
+        z
+          .string()
+          .meta({ title: 'force', optional: true })
+          .optional()
+          .default('true'),
+      ]),
       flags: ChatCommandFlag.DisableInGameMode,
       handler: this.openDoor.bind(this),
     });

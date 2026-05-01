@@ -6,93 +6,284 @@ import type {
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
 import ms from 'ms';
+import { getForwardFromQuaternion } from '../../lib/math';
 import { mp } from '../../mp';
 import { browser } from '../../rpc/browser';
 import { GKeyboardService } from '../game/keyboard.service';
 import { GStatusEffectsService } from '../game/status-effects/status-effects.service';
+import { VehicleNitroPresetRepository } from './vehicle-nitro-preset.repository';
+
+@injectable()
+export class NitroCapacity {
+  private value = 100;
+  private regen = true;
+  private regenInterval: ReturnType<typeof setInterval> | null = null;
+
+  private penaltyActive = false;
+  private clearTimeout: ReturnType<typeof setTimeout> | null = null;
+
+  @inject(VehicleNitroPresetRepository)
+  private presetRepo!: VehicleNitroPresetRepository;
+
+  private get preset() {
+    return this.presetRepo.getCurrentPreset();
+  }
+
+  getPenaltyActive() {
+    return this.penaltyActive;
+  }
+
+  private updateBrowserData() {
+    browser.vehicleNitro.update.trigger({
+      capacity: this.value,
+      isPenalty: this.penaltyActive,
+    });
+  }
+
+  setValue(newValue: number) {
+    this.value = newValue;
+    this.updateBrowserData();
+  }
+
+  setPenaltyActive(newValue: boolean) {
+    this.penaltyActive = newValue;
+    this.updateBrowserData();
+  }
+
+  getValue() {
+    return this.value;
+  }
+
+  use() {
+    if (this.value - this.preset.capacityByUse <= 0) {
+      this.setPenaltyActive(true);
+      this.setValue(this.preset.capacityByUse);
+    }
+
+    this.regen = false;
+    this.setValue(this.value - this.preset.capacityByUse);
+
+    if (this.clearTimeout) {
+      clearTimeout(this.clearTimeout);
+    }
+
+    this.clearTimeout = setTimeout(() => {
+      this.regen = true;
+      this.clearTimeout = null;
+    }, this.preset.regenTimeout);
+  }
+
+  private regenerate() {
+    this.setValue(
+      Math.min(
+        this.value + this.presetRepo.getCurrentPreset().capacityRegenRate,
+        100,
+      ),
+    );
+  }
+
+  private mountCapacityRegenInterval() {
+    if (this.regenInterval) {
+      return;
+    }
+
+    this.regenInterval = setInterval(() => {
+      if (this.value >= this.preset.penaltyThreshold) {
+        this.setPenaltyActive(false);
+      }
+
+      if (this.regen && this.value < 100) {
+        this.regenerate();
+      }
+    }, ms('0.1s'));
+  }
+
+  private unmountCapacityRegenInterval() {
+    if (this.regenInterval) {
+      clearInterval(this.regenInterval);
+    }
+  }
+
+  @postConstruct()
+  create() {
+    this.mountCapacityRegenInterval();
+  }
+
+  destroy() {
+    this.unmountCapacityRegenInterval();
+  }
+}
+
+export const NitroCapacityFactorySymbol = Symbol.for(
+  'NitroCapacityFactorySymbol',
+);
+
+export type NitroCapacityFactory = () => NitroCapacity;
+
+@injectable()
+export class NitroCamera {
+  private FOVIncrease = 15;
+  private FPPFOV = 0;
+  private TPPFOV = 0;
+  private curTPPFOV = 0;
+  private TPPFOVRate = 0.1;
+
+  private decreaseInterval: ReturnType<typeof setTimeout> | null = null;
+  private increaseInterval: ReturnType<typeof setInterval> | null = null;
+
+  private gameTPPCamera: vehicleTPPCameraComponent | null = null;
+
+  private getTPPCamera() {
+    const components = mp.game.GetPlayer().GetComponents();
+
+    for (const c of components) {
+      if (c.IsA('vehicleTPPCameraComponent')) {
+        const camera = c as vehicleTPPCameraComponent;
+
+        this.gameTPPCamera = camera;
+        return;
+      }
+    }
+  }
+
+  private saveFOV() {
+    const player = mp.game.GetPlayer();
+    const FPPcamera = player.GetFPPCameraComponent();
+    this.FPPFOV = FPPcamera.GetFOV();
+
+    if (this.gameTPPCamera) {
+      this.TPPFOV = this.gameTPPCamera.GetFOV();
+      this.curTPPFOV = this.TPPFOV;
+    }
+  }
+
+  private setFPPFOV(value: number) {
+    const player = mp.game.GetPlayer();
+    const FPPcamera = player.GetFPPCameraComponent();
+    FPPcamera.SetFOV(value);
+  }
+
+  private lerpTPPFOV = (increase: boolean) => {
+    if (!this.gameTPPCamera) {
+      return;
+    }
+
+    this.curTPPFOV = Number(
+      mp.game
+        .LerpF(
+          this.TPPFOVRate,
+          this.curTPPFOV,
+          increase ? this.TPPFOV + this.FOVIncrease : this.TPPFOV,
+        )
+        .toFixed(4),
+    );
+
+    this.gameTPPCamera.SetFOV(this.curTPPFOV);
+
+    return this.TPPFOV === this.curTPPFOV;
+  };
+
+  @postConstruct()
+  private init() {
+    this.getTPPCamera();
+    this.saveFOV();
+  }
+
+  increase() {
+    if (this.increaseInterval) {
+      return;
+    }
+
+    if (this.decreaseInterval) {
+      clearTimeout(this.decreaseInterval);
+      this.decreaseInterval = null;
+    }
+
+    this.setFPPFOV(this.FPPFOV + this.FOVIncrease);
+
+    this.increaseInterval = setInterval(() => {
+      if (this.lerpTPPFOV(true) && this.increaseInterval) {
+        clearInterval(this.increaseInterval);
+        this.increaseInterval = null;
+      }
+    }, 10);
+  }
+
+  decrease() {
+    if (this.decreaseInterval) {
+      return;
+    }
+
+    if (this.increaseInterval) {
+      clearTimeout(this.increaseInterval);
+      this.increaseInterval = null;
+    }
+
+    this.setFPPFOV(this.FPPFOV);
+
+    this.decreaseInterval = setInterval(() => {
+      if (this.lerpTPPFOV(false) && this.decreaseInterval) {
+        clearInterval(this.decreaseInterval);
+        this.decreaseInterval = null;
+      }
+    }, 10);
+  }
+}
+
+export const NitroCameraFactorySymbol = Symbol.for('NitroCameraFactorySymbol');
+
+export type NitroCameraFactory = () => NitroCamera;
 
 @eager()
 @injectable()
 export class VehicleNitroService {
-  public force = 3.25; // force applied to vehicle when boosting
-  public capacityByUse = 2.25; // capacity consumed per use
-  public maxSpeed = 350; // (KM/PH) 400 => vehicle try to use breakes, 450 => stop immediately
-  public capacityRegenRate = 1.75; // 'value' per second
-  public isBoosting = false;
-  public checkIsOnGround = true;
+  private vehicleCheckInterval: ReturnType<typeof setInterval> | undefined;
+  private inVehicle = false;
 
-  private isEnabled = true;
-  private capacity = 100; // 0 ... 100
-  private minCapacityPenalty = 30; // on player reaches 0 capacity, they should wait for this value before boost again
-  private regenPenalty = ms('2.75s'); // capacity regen timeout after boost
-  private boostTime = ms('0.1s'); // applies boost every 'value' seconds
-  private boostInterval: ReturnType<typeof setInterval> | null = null;
-  private vehicleMountInterval: ReturnType<typeof setInterval> | null = null;
-  private vehicleMountTime = ms('0.25s');
-  private isInVehicle = false;
-  private capacityRegenInterval: ReturnType<typeof setInterval> | null = null;
-  private capacityRegenTime = ms('0.1s');
-  private capacityRegenAvailable = false;
   private boostKey = EInputKey.IK_E;
-  private regenPenaltyTimeout: ReturnType<typeof setTimeout> | null = null;
-  private isMinCapacityPenalty = false;
-  private playerFPPFOV = 0;
-  private playerTPPFOV = 0;
-  private playerCurTPPFOV = 0;
-  private FOVIncrease = 15;
-  private gameTPPCamera: vehicleTPPCameraComponent | null = null;
-  private lerpInterval: ReturnType<typeof setInterval> | null = null;
-  private lerpTime = ms('0.01s');
-  private lerpTPPFOVRate = 0.1;
+  private enabled = true;
+
+  private boostingInterval: ReturnType<typeof setInterval> | null = null;
+
+  private nitroCapacity: NitroCapacity | null = null;
+
+  private nitroCamera: NitroCamera | null = null;
 
   constructor(
     @inject(GKeyboardService) private keyboardService: GKeyboardService,
     @inject(GStatusEffectsService)
     private statusEffectsService: GStatusEffectsService,
+    @inject(VehicleNitroPresetRepository)
+    private presetRepo: VehicleNitroPresetRepository,
+    @inject(NitroCapacityFactorySymbol)
+    private nitroCapacityFactory: NitroCapacityFactory,
+    @inject(NitroCameraFactorySymbol)
+    private nitroCameraFactory: NitroCameraFactory,
   ) {}
 
+  private get preset() {
+    return this.presetRepo.getCurrentPreset();
+  }
+
   enable() {
-    this.isEnabled = true;
+    this.enabled = true;
 
-    this.notifyBrowser();
-
-    this.enableBrowserHint();
+    this.updateBrowserData();
   }
 
   disable() {
-    this.isEnabled = false;
+    this.enabled = false;
 
-    this.notifyBrowser();
-
-    this.disableBrowserHint();
+    this.updateBrowserData();
   }
 
-  notifyBrowser() {
-    browser.vehicleNitro.update.trigger({
-      isPenalty: this.isMinCapacityPenalty,
-      isAvailable: this.isEnabled && this.isInVehicle,
-      capacity: this.capacity,
-    });
+  private setInVehicle(value: boolean) {
+    this.inVehicle = value;
+    this.updateBrowserData();
   }
 
-  enableBrowserHint() {
-    if (!this.isEnabled) {
-      return;
-    }
-
-    if (!this.isInVehicle) {
-      return;
-    }
-
-    browser.hints.add.trigger({
-      E: 'Nitro',
-    });
-  }
-
-  disableBrowserHint() {
-    browser.hints.remove.trigger({
-      E: 'Nitro',
-    });
+  updateBrowserData() {
+    browser.vehicleNitro.setVisible.trigger(this.enabled && this.inVehicle);
   }
 
   getVehicleSpeed(vehicle: vehicleBaseObject) {
@@ -106,55 +297,23 @@ export class VehicleNitroService {
     return vehicle.GetCurrentSpeed() * multiplier * 1.61;
   }
 
-  private getForwardFromQuaternion(q: {
-    i: number;
-    j: number;
-    k: number;
-    r: number;
-  }) {
-    const x = q.i,
-      y = q.j,
-      z = q.k,
-      w = q.r;
-    return {
-      x: 2 * (x * y - w * z),
-      y: 1 - 2 * (x * x + z * z),
-      z: 2 * (y * z + w * x),
-    };
-  }
+  nitro = () => {
+    if (!this.enabled) {
+      return;
+    }
 
-  private vehicleBoost(vehicle: vehicleBaseObject) {
-    this.isBoosting = true;
-
-    const q = vehicle.GetWorldTransform().Orientation;
-    const forward = this.getForwardFromQuaternion(q);
-
-    const boost = {
-      x: forward.x * this.force,
-      y: forward.y * this.force,
-      z: forward.z * this.force,
-    };
-
-    vehicle.AddLinelyVelocity(boost, { x: 0, y: 0, z: 0 });
-  }
-
-  boost = () => {
-    if (!this.isEnabled) {
+    if (!this.nitroCapacity || !this.nitroCamera) {
       return;
     }
 
     const player = mp.game.GetPlayer();
     if (!player) {
-      return
-    }
-    
-    const vehicle = player.GetMountedVehicle();
-
-    if (!vehicle) {
       return;
     }
 
-    if (this.checkIsOnGround) {
+    const vehicle = player.GetMountedVehicle();
+
+    if (this.preset.checkIsOnGround) {
       if (!vehicle.IsOnGround()) {
         return;
       }
@@ -162,110 +321,27 @@ export class VehicleNitroService {
 
     const currentSpeed = this.getVehicleSpeed(vehicle);
 
-    if (currentSpeed > this.maxSpeed) {
+    if (currentSpeed > this.preset.maxSpeed) {
       return;
     }
 
-    if (this.isMinCapacityPenalty) {
-      this.isBoosting = false;
+    if (this.nitroCapacity.getPenaltyActive()) {
       return;
     }
 
-    if (this.capacity - this.capacityByUse < 0) {
-      this.isMinCapacityPenalty = true;
-      this.capacity = this.capacityByUse;
-    }
+    this.nitroCapacity.use();
 
-    this.capacityRegenAvailable = false;
-    this.capacity -= this.capacityByUse;
+    const q = vehicle.GetWorldTransform().Orientation;
+    const forward = getForwardFromQuaternion(q);
 
-    if (this.regenPenaltyTimeout) {
-      clearTimeout(this.regenPenaltyTimeout);
-    }
-
-    this.regenPenaltyTimeout = setTimeout(() => {
-      this.capacityRegenAvailable = true;
-      this.regenPenaltyTimeout = null;
-
-      this.notifyBrowser();
-    }, this.regenPenalty);
-
-    this.vehicleBoost(vehicle);
-
-    this.notifyBrowser();
-  };
-
-  getTPPCamera() {
-    const components = mp.game.GetPlayer().GetComponents();
-
-    for (const c of components) {
-      if (c.IsA('vehicleTPPCameraComponent')) {
-        const camera = c as vehicleTPPCameraComponent;
-
-        return camera;
-      }
-    }
-
-    return null;
-  }
-
-  private saveFOVValues() {
-    const player = mp.game.GetPlayer();
-    const FPPcamera = player.GetFPPCameraComponent();
-    this.playerFPPFOV = FPPcamera.GetFOV();
-
-    if (this.gameTPPCamera) {
-      this.playerTPPFOV = this.gameTPPCamera.GetFOV();
-
-      if (!this.playerCurTPPFOV) {
-        this.playerCurTPPFOV = this.playerTPPFOV;
-      }
-    }
-  }
-
-  private setBoostFOV() {
-    const player = mp.game.GetPlayer();
-    const FPPcamera = player.GetFPPCameraComponent();
-    FPPcamera.SetFOV(this.playerFPPFOV + this.FOVIncrease);
-  }
-
-  private setDefaultFOV() {
-    const player = mp.game.GetPlayer();
-    const FPPcamera = player.GetFPPCameraComponent();
-    FPPcamera.SetFOV(this.playerFPPFOV);
-  }
-
-  private lerpTPPFOV = (increase: boolean) => {
-    if (!this.gameTPPCamera) {
-      return;
-    }
-
-    this.playerCurTPPFOV = Number(
-      mp.game
-        .LerpF(
-          this.lerpTPPFOVRate,
-          this.playerCurTPPFOV,
-          increase ? this.playerTPPFOV + this.FOVIncrease : this.playerTPPFOV,
-        )
-        .toFixed(4),
+    vehicle.AddLinelyVelocity(
+      {
+        x: forward.x * this.preset.force,
+        y: forward.y * this.preset.force,
+        z: forward.z * this.preset.force,
+      },
+      { x: 0, y: 0, z: 0 },
     );
-
-    this.gameTPPCamera.SetFOV(this.playerCurTPPFOV);
-
-    return this.playerTPPFOV === this.playerCurTPPFOV;
-  };
-
-  private mountLerpInterval = () => {
-    if (this.lerpInterval) {
-      return;
-    }
-
-    this.lerpInterval = setInterval(() => {
-      if (this.lerpTPPFOV(this.isBoosting) && this.lerpInterval) {
-        clearInterval(this.lerpInterval);
-        this.lerpInterval = null;
-      }
-    }, this.lerpTime);
   };
 
   private onBoostKeyInput = (action: EInputAction) => {
@@ -274,62 +350,32 @@ export class VehicleNitroService {
         return;
       }
 
-      if (!this.boostInterval) {
-        this.boostInterval = setInterval(this.boost, this.boostTime);
-        this.boost();
-
-        this.setBoostFOV();
-
-        this.notifyBrowser();
+      if (!this.boostingInterval) {
+        this.nitro();
+        this.boostingInterval = setInterval(this.nitro, ms('0.1s'));
       }
 
-      this.mountLerpInterval();
+      this.nitroCamera?.increase();
     }
 
-    if (action === EInputAction.IACT_Release && this.boostInterval) {
-      clearInterval(this.boostInterval);
-      this.boostInterval = null;
+    if (action === EInputAction.IACT_Release && this.boostingInterval) {
+      clearInterval(this.boostingInterval);
+      this.boostingInterval = null;
 
-      this.isBoosting = false;
-
-      this.setDefaultFOV();
-
-      this.notifyBrowser();
+      this.nitroCamera?.decrease();
     }
   };
 
-  mountBoostKey() {
+  mountKeyboardBinds() {
     this.keyboardService.bindKey(this.boostKey, this.onBoostKeyInput);
   }
 
-  unmountBoostKey() {
+  unmountKeyboardBinds() {
     this.keyboardService.unbindKey(this.boostKey, this.onBoostKeyInput);
   }
 
-  private capacityRegen() {
-    if (this.capacityRegenInterval) {
-      return;
-    }
-
-    this.capacityRegenInterval = setInterval(() => {
-      if (!this.isInVehicle) {
-        return;
-      }
-
-      if (this.capacity > this.minCapacityPenalty) {
-        this.isMinCapacityPenalty = false;
-      }
-
-      if (this.capacityRegenAvailable && this.capacity < 100) {
-        this.capacity = Math.min(this.capacity + this.capacityRegenRate, 100);
-
-        this.notifyBrowser();
-      }
-    }, this.capacityRegenTime);
-  }
-
   private onVehicleEnter() {
-    if (this.isInVehicle) {
+    if (this.inVehicle) {
       return;
     }
 
@@ -340,38 +386,41 @@ export class VehicleNitroService {
       return;
     }
 
-    this.isInVehicle = true;
-    this.capacity = 100;
-    this.capacityRegenAvailable = true;
-    this.gameTPPCamera = this.getTPPCamera();
-    this.saveFOVValues();
-    this.mountBoostKey();
+    this.setInVehicle(true);
 
-    this.notifyBrowser();
-    this.enableBrowserHint();
+    this.nitroCapacity = this.nitroCapacityFactory();
+    this.nitroCamera = this.nitroCameraFactory();
+
+    this.mountKeyboardBinds();
   }
 
   private onVehicleLeave() {
-    if (!this.isInVehicle) {
+    if (!this.inVehicle) {
       return;
     }
 
-    this.isInVehicle = false;
-    this.isBoosting = false;
+    this.setInVehicle(false);
 
-    if (this.boostInterval) {
-      clearInterval(this.boostInterval);
-      this.boostInterval = null;
+    if (this.boostingInterval) {
+      clearInterval(this.boostingInterval);
+      this.boostingInterval = null;
     }
 
-    this.unmountBoostKey();
+    this.nitroCapacity?.destroy();
+    this.nitroCapacity = null;
 
-    this.notifyBrowser();
-    this.disableBrowserHint();
+    this.nitroCamera?.decrease();
+    this.nitroCamera = null;
+
+    this.unmountKeyboardBinds();
   }
 
-  private mountVehicleInterval() {
-    this.vehicleMountInterval = setInterval(() => {
+  private mountVehicleCheckInterval() {
+    if (this.vehicleCheckInterval) {
+      return;
+    }
+
+    this.vehicleCheckInterval = setInterval(() => {
       const player = mp.game.GetPlayerObject();
 
       if (!player) {
@@ -385,14 +434,13 @@ export class VehicleNitroService {
       } else {
         this.onVehicleLeave();
       }
-    }, this.vehicleMountTime);
+    }, ms('0.25s'));
   }
 
   @postConstruct()
   private async init() {
     mp.game.onGameLoaded(() => {
-      this.mountVehicleInterval();
-      this.capacityRegen();
+      this.mountVehicleCheckInterval();
     });
   }
 }

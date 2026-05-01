@@ -2,36 +2,44 @@ import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
 import z from 'zod';
 import { ChatCommandFlag, ChatService } from '../chat/chat.service';
-import { VehicleNitroService } from './vehicle-nitro.service';
+import {
+  NITRO_PRESET_NAMES,
+  type NitroPresetName,
+  VehicleNitroPresetRepository,
+} from './vehicle-nitro-preset.repository';
 
 @eager()
 @injectable()
 export class VehicleNitroCommands {
   constructor(
-    @inject(VehicleNitroService)
-    private vehicleNitroService: VehicleNitroService,
+    @inject(VehicleNitroPresetRepository)
+    private presetRepo: VehicleNitroPresetRepository,
     @inject(ChatService) private chat: ChatService,
   ) {}
 
-  private nitroForce = (force: number) => {
-    this.vehicleNitroService.force = force;
-  };
+  private nitroForce(force: number) {
+    this.presetRepo.applyPreset({ force });
+  }
 
-  private nitroCheckGround = (checkGround: boolean) => {
-    this.vehicleNitroService.checkIsOnGround = checkGround;
-  };
+  private nitroCheckGround(checkIsOnGround: boolean) {
+    this.presetRepo.applyPreset({ checkIsOnGround });
+  }
 
-  private nitroMaxSpeed = (maxSpeed: number) => {
-    this.vehicleNitroService.maxSpeed = maxSpeed;
-  };
+  private nitroMaxSpeed(maxSpeed: number) {
+    this.presetRepo.applyPreset({ maxSpeed });
+  }
 
-  private nitroByUse = (byUse: number) => {
-    this.vehicleNitroService.capacityByUse = byUse;
-  };
+  private nitroByUse(capacityByUse: number) {
+    this.presetRepo.applyPreset({ capacityByUse });
+  }
 
-  private nitroRegen = (regen: number) => {
-    this.vehicleNitroService.capacityRegenRate = regen;
-  };
+  private nitroRegen(capacityRegenRate: number) {
+    this.presetRepo.applyPreset({ capacityRegenRate });
+  }
+
+  private nitroPreset(presetName: NitroPresetName) {
+    this.presetRepo.applyPreset(presetName);
+  }
 
   @postConstruct()
   private init() {
@@ -78,6 +86,18 @@ export class VehicleNitroCommands {
       ]),
       flags: ChatCommandFlag.Admin,
       handler: this.nitroRegen.bind(this),
+    });
+
+    this.chat.addCommand({
+      name: 'nitro-preset',
+      description: `Load nitro preset "${NITRO_PRESET_NAMES.join('", "')}"`,
+      args: z.tuple([
+        z.enum(NITRO_PRESET_NAMES).meta({
+          title: 'preset',
+        }),
+      ]),
+      flags: ChatCommandFlag.DisableInGameMode,
+      handler: this.nitroPreset.bind(this),
     });
   }
 }
