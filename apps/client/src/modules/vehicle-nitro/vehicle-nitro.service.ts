@@ -408,6 +408,8 @@ export class VehicleNitroService {
 
     this.nitroCapacity?.destroy();
     this.nitroCapacity = null;
+
+    this.nitroCamera?.decrease();
     this.nitroCamera = null;
 
     this.unmountKeyboardBinds();
