@@ -9,6 +9,9 @@ disable_VoIP_server = false
 
 resources = ["hotreload", "freeroam"]
 
+secret_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImI0YmE3N2YwLTEwYjctNDU0OC1iMGNmLTgyOTI3Nzc5ODViMiIsImlhdCI6MTc3NzUzNDA2MH0._Qh8YC6Or7Z5GjuC7tPIWnDdVZbdr8cti6O7E5BzSqo"
+connection_host_addr = "http://138.201.56.11:2077"
+
 ep2_dlc_enabled = false
 
 cef_debug = true
