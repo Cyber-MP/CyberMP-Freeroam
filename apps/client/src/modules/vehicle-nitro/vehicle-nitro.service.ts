@@ -184,25 +184,39 @@ export class NitroCamera {
   };
 
   async use() {
+    const rand = Math.random();
+
     if (!this.clearTimeout) {
+      console.log('timeout 1', rand);
+
       this.getTPPCamera();
       this.saveFOV();
       this.setFPPFOV(this.FPPFOV + this.increase);
     }
 
     if (this.clearTimeout) {
+      console.log('timeout 2', rand);
+
       clearTimeout(this.clearTimeout);
     }
 
     for (let i = 0; i++; i < 10) {
+      console.log('for', rand, i);
+
       this.lerpTPPFOV(true);
 
       await sleep(10);
     }
 
     this.clearTimeout = setTimeout(() => {
+      console.log('timeout 3', rand);
+
       const interval = setInterval(() => {
+        console.log('timeout 4', rand);
+
         if (this.lerpTPPFOV(false) && interval) {
+          console.log('timeout 5', rand);
+
           clearInterval(interval);
 
           this.setFPPFOV(this.FPPFOV);
