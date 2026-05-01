@@ -164,6 +164,8 @@ export class NitroCamera {
   }
 
   private lerpTPPFOV = (increase: boolean) => {
+    console.log('camera', !!this.gameTPPCamera);
+
     if (!this.gameTPPCamera) {
       return;
     }
