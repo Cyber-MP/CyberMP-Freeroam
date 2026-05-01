@@ -3,8 +3,8 @@ import { inject, injectable, postConstruct } from 'inversify';
 import z from 'zod';
 import { ChatCommandFlag, ChatService } from '../chat/chat.service';
 import {
+  NITRO_PRESET_NAMES,
   type NitroPresetName,
-  NitroPresetNames,
 } from './vehicle-nitro.presets';
 import { VehicleNitroService } from './vehicle-nitro.service';
 
@@ -90,9 +90,9 @@ export class VehicleNitroCommands {
 
     this.chat.addCommand({
       name: 'nitro-preset',
-      description: `Load nitro preset "${NitroPresetNames.join('", "')}"`,
+      description: `Load nitro preset "${NITRO_PRESET_NAMES.join('", "')}"`,
       args: z.tuple([
-        z.enum(NitroPresetNames).meta({
+        z.enum(NITRO_PRESET_NAMES).meta({
           title: 'preset',
         }),
       ]),

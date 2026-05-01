@@ -6,14 +6,14 @@ export type NitroPreset = {
   checkIsOnGround: boolean;
 };
 
-export const NitroPresetNames = [
+export const NITRO_PRESET_NAMES = [
   'default',
   'glide',
   'explosion',
   'free',
 ] as const;
 
-export type NitroPresetName = (typeof NitroPresetNames)[number];
+export type NitroPresetName = (typeof NITRO_PRESET_NAMES)[number];
 
 export const NITRO_PRESETS: Record<NitroPresetName, NitroPreset> = {
   default: {
