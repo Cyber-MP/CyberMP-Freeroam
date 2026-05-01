@@ -1,3 +1,5 @@
+import { injectable } from 'inversify';
+
 export type NitroPreset = {
   force: number;
   capacityByUse: number;
@@ -45,3 +47,20 @@ export const NITRO_PRESETS: Record<NitroPresetName, NitroPreset> = {
     checkIsOnGround: true,
   },
 };
+
+@injectable()
+export class VehicleNitroPresetRepository {
+  private preset: NitroPreset = NITRO_PRESETS.default;
+
+  getCurrentPreset() {
+    return this.preset;
+  }
+
+  applyPreset(preset: NitroPresetName) {
+    if (!NITRO_PRESETS[preset]) {
+      return;
+    }
+
+    this.preset = NITRO_PRESETS[preset];
+  }
+}

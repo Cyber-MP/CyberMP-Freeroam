@@ -1,22 +1,32 @@
 import { useImplement } from '@cybermp/rpc-router-react';
 import { motion } from 'framer-motion';
-import { memo, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
+import { addHints, removeHints } from '@/store/hints';
 import { type VehicleNitroUpdate, vehicleNitroContract } from './contract';
 
 export const VehicleNitro = memo(() => {
   const [state, setState] = useState<VehicleNitroUpdate>({
     capacity: 100,
-    isAvailable: false,
     isPenalty: false,
   });
+  const [visible, setVisible] = useState(false);
 
   useImplement(vehicleNitroContract.update, ({ data }) => {
     setState(data);
   });
+  useImplement(vehicleNitroContract.setVisible, ({ data }) => {
+    setVisible(data);
+  });
 
-  if (!state?.isAvailable) {
-    return null;
-  }
+  useEffect(() => {
+    if (visible) {
+      addHints({
+        E: 'Nitro',
+      });
+    } else {
+      removeHints('E');
+    }
+  }, [visible]);
 
   const { capacity, isPenalty } = state;
   const colorClass = isPenalty ? 'red' : capacity < 30 ? 'yellow' : 'cyan';
@@ -34,7 +44,7 @@ export const VehicleNitro = memo(() => {
         style={{
           clipPath: 'polygon(5px 0%, 100% 0%, calc(100% - 5px) 100%, 0% 100%)',
           borderColor: color,
-          opacity: state.isAvailable ? 1 : 0,
+          opacity: visible ? 1 : 0,
         }}
       >
         {(['tl', 'tr', 'bl', 'br'] as const).map((pos) => (
