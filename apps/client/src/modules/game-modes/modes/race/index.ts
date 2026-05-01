@@ -147,7 +147,7 @@ export class Race extends BaseGameMode<'race'> {
     this.statusEffectsService.add('GameplayRestriction.NoCombat');
     this.statusEffectsService.add('GameplayRestriction.NoWeapons');
 
-    this.vehicleNitroService.disable(true);
+    this.vehicleNitroService.disable();
   }
 
   end() {
@@ -183,7 +183,7 @@ export class Race extends BaseGameMode<'race'> {
     this.statusEffectsService.remove('GameplayRestriction.NoWeapons');
     this.statusEffectsService.remove('GameplayRestriction.VehicleFPP');
 
-    this.vehicleNitroService.enable(true);
+    this.vehicleNitroService.enable();
 
     browser.hud.setGlobalPath.trigger('/hud');
     browser.navigate.trigger('/hud/game-modes/race/results');

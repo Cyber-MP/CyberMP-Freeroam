@@ -56,7 +56,7 @@ export class Sumo extends BaseGameMode<'sumo'> {
     this.statusEffectsService.add('GameplayRestriction.NoCombat');
     this.statusEffectsService.add('GameplayRestriction.NoWeapons');
 
-    this.vehicleNitroService.disable(true);
+    this.vehicleNitroService.disable();
   }
 
   end() {
@@ -87,7 +87,7 @@ export class Sumo extends BaseGameMode<'sumo'> {
 
     this.healthService.god(false);
 
-    this.vehicleNitroService.enable(true);
+    this.vehicleNitroService.enable();
 
     browser.hud.setGlobalPath.trigger('/hud');
     browser.navigate.trigger('/hud');

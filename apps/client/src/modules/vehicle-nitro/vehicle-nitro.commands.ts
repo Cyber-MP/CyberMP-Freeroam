@@ -18,23 +18,23 @@ export class VehicleNitroCommands {
   ) {}
 
   private nitroForce(force: number) {
-    this.vehicleNitroService.currentPreset.force = force;
+    this.vehicleNitroService.preset.force = force;
   }
 
   private nitroCheckGround(checkGround: boolean) {
-    this.vehicleNitroService.currentPreset.checkIsOnGround = checkGround;
+    this.vehicleNitroService.preset.checkIsOnGround = checkGround;
   }
 
   private nitroMaxSpeed(maxSpeed: number) {
-    this.vehicleNitroService.currentPreset.maxSpeed = maxSpeed;
+    this.vehicleNitroService.preset.maxSpeed = maxSpeed;
   }
 
   private nitroByUse(byUse: number) {
-    this.vehicleNitroService.currentPreset.capacityByUse = byUse;
+    this.vehicleNitroService.preset.capacityByUse = byUse;
   }
 
   private nitroRegen(regen: number) {
-    this.vehicleNitroService.currentPreset.capacityRegenRate = regen;
+    this.vehicleNitroService.preset.capacityRegenRate = regen;
   }
 
   private nitroPreset(presetName: NitroPresetName) {
