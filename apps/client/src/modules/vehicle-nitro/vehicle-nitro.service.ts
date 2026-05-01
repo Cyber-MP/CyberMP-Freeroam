@@ -6,7 +6,6 @@ import type {
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
 import ms from 'ms';
-import { sleep } from 'radash';
 import { getForwardFromQuaternion } from '../../lib/math';
 import { mp } from '../../mp';
 import { browser } from '../../rpc/browser';
@@ -123,13 +122,14 @@ export type NitroCapacityFactory = () => NitroCapacity;
 
 @injectable()
 export class NitroCamera {
-  private increase = 15;
-
+  private FOVIncrease = 15;
   private FPPFOV = 0;
   private TPPFOV = 0;
   private curTPPFOV = 0;
   private TPPFOVRate = 0.1;
-  private clearTimeout: ReturnType<typeof setTimeout> | null = null;
+
+  private decreaseInterval: ReturnType<typeof setTimeout> | null = null;
+  private increaseInterval: ReturnType<typeof setInterval> | null = null;
 
   private gameTPPCamera: vehicleTPPCameraComponent | null = null;
 
@@ -173,7 +173,7 @@ export class NitroCamera {
         .LerpF(
           this.TPPFOVRate,
           this.curTPPFOV,
-          increase ? this.TPPFOV + this.increase : this.TPPFOV,
+          increase ? this.TPPFOV + this.FOVIncrease : this.TPPFOV,
         )
         .toFixed(4),
     );
@@ -183,35 +183,50 @@ export class NitroCamera {
     return this.TPPFOV === this.curTPPFOV;
   };
 
-  async use() {
-    if (!this.clearTimeout) {
-      this.getTPPCamera();
-      this.saveFOV();
-      this.setFPPFOV(this.FPPFOV + this.increase);
+  @postConstruct()
+  private init() {
+    this.getTPPCamera();
+    this.saveFOV();
+  }
+
+  increase() {
+    if (this.increaseInterval) {
+      return;
     }
 
-    (async () => {
-      for (let i = 0; i < 10; i++) {
-        this.lerpTPPFOV(true);
+    if (this.decreaseInterval) {
+      clearTimeout(this.decreaseInterval);
+      this.decreaseInterval = null;
+    }
 
-        await sleep(10);
+    this.setFPPFOV(this.FPPFOV + this.FOVIncrease);
+
+    this.increaseInterval = setInterval(() => {
+      if (this.lerpTPPFOV(true) && this.increaseInterval) {
+        clearInterval(this.increaseInterval);
+        this.increaseInterval = null;
       }
-    })();
+    }, 10);
+  }
 
-    if (this.clearTimeout) {
-      clearTimeout(this.clearTimeout);
+  decrease() {
+    if (this.decreaseInterval) {
+      return;
     }
 
-    this.clearTimeout = setTimeout(() => {
-      const interval = setInterval(() => {
-        if (this.lerpTPPFOV(false) && interval) {
-          clearInterval(interval);
+    if (this.increaseInterval) {
+      clearTimeout(this.increaseInterval);
+      this.increaseInterval = null;
+    }
 
-          this.setFPPFOV(this.FPPFOV);
-          this.clearTimeout = null;
-        }
-      }, 10);
-    }, 250);
+    this.setFPPFOV(this.FPPFOV);
+
+    this.decreaseInterval = setInterval(() => {
+      if (this.lerpTPPFOV(false) && this.decreaseInterval) {
+        clearInterval(this.decreaseInterval);
+        this.decreaseInterval = null;
+      }
+    }, 10);
   }
 }
 
@@ -315,7 +330,6 @@ export class VehicleNitroService {
     }
 
     this.nitroCapacity.use();
-    this.nitroCamera.use();
 
     const q = vehicle.GetWorldTransform().Orientation;
     const forward = getForwardFromQuaternion(q);
@@ -340,11 +354,15 @@ export class VehicleNitroService {
         this.nitro();
         this.boostingInterval = setInterval(this.nitro, ms('0.1s'));
       }
+
+      this.nitroCamera?.increase();
     }
 
     if (action === EInputAction.IACT_Release && this.boostingInterval) {
       clearInterval(this.boostingInterval);
       this.boostingInterval = null;
+
+      this.nitroCamera?.decrease();
     }
   };
 
