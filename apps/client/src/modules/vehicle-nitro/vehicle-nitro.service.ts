@@ -190,11 +190,13 @@ export class NitroCamera {
       this.setFPPFOV(this.FPPFOV + this.increase);
     }
 
-    for (let i = 0; i < 10; i++) {
-      this.lerpTPPFOV(true);
+    (async () => {
+      for (let i = 0; i < 10; i++) {
+        this.lerpTPPFOV(true);
 
-      await sleep(10);
-    }
+        await sleep(10);
+      }
+    })();
 
     if (this.clearTimeout) {
       clearTimeout(this.clearTimeout);
