@@ -16,6 +16,7 @@ export const NITRO_PRESET_NAMES = [
   'glide',
   'explosion',
   'free',
+  'boom',
 ] as const;
 
 export type NitroPresetName = (typeof NITRO_PRESET_NAMES)[number];
@@ -54,6 +55,15 @@ export const NITRO_PRESETS: Record<NitroPresetName, NitroPreset> = {
     maxSpeed: 450,
     capacityRegenRate: 1.75,
     regenTimeout: ms('4.75s'),
+    checkIsOnGround: true,
+    penaltyThreshold: 100,
+  },
+  boom: {
+    force: 200,
+    capacityByUse: 100,
+    maxSpeed: 900,
+    capacityRegenRate: 1,
+    regenTimeout: ms('10s'),
     checkIsOnGround: true,
     penaltyThreshold: 100,
   },

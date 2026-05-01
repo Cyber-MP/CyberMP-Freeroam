@@ -56,7 +56,7 @@ export class NitroCapacity {
   }
 
   use() {
-    if (this.value - this.preset.capacityByUse < 0) {
+    if (this.value - this.preset.capacityByUse <= 0) {
       this.setPenaltyActive(true);
       this.setValue(this.preset.capacityByUse);
     }
@@ -141,6 +141,7 @@ export class NitroCamera {
         const camera = c as vehicleTPPCameraComponent;
 
         this.gameTPPCamera = camera;
+        return;
       }
     }
   }
@@ -189,14 +190,14 @@ export class NitroCamera {
       this.setFPPFOV(this.FPPFOV + this.increase);
     }
 
+    if (this.clearTimeout) {
+      clearTimeout(this.clearTimeout);
+    }
+
     for (let i = 0; i++; i < 10) {
       this.lerpTPPFOV(true);
 
       await sleep(10);
-    }
-
-    if (this.clearTimeout) {
-      clearTimeout(this.clearTimeout);
     }
 
     this.clearTimeout = setTimeout(() => {
