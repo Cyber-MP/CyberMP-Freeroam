@@ -564,6 +564,13 @@ export class Race extends BaseGameMode<
     racer?.reset();
 
     this.racers.delete(playerId);
+
+    const activeRacers = [...this.racers.values()].filter((r) => !r.finished);
+
+    if (activeRacers.length === 0) {
+      this.match.end();
+      return;
+    }
   }
 
   onPlayerJoin() {}
