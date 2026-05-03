@@ -8,6 +8,7 @@ import { DeathService } from '../death/death.service';
 import { GHealthService } from '../game/health/health.service';
 import { GHudService } from '../game/hud.service';
 import { GVehiclesService } from '../game/vehicles/vehicles.service';
+import { LoggerService } from '../logger/logger.service';
 
 type SpawnOptions = {
   position: ServerVector4 | Vector4;
@@ -28,7 +29,10 @@ export class SpawnService {
     @inject(DeathService) private deathService: DeathService,
     @inject(GVehiclesService) private vehiclesService: GVehiclesService,
     @inject(GHudService) private hudService: GHudService,
-  ) {}
+    @inject(LoggerService) private loggerService: LoggerService,
+  ) {
+    this.loggerService.setContext('SpawnService');
+  }
 
   getSpawnPosition(): ServerVector4 {
     const [x, y, z] = this.BASE_SPAWN_POSITION;
@@ -49,6 +53,8 @@ export class SpawnService {
     mp.spawnLocalPlayer();
     this.deathService.stand();
     this.hudService.show();
+
+    this.loggerService.success('Spawned player at', pos, 'with health', health);
   }
 
   @postConstruct()

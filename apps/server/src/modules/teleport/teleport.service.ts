@@ -3,13 +3,17 @@ import type { MpPlayer, Vector3 } from '@cybermp/server-types';
 import { inject, injectable } from 'inversify';
 import { mp } from '../../mp';
 import { client } from '../../rpc';
+import { LoggerService } from '../logger/logger.service';
 import { MatchmakingService } from '../matchmaking/matchmaking.service';
 
 @injectable()
 export class TeleportService {
   constructor(
     @inject(MatchmakingService) private matchmakingService: MatchmakingService,
-  ) {}
+    @inject(LoggerService) private loggerService: LoggerService,
+  ) {
+    this.loggerService.setContext('TeleportService');
+  }
 
   public getAvailablePlayers() {
     const players = mp.players
@@ -36,6 +40,15 @@ export class TeleportService {
     }
 
     client.game.teleport.teleport.trigger(playerFrom, playerTo.position);
+
+    this.loggerService.success(
+      'Teleported player',
+      playerFrom.nickname,
+      'to player',
+      playerTo.nickname,
+      'to position',
+      playerTo.position,
+    );
   }
 
   public teleportAll(playerTo: MpPlayer, x?: number, y?: number, z?: number) {

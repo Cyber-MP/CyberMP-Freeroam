@@ -6,7 +6,7 @@ import type {
 } from '@cybermp/client-types/game';
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, preDestroy } from 'inversify';
-import { isEqual, throttle } from 'radash';
+import { isEqual } from 'radash';
 import { createVector4 } from '../../lib/vectors';
 import { mp } from '../../mp';
 import { server } from '../../rpc';
@@ -17,8 +17,6 @@ import { GPlayerService } from '../game/player.service';
 import { GStatusEffectsService } from '../game/status-effects/status-effects.service';
 import { GTeleportService } from '../game/teleport/teleport.service';
 import { GVehiclesService } from '../game/vehicles/vehicles.service';
-
-const logger = throttle({ interval: 1000 }, console.log);
 
 @eager()
 @injectable()
@@ -65,7 +63,6 @@ export class SpectatingService {
     const targetPos = await this.getPlayerPosition(this.spectatedPlayerId);
 
     if (!targetPos) {
-      logger('Spectate target lost, stopping...');
       this.unspectate();
       return;
     }
@@ -117,7 +114,6 @@ export class SpectatingService {
       this.spectatedPlayerId,
     );
     if (currentSpectatedPlayerGameId !== this.spectatedPlayerGameId) {
-      logger('game id not match, resetuping camera');
       this.setupCamera(this.spectatedPlayerId);
       this.spectatedPlayerGameId = currentSpectatedPlayerGameId;
     }
@@ -143,7 +139,6 @@ export class SpectatingService {
       this.cameraComponent.SetLocalPosition(this.ON_FOOT_CAMERA_POSITION);
       this.cameraComponent.SetFOV(this.CAMERA_FOV);
       this.cameraComponent.Activate(0, false);
-      logger('Spectate camera linked and activated');
     }
   }
 
@@ -184,8 +179,6 @@ export class SpectatingService {
     this.applySpectatorState(true);
     this.spectateIntervalId = setInterval(this.onTick.bind(this), 100);
     mp.meta.setPlayerMeta(localPlayerId, 'spectating', true, true);
-
-    logger(`Started spectating player: ${playerId}`);
   }
 
   unspectate(restorePos = false) {
