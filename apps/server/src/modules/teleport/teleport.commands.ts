@@ -2,6 +2,7 @@ import type { MpPlayer } from '@cybermp/server-types';
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
 import z from 'zod';
+import { mp } from '../../mp';
 import { ChatCommandFlag, ChatService } from '../chat/chat.service';
 import { TeleportService } from './teleport.service';
 
@@ -34,6 +35,15 @@ export class TeleportCommands {
       ]),
       flags: ChatCommandFlag.Admin | ChatCommandFlag.DisableInGameMode,
       handler: this.adminTeleportAll.bind(this),
+    });
+
+    mp.commands.add('server_pos', (player) => {
+      console.log('Player requested server pos', player.position);
+
+      this.chatService.sendMessage(
+        player.id,
+        `Your server pos is - ${player.position.join(' ')}`,
+      );
     });
   }
 }
