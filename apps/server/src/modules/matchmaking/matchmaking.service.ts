@@ -51,6 +51,11 @@ export class MatchmakingService {
     const mode = this.gameModeFactory(dto.name);
 
     if (!mode.CREATE_OPTIONS_SCHEMA.safeParse(dto.createOptions).success) {
+      console.log(
+        JSON.stringify(
+          mode.CREATE_OPTIONS_SCHEMA.safeParse(dto.createOptions).error,
+        ),
+      );
       throw new RpcError({
         message: 'Invalid create options',
       });
