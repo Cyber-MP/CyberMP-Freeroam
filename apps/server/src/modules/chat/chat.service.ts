@@ -106,7 +106,7 @@ export class ChatService {
       );
       return;
     }
-
+    console.log(`[Chat] ${player.nickname} (${player.id}): ${content}`);
     browser.chat.newMessage.trigger(-1, newMessage.data);
   }
 
