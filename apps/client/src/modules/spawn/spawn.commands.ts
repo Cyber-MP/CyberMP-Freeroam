@@ -27,12 +27,12 @@ export class SpawnCommands {
       handler: this.spawn.bind(this),
     });
 
-    mp.events.addCommand('player-spawn', () => {
+    // @ts-expect-error
+    mp.commands.add('player-spawn', () => {
       const player = mp.game.GetPlayer();
       const position = player.GetWorldPosition();
 
-      mp.setSpawnDataLocalPlayer(position.x, position.y, position.z, 0);
-      mp.spawnLocalPlayer();
+      mp.local.spawnPlayer(position.x, position.y, position.z, 0);
     });
   }
 }
