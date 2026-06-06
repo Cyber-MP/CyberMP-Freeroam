@@ -49,8 +49,7 @@ export class SpawnService {
 
     const pos = Array.isArray(position) ? createVector4(...position) : position;
 
-    mp.setSpawnDataLocalPlayer(pos.x, pos.y, pos.z, pos.w);
-    mp.spawnLocalPlayer();
+    mp.local.spawnPlayer(pos.x, pos.y, pos.z, pos.w);
     this.deathService.stand();
     this.hudService.show();
 

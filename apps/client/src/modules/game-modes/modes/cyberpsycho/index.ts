@@ -291,7 +291,7 @@ export class Cyberpsycho extends BaseGameMode<'cyberpsycho'> {
 
   updateLivingIds(data: number[]) {
     this.livingIds = data;
-    const localPlayerId = mp.getPlayerServerId(1);
+    const localPlayerId = mp.network.getPlayerId(1);
 
     if (!this.livingIds.includes(localPlayerId)) {
       this.onDead();

@@ -27,7 +27,7 @@ export class PlayersMarkersService {
   constructor(@inject(GEntityService) private entityService: GEntityService) {}
 
   private onTick() {
-    const stream = mp.getStreamedPlayers();
+    const stream = mp.network.getStreamedPlayers();
 
     const activeThisFrame = new Set<number>();
 
@@ -43,7 +43,7 @@ export class PlayersMarkersService {
 
       if (
         mp.meta.getPlayerMeta(
-          mp.getPlayerNetworkIdByGameId(gameId),
+          mp.network.getPlayerId(gameId),
           'spectating',
         )
       ) {

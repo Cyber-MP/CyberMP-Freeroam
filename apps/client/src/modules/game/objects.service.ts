@@ -50,7 +50,7 @@ export class GObjectsService {
     const { x, y, z } = pos;
     const { roll, pitch, yaw } = rot;
 
-    const newObjId = mp.spawnLocalObject(
+    const newObjId = mp.local.spawnObject(
       skinHash,
       appHash,
       x,
@@ -90,7 +90,7 @@ export class GObjectsService {
       groupSet.delete(hash);
     }
 
-    mp.despawnLocalObject(hash);
+    mp.local.despawnObject(hash);
     this.objects.delete(hash);
   }
 

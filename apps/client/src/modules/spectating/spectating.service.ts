@@ -82,7 +82,7 @@ export class SpectatingService {
 
       this.setupCamera(this.spectatedPlayerId);
     } else {
-      const gameId = mp.getPlayerGameIdByNetworkId(this.spectatedPlayerId);
+      const gameId = mp.network.getPlayerGameId(this.spectatedPlayerId);
       const entity = this.entityService.findById(gameId);
       if (!entity) {
         return;
@@ -110,7 +110,7 @@ export class SpectatingService {
       this.cameraComponent.SetLocalPosition(newPosition);
     }
 
-    const currentSpectatedPlayerGameId = mp.getPlayerGameIdByNetworkId(
+    const currentSpectatedPlayerGameId = mp.network.getPlayerGameId(
       this.spectatedPlayerId,
     );
     if (currentSpectatedPlayerGameId !== this.spectatedPlayerGameId) {
@@ -120,7 +120,7 @@ export class SpectatingService {
   }
 
   private setupCamera(targetNetworkId: number) {
-    const gameId = mp.getPlayerGameIdByNetworkId(targetNetworkId);
+    const gameId = mp.network.getPlayerGameId(targetNetworkId);
     if (!gameId) {
       return;
     }
@@ -143,7 +143,7 @@ export class SpectatingService {
   }
 
   private async getPlayerPosition(playerId: number): Promise<Vector4 | null> {
-    const gameId = mp.getPlayerGameIdByNetworkId(playerId);
+    const gameId = mp.network.getPlayerGameId(playerId);
     if (gameId) {
       const entity = this.entityService.findById(gameId);
       const pos = entity?.GetWorldPosition();
@@ -161,7 +161,7 @@ export class SpectatingService {
   }
 
   spectate(playerId: number) {
-    const localPlayerId = mp.getPlayerServerId(1);
+    const localPlayerId = mp.network.getPlayerId(1);
     if (
       this.spectatedPlayerId === playerId ||
       playerId === localPlayerId ||
@@ -197,7 +197,7 @@ export class SpectatingService {
     ).Activate();
     this.cameraComponent = null;
 
-    mp.meta.setPlayerMeta(mp.getPlayerServerId(1), 'spectating', false, true);
+    mp.meta.setPlayerMeta(mp.network.getPlayerId(1), 'spectating', false, true);
 
     if (restorePos) {
       setTimeout(() => {

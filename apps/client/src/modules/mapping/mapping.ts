@@ -62,12 +62,7 @@ export class Mapping {
     const appearance =
       node.data.appearanceName.$value === 'default'
         ? 0
-        : BigInt(
-            mp.game.getHashFromName(
-              node.data.appearanceName.$value,
-              'tweakdbid',
-            ),
-          );
+        : BigInt(mp.game.hashes.toTweakdbid(node.data.appearanceName.$value));
 
     const rot = mp.game.Quaternion.ToEulerAngles(
       createQuaternion(

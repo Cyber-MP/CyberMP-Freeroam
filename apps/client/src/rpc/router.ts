@@ -34,7 +34,7 @@ export const router = {
     .method(RpcApplyType.REGISTER)
     .output(z.number())
     .handler(() => {
-      return mp.getPlayerServerId(1);
+      return mp.network.getPlayerId(1);
     }),
 };
 

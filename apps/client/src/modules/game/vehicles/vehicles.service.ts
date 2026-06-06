@@ -55,12 +55,12 @@ export class GVehiclesService {
       mp.events.off('vehicleStreamIn', onVehicleStreamIn);
     };
 
-    const alreadyStreamed = mp
+    const alreadyStreamed = mp.network
       .getStreamedPool('CVehicle')
-      .find((hash) => mp.getVehicleNetworkIdByGameId(hash) === vehicleNetId);
+      .find((hash) => mp.network.getVehicleId(hash) === vehicleNetId);
     if (alreadyStreamed) {
       return onVehicleStreamIn(
-        mp.getVehicleNetworkIdByGameId(alreadyStreamed),
+        mp.network.getVehicleId(alreadyStreamed),
         alreadyStreamed,
       );
     }

@@ -121,7 +121,7 @@ export class Sumo extends BaseGameMode<'sumo'> {
   updateLivingIds(data: number[]) {
     this.livingIds = data;
 
-    if (!this.livingIds.includes(mp.getPlayerServerId(1))) {
+    if (!this.livingIds.includes(mp.network.getPlayerId(1))) {
       this.onDead();
 
       const current = this.spectatingService.getSpectatedPlayerId();

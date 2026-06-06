@@ -390,7 +390,7 @@ export class Race extends BaseGameMode<'race'> {
 
   private spectateNextValidTarget() {
     const nextBest = this.currentRanks
-      .filter((r) => r.playerId !== mp.getPlayerServerId(1))
+      .filter((r) => r.playerId !== mp.network.getPlayerId(1))
       .find((r) => !r.finished);
 
     if (nextBest) {

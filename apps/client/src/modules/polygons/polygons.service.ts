@@ -27,11 +27,11 @@ export class PolygonsService {
     }
 
     const entities: number[] = [
-      ...mp.getStreamedPlayers(),
+      ...mp.network.getStreamedPlayers(),
       // ...mp.getStreamedPool('CObject'),
       // ...mp.getStreamedPool('CPed'),
       // ...mp.getStreamedPool('CPickup'),
-      ...mp.getStreamedPool('CVehicle'),
+      ...mp.network.getStreamedPool('CVehicle'),
       mp.game.GetPlayerObject().GetEntityID().hash,
     ].map((o) => +String(o));
 
