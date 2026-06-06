@@ -11,7 +11,7 @@
   "license": "MIT",
   "description": "",
   "devDependencies": {
-    "@cybermp/client-types": "^2.3.1",
+    "@cybermp/client-types": "^2.3.3",
     "@types/ms": "^2.1.0",
     "cross-env": "^7.0.3",
     "terser": "^5.46.0",

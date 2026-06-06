@@ -27,7 +27,6 @@ export class SpawnCommands {
       handler: this.spawn.bind(this),
     });
 
-    // @ts-expect-error
     mp.commands.add('player-spawn', () => {
       const player = mp.game.GetPlayer();
       const position = player.GetWorldPosition();
