@@ -9,7 +9,7 @@ file = [
   "./browser/assets/*"
 ]
 
-ui_page = "cefview://freeroam/browser/index.html"
+cef_url = "cefview://freeroam/browser/index.html"
 
 use_game_natives = "true"
 
