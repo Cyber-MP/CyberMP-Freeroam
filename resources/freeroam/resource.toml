@@ -1,15 +1,15 @@
 #:schema https://schemas.cyber.mp/resource/schema.json
 
-server_script = ["./server.js"]
-client_script = ["./client.js"]
+server_script = ["./server/dist/index.js"]
+client_script = ["./client/dist/index.js"]
 file = [
   "./assets/in_world_navigation.archive",
   "./assets/de_dust2/*",
-  "./browser/*",
-  "./browser/assets/*"
+  "./browser/dist/*",
+  "./browser/dist/assets/*"
 ]
 
-cef_url = "cefview://freeroam/browser/index.html"
+cef_url = "./browser/dist/index.html"
 
 use_game_natives = "true"
 

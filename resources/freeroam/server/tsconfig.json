@@ -1,0 +1,17 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "types": [
+      "node",
+      "tsdown/client"
+    ],
+    "lib": [
+      "DOM",
+      "ES2023"
+    ],
+    "target": "ES2023"
+  },
+  "include": [
+    "src"
+  ]
+}

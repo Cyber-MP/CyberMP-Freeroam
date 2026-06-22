@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev:build": "pnpm run -r --parallel --filter ./apps/** dev",
-    "build": "pnpm run -r --filter ./apps/** build",
+    "dev:build": "pnpm run -r --parallel --filter ./resources/** dev",
+    "build": "pnpm run -r --filter ./resources/** build",
     "dev:docker": "docker compose -f ./docker-compose.dev.yml up",
     "docker": "docker compose up -d",
     "dev:win": "cross-env NODE_ENV=development ./mp/win/CyberMP-Server.exe -run -rdir=./resources",
@@ -13,9 +13,9 @@
     "dev:linux": "cross-env NODE_ENV=development ./mp/linux/cybermp-server -run -rdir=$(pwd)/resources",
     "linux": "cross-env NODE_ENV=production ./mp/linux/cybermp-server -run -rdir=$(pwd)/resources",
     "type:check": "pnpm -r type:check",
-    "biome:lint": "biome lint --write ./apps",
-    "biome:format": "biome format --write ./apps",
-    "biome:check": "biome check --write ./apps",
+    "biome:lint": "biome lint --write ./resources",
+    "biome:format": "biome format --write ./resources",
+    "biome:check": "biome check --write ./resources",
     "prepare": "simple-git-hooks"
   },
   "simple-git-hooks": {

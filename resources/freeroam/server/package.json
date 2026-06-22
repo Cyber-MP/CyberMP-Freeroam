@@ -1,0 +1,34 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development tsdown --mode development --watch",
+    "build": "tsc && tsdown",
+    "type:check": "tsc -b"
+  },
+  "keywords": [],
+  "license": "MIT",
+  "description": "",
+  "dependencies": {
+    "@cybermp/rpc-router": "0.1.0-rc.8",
+    "@cybermp/rpc-server": "0.1.0-rc.8",
+    "@freeroam/inversify": "workspace:*",
+    "@freeroam/shared": "workspace:*",
+    "consola": "^3.4.2",
+    "inversify": "^7.11.0",
+    "ms": "^2.1.3",
+    "radash": "^12.1.1",
+    "reflect-metadata": "^0.2.2",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@cybermp/server-types": "^3.2.2",
+    "@types/ms": "^2.1.0",
+    "@types/node": "^25.3.5",
+    "cross-env": "^7.0.3",
+    "tsdown": "^0.22.3",
+    "typescript": "^5.8.3",
+    "vite": "8.0.8"
+  }
+}
