@@ -1,3 +1,4 @@
+import { type } from '@cybermp/rpc-router/server';
 import z from 'zod';
 import { setBodyVisibility, toggleBodyVisibility } from '../body';
 import { vehicleNitroContract } from '../components/hud/vehicle-nitro/contract';
@@ -43,7 +44,7 @@ export const rpcRouter = {
   }),
 
   navigate: r.procedure
-    .input(z.union([z.string<keyof FileRoutesByFullPath>(), z.number()]))
+    .input(type<keyof FileRoutesByFullPath | number>())
     .handler((c) => {
       if (typeof c.data === 'string') {
         tanstackRouter.navigate({ to: c.data as any });

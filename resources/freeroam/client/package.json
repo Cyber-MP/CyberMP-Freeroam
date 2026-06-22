@@ -20,8 +20,8 @@
     "vite": "8.0.8"
   },
   "dependencies": {
-    "@cybermp/rpc-client": "0.1.0-rc.8",
-    "@cybermp/rpc-router": "0.1.0-rc.8",
+    "@cybermp/rpc-client": "0.2.0",
+    "@cybermp/rpc-router": "0.2.0",
     "@freeroam/inversify": "workspace:*",
     "@freeroam/shared": "workspace:*",
     "consola": "^3.4.2",

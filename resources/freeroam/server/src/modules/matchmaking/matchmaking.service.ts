@@ -51,18 +51,13 @@ export class MatchmakingService {
     const mode = this.gameModeFactory(dto.name);
 
     if (!mode.CREATE_OPTIONS_SCHEMA.safeParse(dto.createOptions).success) {
-      console.log(
-        JSON.stringify(
-          mode.CREATE_OPTIONS_SCHEMA.safeParse(dto.createOptions).error,
-        ),
-      );
-      throw new RpcError({
+      throw RpcError.invalidData({
         message: 'Invalid create options',
       });
     }
 
     if (!mode.JOIN_OPTIONS_SCHEMA.safeParse(dto.joinOptions).success) {
-      throw new RpcError({
+      throw RpcError.invalidData({
         message: 'Invalid join options',
       });
     }

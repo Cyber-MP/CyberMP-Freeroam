@@ -9,4 +9,4 @@ export const client = createRouterClient<
   MpEnv.SERVER,
   MpEnv.CLIENT,
   MpPlayer | number
->({ rpc, target: MpEnv.CLIENT });
+>({ rpc, targetEnv: MpEnv.CLIENT });

@@ -9,4 +9,4 @@ export const browser = createRouterClient<
   MpEnv.SERVER,
   MpEnv.BROWSER,
   MpPlayer | number
->({ rpc, target: MpEnv.BROWSER });
+>({ rpc, targetEnv: MpEnv.BROWSER });

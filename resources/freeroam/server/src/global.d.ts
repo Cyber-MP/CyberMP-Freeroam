@@ -1,5 +1,6 @@
 declare global {
   interface ImportMetaEnv {
+    [key: string]: any;
     DEV: boolean;
     PROD: boolean;
     NODE_ENV: 'development' | 'production';

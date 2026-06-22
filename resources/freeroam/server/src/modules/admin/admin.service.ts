@@ -7,7 +7,7 @@ import { ChatCommandFlag, ChatService } from '../chat/chat.service';
 @eager()
 @injectable()
 export class AdminService {
-  private readonly ADMIN_PASSWORD = 'import.meta.env.VITE_ADMIN_PASSWORD';
+  private readonly ADMIN_PASSWORD = import.meta.env.TSDOWN_ADMIN_PASSWORD;
 
   constructor(@inject(ChatService) private chatService: ChatService) {}
 

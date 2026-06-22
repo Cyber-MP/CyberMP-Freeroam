@@ -287,6 +287,10 @@ export class VehicleNitroService {
   }
 
   getVehicleSpeed(vehicle: vehicleBaseObject) {
+    if (!vehicle) {
+      return 0;
+    }
+
     const multiplier =
       mp.game.ScriptGameInstance.GetStatsDataSystem().GetValueFromCurve(
         'vehicle_ui',

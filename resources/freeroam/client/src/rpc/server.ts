@@ -11,7 +11,7 @@ export const server = createRouterClient<
   ServerRouter,
   MpEnv.CLIENT,
   MpEnv.SERVER
->({ rpc, target: MpEnv.SERVER });
+>({ rpc, targetEnv: MpEnv.SERVER });
 
 export type ServerOutputs = InferRouterOutputs<ServerRouter>;
 export type ServerInputs = InferRouterInputs<ServerRouter>;

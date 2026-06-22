@@ -12,7 +12,7 @@
     "win": "cross-env NODE_ENV=production ./mp/win/CyberMP-Server.exe -run -rdir=./resources",
     "dev:linux": "cross-env NODE_ENV=development ./mp/linux/cybermp-server -run -rdir=$(pwd)/resources",
     "linux": "cross-env NODE_ENV=production ./mp/linux/cybermp-server -run -rdir=$(pwd)/resources",
-    "type:check": "pnpm -r type:check",
+    "type:check": "pnpm run -r --filter ./resources/** type:check",
     "biome:lint": "biome lint --write ./resources",
     "biome:format": "biome format --write ./resources",
     "biome:check": "biome check --write ./resources",

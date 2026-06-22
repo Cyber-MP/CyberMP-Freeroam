@@ -51,7 +51,7 @@ const clientTrue = createRouterClient<
   ClientRouter,
   MpEnv.BROWSER,
   MpEnv.CLIENT
->({ rpc, target: MpEnv.CLIENT });
+>({ rpc, targetEnv: MpEnv.CLIENT });
 
 export const client = IS_MP_MOCKED ? clientMOCK : clientTrue;
 

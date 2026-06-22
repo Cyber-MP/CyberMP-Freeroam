@@ -11,8 +11,8 @@
   "license": "MIT",
   "description": "",
   "dependencies": {
-    "@cybermp/rpc-router": "0.1.0-rc.8",
-    "@cybermp/rpc-server": "0.1.0-rc.8",
+    "@cybermp/rpc-router": "0.2.0",
+    "@cybermp/rpc-server": "0.2.0",
     "@freeroam/inversify": "workspace:*",
     "@freeroam/shared": "workspace:*",
     "consola": "^3.4.2",
@@ -23,7 +23,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@cybermp/server-types": "^3.2.2",
+    "@cybermp/server-types": "^3.2.5",
     "@types/ms": "^2.1.0",
     "@types/node": "^25.3.5",
     "cross-env": "^7.0.3",

@@ -12,7 +12,7 @@ export const server = createRouterClient<
   ServerRouter,
   MpEnv.BROWSER,
   MpEnv.SERVER
->({ rpc, target: MpEnv.SERVER });
+>({ rpc, targetEnv: MpEnv.SERVER });
 
 export const serverQuery = createRouterClientQuery(server);
 

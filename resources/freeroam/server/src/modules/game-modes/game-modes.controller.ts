@@ -1,5 +1,5 @@
-import type { InferRouterInputs } from '@cybermp/rpc-router/server';
-import { RpcApplyType, type RpcServerContext } from '@cybermp/rpc-server';
+import type { InferRouterContext } from '@cybermp/rpc-router/server';
+import { RpcApplyType } from '@cybermp/rpc-server';
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
 import z from 'zod';
@@ -18,13 +18,12 @@ export const gameModesContract = {
   getJoinSchema: r.contract
     .method(RpcApplyType.REGISTER)
     .input(zGetJoinSchemaDTO)
+    .errors({ GAME_MODE_NOT_FOUND: {} })
     .output(z.record(z.string(), z.unknown()))
     .build(),
   race: raceContract,
   sumo: sumoContract,
 };
-
-type ContractInputs = InferRouterInputs<typeof gameModesContract>;
 
 @eager()
 @injectable()
@@ -37,11 +36,18 @@ export class GameModesController {
     return this.gameModesService.getCreateSchemas();
   }
 
-  private getJoinSchema(c: RpcServerContext<ContractInputs['getJoinSchema']>) {
-    return this.gameModesService.getJoinSchema(
-      c.data.modeName,
-      c.data.createOptions,
-    );
+  private getJoinSchema(
+    c: InferRouterContext<typeof gameModesContract.getJoinSchema>,
+  ) {
+    try {
+      const result = this.gameModesService.getJoinSchema(
+        c.data.modeName,
+        c.data.createOptions,
+      );
+      return result;
+    } catch {
+      throw c.errors.GAME_MODE_NOT_FOUND();
+    }
   }
 
   @postConstruct()

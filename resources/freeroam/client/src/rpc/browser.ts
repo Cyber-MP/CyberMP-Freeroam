@@ -8,6 +8,6 @@ export const browser = createRouterClient<
   BrowserRouter,
   MpEnv.CLIENT,
   MpEnv.BROWSER
->({ rpc, target: MpEnv.BROWSER });
+>({ rpc, targetEnv: MpEnv.BROWSER });
 
 export type BrowserInputs = InferRouterInputs<BrowserRouter>;
