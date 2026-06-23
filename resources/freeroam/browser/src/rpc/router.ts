@@ -2,7 +2,7 @@ import { type } from '@cybermp/rpc-router/server';
 import z from 'zod';
 import { setBodyVisibility, toggleBodyVisibility } from '../body';
 import { vehicleNitroContract } from '../components/hud/vehicle-nitro/contract';
-import { abilityContract } from '../hooks/use-ability';
+import { abilityContract } from '../hooks/use-ability-rules';
 import { matchmakingContract } from '../hooks/use-matches';
 import { keysContract } from '../keys';
 import { copyToClipboard } from '../lib/clipboard';

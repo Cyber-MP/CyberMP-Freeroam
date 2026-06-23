@@ -18,11 +18,11 @@ export type ChatCommand<Args extends z.ZodTuple> = {
   name: string;
   description?: string;
   args?: Args;
+  can?: CanParameters<[AbilityAction, AbilitySubjects]>;
 };
 
 export type ServerCommand<Args extends z.ZodTuple> = ChatCommand<Args> & {
   handler(player: MpPlayer, ...args: z.infer<Args>): void;
-  can?: CanParameters<[AbilityAction, AbilitySubjects]>;
 };
 
 @eager()

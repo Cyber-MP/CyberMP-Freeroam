@@ -5,7 +5,7 @@ import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 import { useMemo } from 'react';
 import { LoadingOverlay } from '@/components/loading-overlay';
 import { Toaster } from '@/components/ui/sonner';
-import { useAbilityRules } from '@/hooks/use-ability';
+import { useAbilityRules } from '@/hooks/use-ability-rules';
 import { IS_MP_MOCKED } from '@/mp';
 
 const RootLayout = () => {

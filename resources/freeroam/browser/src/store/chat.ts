@@ -23,6 +23,7 @@ export type ChatCommand = {
   name: string;
   description?: string;
   args?: JSONSchema.ArraySchema;
+  can?: [string, string];
 };
 
 export type ChatState = {

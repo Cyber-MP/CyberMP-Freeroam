@@ -1,3 +1,4 @@
+import { useAbility } from '@casl/react';
 import { cva } from 'class-variance-authority';
 import { type ChangeEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
@@ -213,8 +214,11 @@ const ChatInput = () => {
   const inputHistoryIndexRef = useRef<number | null>(null);
 
   const { visibility, clientCommands, serverCommands } = useSnapshot(chatState);
+  const ability = useAbility();
 
-  const commands = [...serverCommands, ...clientCommands];
+  const commands = [...serverCommands, ...clientCommands].filter((command) =>
+    command.can ? ability.can(...command.can) : true,
+  );
   const inputCommand = useMemo(
     () => input.replace('/', '').split(' ')[0],
     [input],

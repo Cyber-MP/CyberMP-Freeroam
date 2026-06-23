@@ -16,4 +16,5 @@ export const zChatCommandMetaDTO = z.object({
     })
     .loose()
     .optional(),
+  can: z.tuple([z.string(), z.string()]).optional(),
 });

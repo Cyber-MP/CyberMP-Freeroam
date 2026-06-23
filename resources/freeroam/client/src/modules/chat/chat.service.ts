@@ -14,11 +14,11 @@ export type ChatCommand<Args extends z.ZodTuple> = {
   name: string;
   description?: string;
   args?: Args;
+  can?: CanParameters<ServerAbilityTuple>;
 };
 
 export type ClientCommand<Args extends z.ZodTuple> = ChatCommand<Args> & {
   handler(...args: z.infer<Args>): void;
-  can?: CanParameters<ServerAbilityTuple>;
 };
 
 @eager()

@@ -17,6 +17,7 @@ export class SpectatingCommands {
     this.chatService.addCommand({
       name: 'spectate',
       args: z.tuple([z.coerce.number().meta({ title: 'player id' })]),
+      can: ['use', 'Spectate'],
       handler: (playerId) => {
         this.spectatingService.spectate(playerId);
       },
@@ -24,6 +25,7 @@ export class SpectatingCommands {
 
     this.chatService.addCommand({
       name: 'unspectate',
+      can: ['use', 'Spectate'],
       handler: () => {
         this.spectatingService.unspectate(true);
       },

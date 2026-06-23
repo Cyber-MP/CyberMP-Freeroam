@@ -14,6 +14,7 @@ export const AbilityActions = ['create', 'update', 'use'] as const;
 export type AbilityAction = (typeof AbilityActions)[number];
 
 export type AbilitySubjects =
+  | 'Spectate'
   | 'Teleport'
   | 'TeleportAll'
   | 'ServerTime'
@@ -72,6 +73,7 @@ export const playerAbilityFactory = (
       can('use', 'Teleport');
       can('use', 'Spawn');
       can('use', 'VehicleNitro');
+      can('use', 'Spectate');
 
       if (isAdmin) {
         can('use', 'Noclip');
