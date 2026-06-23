@@ -45,7 +45,7 @@ export class TeleportService {
 
     playerFrom.dimension = playerTo.dimension;
 
-    client.game.teleport.teleport.trigger(playerFrom, playerTo.position);
+    client.game.teleport.trigger(playerFrom, playerTo.position);
 
     this.loggerService.success(
       'Teleported player',
@@ -76,7 +76,7 @@ export class TeleportService {
       }
 
       player.dimension = playerTo.dimension;
-      client.game.teleport.teleport.trigger(player, positionTo);
+      client.game.teleport.trigger(player, positionTo);
     }
   }
 }

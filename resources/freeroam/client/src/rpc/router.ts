@@ -28,7 +28,7 @@ export const router = {
     vehicles: vehiclesContract,
     health: healthContract,
     statusEffects: statusEffectsContract,
-    teleport: teleportContract,
+    ...teleportContract,
   },
   gameModes: gameModesContract,
   weather: weatherContract,

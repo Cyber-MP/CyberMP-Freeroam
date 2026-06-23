@@ -161,7 +161,7 @@ class Racer {
 
     const [x, y, z] = node.position;
 
-    await client.game.teleport.teleportAsync.call(this.player, {
+    await client.game.teleportAsync.call(this.player, {
       x,
       y,
       z,

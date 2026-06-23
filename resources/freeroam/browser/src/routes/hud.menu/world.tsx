@@ -413,7 +413,7 @@ const LocationContent = () => {
   const ability = useTypedAbility();
 
   const teleport = (position: Location['positon']) => {
-    client.game.teleport.teleport.trigger(position);
+    client.game.teleport.trigger(position);
     navigate({ to: '/hud' });
   };
 
