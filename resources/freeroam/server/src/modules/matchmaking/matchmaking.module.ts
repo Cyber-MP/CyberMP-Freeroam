@@ -8,8 +8,8 @@ import { MatchmakingService } from './matchmaking.service';
 import {
   MatchMemberMiddlewareSymbol,
   MatchOwnerMiddlewareSymbol,
-  matchMemberMiddleware,
-  matchOwnerMiddleware,
+  matchMemberMiddlewareFactory,
+  matchOwnerMiddlewareFactory,
 } from './middlewares/match.middleware';
 
 export const MatchmakingModule = new ContainerModule(({ bind }) => {
@@ -23,6 +23,6 @@ export const MatchmakingModule = new ContainerModule(({ bind }) => {
     return <T extends BaseGameMode>() => c.get(Match) as Match<T>;
   });
 
-  bind(MatchMemberMiddlewareSymbol).toDynamicValue(matchMemberMiddleware);
-  bind(MatchOwnerMiddlewareSymbol).toDynamicValue(matchOwnerMiddleware);
+  bind(MatchMemberMiddlewareSymbol).toDynamicValue(matchMemberMiddlewareFactory);
+  bind(MatchOwnerMiddlewareSymbol).toDynamicValue(matchOwnerMiddlewareFactory);
 });

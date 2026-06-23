@@ -21,9 +21,9 @@ export type MatchMiddleware = RpcHandler<RpcMatchContext>;
 export const MatchMemberMiddlewareSymbol = Symbol.for('MatchMemberMiddleware');
 export const MatchOwnerMiddlewareSymbol = Symbol.for('MatchOwnerMiddleware');
 
-export const matchMemberMiddleware = (
+export const matchMemberMiddlewareFactory = (
   c: Container | ResolutionContext,
-): RpcHandler<RpcMatchContext> => {
+): MatchMiddleware => {
   return (context, next) => {
     const matchRepo = c.get(MatchRepository);
 
@@ -40,9 +40,9 @@ export const matchMemberMiddleware = (
   };
 };
 
-export const matchOwnerMiddleware = (
+export const matchOwnerMiddlewareFactory = (
   c: Container | ResolutionContext,
-): RpcHandler<RpcMatchContext> => {
+): MatchMiddleware => {
   return (context, next) => {
     const matchRepo = c.get(MatchRepository);
 

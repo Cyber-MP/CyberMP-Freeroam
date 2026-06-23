@@ -17,6 +17,7 @@ import { WeatherModule } from './modules/weather/weather.module';
 import { mp } from './mp';
 import { r, rpc } from './rpc';
 import { router } from './rpc/router';
+import { AbilityModule } from './modules/ability/ability.module';
 
 const modules = [
   LoggerModule,
@@ -30,6 +31,7 @@ const modules = [
   PolygonsModule,
   TeleportModule,
   AdminModule,
+  AbilityModule
 ];
 
 const coopWhen = async () => {
