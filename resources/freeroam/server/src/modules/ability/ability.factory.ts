@@ -27,7 +27,7 @@ export type AbilitySubjects =
   | 'VehicleNitro'
   | 'Noclip'
   | 'Spawn'
-  | 'SpawnInventoryItems'
+  | 'ItemsSpawner'
   | 'PlayerAppearance'
   | 'HealthControl'
   | 'OpenDoorCommand'
@@ -62,7 +62,7 @@ export const playerAbilityFactory = (
 
     if (!matchmakingService.isOnActiveMatch(player)) {
       can('update', 'PlayerAppearance');
-      can('use', 'SpawnInventoryItems');
+      can('use', 'ItemsSpawner');
       can('use', 'VehicleSpawner');
       can('use', 'VehicleManagement');
       can('use', 'FixWeaponsCommand');

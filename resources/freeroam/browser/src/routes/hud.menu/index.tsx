@@ -3,7 +3,7 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useMemo } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { withDisabledDuringMatch } from '@/hocs/with-disabled-during-match';
+import { useTypedAbility } from '@/hooks/use-typed-ability';
 import { serverQuery } from '@/rpc';
 import { queryClient } from '@/tanstack-query';
 import type { ServerOutputs } from '../../../../client/src/rpc';
@@ -96,7 +96,7 @@ const VEHICLE_IMAGES: Record<Vehicle['model'], string> = {
 };
 
 export const Route = createFileRoute('/hud/menu/')({
-  component: withDisabledDuringMatch(RouteComponent),
+  component: RouteComponent,
   pendingComponent: PendingComponent,
   pendingMs: 500,
   pendingMinMs: 300,
@@ -139,6 +139,8 @@ function PendingComponent() {
 }
 
 function RouteComponent() {
+  const ability = useTypedAbility();
+
   const { data: vehicles } = useSuspenseQuery(
     serverQuery.vehiclesSpawner.getAll.queryOptions(),
   );
@@ -161,6 +163,10 @@ function RouteComponent() {
       ) || []
     );
   }, [vehicles]);
+
+  if (ability.cannot('use', 'VehicleSpawner')) {
+    return <span>sry</span>;
+  }
 
   return (
     <div className="flex justify-center flex-wrap gap-12 gap-x-24 h-full w-full">

@@ -13,8 +13,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
-import { withDisabledDuringMatch } from '@/hocs/with-disabled-during-match';
 import { usePlayerId } from '@/hooks/use-player-id';
+import { useTypedAbility } from '@/hooks/use-typed-ability';
 import { type ClientInputs, client, clientQuery, serverQuery } from '@/rpc';
 import { queryClient } from '@/tanstack-query';
 import akulov_penthouse from '../../assets/images/locations/akulov_penthouse.webp?w=300&h=225&imagetools';
@@ -249,9 +249,10 @@ const playerStore = proxy({
   selected: '0',
 });
 
-const PlayerContent = withDisabledDuringMatch(() => {
+const PlayerContent = () => {
   const { selected: selectedPlayer } = useSnapshot(playerStore);
   const navigate = useNavigate();
+  const ability = useTypedAbility();
 
   const playerId = usePlayerId();
 
@@ -291,6 +292,10 @@ const PlayerContent = withDisabledDuringMatch(() => {
     navigate({ to: '/hud' });
   };
 
+  if (ability.cannot('use', 'Teleport')) {
+    return <span>sry</span>;
+  }
+
   return (
     <div className="flex flex-col gap-2">
       <span className="text-xs font-black uppercase tracking-wider">
@@ -327,7 +332,7 @@ const PlayerContent = withDisabledDuringMatch(() => {
       </div>
     </div>
   );
-});
+};
 
 type Location = {
   name: string;
@@ -403,13 +408,18 @@ const LOCATIONS: Location[] = [
   },
 ];
 
-const LocationContent = withDisabledDuringMatch(() => {
+const LocationContent = () => {
   const navigate = useNavigate();
+  const ability = useTypedAbility();
 
   const teleport = (position: Location['positon']) => {
     client.game.teleport.teleport.trigger(position);
     navigate({ to: '/hud' });
   };
+
+  if (ability.cannot('use', 'Teleport')) {
+    return <span>sry</span>;
+  }
 
   return (
     <div className="flex flex-col gap-2">
@@ -439,4 +449,4 @@ const LocationContent = withDisabledDuringMatch(() => {
       </div>
     </div>
   );
-});
+};

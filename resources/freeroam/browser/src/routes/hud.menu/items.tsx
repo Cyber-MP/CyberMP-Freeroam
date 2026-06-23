@@ -121,8 +121,7 @@ import Preset_Silverhand_3516 from '#/images/weapons/Preset_Silverhand_3516.webp
 import Preset_Tactician_Dino from '#/images/weapons/Preset_Tactician_Dino.webp?w=300&h=150&imagetools';
 import Preset_Yukimura_Default from '#/images/weapons/Preset_Yukimura_Default.webp?w=300&h=150&imagetools';
 import w_melee_boss_hammer from '#/images/weapons/w_melee_boss_hammer.webp?w=300&h=150&imagetools';
-
-import { withDisabledDuringMatch } from '@/hocs/with-disabled-during-match';
+import { useTypedAbility } from '@/hooks/use-typed-ability';
 import { type ClientInputs, clientQuery } from '@/rpc';
 import {
   Tabs,
@@ -132,7 +131,7 @@ import {
 } from '../../components/ui/tabs';
 
 export const Route = createFileRoute('/hud/menu/items')({
-  component: withDisabledDuringMatch(RouteComponent),
+  component: RouteComponent,
 });
 
 enum ItemCategory {
@@ -185,7 +184,6 @@ const DATA: Record<ItemCategory, Item[]> = {
       name: 'Satori',
       image: Preset_Katana_Saburo,
     },
-
     {
       key: 'Preset_Saratoga_Raffen',
       name: 'Problem Solver',
@@ -761,6 +759,12 @@ const DATA: Record<ItemCategory, Item[]> = {
 };
 
 function RouteComponent() {
+  const ability = useTypedAbility();
+
+  if (ability.cannot('use', 'ItemsSpawner')) {
+    return <span>sry</span>;
+  }
+
   return (
     <div className="flex justify-center flex-wrap gap-12 gap-x-24 h-full w-full">
       <Tabs defaultValue={ItemCategory.WEAPONS} className="w-full pb-4">

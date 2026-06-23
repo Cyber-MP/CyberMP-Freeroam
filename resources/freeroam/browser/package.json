@@ -10,6 +10,8 @@
     "type:check": "tsc -b"
   },
   "dependencies": {
+    "@casl/ability": "^7.0.0",
+    "@casl/react": "^7.0.0",
     "@cybermp/rpc-browser": "0.2.0",
     "@cybermp/rpc-router": "0.2.0",
     "@cybermp/rpc-router-react": "0.2.0",

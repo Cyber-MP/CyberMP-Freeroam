@@ -38,6 +38,12 @@ importers:
 
   resources/freeroam/browser:
     dependencies:
+      '@casl/ability':
+        specifier: ^7.0.0
+        version: 7.0.0
+      '@casl/react':
+        specifier: ^7.0.0
+        version: 7.0.0(@casl/ability@7.0.0)(react@19.2.3)
       '@cybermp/rpc-browser':
         specifier: 0.2.0
         version: 0.2.0(@cybermp/browser-types@2.0.0)(@opentelemetry/api@1.9.1)
@@ -545,6 +551,12 @@ packages:
 
   '@casl/ability@7.0.0':
     resolution: {integrity: sha512-QhwRflkTucpdS2uw1XScrzLWbgLYJGvPoq2Xm5OjeRci3dwtPixxnjUKJ04Ss1ivNS9tZQ8y4sjWeelWsrwo4g==}
+
+  '@casl/react@7.0.0':
+    resolution: {integrity: sha512-TfSujWNo4IosHoYZpkGdKXwlKdUBeJCm5CxaApjsOeyNFRfXcGWhHkikK4b6D0L+HgiRiizE7PxHhpc7lv3Z/g==}
+    peerDependencies:
+      '@casl/ability': ^4.0.0 || ^5.1.0 || ^6.0.0 || ^7.0.0
+      react: ^18.0.0 || ^19.0.0
 
   '@csstools/color-helpers@6.0.2':
     resolution: {integrity: sha512-LMGQLS9EuADloEFkcTBR3BwV/CGHV7zyDxVRtVDTwdI2Ca4it0CCVTT9wCkxSgokjE5Ho41hEPgb8OEUwoXr6Q==}
@@ -4857,6 +4869,11 @@ snapshots:
   '@casl/ability@7.0.0':
     dependencies:
       '@ucast/mongo2js': 2.0.0
+
+  '@casl/react@7.0.0(@casl/ability@7.0.0)(react@19.2.3)':
+    dependencies:
+      '@casl/ability': 7.0.0
+      react: 19.2.3
 
   '@csstools/color-helpers@6.0.2': {}
 

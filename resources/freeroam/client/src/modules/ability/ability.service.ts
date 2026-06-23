@@ -2,6 +2,7 @@ import { Ability, type CanParameters } from '@casl/ability';
 import { eager } from '@freeroam/inversify';
 import { injectable, postConstruct } from 'inversify';
 import { type ServerOutputs, server } from '../../rpc';
+import { browser } from '../../rpc/browser';
 
 export type ServerAbilityRules = ServerOutputs['ability']['getRules'];
 
@@ -21,7 +22,7 @@ export class AbilityService {
   sync(rules: ServerAbilityRules) {
     this.ability.update(rules);
 
-    // todo: sync to browser
+    browser.ability.sync.trigger(rules);
   }
 
   can(...args: CanParameters<ServerAbilityTuple>) {

@@ -2,6 +2,7 @@ import { type } from '@cybermp/rpc-router/server';
 import z from 'zod';
 import { setBodyVisibility, toggleBodyVisibility } from '../body';
 import { vehicleNitroContract } from '../components/hud/vehicle-nitro/contract';
+import { abilityContract } from '../hooks/use-ability';
 import { matchmakingContract } from '../hooks/use-matches';
 import { keysContract } from '../keys';
 import { copyToClipboard } from '../lib/clipboard';
@@ -23,21 +24,6 @@ export const rpcRouter = {
   pingBrowser: r.procedure.input(z.string()).handler(() => {
     console.log('test handler invoked');
   }),
-  gameModes: {
-    race: raceContract,
-    sumo: sumoContract,
-    pvp: pvpContract,
-    cyberpsycho: cyberpsychoContract,
-  },
-  matchmaking: matchmakingContract,
-  keys: keysContract,
-  hints: hintsContract,
-  chat: chatContract,
-  killFeed: killFeedContract,
-  hud: hudContract,
-  loadingOverlay: loadingOverlayContract,
-  toast: toastContract,
-  vehicleNitro: vehicleNitroContract,
 
   copyToClipboard: r.procedure.input(z.string()).handler((c) => {
     copyToClipboard(c.data);
@@ -60,6 +46,23 @@ export const rpcRouter = {
     setBodyVisibility(true);
   }),
   toggleVisibility: r.procedure.handler(toggleBodyVisibility),
+
+  gameModes: {
+    race: raceContract,
+    sumo: sumoContract,
+    pvp: pvpContract,
+    cyberpsycho: cyberpsychoContract,
+  },
+  matchmaking: matchmakingContract,
+  keys: keysContract,
+  hints: hintsContract,
+  chat: chatContract,
+  killFeed: killFeedContract,
+  hud: hudContract,
+  loadingOverlay: loadingOverlayContract,
+  toast: toastContract,
+  vehicleNitro: vehicleNitroContract,
+  ability: abilityContract,
 };
 
 export type BrowserRouter = typeof rpcRouter;
