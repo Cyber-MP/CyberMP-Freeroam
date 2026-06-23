@@ -3,7 +3,7 @@ import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
 import z from 'zod';
 import { mp } from '../../mp';
-import { ChatCommandFlag, ChatService } from '../chat/chat.service';
+import { ChatService } from '../chat/chat.service';
 import { TeleportService } from './teleport.service';
 
 @eager()
@@ -33,7 +33,7 @@ export class TeleportCommands {
         z.coerce.number().meta({ title: 'y', optional: true }).optional(),
         z.coerce.number().meta({ title: 'z', optional: true }).optional(),
       ]),
-      flags: ChatCommandFlag.Admin | ChatCommandFlag.DisableInGameMode,
+      can: ['use', 'TeleportAll'],
       handler: this.adminTeleportAll.bind(this),
     });
 

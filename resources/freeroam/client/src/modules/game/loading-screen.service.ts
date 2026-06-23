@@ -45,7 +45,7 @@ export class GLoadingScreenService {
   }
 
   getCurrentState() {
-    return +String(this.system.GetLoadingScreenState());
+    return this.system.GetLoadingScreenState();
   }
 
   subscribeOnStateChange(cb: LoadingScreenStateSubscriber) {

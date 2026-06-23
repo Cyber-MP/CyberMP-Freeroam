@@ -1,7 +1,7 @@
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
 import { mp } from '../../mp';
-import { ChatCommandFlag, ChatService } from '../chat/chat.service';
+import { ChatService } from '../chat/chat.service';
 import { SpawnService } from './spawn.service';
 
 @eager()
@@ -23,7 +23,7 @@ export class SpawnCommands {
     this.chatService.addCommand({
       name: 'spawn',
       description: 'Spawns you... duh',
-      flags: ChatCommandFlag.DisableInGameMode,
+      can: ['use', 'Spawn'],
       handler: this.spawn.bind(this),
     });
 

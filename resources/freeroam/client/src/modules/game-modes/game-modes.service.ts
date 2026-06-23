@@ -1,6 +1,6 @@
 import type { MatchDTO } from '@freeroam/shared/matchmaking';
 import { inject, injectable, preDestroy } from 'inversify';
-import { ChatCommandFlag, ChatService } from '../chat/chat.service';
+import { ChatService } from '../chat/chat.service';
 import { LoggerService } from '../logger/logger.service';
 import {
   type BaseGameMode,
@@ -33,8 +33,6 @@ export class GameModesService {
     instance.init(match);
     instance.start();
 
-    this.chatService.addCommandFlag(ChatCommandFlag.DisableInGameMode);
-
     this.activeMode = instance;
 
     this.logger.info('Started game mode', match.modeName);
@@ -44,8 +42,6 @@ export class GameModesService {
     if (!this.activeMode) {
       return;
     }
-
-    this.chatService.removeCommandFlag(ChatCommandFlag.DisableInGameMode);
 
     this.logger.info('Ended game mode', this.activeMode?.match.modeName);
 

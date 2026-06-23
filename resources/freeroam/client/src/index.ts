@@ -4,6 +4,7 @@ import { RpcError } from '@cybermp/rpc-client';
 import { eagerRegistry } from '@freeroam/inversify';
 import type { ContainerModule } from 'inversify';
 import { container } from './container';
+import { AbilityModule } from './modules/ability/ability.module';
 import { CefModule } from './modules/cef/cef.module';
 import { ChatModule } from './modules/chat/chat.module';
 import { DeathModule } from './modules/death/death.module';
@@ -47,6 +48,7 @@ const modules: ContainerModule[] = [
   ItemSpawnerModule,
   NoclipModule,
   VehicleNitroModule,
+  AbilityModule,
 ];
 
 const coopWhen = async () => {

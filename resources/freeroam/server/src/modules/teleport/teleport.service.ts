@@ -3,6 +3,7 @@ import type { MpPlayer, Vector3 } from '@cybermp/server-types';
 import { inject, injectable } from 'inversify';
 import { mp } from '../../mp';
 import { client } from '../../rpc';
+import { AbilityService } from '../ability/ability.service';
 import { LoggerService } from '../logger/logger.service';
 import { MatchmakingService } from '../matchmaking/matchmaking.service';
 
@@ -11,14 +12,17 @@ export class TeleportService {
   constructor(
     @inject(MatchmakingService) private matchmakingService: MatchmakingService,
     @inject(LoggerService) private loggerService: LoggerService,
+    @inject(AbilityService) private abilityService: AbilityService,
   ) {
     this.loggerService.setContext('TeleportService');
   }
 
   public getAvailablePlayers() {
-    const players = mp.players
-      .toArray()
-      .filter((player) => !this.matchmakingService.isOnActiveMatch(player));
+    const players = mp.players.toArray().filter((player) => {
+      const ability = this.abilityService.create(player);
+
+      return ability.can('use', 'Teleport');
+    });
 
     return players.map((player) => ({
       nickname: player.nickname,
@@ -27,17 +31,19 @@ export class TeleportService {
   }
 
   public teleportToPlayer(playerFrom: MpPlayer, playerTo: MpPlayer) {
-    playerFrom.dimension = playerTo.dimension;
+    const playerFromAbility = this.abilityService.create(playerFrom);
+    const playerToAbility = this.abilityService.create(playerTo);
 
     if (
-      this.matchmakingService.isOnActiveMatch(playerFrom) ||
-      this.matchmakingService.isOnActiveMatch(playerTo)
+      playerFromAbility.cannot('use', 'Teleport') ||
+      playerToAbility.cannot('use', 'Teleport')
     ) {
       throw RpcError.invalidData({
-        message:
-          'Teleport is not allowed while one of the players is on an active match',
+        message: 'Teleport is not allowed for one of the players',
       });
     }
+
+    playerFrom.dimension = playerTo.dimension;
 
     client.game.teleport.teleport.trigger(playerFrom, playerTo.position);
 
@@ -63,7 +69,9 @@ export class TeleportService {
         continue;
       }
 
-      if (this.matchmakingService.isOnActiveMatch(player)) {
+      const ability = this.abilityService.create(player);
+
+      if (ability.cannot('use', 'Teleport')) {
         continue;
       }
 

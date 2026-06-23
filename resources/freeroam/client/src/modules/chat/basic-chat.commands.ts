@@ -10,7 +10,7 @@ import { GAppearanceMenuService } from '../game/appearance-menu.service';
 import { GHudService } from '../game/hud.service';
 import { GPlayerService } from '../game/player.service';
 import { GStatusEffectsService } from '../game/status-effects/status-effects.service';
-import { ChatCommandFlag, ChatService } from './chat.service';
+import { ChatService } from './chat.service';
 
 @eager()
 @injectable()
@@ -155,7 +155,7 @@ export class BasicChatCommands {
 
     this.chatService.addCommand({
       name: 'appearance',
-      flags: ChatCommandFlag.DisableInGameMode,
+      can: ['update', 'PlayerAppearance'],
       description: 'Opens appearance menu',
       handler: () => this.appearanceMenuService.open(),
     });
@@ -174,7 +174,7 @@ export class BasicChatCommands {
 
     this.chatService.addCommand({
       name: 'vboost',
-      flags: ChatCommandFlag.Admin | ChatCommandFlag.DisableInGameMode,
+      can: ['use', 'VehicleBoost'],
       args: z.tuple([
         z.coerce
           .number()
@@ -187,22 +187,21 @@ export class BasicChatCommands {
     });
     this.chatService.addCommand({
       name: 'vstop',
-      flags: ChatCommandFlag.Admin | ChatCommandFlag.DisableInGameMode,
+      can: ['use', 'VehicleBoost'],
       description: 'Stop vehicle velocity',
       handler: this.vehicleStop.bind(this),
     });
 
     this.chatService.addCommand({
       name: 'vgrav',
-      flags: ChatCommandFlag.Admin | ChatCommandFlag.DisableInGameMode,
-
+      can: ['use', 'VehicleBoost'],
       description: 'Toggle gravity on your current vehicle',
       handler: this.vehicleGravity.bind(this),
     });
 
     this.chatService.addCommand({
       name: 'fixweapons',
-      flags: ChatCommandFlag.DisableInGameMode,
+      can: ['use', 'FixWeaponsCommand'],
       description: 'Tries to fix your weapons in case you cant shoot',
       handler: this.fixWeapons.bind(this),
     });
@@ -210,6 +209,7 @@ export class BasicChatCommands {
     this.chatService.addCommand({
       name: 'levelup',
       description: 'Levels up...',
+      can: ['use', 'LevelUpCommand'],
       handler: () =>
         retry({ times: 3, delay: 250 }, () => this.playerService.levelUp()),
     });
@@ -229,7 +229,7 @@ export class BasicChatCommands {
     this.chatService.addCommand({
       name: 'change-gender',
       description: 'Changes your gender',
-      flags: ChatCommandFlag.DisableInGameMode,
+      can: ['update', 'PlayerAppearance'],
       handler: this.changeGender.bind(this),
     });
 
@@ -244,7 +244,7 @@ export class BasicChatCommands {
           .optional()
           .default('true'),
       ]),
-      flags: ChatCommandFlag.DisableInGameMode,
+      can: ['use', 'OpenDoorCommand'],
       handler: this.openDoor.bind(this),
     });
   }

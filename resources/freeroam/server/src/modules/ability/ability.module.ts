@@ -1,4 +1,5 @@
 import { ContainerModule } from 'inversify';
+import { AbilityController } from './ability.controller';
 import {
   type PlayerAbilityFactory,
   PlayerAbilityFactorySymbol,
@@ -16,6 +17,7 @@ import {
 
 export const AbilityModule = new ContainerModule(({ bind }) => {
   bind(AbilityService).toSelf().inSingletonScope();
+  bind(AbilityController).toSelf().inSingletonScope();
   bind<PlayerAbilityFactory>(PlayerAbilityFactorySymbol).toFactory(
     playerAbilityFactory,
   );

@@ -216,6 +216,9 @@ importers:
 
   resources/freeroam/client:
     dependencies:
+      '@casl/ability':
+        specifier: ^7.0.0
+        version: 7.0.0
       '@cybermp/rpc-client':
         specifier: 0.2.0
         version: 0.2.0(@cybermp/client-types@2.3.3)(@opentelemetry/api@1.9.1)

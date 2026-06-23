@@ -1,16 +1,18 @@
 import type { MpPlayer } from '@cybermp/server-types';
-import { inject, injectable } from 'inversify';
+import { inject, injectable, LazyServiceIdentifier } from 'inversify';
 import { mp } from '../../mp';
 import { AbilityService } from '../ability/ability.service';
-import { ChatCommandFlag, ChatService } from '../chat/chat.service';
+import { ChatService } from '../chat/chat.service';
 
 @injectable()
 export class AdminService {
   private readonly ADMIN_PASSWORD = import.meta.env.TSDOWN_ADMIN_PASSWORD;
 
   constructor(
-    @inject(ChatService) private chatService: ChatService,
-    @inject(AbilityService) private abilityService: AbilityService,
+    @inject(new LazyServiceIdentifier(() => ChatService))
+    private chatService: ChatService,
+    @inject(new LazyServiceIdentifier(() => AbilityService))
+    private abilityService: AbilityService,
   ) {}
 
   becomeAdmin(player: MpPlayer, password: string) {
@@ -24,7 +26,6 @@ export class AdminService {
       return;
     }
 
-    this.chatService.addCommandFlag(player, ChatCommandFlag.Admin);
     player.setMeta('admin', true);
     this.chatService.sendMessage(player, 'Success 0_o');
 

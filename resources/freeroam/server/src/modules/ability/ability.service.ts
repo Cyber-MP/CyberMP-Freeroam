@@ -1,5 +1,6 @@
 import type { MpPlayer } from '@cybermp/server-types';
 import { inject, injectable } from 'inversify';
+import { client } from '../../rpc';
 import {
   type PlayerAbilityFactory,
   PlayerAbilityFactorySymbol,
@@ -19,6 +20,6 @@ export class AbilityService {
   sync(player: MpPlayer) {
     const ability = this.playerAbilityFactory(player);
 
-    console.log('updated');
+    client.ability.sync.trigger(player, ability.rules);
   }
 }

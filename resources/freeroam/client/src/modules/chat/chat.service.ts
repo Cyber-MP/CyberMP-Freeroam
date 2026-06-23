@@ -1,8 +1,12 @@
+import type { CanParameters } from '@casl/ability';
 import { eager } from '@freeroam/inversify';
-import { injectable } from 'inversify';
+import { inject, injectable } from 'inversify';
 import z from 'zod';
-import { mp } from '../../mp';
 import { browser } from '../../rpc/browser';
+import {
+  AbilityService,
+  type ServerAbilityTuple,
+} from '../ability/ability.service';
 import { zChatCommandMetaDTO } from './dto/chat-command-meta';
 import type { ExecuteCommandDTO } from './dto/execute-command';
 
@@ -12,15 +16,9 @@ export type ChatCommand<Args extends z.ZodTuple> = {
   args?: Args;
 };
 
-export enum ChatCommandFlag {
-  None = 0,
-  DisableInGameMode = 1 << 2,
-  Admin = 1 << 3,
-}
-
 export type ClientCommand<Args extends z.ZodTuple> = ChatCommand<Args> & {
   handler(...args: z.infer<Args>): void;
-  flags?: ChatCommandFlag;
+  can?: CanParameters<ServerAbilityTuple>;
 };
 
 @eager()
@@ -28,23 +26,7 @@ export type ClientCommand<Args extends z.ZodTuple> = ChatCommand<Args> & {
 export class ChatService {
   private registry = new Map<string, ClientCommand<z.ZodTuple<any>>>();
 
-  private commandsFlags = ChatCommandFlag.None;
-
-  addCommandFlag(flag: ChatCommandFlag) {
-    this.commandsFlags |= flag;
-  }
-
-  removeCommandFlag(flag: ChatCommandFlag) {
-    const before = this.commandsFlags;
-    this.commandsFlags &= ~flag;
-    const after = this.commandsFlags;
-
-    if (before === after) {
-      console.warn(
-        `Flag ${flag} was not present in ${before} or removal failed.`,
-      );
-    }
-  }
+  constructor(@inject(AbilityService) private abilityService: AbilityService) {}
 
   executeCommand({ name, args }: ExecuteCommandDTO) {
     const command = this.registry.get(name);
@@ -52,24 +34,9 @@ export class ChatService {
       return;
     }
 
-    if (command.flags) {
-      if (
-        (command.flags & ChatCommandFlag.Admin) !== 0 &&
-        mp.meta.getLocalPlayerMeta('admin') !== true
-      ) {
-        this.sendMessage('You are not an admin ._.');
-        return;
-      }
-
-      if (
-        (this.commandsFlags & command.flags) !== 0 &&
-        (command.flags & ~ChatCommandFlag.Admin) !== 0
-      ) {
-        this.sendMessage(
-          `Command /${command.name} is disabled for you right now.`,
-        );
-        return;
-      }
+    if (command.can && this.abilityService.cannot(...command.can)) {
+      this.sendMessage('Forbidden');
+      return;
     }
 
     if (!command.args) {

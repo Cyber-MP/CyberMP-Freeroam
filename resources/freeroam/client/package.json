@@ -20,6 +20,7 @@
     "vite": "8.0.8"
   },
   "dependencies": {
+    "@casl/ability": "^7.0.0",
     "@cybermp/rpc-client": "0.2.0",
     "@cybermp/rpc-router": "0.2.0",
     "@freeroam/inversify": "workspace:*",

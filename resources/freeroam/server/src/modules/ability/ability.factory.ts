@@ -14,12 +14,25 @@ export const AbilityActions = ['create', 'update', 'use'] as const;
 export type AbilityAction = (typeof AbilityActions)[number];
 
 export type AbilitySubjects =
-  | 'VehicleSpawner'
   | 'Teleport'
+  | 'TeleportAll'
   | 'ServerTime'
-  | 'ClientTime'
+  // | 'ClientTime'
   | 'ServerWeather'
-  | 'ClientWeather'
+  // | 'ClientWeather'
+  | 'VehicleSpawner'
+  | 'ClearAllVehicles'
+  | 'VehicleBoost'
+  | 'VehicleManagement'
+  | 'VehicleNitro'
+  | 'Noclip'
+  | 'Spawn'
+  | 'SpawnInventoryItems'
+  | 'PlayerAppearance'
+  | 'HealthControl'
+  | 'OpenDoorCommand'
+  | 'FixWeaponsCommand'
+  | 'LevelUpCommand'
   | 'all';
 
 export type Ability = MongoAbility<[AbilityAction, AbilitySubjects]>;
@@ -45,12 +58,33 @@ export const playerAbilityFactory = (
 
     const { can, build } = new AbilityBuilder<Ability>(createMongoAbility);
 
-    // if (!matchmakingService.isOnActiveMatch(player)) {
-    //   can('use', 'VehicleSpawner');
-    //   can('use', 'Teleport');
-    // }
+    const isAdmin = adminService.isAdmin(player);
 
-    if (adminService.isAdmin(player)) {
+    if (!matchmakingService.isOnActiveMatch(player)) {
+      can('update', 'PlayerAppearance');
+      can('use', 'SpawnInventoryItems');
+      can('use', 'VehicleSpawner');
+      can('use', 'VehicleManagement');
+      can('use', 'FixWeaponsCommand');
+      can('use', 'LevelUpCommand');
+      can('use', 'OpenDoorCommand');
+      can('use', 'HealthControl');
+      can('use', 'Teleport');
+      can('use', 'Spawn');
+      can('use', 'VehicleNitro');
+
+      if (isAdmin) {
+        can('use', 'Noclip');
+        can('use', 'VehicleBoost');
+        can('use', 'TeleportAll');
+        can('update', 'VehicleNitro');
+      }
+    }
+
+    if (isAdmin) {
+      can('update', 'ServerTime');
+      can('update', 'ServerWeather');
+      can('use', 'ClearAllVehicles');
     }
 
     return build({ detectSubjectType });

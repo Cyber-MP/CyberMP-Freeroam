@@ -11,6 +11,7 @@ import { vehiclesSpawnerContract } from '../modules/vehicles-spawner/vehicles-sp
 import { weatherContract } from '../modules/weather/weather.controller';
 import { mp } from '../mp';
 import { r } from './rpc-router';
+import { abilityContract } from '../modules/ability/ability.controller';
 
 export const router = {
   pingServer: r.procedure.input(z.string()).handler((c) => {
@@ -47,6 +48,7 @@ export const router = {
   logger: loggerContract,
   chat: chatContract,
   teleport: teleportContract,
+  ability: abilityContract
 };
 
 export type ServerRouter = typeof router;

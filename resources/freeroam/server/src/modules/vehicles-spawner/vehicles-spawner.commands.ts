@@ -2,7 +2,7 @@ import type { MpPlayer } from '@cybermp/server-types';
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
 import { mp } from '../../mp';
-import { ChatCommandFlag, ChatService } from '../chat/chat.service';
+import { ChatService } from '../chat/chat.service';
 import { VehiclesSpawnerService } from './vehicles-spawner.service';
 
 @eager()
@@ -36,14 +36,14 @@ export class VehiclesSpawnerCommands {
     this.chatService.addCommand({
       name: 'clearveh',
       description: "Clear vehicles you've spawned",
-      flags: ChatCommandFlag.DisableInGameMode,
+      can: ['use', 'VehicleManagement'],
       handler: this.clearPlayerVehicles.bind(this),
     });
 
     this.chatService.addCommand({
       name: 'admin-clearveh',
       description: 'Clear all vehicles from the server',
-      flags: ChatCommandFlag.Admin,
+      can: ['use', 'ClearAllVehicles'],
       handler: this.adminClearAllVehicles.bind(this),
     });
 

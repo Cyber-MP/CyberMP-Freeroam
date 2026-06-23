@@ -1,8 +1,14 @@
+import type { CanParameters } from '@casl/ability';
 import type { MpPlayer } from '@cybermp/server-types';
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
 import z from 'zod';
 import { browser } from '../../rpc/browser';
+import type {
+  AbilityAction,
+  AbilitySubjects,
+} from '../ability/ability.factory';
+import { AbilityService } from '../ability/ability.service';
 import { LoggerService } from '../logger/logger.service';
 import { zChatCommandMetaDTO } from './dto/chat-command-meta';
 import { zChatMessageDTO } from './dto/chat-message';
@@ -14,41 +20,21 @@ export type ChatCommand<Args extends z.ZodTuple> = {
   args?: Args;
 };
 
-export enum ChatCommandFlag {
-  None = 0,
-  DisableInGameMode = 1 << 2,
-  Admin = 1 << 3,
-}
-
 export type ServerCommand<Args extends z.ZodTuple> = ChatCommand<Args> & {
   handler(player: MpPlayer, ...args: z.infer<Args>): void;
-  flags?: ChatCommandFlag;
+  can?: CanParameters<[AbilityAction, AbilitySubjects]>;
 };
 
 @eager()
 @injectable()
 export class ChatService {
   private registry = new Map<string, ServerCommand<any>>();
-  private playersFlags = new Map<number, number>();
 
-  constructor(@inject(LoggerService) private logger: LoggerService) {
+  constructor(
+    @inject(LoggerService) private logger: LoggerService,
+    @inject(AbilityService) private abilityService: AbilityService,
+  ) {
     this.logger.setContext('ChatService');
-  }
-
-  addCommandFlag(player: MpPlayer | number, flag: ChatCommandFlag) {
-    const playerId = typeof player === 'number' ? player : player.id;
-
-    const currentFlags = this.playersFlags.get(playerId);
-
-    this.playersFlags.set(playerId, (currentFlags ?? 0) | flag);
-  }
-
-  removeCommandFlag(player: MpPlayer | number, flag: ChatCommandFlag) {
-    const playerId = typeof player === 'number' ? player : player.id;
-
-    const currentFlags = this.playersFlags.get(playerId);
-
-    this.playersFlags.set(playerId, (currentFlags ?? 0) & ~flag);
   }
 
   executeCommand(player: MpPlayer, { name, args }: ExecuteCommandDTO) {
@@ -57,25 +43,11 @@ export class ChatService {
       return;
     }
 
-    const playerFlags =
-      this.playersFlags.get(player.id) ?? ChatCommandFlag.None;
+    const ability = this.abilityService.create(player);
 
-    if (command.flags) {
-      if (
-        command.flags & ChatCommandFlag.Admin &&
-        (playerFlags & ChatCommandFlag.Admin) === 0
-      ) {
-        this.sendMessage(player, 'You are not an admin ._.');
-        return;
-      }
-
-      if ((playerFlags & command.flags & ~ChatCommandFlag.Admin) !== 0) {
-        this.sendMessage(
-          player,
-          `Command /${command.name} is disabled for you right now.`,
-        );
-        return;
-      }
+    if (command.can && ability.cannot(...command.can)) {
+      this.sendMessage(player, 'Forbidden');
+      return;
     }
 
     if (!command.args) {
@@ -101,7 +73,7 @@ export class ChatService {
 
     if (!newMessage.success) {
       this.logger.warn(
-        'Could post message cuz new message is not validated',
+        'Could not post message cuz new message is not validated',
         newMessage.error,
       );
       return;

@@ -1,7 +1,7 @@
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
 import z from 'zod';
-import { ChatCommandFlag, ChatService } from '../chat/chat.service';
+import { ChatService } from '../chat/chat.service';
 import {
   NITRO_PRESET_NAMES,
   type NitroPresetName,
@@ -47,7 +47,7 @@ export class VehicleNitroCommands {
       name: 'nitro-force',
       description: 'Sets nitro force (10 is too much)',
       args: z.tuple([z.coerce.number().meta({ title: 'force' }).min(0)]),
-      flags: ChatCommandFlag.Admin,
+      can: ['update', 'VehicleNitro'],
       handler: this.nitroForce.bind(this),
     });
 
@@ -55,7 +55,7 @@ export class VehicleNitroCommands {
       name: 'nitro-check-ground',
       description: 'Use nitro in air, fly to the moon',
       args: z.tuple([z.stringbool().meta({ title: 'check-ground' })]),
-      flags: ChatCommandFlag.Admin,
+      can: ['update', 'VehicleNitro'],
       handler: this.nitroCheckGround.bind(this),
     });
 
@@ -63,7 +63,7 @@ export class VehicleNitroCommands {
       name: 'nitro-maxspeed',
       description: 'Sets nitro max speed',
       args: z.tuple([z.coerce.number().meta({ title: 'max speed' }).min(0)]),
-      flags: ChatCommandFlag.Admin,
+      can: ['update', 'VehicleNitro'],
       handler: this.nitroMaxSpeed.bind(this),
     });
 
@@ -74,7 +74,7 @@ export class VehicleNitroCommands {
       args: z.tuple([
         z.coerce.number().meta({ title: 'nitro by use' }).min(0).max(100),
       ]),
-      flags: ChatCommandFlag.Admin,
+      can: ['update', 'VehicleNitro'],
       handler: this.nitroByUse.bind(this),
     });
 
@@ -84,7 +84,7 @@ export class VehicleNitroCommands {
       args: z.tuple([
         z.coerce.number().meta({ title: 'regen rate' }).min(0).max(100),
       ]),
-      flags: ChatCommandFlag.Admin,
+      can: ['update', 'VehicleNitro'],
       handler: this.nitroRegen.bind(this),
     });
 
@@ -96,7 +96,7 @@ export class VehicleNitroCommands {
           title: 'preset',
         }),
       ]),
-      flags: ChatCommandFlag.DisableInGameMode,
+      can: ['use', 'VehicleNitro'],
       handler: this.nitroPreset.bind(this),
     });
   }

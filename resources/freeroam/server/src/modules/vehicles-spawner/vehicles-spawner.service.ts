@@ -6,6 +6,7 @@ import {
 import { inject, injectable } from 'inversify';
 import { mp } from '../../mp';
 import { client } from '../../rpc';
+import { AbilityService } from '../ability/ability.service';
 import { MatchmakingService } from '../matchmaking/matchmaking.service';
 import { type VehicleModel, VehiclesRepository } from './vehicles.repository';
 
@@ -17,7 +18,7 @@ export class VehiclesSpawnerService {
 
   constructor(
     @inject(MatchmakingService) private matchmakingService: MatchmakingService,
-
+    @inject(AbilityService) private abilityService: AbilityService,
     @inject(VehiclesRepository) private vehiclesRepository: VehiclesRepository,
   ) {}
 
@@ -57,7 +58,9 @@ export class VehiclesSpawnerService {
   }
 
   spawnVehicleFromList(player: MpPlayer, vehicleModel: VehicleModel) {
-    if (this.matchmakingService.isOnActiveMatch(player)) {
+    const ability = this.abilityService.create(player);
+
+    if (ability.cannot('use', 'VehicleSpawner')) {
       return;
     }
 

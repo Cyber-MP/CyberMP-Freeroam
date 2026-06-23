@@ -1,5 +1,6 @@
 import { RpcApplyType } from '@cybermp/rpc-client';
 import z from 'zod';
+import { abilityContract } from '../modules/ability/ability.controller';
 import { cefContract } from '../modules/cef/cef.controller';
 import { chatContract } from '../modules/chat/chat.controller';
 import { healthContract } from '../modules/game/health/health.controller';
@@ -16,6 +17,13 @@ import { mp } from '../mp';
 import { r } from './rpc-router';
 
 export const router = {
+  getPlayerId: r.procedure
+    .method(RpcApplyType.REGISTER)
+    .output(z.number())
+    .handler(() => {
+      return mp.network.getPlayerId(1);
+    }),
+
   game: {
     vehicles: vehiclesContract,
     health: healthContract,
@@ -30,12 +38,7 @@ export const router = {
   cef: cefContract,
   chat: chatContract,
   itemSpawner: itemSpawnerContract,
-  getPlayerId: r.procedure
-    .method(RpcApplyType.REGISTER)
-    .output(z.number())
-    .handler(() => {
-      return mp.network.getPlayerId(1);
-    }),
+  ability: abilityContract,
 };
 
 export type ClientRouter = typeof router;

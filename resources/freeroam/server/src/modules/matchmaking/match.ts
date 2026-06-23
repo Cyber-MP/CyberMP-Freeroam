@@ -5,12 +5,12 @@ import {
   type TMatchStatus,
   zMatchDTO,
 } from '@freeroam/shared/matchmaking';
-import { inject, injectable } from 'inversify';
+import { inject, injectable, LazyServiceIdentifier } from 'inversify';
 import { tryit } from 'radash';
 import type z from 'zod';
 import { mp } from '../../mp';
 import { client } from '../../rpc';
-import { ChatCommandFlag, ChatService } from '../chat/chat.service';
+import { AbilityService } from '../ability/ability.service';
 import type { BaseGameMode } from '../game-modes/game-mode';
 import { LoggerService } from '../logger/logger.service';
 
@@ -41,11 +41,11 @@ export class Match<TGameMode extends BaseGameMode = BaseGameMode> {
 
   private hooks?: MatchHooks;
 
-  @inject(ChatService)
-  private chatService!: ChatService;
-
   @inject(LoggerService)
   private loggerService!: LoggerService;
+
+  @inject(new LazyServiceIdentifier(() => AbilityService))
+  private abilityService!: AbilityService;
 
   _init(
     {
@@ -137,6 +137,8 @@ export class Match<TGameMode extends BaseGameMode = BaseGameMode> {
 
     this.hooks?.onPlayerJoin?.(playerId);
 
+    this.abilityService.sync(mp.players.at(playerId));
+
     return true;
   }
 
@@ -168,8 +170,10 @@ export class Match<TGameMode extends BaseGameMode = BaseGameMode> {
     if (newAuthor) {
       this.ownerId = newAuthor;
     } else {
-      this.end();
+      await this.end();
     }
+
+    this.abilityService.sync(mp.players.at(playerId));
   }
 
   async start() {
@@ -189,10 +193,8 @@ export class Match<TGameMode extends BaseGameMode = BaseGameMode> {
 
     for (const playerId of this.members.keys()) {
       client.gameModes.start.trigger(playerId, this.toDTO());
-      this.chatService.addCommandFlag(
-        playerId,
-        ChatCommandFlag.DisableInGameMode,
-      );
+
+      this.abilityService.sync(mp.players.at(playerId));
     }
 
     const [err] = await tryit(() => this.mode.start())();
@@ -202,6 +204,8 @@ export class Match<TGameMode extends BaseGameMode = BaseGameMode> {
         err,
         err.message,
       );
+
+      return this.end();
     }
 
     this.hooks?.onStart?.();
@@ -223,15 +227,17 @@ export class Match<TGameMode extends BaseGameMode = BaseGameMode> {
 
     for (const playerId of this.members.keys()) {
       client.gameModes.end.trigger(playerId);
-      this.chatService.removeCommandFlag(
-        playerId,
-        ChatCommandFlag.DisableInGameMode,
-      );
+
+      this.abilityService.sync(mp.players.at(playerId));
     }
 
     this.hooks?.onEnd?.();
 
     this.members.clear();
+
+    for (const playerId of this.members.keys()) {
+      this.abilityService.sync(mp.players.at(playerId));
+    }
   }
 }
 
