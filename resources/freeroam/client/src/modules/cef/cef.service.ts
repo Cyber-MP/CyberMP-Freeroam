@@ -13,6 +13,8 @@ import { GLoadingScreenService } from '../game/loading-screen.service';
 @eager()
 @injectable()
 export class CefService {
+  private forceFocus = false;
+
   constructor(
     @inject(GLoadingScreenService)
     private loadingService: GLoadingScreenService,
@@ -20,12 +22,27 @@ export class CefService {
     private keyboardService: GKeyboardService,
   ) {}
 
+  isInFocus() {
+    return this.forceFocus || mp.cef.isInFocus();
+  }
+
+  setForceFocus(focus: boolean) {
+    mp.cef.setFocus(focus, focus);
+    this.forceFocus = focus;
+  }
+
+  setFocus(focus: boolean, cursor?: boolean) {
+    if (!this.forceFocus) {
+      mp.cef.setFocus(focus, cursor);
+    }
+  }
+
   private loadingHandler = async (state: ELoadingScreenState) => {
     if (state !== ELoadingScreenState.Started) {
       return;
     }
 
-    mp.cef.setFocus(false, false);
+    this.setFocus(false, false);
 
     browser.loadingOverlay.show.trigger();
 

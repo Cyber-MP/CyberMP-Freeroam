@@ -4,9 +4,7 @@ import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
 import { createVector4 } from '../../lib/vectors';
 import { mp } from '../../mp';
-import { DeathService } from '../death/death.service';
 import { GHealthService } from '../game/health/health.service';
-import { GHudService } from '../game/hud.service';
 import { GVehiclesService } from '../game/vehicles/vehicles.service';
 import { LoggerService } from '../logger/logger.service';
 
@@ -26,9 +24,7 @@ export class SpawnService {
 
   constructor(
     @inject(GHealthService) private health: GHealthService,
-    @inject(DeathService) private deathService: DeathService,
     @inject(GVehiclesService) private vehiclesService: GVehiclesService,
-    @inject(GHudService) private hudService: GHudService,
     @inject(LoggerService) private loggerService: LoggerService,
   ) {
     this.loggerService.setContext('SpawnService');
@@ -50,8 +46,6 @@ export class SpawnService {
     const pos = Array.isArray(position) ? createVector4(...position) : position;
 
     mp.local.spawnPlayer(pos.x, pos.y, pos.z, pos.w);
-    this.deathService.stand();
-    this.hudService.show();
 
     this.loggerService.success('Spawned player at', pos, 'with health', health);
   }

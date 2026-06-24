@@ -1,7 +1,7 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import { useMemo } from 'react';
 import { Button } from '@/components/ui/button';
-import { useFocus } from '@/hooks/use-focus';
+import { useForceFocus } from '@/hooks/use-focus';
 import { client } from '@/rpc';
 
 export const Route = createFileRoute('/death')({
@@ -37,23 +37,18 @@ const DEATH_MESSAGES = [
 ];
 
 function RouteComponent() {
-  // Randomly select a message once on mount
   const message = useMemo(() => {
     return DEATH_MESSAGES[Math.floor(Math.random() * DEATH_MESSAGES.length)];
   }, []);
 
-  const navigate = useNavigate();
-
-  useFocus();
+  useForceFocus();
 
   const spawnOnBase = () => {
     client.spawn.spawnOnBase.trigger();
-    navigate({ to: '/hud' });
   };
 
   const spawnOnLocation = () => {
     client.spawn.spawnOnLocation.trigger();
-    navigate({ to: '/hud' });
   };
 
   return (

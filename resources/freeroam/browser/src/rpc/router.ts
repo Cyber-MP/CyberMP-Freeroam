@@ -1,3 +1,4 @@
+import { RpcApplyType } from '@cybermp/rpc-browser';
 import { type } from '@cybermp/rpc-router/server';
 import z from 'zod';
 import { setBodyVisibility, toggleBodyVisibility } from '../body';
@@ -37,6 +38,13 @@ export const rpcRouter = {
       } else {
         tanstackRouter.history.go(c.data);
       }
+    }),
+  getCurrentPathname: r.procedure
+    .method(RpcApplyType.REGISTER)
+    .output(type<keyof FileRoutesByFullPath>())
+    .handler(() => {
+      return tanstackRouter.state.location
+        .pathname as keyof FileRoutesByFullPath;
     }),
 
   hide: r.procedure.handler(() => {

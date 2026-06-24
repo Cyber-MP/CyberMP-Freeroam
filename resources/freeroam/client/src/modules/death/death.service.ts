@@ -1,5 +1,6 @@
 import { ELoadingScreenState } from '@cybermp/client-types/enums';
-import { inject, postConstruct } from 'inversify';
+import { eager } from '@freeroam/inversify';
+import { inject, injectable, postConstruct } from 'inversify';
 import { sleep } from 'radash';
 import { Observer } from '../../lib/observer';
 import { mp } from '../../mp';
@@ -20,6 +21,8 @@ export class DeathEvent {
 
 export type OnDeathCallback = (event: DeathEvent) => void;
 
+@eager()
+@injectable()
 export class DeathService {
   private deathObserver = new Observer<OnDeathCallback>();
 
@@ -73,9 +76,15 @@ export class DeathService {
     browser.navigate.trigger('/death');
   }
 
-  private onRevive() {
+  private async onRevive() {
     this.dead = false;
+    this.hudService.show();
+    this.stand();
     this.statusEffects.remove('GameplayRestriction.NoCameraControl');
+
+    if ((await browser.getCurrentPathname.call()) === '/death') {
+      browser.navigate.trigger('/hud');
+    }
   }
 
   async stand() {

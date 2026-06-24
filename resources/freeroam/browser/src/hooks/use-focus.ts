@@ -10,3 +10,13 @@ export const useFocus = (state = true, deps: DependencyList = []) => {
     };
   }, deps);
 };
+
+export const useForceFocus = (state = true, deps: DependencyList = []) => {
+  useEffect(() => {
+    client.cef.setForceFocus.trigger(state);
+
+    return () => {
+      client.cef.setForceFocus.trigger(!state);
+    };
+  }, deps);
+};
