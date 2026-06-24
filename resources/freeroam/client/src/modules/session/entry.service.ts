@@ -59,7 +59,10 @@ export class EntryService {
   @postConstruct()
   private async init() {
     mp.game.onceGameLoaded(() => {
-      this.onGameLoaded().catch(this.logger.error);
+      this.onceGameLoaded().catch(this.logger.error);
+    });
+    mp.game.onGameLoaded(() => {
+      this.applyDefaultGarbage();
     });
   }
 
@@ -102,9 +105,7 @@ export class EntryService {
     mp.game.AddToInventory('Ammo.Special', 700);
   }
 
-  private async onGameLoaded() {
-    this.applyDefaultGarbage();
-
+  private async onceGameLoaded() {
     this.hud.hide();
     this.menusService.closeAllMenus();
     // this.cefService.setLoadingRedirect('/entry');

@@ -30,13 +30,13 @@ export class GMenusService {
         this.hideBrowser();
       });
 
-      mp.game.observe(
-        'gameuiInGameMenuGameController',
-        'RegisterGlobalBlackboards',
-        (self) => {
-          this.gameuiInGameMenuGameController = self;
-        },
-      );
+      // mp.game.observe(
+      //   'gameuiInGameMenuGameController',
+      //   'RegisterGlobalBlackboards',
+      //   (self) => {
+      //     this.gameuiInGameMenuGameController = self;
+      //   },
+      // );
 
       mp.game.observe('SettingsMainGameController', 'RequestClose', () => {
         this.SettingsMainGameController = null;

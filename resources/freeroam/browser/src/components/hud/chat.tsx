@@ -68,25 +68,21 @@ type CommandSuggestionsProps = {
     currentSuggestion: ChatCommand | Snapshot<ChatCommand>,
     currentArgumentIndex: number,
   ): boolean;
-  onSuggestionExecuted(
-    currentSuggestion: ChatCommand | Snapshot<ChatCommand>,
-  ): void;
   input: string;
 };
 
 const CommandSuggestions = ({
   suggestions,
   onSuggestionSelected,
-  onSuggestionExecuted,
   input,
 }: CommandSuggestionsProps) => {
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(0);
   const selectedSuggestionRef = useRef<HTMLDivElement>(null);
 
-  const currentArgumentIndex = useMemo(
-    () => input.split(' ').length - 2,
-    [input],
-  );
+  const currentArgumentIndex = useMemo(() => {
+    const parts = input.trimEnd().split(/\s+/);
+    return parts.length - 2;
+  }, [input]);
 
   useEffect(() => {
     selectedSuggestionRef.current?.scrollIntoView({
@@ -101,12 +97,11 @@ const CommandSuggestions = ({
   }, [selectedSuggestionIndex, suggestions.length]);
 
   useHotkeys(
-    'enter',
+    'tab',
     () => {
-      const currentSuggestion = suggestions[selectedSuggestionIndex ?? 0];
-
-      if (onSuggestionSelected(currentSuggestion, currentArgumentIndex)) {
-        onSuggestionExecuted(currentSuggestion);
+      const currentSuggestion = suggestions[selectedSuggestionIndex];
+      if (currentSuggestion) {
+        onSuggestionSelected(currentSuggestion, currentArgumentIndex);
       }
     },
     {
@@ -114,33 +109,12 @@ const CommandSuggestions = ({
       enableOnFormTags: true,
       enableOnContentEditable: true,
     },
-  );
-
-  useHotkeys(
-    'tab',
-    () => {
-      const currentSuggestion = suggestions[selectedSuggestionIndex];
-
-      onSuggestionSelected(currentSuggestion, currentArgumentIndex);
-
-      // if (inputCommand === currentSuggestion.name && currentSuggestion.args) {
-      //   if (currentArgumentIndex < currentSuggestion.args.length - 1) {
-      //     setInput((prev) => prev + ' ');
-      //   }
-      // } else {
-      //   setInput(
-      //     `/${currentSuggestion.name}${
-      //       currentSuggestion.args?.length ? ' ' : ''
-      //     }`,
-      //   );
-      //   setSelectedSuggestionIndex(0);
-      // }
-    },
-    {
-      preventDefault: true,
-      enableOnFormTags: true,
-      enableOnContentEditable: true,
-    },
+    [
+      suggestions,
+      selectedSuggestionIndex,
+      currentArgumentIndex,
+      onSuggestionSelected,
+    ],
   );
 
   useHotkeys(
@@ -153,6 +127,7 @@ const CommandSuggestions = ({
       enableOnFormTags: true,
       enableOnContentEditable: true,
     },
+    [suggestions],
   );
 
   useHotkeys(
@@ -167,6 +142,7 @@ const CommandSuggestions = ({
       enableOnFormTags: true,
       enableOnContentEditable: true,
     },
+    [suggestions],
   );
 
   return (
@@ -219,15 +195,18 @@ const ChatInput = () => {
   const commands = [...serverCommands, ...clientCommands].filter((command) =>
     command.can ? ability.can(...command.can) : true,
   );
+
+  const isCommand = useMemo(() => input.startsWith('/'), [input]);
+
   const inputCommand = useMemo(
     () => input.replace('/', '').split(' ')[0],
     [input],
   );
+
   const commandSuggestions = useMemo(
     () => suggestCommands(commands, inputCommand),
     [commands, inputCommand],
   );
-  const isCommand = useMemo(() => input.startsWith('/'), [input]);
 
   const isActive = visibility === ChatVisibility.ACTIVE;
 
@@ -259,7 +238,7 @@ const ChatInput = () => {
     }
 
     if (isCommand) {
-      const [commandName, ...commandArgs] = input.replace('/', '').split(' ');
+      const [commandName, ...commandArgs] = input.replace('/', '').split(/\s+/);
       executeChatCommand(commandName, commandArgs);
     } else {
       postChatMessage(inputTrimmed);
@@ -269,10 +248,6 @@ const ChatInput = () => {
     inputHistoryIndexRef.current = null;
     setInput('');
     setChatVisibility(ChatVisibility.INACTIVE);
-
-    // setInput('');
-    // inputHistoryIndexRef.current = null;
-    // setChatVisibility(ChatVisibility.INACTIVE);
   };
 
   useHotkeys(
@@ -291,8 +266,8 @@ const ChatInput = () => {
       inputHistoryIndexRef.current = newIndex;
       setInput(inputHistoryRef.current[newIndex]);
     },
-    { enableOnFormTags: true, scopes: 'chat', enabled: isActive },
-    [isActive],
+    { enableOnFormTags: true, scopes: 'chat', enabled: isActive && !isCommand },
+    [isActive, isCommand],
   );
 
   useHotkeys(
@@ -312,8 +287,8 @@ const ChatInput = () => {
         setInput(inputHistoryRef.current[nextIndex]);
       }
     },
-    { enableOnFormTags: true, scopes: 'chat', enabled: isActive },
-    [isActive],
+    { enableOnFormTags: true, scopes: 'chat', enabled: isActive && !isCommand },
+    [isActive, isCommand],
   );
 
   const onSuggestionSelected = (
@@ -324,25 +299,14 @@ const ChatInput = () => {
 
     if (inputCommand === suggestion.name && suggestion.args) {
       if (currentArgumentIndex < args.length - 1) {
-        if (args.at(currentArgumentIndex + 1)?.optional) {
-          setInput((prev) => `${prev} `);
-          return true;
-        } else {
-          setInput((prev) => `${prev} `);
-          return false;
-        }
+        setInput((prev) => `${prev} `);
+        return true;
       }
     } else {
       setInput(`/${suggestion.name}${args.length ? ' ' : ''}`);
     }
 
     return true;
-  };
-
-  const onSuggestionExecuted = (suggestion: ChatCommand) => {
-    if (inputCommand === suggestion?.name) {
-      onSubmit();
-    }
   };
 
   return (
@@ -358,11 +322,10 @@ const ChatInput = () => {
         onChange={onInputChange}
         className="w-full bg-black/40 p-2 h-full outline-none border-none text-foreground text-base font-semibold"
       />
-      {isCommand && (
+      {isCommand && commandSuggestions.length > 0 && (
         <CommandSuggestions
           suggestions={commandSuggestions}
           onSuggestionSelected={onSuggestionSelected}
-          onSuggestionExecuted={onSuggestionExecuted}
           input={input}
         />
       )}
