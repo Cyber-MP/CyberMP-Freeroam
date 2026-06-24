@@ -121,7 +121,7 @@ import Preset_Silverhand_3516 from '#/images/weapons/Preset_Silverhand_3516.webp
 import Preset_Tactician_Dino from '#/images/weapons/Preset_Tactician_Dino.webp?w=300&h=150&imagetools';
 import Preset_Yukimura_Default from '#/images/weapons/Preset_Yukimura_Default.webp?w=300&h=150&imagetools';
 import w_melee_boss_hammer from '#/images/weapons/w_melee_boss_hammer.webp?w=300&h=150&imagetools';
-import { useTypedAbility } from '@/hooks/use-typed-ability';
+import { AbilityOverlay } from '@/components/ability-overlay';
 import { type ClientInputs, clientQuery } from '@/rpc';
 import {
   Tabs,
@@ -759,42 +759,38 @@ const DATA: Record<ItemCategory, Item[]> = {
 };
 
 function RouteComponent() {
-  const ability = useTypedAbility();
-
-  if (ability.cannot('use', 'ItemsSpawner')) {
-    return <span>sry</span>;
-  }
-
   return (
-    <div className="flex justify-center flex-wrap gap-12 gap-x-24 h-full w-full">
-      <Tabs defaultValue={ItemCategory.WEAPONS} className="w-full pb-4">
-        <div className="sticky top-0 flex gap-6 items-center z-50">
-          <TabsList>
-            <TabsTrigger value={ItemCategory.WEAPONS}>Weapons</TabsTrigger>
-            <TabsTrigger value={ItemCategory.CLOTHES}>Clothes</TabsTrigger>
-            <TabsTrigger value={ItemCategory.CONSUMABLES}>
-              Consumables
-            </TabsTrigger>
-            <TabsTrigger value={ItemCategory.IMPLANTS}>Implants</TabsTrigger>
-          </TabsList>
-          <span className="text-yellow-400 text-xss bg-[#424242aa] px-2 py-1 rounded-xs backdrop-blur-xs">
-            Hold "shift" to spawn without menu close
-          </span>
-        </div>
-        <TabsContent value={ItemCategory.WEAPONS}>
-          <ItemsContent value={ItemCategory.WEAPONS} />
-        </TabsContent>
-        <TabsContent value={ItemCategory.CLOTHES}>
-          <ItemsContent value={ItemCategory.CLOTHES} />
-        </TabsContent>
-        <TabsContent value={ItemCategory.CONSUMABLES}>
-          <ItemsContent value={ItemCategory.CONSUMABLES} />
-        </TabsContent>
-        <TabsContent value={ItemCategory.IMPLANTS}>
-          <ItemsContent value={ItemCategory.IMPLANTS} />
-        </TabsContent>
-      </Tabs>
-    </div>
+    <AbilityOverlay action="use" subject="ItemsSpawner">
+      <div className="flex justify-center flex-wrap gap-12 gap-x-24 h-full w-full">
+        <Tabs defaultValue={ItemCategory.WEAPONS} className="w-full pb-4">
+          <div className="sticky top-0 flex gap-6 items-center z-50">
+            <TabsList>
+              <TabsTrigger value={ItemCategory.WEAPONS}>Weapons</TabsTrigger>
+              <TabsTrigger value={ItemCategory.CLOTHES}>Clothes</TabsTrigger>
+              <TabsTrigger value={ItemCategory.CONSUMABLES}>
+                Consumables
+              </TabsTrigger>
+              <TabsTrigger value={ItemCategory.IMPLANTS}>Implants</TabsTrigger>
+            </TabsList>
+            <span className="text-yellow-400 text-xss bg-[#424242aa] px-2 py-1 rounded-xs backdrop-blur-xs">
+              Hold "shift" to spawn without menu close
+            </span>
+          </div>
+          <TabsContent value={ItemCategory.WEAPONS}>
+            <ItemsContent value={ItemCategory.WEAPONS} />
+          </TabsContent>
+          <TabsContent value={ItemCategory.CLOTHES}>
+            <ItemsContent value={ItemCategory.CLOTHES} />
+          </TabsContent>
+          <TabsContent value={ItemCategory.CONSUMABLES}>
+            <ItemsContent value={ItemCategory.CONSUMABLES} />
+          </TabsContent>
+          <TabsContent value={ItemCategory.IMPLANTS}>
+            <ItemsContent value={ItemCategory.IMPLANTS} />
+          </TabsContent>
+        </Tabs>
+      </div>
+    </AbilityOverlay>
   );
 }
 

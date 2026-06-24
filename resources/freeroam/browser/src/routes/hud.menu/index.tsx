@@ -1,9 +1,9 @@
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useMemo } from 'react';
+import { AbilityOverlay } from '@/components/ability-overlay';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useTypedAbility } from '@/hooks/use-typed-ability';
 import { serverQuery } from '@/rpc';
 import { queryClient } from '@/tanstack-query';
 import type { ServerOutputs } from '../../../../client/src/rpc';
@@ -139,8 +139,6 @@ function PendingComponent() {
 }
 
 function RouteComponent() {
-  const ability = useTypedAbility();
-
   const { data: vehicles } = useSuspenseQuery(
     serverQuery.vehiclesSpawner.getAll.queryOptions(),
   );
@@ -164,52 +162,50 @@ function RouteComponent() {
     );
   }, [vehicles]);
 
-  if (ability.cannot('use', 'VehicleSpawner')) {
-    return <span>sry</span>;
-  }
-
   return (
-    <div className="flex justify-center flex-wrap gap-12 gap-x-24 h-full w-full">
-      <Tabs
-        defaultValue={'all' satisfies VehicleCategory}
-        className="w-full pb-4"
-      >
-        <div className="sticky top-0 flex gap-6 items-center z-50">
-          <TabsList>
-            <TabsTrigger value={'all' satisfies VehicleCategory}>
-              All
-            </TabsTrigger>
-            <TabsTrigger value={'sport' satisfies VehicleCategory}>
-              Sport
-            </TabsTrigger>
-            <TabsTrigger value={'street' satisfies VehicleCategory}>
-              Street
-            </TabsTrigger>
-            <TabsTrigger value={'bikes' satisfies VehicleCategory}>
-              Bikes
-            </TabsTrigger>
-            <TabsTrigger value={'offroad' satisfies VehicleCategory}>
-              Offroad
-            </TabsTrigger>
-          </TabsList>
-        </div>
-        <TabsContent value={'all' satisfies VehicleCategory}>
-          <ItemsContent vehicles={vehicles} />
-        </TabsContent>
-        <TabsContent value={'sport' satisfies VehicleCategory}>
-          <ItemsContent vehicles={categories.sport} />
-        </TabsContent>
-        <TabsContent value={'street' satisfies VehicleCategory}>
-          <ItemsContent vehicles={categories.street} />
-        </TabsContent>
-        <TabsContent value={'bikes' satisfies VehicleCategory}>
-          <ItemsContent vehicles={categories.bikes} />
-        </TabsContent>
-        <TabsContent value={'offroad' satisfies VehicleCategory}>
-          <ItemsContent vehicles={categories.offroad} />
-        </TabsContent>
-      </Tabs>
-    </div>
+    <AbilityOverlay action="use" subject="VehicleSpawner">
+      <div className="flex justify-center flex-wrap gap-12 gap-x-24 h-full w-full">
+        <Tabs
+          defaultValue={'all' satisfies VehicleCategory}
+          className="w-full pb-4"
+        >
+          <div className="sticky top-0 flex gap-6 items-center z-50">
+            <TabsList>
+              <TabsTrigger value={'all' satisfies VehicleCategory}>
+                All
+              </TabsTrigger>
+              <TabsTrigger value={'sport' satisfies VehicleCategory}>
+                Sport
+              </TabsTrigger>
+              <TabsTrigger value={'street' satisfies VehicleCategory}>
+                Street
+              </TabsTrigger>
+              <TabsTrigger value={'bikes' satisfies VehicleCategory}>
+                Bikes
+              </TabsTrigger>
+              <TabsTrigger value={'offroad' satisfies VehicleCategory}>
+                Offroad
+              </TabsTrigger>
+            </TabsList>
+          </div>
+          <TabsContent value={'all' satisfies VehicleCategory}>
+            <ItemsContent vehicles={vehicles} />
+          </TabsContent>
+          <TabsContent value={'sport' satisfies VehicleCategory}>
+            <ItemsContent vehicles={categories.sport} />
+          </TabsContent>
+          <TabsContent value={'street' satisfies VehicleCategory}>
+            <ItemsContent vehicles={categories.street} />
+          </TabsContent>
+          <TabsContent value={'bikes' satisfies VehicleCategory}>
+            <ItemsContent vehicles={categories.bikes} />
+          </TabsContent>
+          <TabsContent value={'offroad' satisfies VehicleCategory}>
+            <ItemsContent vehicles={categories.offroad} />
+          </TabsContent>
+        </Tabs>
+      </div>
+    </AbilityOverlay>
   );
 }
 

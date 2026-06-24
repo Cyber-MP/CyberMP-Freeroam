@@ -2,6 +2,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useEffect, useMemo } from 'react';
 import { proxy, useSnapshot } from 'valtio';
+import { AbilityOverlay } from '@/components/ability-overlay';
 import { Button } from '@/components/ui/button';
 import {
   Select,
@@ -14,7 +15,6 @@ import {
 } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { usePlayerId } from '@/hooks/use-player-id';
-import { useTypedAbility } from '@/hooks/use-typed-ability';
 import { type ClientInputs, client, clientQuery, serverQuery } from '@/rpc';
 import { queryClient } from '@/tanstack-query';
 import akulov_penthouse from '../../assets/images/locations/akulov_penthouse.webp?w=300&h=225&imagetools';
@@ -252,7 +252,6 @@ const playerStore = proxy({
 const PlayerContent = () => {
   const { selected: selectedPlayer } = useSnapshot(playerStore);
   const navigate = useNavigate();
-  const ability = useTypedAbility();
 
   const playerId = usePlayerId();
 
@@ -292,45 +291,43 @@ const PlayerContent = () => {
     navigate({ to: '/hud' });
   };
 
-  if (ability.cannot('use', 'Teleport')) {
-    return <span>sry</span>;
-  }
-
   return (
-    <div className="flex flex-col gap-2">
-      <span className="text-xs font-black uppercase tracking-wider">
-        Teleport to player
-      </span>
+    <AbilityOverlay action="use" subject="Teleport">
+      <div className="flex flex-col gap-2">
+        <span className="text-xs font-black uppercase tracking-wider">
+          Teleport to player
+        </span>
 
-      <div className="flex flex-row gap-1 w-full">
-        <Select
-          value={selectedPlayer}
-          onValueChange={(value) => (playerStore.selected = value)}
-        >
-          <SelectTrigger className="min-w-50">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent position="popper">
-            <SelectGroup className="max-h-60">
-              <SelectLabel>Player</SelectLabel>
-              {availablePlayers?.map((player) => (
-                <SelectItem key={player.id} value={String(player.id)}>
-                  {player.nickname}
-                </SelectItem>
-              ))}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
+        <div className="flex flex-row gap-1 w-full">
+          <Select
+            value={selectedPlayer}
+            onValueChange={(value) => (playerStore.selected = value)}
+          >
+            <SelectTrigger className="min-w-50">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent position="popper">
+              <SelectGroup className="max-h-60">
+                <SelectLabel>Player</SelectLabel>
+                {availablePlayers?.map((player) => (
+                  <SelectItem key={player.id} value={String(player.id)}>
+                    {player.nickname}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
 
-        <Button
-          className="h-8"
-          disabled={selectedPlayer === '0'}
-          onClick={handleTeleport}
-        >
-          Teleport
-        </Button>
+          <Button
+            className="h-8"
+            disabled={selectedPlayer === '0'}
+            onClick={handleTeleport}
+          >
+            Teleport
+          </Button>
+        </div>
       </div>
-    </div>
+    </AbilityOverlay>
   );
 };
 
@@ -410,43 +407,40 @@ const LOCATIONS: Location[] = [
 
 const LocationContent = () => {
   const navigate = useNavigate();
-  const ability = useTypedAbility();
 
   const teleport = (position: Location['positon']) => {
     client.game.teleport.trigger(position);
     navigate({ to: '/hud' });
   };
 
-  if (ability.cannot('use', 'Teleport')) {
-    return <span>sry</span>;
-  }
-
   return (
-    <div className="flex flex-col gap-2">
-      <span className="text-xs font-black uppercase tracking-wider">
-        Teleport to locations
-      </span>
+    <AbilityOverlay action="use" subject="Teleport">
+      <div className="flex flex-col gap-2">
+        <span className="text-xs font-black uppercase tracking-wider">
+          Teleport to locations
+        </span>
 
-      <div className="grid grid-cols-3 gap-4">
-        {LOCATIONS.map((item) => (
-          <div
-            key={item.name}
-            className="flex flex-col justify-between items-center w-full bg-[#85858520] hover:bg-[#85858540] transition-colors duration-150 group cursor-pointer border-2 border-transparent hover:border-primary"
-            onClick={() => teleport(item.positon)}
-          >
-            <img
-              src={item.image}
-              alt="Item"
-              className="h-40 w-80 object-cover"
-              draggable={false}
-            />
+        <div className="grid grid-cols-3 gap-4">
+          {LOCATIONS.map((item) => (
+            <div
+              key={item.name}
+              className="flex flex-col justify-between items-center w-full bg-[#85858520] hover:bg-[#85858540] transition-colors duration-150 group cursor-pointer border-2 border-transparent hover:border-primary"
+              onClick={() => teleport(item.positon)}
+            >
+              <img
+                src={item.image}
+                alt="Item"
+                className="h-40 w-80 object-cover"
+                draggable={false}
+              />
 
-            <span className="text-[#aaa] group-hover:text-white bg-muted w-full text-center text-xs p-1 truncate">
-              {item.name}
-            </span>
-          </div>
-        ))}
+              <span className="text-[#aaa] group-hover:text-white bg-muted w-full text-center text-xs p-1 truncate">
+                {item.name}
+              </span>
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
+    </AbilityOverlay>
   );
 };

@@ -9,11 +9,11 @@ export const abilityContract = {
 
 export type ServerAbilityRules = ServerOutputs['ability']['getRules'];
 
-type ServerAbilityAction = Extract<
+export type ServerAbilityAction = Extract<
   ServerAbilityRules[number]['action'],
   string
 >;
-type ServerAbilitySubject = ServerAbilityRules[number]['subject'];
+export type ServerAbilitySubject = ServerAbilityRules[number]['subject'];
 
 export type ServerAbilityTuple = [ServerAbilityAction, ServerAbilitySubject];
 

@@ -7,7 +7,6 @@ import { inject, injectable } from 'inversify';
 import { mp } from '../../mp';
 import { client } from '../../rpc';
 import { AbilityService } from '../ability/ability.service';
-import { MatchmakingService } from '../matchmaking/matchmaking.service';
 import { type VehicleModel, VehiclesRepository } from './vehicles.repository';
 
 @injectable()
@@ -17,7 +16,6 @@ export class VehiclesSpawnerService {
   private readonly DEFAULT_VEHICLE_HEALTH = 2000;
 
   constructor(
-    @inject(MatchmakingService) private matchmakingService: MatchmakingService,
     @inject(AbilityService) private abilityService: AbilityService,
     @inject(VehiclesRepository) private vehiclesRepository: VehiclesRepository,
   ) {}
