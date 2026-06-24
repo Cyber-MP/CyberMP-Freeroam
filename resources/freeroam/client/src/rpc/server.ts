@@ -11,7 +11,7 @@ export const server = createRouterClient<
   ServerRouter,
   MpEnv.CLIENT,
   MpEnv.SERVER
->({ rpc, targetEnv: MpEnv.SERVER });
+>({ rpc, targetEnv: MpEnv.SERVER, targetName: 'freeroam' });
 
 export type ServerOutputs = InferRouterOutputs<ServerRouter>;
 export type ServerInputs = InferRouterInputs<ServerRouter>;

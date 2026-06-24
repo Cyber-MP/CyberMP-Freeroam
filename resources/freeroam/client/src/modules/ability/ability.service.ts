@@ -35,10 +35,11 @@ export class AbilityService {
 
   @postConstruct()
   private init() {
-    void server.ability.getRules.call().then((rules) => {
-      this.ability.update(rules);
-    });
-
-    // this.ability.update(remoteRules);
+    // todo: remove timeout when mp.network.getPlayerId(1) would be fixed
+    setTimeout(() => {
+      void server.ability.getRules.call().then((rules) => {
+        this.ability.update(rules);
+      });
+    }, 5_000);
   }
 }

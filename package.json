@@ -25,12 +25,12 @@
   "keywords": [],
   "author": "terminaate",
   "license": "MIT",
-  "packageManager": "pnpm@10.28.2",
+  "packageManager": "pnpm@11.8.0",
   "devDependencies": {
     "@biomejs/biome": "2.4.6",
+    "cross-env": "^7.0.3",
     "simple-git-hooks": "^2.13.1",
     "type-fest": "^5.4.4",
-    "cross-env": "^7.0.3",
     "typescript": "^5.9.3"
   }
 }

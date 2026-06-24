@@ -70,6 +70,7 @@ export class TimeService {
   private async fetchServerTime() {
     try {
       this.setServerTime(await server.time.getCurrentTime.call());
+      this.logger.success('Fetched server time');
     } catch (e) {
       this.logger.error(
         'Failed to fetch server time with error',
@@ -88,7 +89,10 @@ export class TimeService {
     mp.game.onGameLoaded(() => {
       this.system = mp.game.ScriptGameInstance.GetTimeSystem();
 
-      this.fetchServerTime();
+      // todo: remove timeout when mp.network.getPlayerId(1) would be fixed
+      setTimeout(() => {
+        this.fetchServerTime();
+      }, 5_000);
     });
   }
 }

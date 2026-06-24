@@ -69,6 +69,7 @@ export class WeatherService {
   private async fetchServerWeather() {
     try {
       this.setServerWeather(await server.weather.getCurrentWeather.call());
+      this.logger.success('Fetched server weather');
     } catch (e) {
       this.logger.error(
         'Failed to fetch server weather with error',
@@ -81,7 +82,10 @@ export class WeatherService {
   onGameLoaded() {
     this.system = mp.game.ScriptGameInstance.GetWeatherSystem();
 
-    this.fetchServerWeather();
+    // todo: remove timeout when mp.network.getPlayerId(1) would be fixed
+    setTimeout(() => {
+      this.fetchServerWeather();
+    }, 5_000);
   }
 
   getClientWeather(): EWeatherState | null {

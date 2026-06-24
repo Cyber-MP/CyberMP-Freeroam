@@ -24,7 +24,10 @@ export class AbilityController {
       RpcServerContext
     >,
   ) {
-    return this.abilityService.create(context.player).rules;
+    const ability = this.abilityService.create(context.player);
+
+    console.log('RETURNED RULES FOR', context.packet.source.env);
+    return ability.rules;
   }
 
   @postConstruct()

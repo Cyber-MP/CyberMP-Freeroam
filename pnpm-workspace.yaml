@@ -1,3 +1,9 @@
 packages:
   - "libs/**"
   - "resources/**"
+allowBuilds:
+  '@swc/core': true
+  esbuild: true
+  msw: true
+  sharp: true
+  simple-git-hooks: true

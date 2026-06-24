@@ -5,7 +5,7 @@ const process = (globalThis as any).process;
 export default defineConfig({
   entry: './src/index.ts',
   format: 'iife',
-  minify: true,
+  minify: false,
   env: {
     DEV: process.env.NODE_ENV === 'development',
     PROD: process.env.NODE_ENV !== 'development',

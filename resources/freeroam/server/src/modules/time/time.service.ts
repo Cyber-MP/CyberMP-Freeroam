@@ -10,7 +10,7 @@ export type ServerTime = z.infer<typeof zServerTime>;
 @eager()
 @injectable()
 export class TimeService {
-  private time: ServerTime = { hours: 19, minutes: 0 };
+  private time: ServerTime = { hours: 1, minutes: 0 };
   private frozen: boolean = false;
   private intervalId: ReturnType<typeof setInterval> | null = null;
 

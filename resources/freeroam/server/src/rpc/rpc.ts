@@ -1,3 +1,3 @@
 import { RpcServer } from '@cybermp/rpc-server';
 
-export const rpc = new RpcServer({ name: 'freeroam' });
+export const rpc = new RpcServer({ name: 'freeroam', pendingTimeout: 20000 });
