@@ -285,7 +285,11 @@ export class VehicleNitroService {
   }
 
   updateBrowserData() {
-    browser.vehicleNitro.setVisible.trigger(this.enabled && this.inVehicle);
+    browser.vehicleNitro.setVisible.trigger(
+      this.enabled &&
+        this.inVehicle &&
+        this.abilityService.can('use', 'VehicleNitro'),
+    );
   }
 
   getVehicleSpeed(vehicle: vehicleBaseObject) {
