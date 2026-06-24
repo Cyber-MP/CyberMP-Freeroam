@@ -94,6 +94,6 @@ export class WeatherService {
 
   @postConstruct()
   private init() {
-    mp.game.onGameLoaded(this.onGameLoaded.bind(this));
+    mp.game.onceGameLoaded(this.onGameLoaded.bind(this));
   }
 }

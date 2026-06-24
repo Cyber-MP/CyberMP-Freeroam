@@ -468,7 +468,7 @@ export class VehicleNitroService {
 
   @postConstruct()
   private async init() {
-    mp.game.onGameLoaded(() => {
+    mp.game.onceGameLoaded(() => {
       this.mountVehicleCheckInterval();
     });
   }

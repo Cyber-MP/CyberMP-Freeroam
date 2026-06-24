@@ -121,7 +121,7 @@ export class PlayersMarkersService {
 
   @postConstruct()
   private init() {
-    mp.game.onGameLoaded(() => {
+    mp.game.onceGameLoaded(() => {
       this.system = mp.game.ScriptGameInstance.GetMappinSystem();
       this.tickId = mp.setTick(this.onTick.bind(this));
     });

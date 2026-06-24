@@ -18,7 +18,7 @@ export class GStatusEffectsService {
 
   @postConstruct()
   private init() {
-    mp.game.onGameLoaded(() => {
+    mp.game.onceGameLoaded(() => {
       this.effectsSystem = mp.game.ScriptGameInstance.GetStatusEffectSystem();
 
       for (const effect of this.DEFAULT_STATUS_EFFECTS) {

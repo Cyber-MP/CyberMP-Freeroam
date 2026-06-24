@@ -58,7 +58,7 @@ export class EntryService {
 
   @postConstruct()
   private async init() {
-    mp.game.onGameLoaded(() => {
+    mp.game.onceGameLoaded(() => {
       this.onGameLoaded().catch(this.logger.error);
     });
   }

@@ -69,7 +69,7 @@ export class SpawnService {
     //   );
     // });
 
-    mp.game.onGameLoaded(() => {
+    mp.game.onceGameLoaded(() => {
       this.spawn({ position: spawnPosition });
     });
   }

@@ -36,7 +36,7 @@ export class GPlayerService {
 
   @postConstruct()
   private init() {
-    mp.game.onGameLoaded(() => {
+    mp.game.onceGameLoaded(() => {
       mp.game.observe(
         'gameuiICharacterCustomizationSystem',
         'OnPlayerGenderChanged',

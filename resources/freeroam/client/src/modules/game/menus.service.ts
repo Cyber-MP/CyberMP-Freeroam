@@ -22,7 +22,7 @@ export class GMenusService {
 
   @postConstruct()
   private init() {
-    mp.game.onGameLoaded(() => {
+    mp.game.onceGameLoaded(() => {
       // open settings & switch between categories
       mp.game.observe('SettingsMainGameController', 'OnMenuChanged', (self) => {
         this.SettingsMainGameController = self;

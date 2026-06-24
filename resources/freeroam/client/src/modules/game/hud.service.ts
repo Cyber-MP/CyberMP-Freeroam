@@ -36,7 +36,7 @@ export class GHudService {
 
   @postConstruct()
   private init() {
-    mp.game.onGameLoaded(() => {
+    mp.game.onceGameLoaded(() => {
       this.system = mp.game.ScriptGameInstance.GetSettingsSystem();
     });
   }

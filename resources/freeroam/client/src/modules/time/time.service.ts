@@ -86,7 +86,7 @@ export class TimeService {
 
   @postConstruct()
   private async init() {
-    mp.game.onGameLoaded(() => {
+    mp.game.onceGameLoaded(() => {
       this.system = mp.game.ScriptGameInstance.GetTimeSystem();
 
       // todo: remove timeout when mp.network.getPlayerId(1) would be fixed
