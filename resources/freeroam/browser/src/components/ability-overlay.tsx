@@ -22,7 +22,7 @@ export const AbilityOverlay = ({
   const ability = useTypedAbility();
   const hasPermission = ability.can(action, subject);
 
-  if (!hasPermission) {
+  if (hasPermission) {
     return children;
   }
 

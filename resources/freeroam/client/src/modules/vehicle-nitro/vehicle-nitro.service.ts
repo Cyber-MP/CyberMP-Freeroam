@@ -5,10 +5,10 @@ import type {
 } from '@cybermp/client-types/game';
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
-import ms from 'ms';
 import { getForwardFromQuaternion } from '../../lib/math';
 import { mp } from '../../mp';
 import { browser } from '../../rpc/browser';
+import { AbilityService } from '../ability/ability.service';
 import { GKeyboardService } from '../game/keyboard.service';
 import { GStatusEffectsService } from '../game/status-effects/status-effects.service';
 import { VehicleNitroPresetRepository } from './vehicle-nitro-preset.repository';
@@ -95,7 +95,7 @@ export class NitroCapacity {
       if (this.regen && this.value < 100) {
         this.regenerate();
       }
-    }, ms('0.1s'));
+    }, 100);
   }
 
   private unmountCapacityRegenInterval() {
@@ -259,6 +259,8 @@ export class VehicleNitroService {
     private nitroCapacityFactory: NitroCapacityFactory,
     @inject(NitroCameraFactorySymbol)
     private nitroCameraFactory: NitroCameraFactory,
+    @inject(AbilityService)
+    private abilityService: AbilityService,
   ) {}
 
   private get preset() {
@@ -298,38 +300,57 @@ export class VehicleNitroService {
         'speed_to_multiplier',
       );
 
+    // taken from: https://codeberg.org/adamsmasher/cyberpunk/src/commit/c72bae9c94091cdd9d2a300772f8af415b9ffe9d/cyberpunk/UI/vehicles/car_hud.swift#L153
     return vehicle.GetCurrentSpeed() * multiplier * 1.61;
   }
 
-  nitro = () => {
-    if (!this.enabled) {
-      return;
+  private canPerformNitro() {
+    if (!this.enabled || this.abilityService.cannot('use', 'VehicleNitro')) {
+      return false;
     }
 
     if (!this.nitroCapacity || !this.nitroCamera) {
-      return;
+      return false;
     }
 
     const player = mp.game.GetPlayer();
     if (!player) {
-      return;
+      return false;
+    }
+
+    if (this.statusEffectsService.has('GameplayRestriction.NoDriving')) {
+      return false;
     }
 
     const vehicle = player.GetMountedVehicle();
 
     if (this.preset.checkIsOnGround) {
       if (!vehicle.IsOnGround()) {
-        return;
+        return false;
       }
     }
 
     const currentSpeed = this.getVehicleSpeed(vehicle);
 
     if (currentSpeed > this.preset.maxSpeed) {
-      return;
+      return false;
     }
 
     if (this.nitroCapacity.getPenaltyActive()) {
+      return false;
+    }
+
+    return vehicle;
+  }
+
+  nitro = () => {
+    const vehicle = this.canPerformNitro();
+
+    if (!vehicle) {
+      return;
+    }
+
+    if (!this.nitroCapacity || !this.nitroCamera) {
       return;
     }
 
@@ -350,13 +371,13 @@ export class VehicleNitroService {
 
   private onBoostKeyInput = (action: EInputAction) => {
     if (action === EInputAction.IACT_Press) {
-      if (this.statusEffectsService.has('GameplayRestriction.NoDriving')) {
+      if (!this.canPerformNitro()) {
         return;
       }
 
       if (!this.boostingInterval) {
         this.nitro();
-        this.boostingInterval = setInterval(this.nitro, ms('0.1s'));
+        this.boostingInterval = setInterval(this.nitro, 100);
       }
 
       this.nitroCamera?.increase();
@@ -438,7 +459,7 @@ export class VehicleNitroService {
       } else {
         this.onVehicleLeave();
       }
-    }, ms('0.25s'));
+    }, 250);
   }
 
   @postConstruct()
