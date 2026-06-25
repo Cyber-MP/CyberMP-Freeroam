@@ -1,8 +1,9 @@
+nodeLinker: hoisted
 packages:
   - "libs/**"
   - "resources/**"
 allowBuilds:
-  '@swc/core': true
+  "@swc/core": true
   esbuild: true
   msw: true
   sharp: true

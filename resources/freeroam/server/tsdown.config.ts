@@ -18,6 +18,7 @@ const process = (globalThis as any).process;
 export default defineConfig({
   entry: './src/index.ts',
   format: 'cjs',
+  cjsDefault: false,
   envFile: isEnvFileExist() ? ENV_FILE_PATH : undefined,
   env: {
     DEV: process.env.NODE_ENV === 'development',
