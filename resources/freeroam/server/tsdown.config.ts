@@ -26,7 +26,7 @@ export default defineConfig({
       process.env.NODE_ENV !== 'development' ? 'production' : 'development',
   },
   deps: {
-    alwaysBundle: [/^@freeroam\//, /^@cybermp\//],
+    alwaysBundle: [/.*/s],
   },
   clean: false,
   outputOptions: {

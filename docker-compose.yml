@@ -9,8 +9,9 @@ services:
     stdin_open: true
     tty: true
     volumes:
-      - cache:/cybermp/cache
-      - crashdumps:/cybermp/crashdumps
+      - ./cache:/cybermp/cache
+      - ./crashdumps:/cybermp/crashdumps
+      - ./logs:/cybermp/logs
     ports:
       - ${PORT:-2077}:2077/tcp
       - ${PORT:-2077}:2077/udp
