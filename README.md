@@ -95,9 +95,11 @@ Alternatively, you can run the entire stack within isolated Docker containers:
 ## 📡 Communication & RPC
 
 All communication across **Browser ↔ Client ↔ Server** is strictly schema-driven and handled via the [official RPC framework](https://github.com/cyber-mp/cybermp-rpc).
+
 ---
 
 ### Git Hooks
+
 The repository includes automated pre-commit and pre-push validation powered by `simple-git-hooks`. It triggers type checks automatically to prevent breaking changes from hitting the repository.
 
 ---
