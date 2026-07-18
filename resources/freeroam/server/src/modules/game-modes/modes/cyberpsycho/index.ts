@@ -77,7 +77,7 @@ class Fighter {
 
     this.weapon =
       Object.entries(CyberpsychoWeapons).find(
-        ([key, name]) => name === this.options.weapon,
+        ([_key, name]) => name === this.options.weapon,
       )?.[0] ?? 'Items.Preset_Silverhand_3516';
   }
 
@@ -145,8 +145,17 @@ export class Cyberpsycho extends BaseGameMode<
   }
 
   init(match: Match<this>): void {
+    const candidateMap = CyberpsychoMaps.find(
+      (o) => o.name === this.match.options.map,
+    );
+    if (!candidateMap) {
+      throw new Error(
+        `Cyberpsycho map by name ${this.match.options.map} is not found`,
+      );
+    }
+
     this.match = match;
-    this.map = CyberpsychoMaps.find((o) => o.name === this.match.options.map)!;
+    this.map = candidateMap;
     this.dimension = match.dimension;
   }
 

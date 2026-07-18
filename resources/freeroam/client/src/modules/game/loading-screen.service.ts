@@ -26,7 +26,7 @@ export class GLoadingScreenService {
     mp.game.observe(
       'LoadingScreenSystem',
       'OnLoadingScreenStateChange',
-      (self, newState) => {
+      (_self, newState) => {
         this.observer.notify(
           +String(newState) as CyberEnums.ELoadingScreenState,
         );

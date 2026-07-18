@@ -33,10 +33,10 @@ export const isPointInArea2D = (point: Vector2, area: Vector2[]) => {
   let inside = false;
 
   for (let i = 0, j = area.length - 1; i < area.length; j = i++) {
-    const xi = area[i]!.x,
-      yi = area[i]!.y;
-    const xj = area[j]!.x,
-      yj = area[j]!.y;
+    const xi = area[i]?.x,
+      yi = area[i]?.y;
+    const xj = area[j]?.x,
+      yj = area[j]?.y;
 
     const intersect =
       yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
@@ -65,15 +65,15 @@ export const getAngleSumBetweenPositionAndVertices = (
 
   for (i = 0; i < vertices.length; i++) {
     const p1 = createVector3(
-      vertices[i]!.x - position.x,
-      vertices[i]!.y - position.y,
-      vertices[i]!.z - position.z,
+      vertices[i]?.x - position.x,
+      vertices[i]?.y - position.y,
+      vertices[i]?.z - position.z,
     );
 
     const p2 = createVector3(
-      vertices[(i + 1) % vertices.length]!.x - position.x,
-      vertices[(i + 1) % vertices.length]!.y - position.y,
-      vertices[(i + 1) % vertices.length]!.z - position.z,
+      vertices[(i + 1) % vertices.length]?.x - position.x,
+      vertices[(i + 1) % vertices.length]?.y - position.y,
+      vertices[(i + 1) % vertices.length]?.z - position.z,
     );
 
     m1 = modulus(p1);

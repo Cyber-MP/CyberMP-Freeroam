@@ -23,6 +23,8 @@ export const MatchmakingModule = new ContainerModule(({ bind }) => {
     return <T extends BaseGameMode>() => c.get(Match) as Match<T>;
   });
 
-  bind(MatchMemberMiddlewareSymbol).toDynamicValue(matchMemberMiddlewareFactory);
+  bind(MatchMemberMiddlewareSymbol).toDynamicValue(
+    matchMemberMiddlewareFactory,
+  );
   bind(MatchOwnerMiddlewareSymbol).toDynamicValue(matchOwnerMiddlewareFactory);
 });

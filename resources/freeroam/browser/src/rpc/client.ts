@@ -32,10 +32,7 @@ const createCallableProxy = () => {
       return target[prop];
     },
 
-    // Handles execution: proxy() or proxy.fn()
-    apply(target, thisArg, argumentsList) {
-      // console.log(`Called with arguments:`, argumentsList);
-      // Return a new proxy so we can keep chaining after the call
+    apply() {
       return createCallableProxy();
     },
   });

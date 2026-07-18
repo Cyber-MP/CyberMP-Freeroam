@@ -326,24 +326,29 @@ export class RaceMapBuilder {
           startPos[2] + dz * t,
         ];
 
-        // Interpolate Rotation (Yaw)
-        // We use lerpAngle to ensure we rotate the shortest way around the circle
-        const rotation: [number, number, number] = [
-          0, // Pitch: could be calculated based on dz/segmentDistance if needed
-          0, // Roll
-          this.lerpAngle(startNode.yaw!, endNode.yaw!, t),
-        ];
+        if (startNode.yaw !== undefined && endNode.yaw !== undefined) {
+          // Interpolate Rotation (Yaw)
+          // We use lerpAngle to ensure we rotate the shortest way around the circle
+          const rotation: [number, number, number] = [
+            0, // Pitch: could be calculated based on dz/segmentDistance if needed
+            0, // Roll
+            this.lerpAngle(startNode.yaw, endNode.yaw, t),
+          ];
 
-        path.push({ position, rotation });
+          path.push({ position, rotation });
+        }
       }
     }
 
     // Add the final checkpoint position to close the path
     const lastNode = nodes[nodes.length - 1];
-    path.push({
-      position: lastNode.position,
-      rotation: [0, 0, lastNode.yaw!],
-    });
+
+    if (lastNode.yaw !== undefined) {
+      path.push({
+        position: lastNode.position,
+        rotation: [0, 0, lastNode.yaw],
+      });
+    }
 
     return path;
   }

@@ -14,7 +14,7 @@ export abstract class BaseGameMode<
   abstract readonly CREATE_OPTIONS_SCHEMA: TCreateOptions;
   abstract readonly JOIN_OPTIONS_SCHEMA: TJoinOptions;
 
-  getJoinSchema(createOptions: z.infer<TCreateOptions>): TJoinOptions {
+  getJoinSchema(_createOptions: z.infer<TCreateOptions>): TJoinOptions {
     return this.JOIN_OPTIONS_SCHEMA;
   }
 

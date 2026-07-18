@@ -81,10 +81,14 @@ function RouteComponent() {
   };
 
   const onCreateOptionsSubmit = async (formData: Record<string, unknown>) => {
+    if (!gameMode) {
+      return;
+    }
+
     setCreateOptions(formData);
 
     const joinSchemaResponse = await joinSchemaMutation.mutateAsync([
-      { createOptions: formData, modeName: gameMode! },
+      { createOptions: formData, modeName: gameMode },
     ]);
 
     if (
@@ -147,7 +151,7 @@ function RouteComponent() {
                     <SelectValue placeholder="Select game mode" />
                   </SelectTrigger>
                   <SelectContent>
-                    {gameModes.map((mode, index) => (
+                    {gameModes.map((mode) => (
                       <SelectItem key={mode} value={mode}>
                         {mode}
                       </SelectItem>

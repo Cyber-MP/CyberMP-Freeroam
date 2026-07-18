@@ -1,7 +1,4 @@
-import {
-  type RaceMap,
-  RaceMapName,
-} from '@freeroam/shared/game-modes/race';
+import { type RaceMap, RaceMapName } from '@freeroam/shared/game-modes/race';
 
 export const RACE_HEYWOOD_MAP: RaceMap = {
   name: RaceMapName.HEYWOOD,

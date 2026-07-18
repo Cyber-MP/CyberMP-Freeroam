@@ -28,7 +28,7 @@ import {
   type VehicleData,
 } from '../../../vehicles-spawner/vehicles.repository';
 import { BaseGameMode } from '../../game-mode';
-import { RaceLapsMaps } from './maps';
+import { RaceMaps } from './maps';
 import { type PathTransform, RaceTrackCalculator } from './track-calculator';
 
 export const zCreateRaceOptions = zCreateMatchOptions.extend({
@@ -91,12 +91,26 @@ class Racer {
       (o) => o.type === 'checkpoint',
     ) as RaceCheckpointNode[];
 
-    // biome-ignore lint/style/noNonNullAssertion: Player is obviously present
-    this.options = opts.match.members.get(opts.player)!;
+    const joinOptions = opts.match.members.get(opts.player);
+    if (!joinOptions) {
+      throw new Error(
+        `[Race Racer] player not found in match members, therefore join options are undefined`,
+      );
+    }
 
-    this.vehicleData = VEHICLES_DATA.find(
+    this.options = joinOptions;
+
+    const candidateVehicleData = VEHICLES_DATA.find(
       (o) => o.name === this.options.vehicle,
-    )!;
+    );
+
+    if (!candidateVehicleData) {
+      throw new Error(
+        `[Race Racer] player vehicle name not found in VEHICLES_DATA collection`,
+      );
+    }
+
+    this.vehicleData = candidateVehicleData;
   }
 
   async prepare() {
@@ -407,8 +421,27 @@ export class Race extends BaseGameMode<
 
   init(match: Match<this>): void {
     this.match = match;
-    this.map = RaceLapsMaps.find((o) => o.name === this.match.options.map)!;
-    this.trackPath = this.trackCalculator.getTrackPath(this.match.options.map)!;
+    const candidateMap = RaceMaps.find(
+      (o) => o.name === this.match.options.map,
+    );
+
+    if (!candidateMap) {
+      throw new Error(
+        `Race map by name ${this.match.options.map} is not found`,
+      );
+    }
+
+    const candidateTrackPath = this.trackCalculator.getTrackPath(
+      this.match.options.map,
+    );
+    if (!candidateTrackPath) {
+      throw new Error(
+        `Race track path for map ${this.match.options.map} is not found`,
+      );
+    }
+
+    this.map = candidateMap;
+    this.trackPath = candidateTrackPath;
     this.checkpoints = this.map.nodes.filter(
       (node): node is RaceCheckpointNode => node.type === 'checkpoint',
     );
@@ -503,7 +536,8 @@ export class Race extends BaseGameMode<
       .map((racer) => {
         const isFinished = racer.finished && racer.finishTimestamp !== null;
         const raceTime = isFinished
-          ? racer.finishTimestamp! - this.releaseTimestamp!
+          ? (racer.finishTimestamp ?? Date.now()) -
+            (this.releaseTimestamp ?? Date.now())
           : 0;
 
         return {

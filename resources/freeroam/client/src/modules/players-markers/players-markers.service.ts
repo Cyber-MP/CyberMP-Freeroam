@@ -10,11 +10,8 @@ import type {
 } from '@cybermp/client-types/game';
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct, preDestroy } from 'inversify';
-import { throttle } from 'radash';
 import { mp } from '../../mp';
 import { GEntityService } from '../game/entity.service';
-
-const logger = throttle({ interval: 1000 }, console.log);
 
 @eager()
 @injectable()
@@ -41,12 +38,7 @@ export class PlayersMarkersService {
         continue;
       }
 
-      if (
-        mp.meta.getPlayerMeta(
-          mp.network.getPlayerId(gameId),
-          'spectating',
-        )
-      ) {
+      if (mp.meta.getPlayerMeta(mp.network.getPlayerId(gameId), 'spectating')) {
         continue;
       }
 

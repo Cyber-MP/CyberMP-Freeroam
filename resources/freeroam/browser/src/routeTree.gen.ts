@@ -8,154 +8,154 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from './routes/__root'
-import { Route as HudRouteImport } from './routes/hud'
-import { Route as EntryRouteImport } from './routes/entry'
-import { Route as DeathRouteImport } from './routes/death'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as HudMenuRouteRouteImport } from './routes/hud.menu/route'
-import { Route as HudMenuIndexRouteImport } from './routes/hud.menu/index'
-import { Route as HudMenuWorldRouteImport } from './routes/hud.menu/world'
-import { Route as HudMenuItemsRouteImport } from './routes/hud.menu/items'
-import { Route as HudMenuMatchmakingIndexRouteImport } from './routes/hud.menu/matchmaking/index'
-import { Route as HudGameModesSumoIndexRouteImport } from './routes/hud.game-modes/sumo/index'
-import { Route as HudGameModesRaceIndexRouteImport } from './routes/hud.game-modes/race/index'
-import { Route as HudGameModesPvpIndexRouteImport } from './routes/hud.game-modes/pvp/index'
-import { Route as HudGameModesCyberpsychoIndexRouteImport } from './routes/hud.game-modes/cyberpsycho/index'
-import { Route as HudMenuMatchmakingCreateRouteImport } from './routes/hud.menu/matchmaking/create'
-import { Route as HudGameModesRaceResultsRouteImport } from './routes/hud.game-modes/race/results'
+import { Route as rootRouteImport } from './routes/__root';
+import { Route as DeathRouteImport } from './routes/death';
+import { Route as EntryRouteImport } from './routes/entry';
+import { Route as HudRouteImport } from './routes/hud';
+import { Route as HudGameModesCyberpsychoIndexRouteImport } from './routes/hud.game-modes/cyberpsycho/index';
+import { Route as HudGameModesPvpIndexRouteImport } from './routes/hud.game-modes/pvp/index';
+import { Route as HudGameModesRaceIndexRouteImport } from './routes/hud.game-modes/race/index';
+import { Route as HudGameModesRaceResultsRouteImport } from './routes/hud.game-modes/race/results';
+import { Route as HudGameModesSumoIndexRouteImport } from './routes/hud.game-modes/sumo/index';
+import { Route as HudMenuIndexRouteImport } from './routes/hud.menu/index';
+import { Route as HudMenuItemsRouteImport } from './routes/hud.menu/items';
+import { Route as HudMenuMatchmakingCreateRouteImport } from './routes/hud.menu/matchmaking/create';
+import { Route as HudMenuMatchmakingIndexRouteImport } from './routes/hud.menu/matchmaking/index';
+import { Route as HudMenuRouteRouteImport } from './routes/hud.menu/route';
+import { Route as HudMenuWorldRouteImport } from './routes/hud.menu/world';
+import { Route as IndexRouteImport } from './routes/index';
 
 const HudRoute = HudRouteImport.update({
   id: '/hud',
   path: '/hud',
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const EntryRoute = EntryRouteImport.update({
   id: '/entry',
   path: '/entry',
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const DeathRoute = DeathRouteImport.update({
   id: '/death',
   path: '/death',
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const HudMenuRouteRoute = HudMenuRouteRouteImport.update({
   id: '/menu',
   path: '/menu',
   getParentRoute: () => HudRoute,
-} as any)
+} as any);
 const HudMenuIndexRoute = HudMenuIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => HudMenuRouteRoute,
-} as any)
+} as any);
 const HudMenuWorldRoute = HudMenuWorldRouteImport.update({
   id: '/world',
   path: '/world',
   getParentRoute: () => HudMenuRouteRoute,
-} as any)
+} as any);
 const HudMenuItemsRoute = HudMenuItemsRouteImport.update({
   id: '/items',
   path: '/items',
   getParentRoute: () => HudMenuRouteRoute,
-} as any)
+} as any);
 const HudMenuMatchmakingIndexRoute = HudMenuMatchmakingIndexRouteImport.update({
   id: '/matchmaking/',
   path: '/matchmaking/',
   getParentRoute: () => HudMenuRouteRoute,
-} as any)
+} as any);
 const HudGameModesSumoIndexRoute = HudGameModesSumoIndexRouteImport.update({
   id: '/game-modes/sumo/',
   path: '/game-modes/sumo/',
   getParentRoute: () => HudRoute,
-} as any)
+} as any);
 const HudGameModesRaceIndexRoute = HudGameModesRaceIndexRouteImport.update({
   id: '/game-modes/race/',
   path: '/game-modes/race/',
   getParentRoute: () => HudRoute,
-} as any)
+} as any);
 const HudGameModesPvpIndexRoute = HudGameModesPvpIndexRouteImport.update({
   id: '/game-modes/pvp/',
   path: '/game-modes/pvp/',
   getParentRoute: () => HudRoute,
-} as any)
+} as any);
 const HudGameModesCyberpsychoIndexRoute =
   HudGameModesCyberpsychoIndexRouteImport.update({
     id: '/game-modes/cyberpsycho/',
     path: '/game-modes/cyberpsycho/',
     getParentRoute: () => HudRoute,
-  } as any)
+  } as any);
 const HudMenuMatchmakingCreateRoute =
   HudMenuMatchmakingCreateRouteImport.update({
     id: '/matchmaking/create',
     path: '/matchmaking/create',
     getParentRoute: () => HudMenuRouteRoute,
-  } as any)
+  } as any);
 const HudGameModesRaceResultsRoute = HudGameModesRaceResultsRouteImport.update({
   id: '/game-modes/race/results',
   path: '/game-modes/race/results',
   getParentRoute: () => HudRoute,
-} as any)
+} as any);
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/death': typeof DeathRoute
-  '/entry': typeof EntryRoute
-  '/hud': typeof HudRouteWithChildren
-  '/hud/menu': typeof HudMenuRouteRouteWithChildren
-  '/hud/menu/items': typeof HudMenuItemsRoute
-  '/hud/menu/world': typeof HudMenuWorldRoute
-  '/hud/menu/': typeof HudMenuIndexRoute
-  '/hud/game-modes/race/results': typeof HudGameModesRaceResultsRoute
-  '/hud/menu/matchmaking/create': typeof HudMenuMatchmakingCreateRoute
-  '/hud/game-modes/cyberpsycho/': typeof HudGameModesCyberpsychoIndexRoute
-  '/hud/game-modes/pvp/': typeof HudGameModesPvpIndexRoute
-  '/hud/game-modes/race/': typeof HudGameModesRaceIndexRoute
-  '/hud/game-modes/sumo/': typeof HudGameModesSumoIndexRoute
-  '/hud/menu/matchmaking/': typeof HudMenuMatchmakingIndexRoute
+  '/': typeof IndexRoute;
+  '/death': typeof DeathRoute;
+  '/entry': typeof EntryRoute;
+  '/hud': typeof HudRouteWithChildren;
+  '/hud/menu': typeof HudMenuRouteRouteWithChildren;
+  '/hud/menu/items': typeof HudMenuItemsRoute;
+  '/hud/menu/world': typeof HudMenuWorldRoute;
+  '/hud/menu/': typeof HudMenuIndexRoute;
+  '/hud/game-modes/race/results': typeof HudGameModesRaceResultsRoute;
+  '/hud/menu/matchmaking/create': typeof HudMenuMatchmakingCreateRoute;
+  '/hud/game-modes/cyberpsycho/': typeof HudGameModesCyberpsychoIndexRoute;
+  '/hud/game-modes/pvp/': typeof HudGameModesPvpIndexRoute;
+  '/hud/game-modes/race/': typeof HudGameModesRaceIndexRoute;
+  '/hud/game-modes/sumo/': typeof HudGameModesSumoIndexRoute;
+  '/hud/menu/matchmaking/': typeof HudMenuMatchmakingIndexRoute;
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/death': typeof DeathRoute
-  '/entry': typeof EntryRoute
-  '/hud': typeof HudRouteWithChildren
-  '/hud/menu/items': typeof HudMenuItemsRoute
-  '/hud/menu/world': typeof HudMenuWorldRoute
-  '/hud/menu': typeof HudMenuIndexRoute
-  '/hud/game-modes/race/results': typeof HudGameModesRaceResultsRoute
-  '/hud/menu/matchmaking/create': typeof HudMenuMatchmakingCreateRoute
-  '/hud/game-modes/cyberpsycho': typeof HudGameModesCyberpsychoIndexRoute
-  '/hud/game-modes/pvp': typeof HudGameModesPvpIndexRoute
-  '/hud/game-modes/race': typeof HudGameModesRaceIndexRoute
-  '/hud/game-modes/sumo': typeof HudGameModesSumoIndexRoute
-  '/hud/menu/matchmaking': typeof HudMenuMatchmakingIndexRoute
+  '/': typeof IndexRoute;
+  '/death': typeof DeathRoute;
+  '/entry': typeof EntryRoute;
+  '/hud': typeof HudRouteWithChildren;
+  '/hud/menu/items': typeof HudMenuItemsRoute;
+  '/hud/menu/world': typeof HudMenuWorldRoute;
+  '/hud/menu': typeof HudMenuIndexRoute;
+  '/hud/game-modes/race/results': typeof HudGameModesRaceResultsRoute;
+  '/hud/menu/matchmaking/create': typeof HudMenuMatchmakingCreateRoute;
+  '/hud/game-modes/cyberpsycho': typeof HudGameModesCyberpsychoIndexRoute;
+  '/hud/game-modes/pvp': typeof HudGameModesPvpIndexRoute;
+  '/hud/game-modes/race': typeof HudGameModesRaceIndexRoute;
+  '/hud/game-modes/sumo': typeof HudGameModesSumoIndexRoute;
+  '/hud/menu/matchmaking': typeof HudMenuMatchmakingIndexRoute;
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/death': typeof DeathRoute
-  '/entry': typeof EntryRoute
-  '/hud': typeof HudRouteWithChildren
-  '/hud/menu': typeof HudMenuRouteRouteWithChildren
-  '/hud/menu/items': typeof HudMenuItemsRoute
-  '/hud/menu/world': typeof HudMenuWorldRoute
-  '/hud/menu/': typeof HudMenuIndexRoute
-  '/hud/game-modes/race/results': typeof HudGameModesRaceResultsRoute
-  '/hud/menu/matchmaking/create': typeof HudMenuMatchmakingCreateRoute
-  '/hud/game-modes/cyberpsycho/': typeof HudGameModesCyberpsychoIndexRoute
-  '/hud/game-modes/pvp/': typeof HudGameModesPvpIndexRoute
-  '/hud/game-modes/race/': typeof HudGameModesRaceIndexRoute
-  '/hud/game-modes/sumo/': typeof HudGameModesSumoIndexRoute
-  '/hud/menu/matchmaking/': typeof HudMenuMatchmakingIndexRoute
+  __root__: typeof rootRouteImport;
+  '/': typeof IndexRoute;
+  '/death': typeof DeathRoute;
+  '/entry': typeof EntryRoute;
+  '/hud': typeof HudRouteWithChildren;
+  '/hud/menu': typeof HudMenuRouteRouteWithChildren;
+  '/hud/menu/items': typeof HudMenuItemsRoute;
+  '/hud/menu/world': typeof HudMenuWorldRoute;
+  '/hud/menu/': typeof HudMenuIndexRoute;
+  '/hud/game-modes/race/results': typeof HudGameModesRaceResultsRoute;
+  '/hud/menu/matchmaking/create': typeof HudMenuMatchmakingCreateRoute;
+  '/hud/game-modes/cyberpsycho/': typeof HudGameModesCyberpsychoIndexRoute;
+  '/hud/game-modes/pvp/': typeof HudGameModesPvpIndexRoute;
+  '/hud/game-modes/race/': typeof HudGameModesRaceIndexRoute;
+  '/hud/game-modes/sumo/': typeof HudGameModesSumoIndexRoute;
+  '/hud/menu/matchmaking/': typeof HudMenuMatchmakingIndexRoute;
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
+  fileRoutesByFullPath: FileRoutesByFullPath;
   fullPaths:
     | '/'
     | '/death'
@@ -171,8 +171,8 @@ export interface FileRouteTypes {
     | '/hud/game-modes/pvp/'
     | '/hud/game-modes/race/'
     | '/hud/game-modes/sumo/'
-    | '/hud/menu/matchmaking/'
-  fileRoutesByTo: FileRoutesByTo
+    | '/hud/menu/matchmaking/';
+  fileRoutesByTo: FileRoutesByTo;
   to:
     | '/'
     | '/death'
@@ -187,7 +187,7 @@ export interface FileRouteTypes {
     | '/hud/game-modes/pvp'
     | '/hud/game-modes/race'
     | '/hud/game-modes/sumo'
-    | '/hud/menu/matchmaking'
+    | '/hud/menu/matchmaking';
   id:
     | '__root__'
     | '/'
@@ -204,132 +204,132 @@ export interface FileRouteTypes {
     | '/hud/game-modes/pvp/'
     | '/hud/game-modes/race/'
     | '/hud/game-modes/sumo/'
-    | '/hud/menu/matchmaking/'
-  fileRoutesById: FileRoutesById
+    | '/hud/menu/matchmaking/';
+  fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  DeathRoute: typeof DeathRoute
-  EntryRoute: typeof EntryRoute
-  HudRoute: typeof HudRouteWithChildren
+  IndexRoute: typeof IndexRoute;
+  DeathRoute: typeof DeathRoute;
+  EntryRoute: typeof EntryRoute;
+  HudRoute: typeof HudRouteWithChildren;
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
     '/hud': {
-      id: '/hud'
-      path: '/hud'
-      fullPath: '/hud'
-      preLoaderRoute: typeof HudRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/hud';
+      path: '/hud';
+      fullPath: '/hud';
+      preLoaderRoute: typeof HudRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/entry': {
-      id: '/entry'
-      path: '/entry'
-      fullPath: '/entry'
-      preLoaderRoute: typeof EntryRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/entry';
+      path: '/entry';
+      fullPath: '/entry';
+      preLoaderRoute: typeof EntryRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/death': {
-      id: '/death'
-      path: '/death'
-      fullPath: '/death'
-      preLoaderRoute: typeof DeathRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/death';
+      path: '/death';
+      fullPath: '/death';
+      preLoaderRoute: typeof DeathRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/';
+      path: '/';
+      fullPath: '/';
+      preLoaderRoute: typeof IndexRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/hud/menu': {
-      id: '/hud/menu'
-      path: '/menu'
-      fullPath: '/hud/menu'
-      preLoaderRoute: typeof HudMenuRouteRouteImport
-      parentRoute: typeof HudRoute
-    }
+      id: '/hud/menu';
+      path: '/menu';
+      fullPath: '/hud/menu';
+      preLoaderRoute: typeof HudMenuRouteRouteImport;
+      parentRoute: typeof HudRoute;
+    };
     '/hud/menu/': {
-      id: '/hud/menu/'
-      path: '/'
-      fullPath: '/hud/menu/'
-      preLoaderRoute: typeof HudMenuIndexRouteImport
-      parentRoute: typeof HudMenuRouteRoute
-    }
+      id: '/hud/menu/';
+      path: '/';
+      fullPath: '/hud/menu/';
+      preLoaderRoute: typeof HudMenuIndexRouteImport;
+      parentRoute: typeof HudMenuRouteRoute;
+    };
     '/hud/menu/world': {
-      id: '/hud/menu/world'
-      path: '/world'
-      fullPath: '/hud/menu/world'
-      preLoaderRoute: typeof HudMenuWorldRouteImport
-      parentRoute: typeof HudMenuRouteRoute
-    }
+      id: '/hud/menu/world';
+      path: '/world';
+      fullPath: '/hud/menu/world';
+      preLoaderRoute: typeof HudMenuWorldRouteImport;
+      parentRoute: typeof HudMenuRouteRoute;
+    };
     '/hud/menu/items': {
-      id: '/hud/menu/items'
-      path: '/items'
-      fullPath: '/hud/menu/items'
-      preLoaderRoute: typeof HudMenuItemsRouteImport
-      parentRoute: typeof HudMenuRouteRoute
-    }
+      id: '/hud/menu/items';
+      path: '/items';
+      fullPath: '/hud/menu/items';
+      preLoaderRoute: typeof HudMenuItemsRouteImport;
+      parentRoute: typeof HudMenuRouteRoute;
+    };
     '/hud/menu/matchmaking/': {
-      id: '/hud/menu/matchmaking/'
-      path: '/matchmaking'
-      fullPath: '/hud/menu/matchmaking/'
-      preLoaderRoute: typeof HudMenuMatchmakingIndexRouteImport
-      parentRoute: typeof HudMenuRouteRoute
-    }
+      id: '/hud/menu/matchmaking/';
+      path: '/matchmaking';
+      fullPath: '/hud/menu/matchmaking/';
+      preLoaderRoute: typeof HudMenuMatchmakingIndexRouteImport;
+      parentRoute: typeof HudMenuRouteRoute;
+    };
     '/hud/game-modes/sumo/': {
-      id: '/hud/game-modes/sumo/'
-      path: '/game-modes/sumo'
-      fullPath: '/hud/game-modes/sumo/'
-      preLoaderRoute: typeof HudGameModesSumoIndexRouteImport
-      parentRoute: typeof HudRoute
-    }
+      id: '/hud/game-modes/sumo/';
+      path: '/game-modes/sumo';
+      fullPath: '/hud/game-modes/sumo/';
+      preLoaderRoute: typeof HudGameModesSumoIndexRouteImport;
+      parentRoute: typeof HudRoute;
+    };
     '/hud/game-modes/race/': {
-      id: '/hud/game-modes/race/'
-      path: '/game-modes/race'
-      fullPath: '/hud/game-modes/race/'
-      preLoaderRoute: typeof HudGameModesRaceIndexRouteImport
-      parentRoute: typeof HudRoute
-    }
+      id: '/hud/game-modes/race/';
+      path: '/game-modes/race';
+      fullPath: '/hud/game-modes/race/';
+      preLoaderRoute: typeof HudGameModesRaceIndexRouteImport;
+      parentRoute: typeof HudRoute;
+    };
     '/hud/game-modes/pvp/': {
-      id: '/hud/game-modes/pvp/'
-      path: '/game-modes/pvp'
-      fullPath: '/hud/game-modes/pvp/'
-      preLoaderRoute: typeof HudGameModesPvpIndexRouteImport
-      parentRoute: typeof HudRoute
-    }
+      id: '/hud/game-modes/pvp/';
+      path: '/game-modes/pvp';
+      fullPath: '/hud/game-modes/pvp/';
+      preLoaderRoute: typeof HudGameModesPvpIndexRouteImport;
+      parentRoute: typeof HudRoute;
+    };
     '/hud/game-modes/cyberpsycho/': {
-      id: '/hud/game-modes/cyberpsycho/'
-      path: '/game-modes/cyberpsycho'
-      fullPath: '/hud/game-modes/cyberpsycho/'
-      preLoaderRoute: typeof HudGameModesCyberpsychoIndexRouteImport
-      parentRoute: typeof HudRoute
-    }
+      id: '/hud/game-modes/cyberpsycho/';
+      path: '/game-modes/cyberpsycho';
+      fullPath: '/hud/game-modes/cyberpsycho/';
+      preLoaderRoute: typeof HudGameModesCyberpsychoIndexRouteImport;
+      parentRoute: typeof HudRoute;
+    };
     '/hud/menu/matchmaking/create': {
-      id: '/hud/menu/matchmaking/create'
-      path: '/matchmaking/create'
-      fullPath: '/hud/menu/matchmaking/create'
-      preLoaderRoute: typeof HudMenuMatchmakingCreateRouteImport
-      parentRoute: typeof HudMenuRouteRoute
-    }
+      id: '/hud/menu/matchmaking/create';
+      path: '/matchmaking/create';
+      fullPath: '/hud/menu/matchmaking/create';
+      preLoaderRoute: typeof HudMenuMatchmakingCreateRouteImport;
+      parentRoute: typeof HudMenuRouteRoute;
+    };
     '/hud/game-modes/race/results': {
-      id: '/hud/game-modes/race/results'
-      path: '/game-modes/race/results'
-      fullPath: '/hud/game-modes/race/results'
-      preLoaderRoute: typeof HudGameModesRaceResultsRouteImport
-      parentRoute: typeof HudRoute
-    }
+      id: '/hud/game-modes/race/results';
+      path: '/game-modes/race/results';
+      fullPath: '/hud/game-modes/race/results';
+      preLoaderRoute: typeof HudGameModesRaceResultsRouteImport;
+      parentRoute: typeof HudRoute;
+    };
   }
 }
 
 interface HudMenuRouteRouteChildren {
-  HudMenuItemsRoute: typeof HudMenuItemsRoute
-  HudMenuWorldRoute: typeof HudMenuWorldRoute
-  HudMenuIndexRoute: typeof HudMenuIndexRoute
-  HudMenuMatchmakingCreateRoute: typeof HudMenuMatchmakingCreateRoute
-  HudMenuMatchmakingIndexRoute: typeof HudMenuMatchmakingIndexRoute
+  HudMenuItemsRoute: typeof HudMenuItemsRoute;
+  HudMenuWorldRoute: typeof HudMenuWorldRoute;
+  HudMenuIndexRoute: typeof HudMenuIndexRoute;
+  HudMenuMatchmakingCreateRoute: typeof HudMenuMatchmakingCreateRoute;
+  HudMenuMatchmakingIndexRoute: typeof HudMenuMatchmakingIndexRoute;
 }
 
 const HudMenuRouteRouteChildren: HudMenuRouteRouteChildren = {
@@ -338,19 +338,19 @@ const HudMenuRouteRouteChildren: HudMenuRouteRouteChildren = {
   HudMenuIndexRoute: HudMenuIndexRoute,
   HudMenuMatchmakingCreateRoute: HudMenuMatchmakingCreateRoute,
   HudMenuMatchmakingIndexRoute: HudMenuMatchmakingIndexRoute,
-}
+};
 
 const HudMenuRouteRouteWithChildren = HudMenuRouteRoute._addFileChildren(
   HudMenuRouteRouteChildren,
-)
+);
 
 interface HudRouteChildren {
-  HudMenuRouteRoute: typeof HudMenuRouteRouteWithChildren
-  HudGameModesRaceResultsRoute: typeof HudGameModesRaceResultsRoute
-  HudGameModesCyberpsychoIndexRoute: typeof HudGameModesCyberpsychoIndexRoute
-  HudGameModesPvpIndexRoute: typeof HudGameModesPvpIndexRoute
-  HudGameModesRaceIndexRoute: typeof HudGameModesRaceIndexRoute
-  HudGameModesSumoIndexRoute: typeof HudGameModesSumoIndexRoute
+  HudMenuRouteRoute: typeof HudMenuRouteRouteWithChildren;
+  HudGameModesRaceResultsRoute: typeof HudGameModesRaceResultsRoute;
+  HudGameModesCyberpsychoIndexRoute: typeof HudGameModesCyberpsychoIndexRoute;
+  HudGameModesPvpIndexRoute: typeof HudGameModesPvpIndexRoute;
+  HudGameModesRaceIndexRoute: typeof HudGameModesRaceIndexRoute;
+  HudGameModesSumoIndexRoute: typeof HudGameModesSumoIndexRoute;
 }
 
 const HudRouteChildren: HudRouteChildren = {
@@ -360,16 +360,16 @@ const HudRouteChildren: HudRouteChildren = {
   HudGameModesPvpIndexRoute: HudGameModesPvpIndexRoute,
   HudGameModesRaceIndexRoute: HudGameModesRaceIndexRoute,
   HudGameModesSumoIndexRoute: HudGameModesSumoIndexRoute,
-}
+};
 
-const HudRouteWithChildren = HudRoute._addFileChildren(HudRouteChildren)
+const HudRouteWithChildren = HudRoute._addFileChildren(HudRouteChildren);
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DeathRoute: DeathRoute,
   EntryRoute: EntryRoute,
   HudRoute: HudRouteWithChildren,
-}
+};
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+  ._addFileTypes<FileRouteTypes>();

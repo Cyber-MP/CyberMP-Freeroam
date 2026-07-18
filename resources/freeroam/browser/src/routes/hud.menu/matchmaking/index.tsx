@@ -170,7 +170,11 @@ const MatchComponent = (match: MatchDTO) => {
 
   const createSchema = match.createSchema as JSONSchema.ObjectSchema;
 
-  const { maxPlayers: maxPlayersSchema } = createSchema.properties!;
+  if (!createSchema.properties) {
+    throw new Error('createSchema.properties is undefined or null');
+  }
+
+  const { maxPlayers: maxPlayersSchema } = createSchema.properties;
   const minPlayers = (maxPlayersSchema as JSONSchema.NumberSchema).minimum ?? 0;
 
   const leaveMatch = async () => {
@@ -199,7 +203,7 @@ const MatchComponent = (match: MatchDTO) => {
     ...matchOptions,
   };
 
-  const isMember = isMatchMember(match, playerId!);
+  const isMember = isMatchMember(match, playerId);
   const isOwner = match.owner.id === playerId;
 
   return (
@@ -274,8 +278,8 @@ function RouteComponent() {
   const sortedMatches = useMemo(
     () =>
       [...matches].sort((a, b) => {
-        const isPlayerInA = isMatchMember(a, playerId!);
-        const isPlayerInB = isMatchMember(b, playerId!);
+        const isPlayerInA = isMatchMember(a, playerId);
+        const isPlayerInB = isMatchMember(b, playerId);
 
         if (isPlayerInA && !isPlayerInB) return -1;
         if (!isPlayerInA && isPlayerInB) return 1;

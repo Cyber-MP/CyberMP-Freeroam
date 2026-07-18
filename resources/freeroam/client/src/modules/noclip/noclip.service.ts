@@ -52,9 +52,9 @@ export class NoclipService {
         const actionName = mp.game.NameToString(
           mp.game.gameinputScriptListenerAction.GetName(action),
         );
-        const actionType = Number(
-          mp.game.gameinputScriptListenerAction.GetType(action),
-        );
+        // const _actionType = Number(
+        //   mp.game.gameinputScriptListenerAction.GetType(action),
+        // );
 
         if (actionName === 'CameraMouseX') {
           const x = Number(

@@ -63,10 +63,7 @@ function RouteComponent() {
 
                 return (
                   <div
-                    key={`${racer.playerNick}-${
-                      // biome-ignore lint/suspicious/noArrayIndexKey: stfu linter
-                      i
-                    }`}
+                    key={`${racer.playerNick}-${i}`}
                     className={`
                         relative flex items-center border-b
                         ${

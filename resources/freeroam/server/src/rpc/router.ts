@@ -1,6 +1,7 @@
 import { RpcApplyType } from '@cybermp/rpc-server';
 import z from 'zod';
 import { zVector3 } from '../lib/vectors';
+import { abilityContract } from '../modules/ability/ability.controller';
 import { chatContract } from '../modules/chat/chat.controller';
 import { gameModesContract } from '../modules/game-modes/game-modes.controller';
 import { loggerContract } from '../modules/logger/logger.controller';
@@ -11,7 +12,6 @@ import { vehiclesSpawnerContract } from '../modules/vehicles-spawner/vehicles-sp
 import { weatherContract } from '../modules/weather/weather.controller';
 import { mp } from '../mp';
 import { r } from './rpc-router';
-import { abilityContract } from '../modules/ability/ability.controller';
 
 export const router = {
   pingServer: r.procedure.input(z.string()).handler((c) => {
@@ -48,7 +48,7 @@ export const router = {
   logger: loggerContract,
   chat: chatContract,
   teleport: teleportContract,
-  ability: abilityContract
+  ability: abilityContract,
 };
 
 export type ServerRouter = typeof router;

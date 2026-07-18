@@ -7,7 +7,7 @@ import {
 } from '@freeroam/shared/game-modes/race';
 import { inject, injectable, postConstruct } from 'inversify';
 import { LoggerService } from '../../../logger/logger.service';
-import { RaceLapsMaps } from './maps';
+import { RaceMaps } from './maps';
 
 export interface PathTransform {
   position: Vector3;
@@ -25,7 +25,7 @@ export class RaceTrackCalculator {
 
   @postConstruct()
   private init() {
-    for (const map of RaceLapsMaps) {
+    for (const map of RaceMaps) {
       const parsedMap = zRaceMap.safeParse(map);
       if (!parsedMap.success) {
         this.logger.error(
@@ -82,24 +82,30 @@ export class RaceTrackCalculator {
           startPos[2] + dz * t,
         ];
 
-        // Interpolate Rotation (Yaw)
-        // We use lerpAngle to ensure we rotate the shortest way around the circle
-        const rotation: Rotation = [
-          0, // Pitch: could be calculated based on dz/segmentDistance if needed
-          0, // Roll
-          this.lerpAngle(startNode.yaw!, endNode.yaw!, t),
-        ];
+        if (startNode.yaw !== undefined && endNode.yaw !== undefined) {
+          // Interpolate Rotation (Yaw)
+          // We use lerpAngle to ensure we rotate the shortest way around the circle
+          const rotation: Rotation = [
+            0, // Pitch: could be calculated based on dz/segmentDistance if needed
+            0, // Roll
+            this.lerpAngle(startNode.yaw, endNode.yaw, t),
+          ];
 
-        path.push({ position, rotation });
+          path.push({ position, rotation });
+        }
       }
     }
 
     // Add the final checkpoint position to close the path
+
     const lastNode = nodes[nodes.length - 1];
-    path.push({
-      position: lastNode.position,
-      rotation: [0, 0, lastNode.yaw!],
-    });
+
+    if (lastNode.yaw !== undefined) {
+      path.push({
+        position: lastNode.position,
+        rotation: [0, 0, lastNode.yaw],
+      });
+    }
 
     return path;
   }

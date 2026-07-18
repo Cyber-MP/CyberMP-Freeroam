@@ -1,5 +1,5 @@
 import { type PvpMap, PvpMapName } from '@freeroam/shared/game-modes/pvp';
-import mappingJson from './mapping.json'
+import mappingJson from './mapping.json';
 
 export const PVP_WAREHOUSE_MAP: PvpMap = {
   name: PvpMapName.WAREHOUSE,

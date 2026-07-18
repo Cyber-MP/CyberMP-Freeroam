@@ -81,12 +81,26 @@ class Racer {
     this.match = opts.match;
     this.startPoint = opts.startPoint;
 
-    // biome-ignore lint/style/noNonNullAssertion: Player is obviously present
-    this.options = opts.match.members.get(opts.player)!;
+    const joinOptions = opts.match.members.get(opts.player);
+    if (!joinOptions) {
+      throw new Error(
+        `[Sumo Racer] player not found in match members, therefore join options are undefined`,
+      );
+    }
 
-    this.vehicleData = VEHICLES_DATA.find(
+    this.options = joinOptions;
+
+    const candidateVehicleData = VEHICLES_DATA.find(
       (o) => o.name === this.options.vehicle,
-    )!;
+    );
+
+    if (!candidateVehicleData) {
+      throw new Error(
+        `[Sumo Racer] player vehicle name not found in VEHICLES_DATA collection`,
+      );
+    }
+
+    this.vehicleData = candidateVehicleData;
   }
 
   async prepare() {
@@ -179,8 +193,17 @@ export class Sumo extends BaseGameMode<
   }
 
   init(match: Match<this>): void {
+    const candidateMap = SumoMaps.find(
+      (o) => o.name === this.match.options.map,
+    );
+    if (!candidateMap) {
+      throw new Error(
+        `Sumo map by name ${this.match.options.map} is not found`,
+      );
+    }
+
     this.match = match;
-    this.map = SumoMaps.find((o) => o.name === this.match.options.map)!;
+    this.map = candidateMap;
     this.dimension = match.dimension;
   }
 

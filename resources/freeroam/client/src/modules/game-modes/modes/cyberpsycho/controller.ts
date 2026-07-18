@@ -42,13 +42,19 @@ export class CyberpsychoController {
   }
 
   private async startCountdown(
-    context: RpcActiveGameContext<Cyberpsycho, ContractInputs['startCountdown']>,
+    context: RpcActiveGameContext<
+      Cyberpsycho,
+      ContractInputs['startCountdown']
+    >,
   ) {
     context.mode.startCountdown(context.data);
   }
 
   private async updateLivingIds(
-    context: RpcActiveGameContext<Cyberpsycho, ContractInputs['updateLivingIds']>,
+    context: RpcActiveGameContext<
+      Cyberpsycho,
+      ContractInputs['updateLivingIds']
+    >,
   ) {
     context.mode.updateLivingIds(context.data);
   }

@@ -31,7 +31,7 @@ export class TimeController {
     return this.timeService.getTime();
   }
 
-  private adminTime(player: MpPlayer, hours: number, minutes: number) {
+  private adminTime(_player: MpPlayer, hours: number, minutes: number) {
     this.timeService.setTime(hours, minutes);
   }
 

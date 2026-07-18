@@ -8,11 +8,9 @@ import {
 import { proxy } from 'valtio';
 import z from 'zod';
 
-export const raceResultsState = proxy<{ results: RaceFinishedRacer[] }>(
-  {
-    results: [],
-  },
-);
+export const raceResultsState = proxy<{ results: RaceFinishedRacer[] }>({
+  results: [],
+});
 
 const zRaceRacerBrowserDTO = zRaceRacerDTO.extend({
   totalLaps: z.number(),

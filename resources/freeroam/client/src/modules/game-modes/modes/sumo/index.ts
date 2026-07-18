@@ -182,13 +182,13 @@ export class Sumo extends BaseGameMode<'sumo'> {
   }
 
   private cycleSpectateTarget(direction: number) {
-    if (this.livingIds.length === 0) {
+    const spectatedPlayerId = this.spectatingService.getSpectatedPlayerId();
+
+    if (this.livingIds.length === 0 || spectatedPlayerId === null) {
       return;
     }
 
-    const currentIndex = this.livingIds.findIndex(
-      (id) => id === this.spectatingService.getSpectatedPlayerId(),
-    );
+    const currentIndex = this.livingIds.indexOf(spectatedPlayerId);
 
     let nextIndex = (currentIndex + direction) % this.livingIds.length;
     if (nextIndex < 0) {

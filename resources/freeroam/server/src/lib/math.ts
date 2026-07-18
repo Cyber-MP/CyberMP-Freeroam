@@ -9,10 +9,10 @@ export const isPointInArea2D = (
   let inside = false;
 
   for (let i = 0, j = area.length - 1; i < area.length; j = i++) {
-    const xi = area[i]![0],
-      yi = area[i]![1];
-    const xj = area[j]![0],
-      yj = area[j]![1];
+    const xi = area[i]?.[0],
+      yi = area[i]?.[1];
+    const xj = area[j]?.[0],
+      yj = area[j]?.[1];
 
     const intersect =
       yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
@@ -39,15 +39,15 @@ export const getAngleSumBetweenPositionAndVertices = (
 
   for (i = 0; i < vertices.length; i++) {
     const p1: Vector3 = [
-      vertices[i]![0] - position[0],
-      vertices[i]![1] - position[1],
-      vertices[i]![2] - position[2],
+      vertices[i]?.[0] - position[0],
+      vertices[i]?.[1] - position[1],
+      vertices[i]?.[2] - position[2],
     ];
 
     const p2: Vector3 = [
-      vertices[(i + 1) % vertices.length]![0] - position[0],
-      vertices[(i + 1) % vertices.length]![1] - position[1],
-      vertices[(i + 1) % vertices.length]![2] - position[2],
+      vertices[(i + 1) % vertices.length]?.[0] - position[0],
+      vertices[(i + 1) % vertices.length]?.[1] - position[1],
+      vertices[(i + 1) % vertices.length]?.[2] - position[2],
     ];
 
     m1 = modulus(p1);
