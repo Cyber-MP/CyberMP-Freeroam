@@ -1,8 +1,6 @@
 services:
   server:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ghcr.io/cyber-mp/freeroam:latest
     env_file: .env
     environment:
       NODE_ENV: production
