@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - run: pnpm env use --global 22
+
+      - run: pnpm i
+
+      - run: pnpm build
+
+      - run: pnpm run biome:lint
+
+      - run: pnpm run type:check
