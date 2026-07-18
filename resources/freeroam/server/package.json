@@ -17,6 +17,7 @@
     "@freeroam/inversify": "workspace:*",
     "@freeroam/shared": "workspace:*",
     "consola": "^3.4.2",
+    "dotenv": "^17.4.2",
     "inversify": "^7.11.0",
     "ms": "^2.1.3",
     "radash": "^12.1.1",

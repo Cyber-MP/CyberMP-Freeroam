@@ -1,3 +1,4 @@
+/** biome-ignore-all assist/source/organizeImports: yep */
 import { RpcError } from '@cybermp/rpc-server';
 import { eagerRegistry } from '@freeroam/inversify';
 import { container } from './container';
@@ -18,6 +19,9 @@ import { mp } from './mp';
 import { r, rpc } from './rpc';
 import { router } from './rpc/router';
 import { AbilityModule } from './modules/ability/ability.module';
+import { config as configEnv } from 'dotenv';
+
+configEnv({ quiet: true });
 
 const modules = [
   LoggerModule,
@@ -31,7 +35,7 @@ const modules = [
   PolygonsModule,
   TeleportModule,
   AdminModule,
-  AbilityModule
+  AbilityModule,
 ];
 
 const coopWhen = async () => {

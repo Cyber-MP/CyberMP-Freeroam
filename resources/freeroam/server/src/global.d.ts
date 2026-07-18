@@ -9,6 +9,12 @@ declare global {
   interface ImportMeta {
     env: ImportMetaEnv;
   }
+
+  namespace NodeJS {
+    interface ProcessEnv {
+      ADMIN_PASSWORD: string;
+    }
+  }
 }
 
 export {};

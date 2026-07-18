@@ -6,7 +6,9 @@ import { ChatService } from '../chat/chat.service';
 
 @injectable()
 export class AdminService {
-  private readonly ADMIN_PASSWORD = import.meta.env.TSDOWN_ADMIN_PASSWORD;
+  // Yep it is quite dumb, im just too lame to bear with client-server types problem
+  private readonly ADMIN_PASSWORD = (globalThis as any).process.env
+    .ADMIN_PASSWORD;
 
   constructor(
     @inject(new LazyServiceIdentifier(() => ChatService))
