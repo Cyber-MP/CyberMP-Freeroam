@@ -7,7 +7,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN pnpm i --frozen-lockfile
+RUN pnpm i --frozen-lockfile --ignore-scripts
 RUN pnpm -r build
 
 FROM ghcr.io/cyber-mp/server:latest
