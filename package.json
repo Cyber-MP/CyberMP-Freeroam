@@ -31,6 +31,6 @@
     "cross-env": "^7.0.3",
     "simple-git-hooks": "^2.13.1",
     "type-fest": "^5.4.4",
-    "typescript": "^5.9.3"
+    "typescript": "^7.0.2"
   }
 }

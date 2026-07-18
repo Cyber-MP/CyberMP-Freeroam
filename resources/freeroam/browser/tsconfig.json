@@ -1,13 +1,20 @@
 {
   "extends": "../../../tsconfig.base.json",
   "compilerOptions": {
-    "types": ["vite/client"],
-    "baseUrl": ".",
+    "types": [
+      "vite/client"
+    ],
     "paths": {
-      "@/*": ["./src/*"],
-      "#/*": ["./src/assets/*"]
+      "@/*": [
+        "./src/*"
+      ],
+      "#/*": [
+        "./src/assets/*"
+      ]
     },
     "jsx": "react-jsx"
   },
-  "include": ["src"]
+  "include": [
+    "src"
+  ]
 }
