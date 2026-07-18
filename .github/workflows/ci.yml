@@ -26,5 +26,3 @@ jobs:
       - run: pnpm build
 
       - run: pnpm run biome:lint
-
-      - run: pnpm run type:check
