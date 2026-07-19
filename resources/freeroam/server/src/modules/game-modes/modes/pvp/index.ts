@@ -137,6 +137,8 @@ export class Pvp extends BaseGameMode<
   }
 
   init(match: Match<this>): void {
+    this.match = match;
+
     const candidateMap = PvpMaps.find((o) => o.name === this.match.options.map);
     if (!candidateMap) {
       throw new Error(`Pvp map by name ${this.match.options.map} is not found`);

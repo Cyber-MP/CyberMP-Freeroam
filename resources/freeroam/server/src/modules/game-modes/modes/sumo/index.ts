@@ -193,6 +193,8 @@ export class Sumo extends BaseGameMode<
   }
 
   init(match: Match<this>): void {
+    this.match = match;
+
     const candidateMap = SumoMaps.find(
       (o) => o.name === this.match.options.map,
     );

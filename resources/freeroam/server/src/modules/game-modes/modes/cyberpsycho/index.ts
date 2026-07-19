@@ -145,6 +145,8 @@ export class Cyberpsycho extends BaseGameMode<
   }
 
   init(match: Match<this>): void {
+    this.match = match;
+
     const candidateMap = CyberpsychoMaps.find(
       (o) => o.name === this.match.options.map,
     );
