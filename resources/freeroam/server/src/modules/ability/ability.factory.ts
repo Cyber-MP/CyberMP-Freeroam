@@ -34,6 +34,8 @@ export type AbilitySubjects =
   | 'OpenDoorCommand'
   | 'FixWeaponsCommand'
   | 'LevelUpCommand'
+  | 'KickPlayers'
+  | 'BanPlayers'
   | 'all';
 
 export type Ability = MongoAbility<[AbilityAction, AbilitySubjects]>;
@@ -87,6 +89,8 @@ export const playerAbilityFactory = (
       can('update', 'ServerTime');
       can('update', 'ServerWeather');
       can('use', 'ClearAllVehicles');
+      can('use', 'KickPlayers');
+      can('use', 'BanPlayers');
     }
 
     return build({ detectSubjectType });
