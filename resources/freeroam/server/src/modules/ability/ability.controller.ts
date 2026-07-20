@@ -25,6 +25,7 @@ export class AbilityController {
     >,
   ) {
     const ability = this.abilityService.create(context.player);
+
     return ability.rules;
   }
 

@@ -144,6 +144,7 @@ class Racer {
     }
 
     this.alive = false;
+    this.vehicle.destroy();
   }
 
   reset() {
