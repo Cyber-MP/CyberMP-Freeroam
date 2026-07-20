@@ -78,13 +78,11 @@ import AdvancedKiroshiOpticsBareLegendaryPlus from '#/images/implants/AdvancedKi
 import AdvancedKnifeSharpenerLegendaryPlus from '#/images/implants/AdvancedKnifeSharpenerLegendaryPlus.webp?w=300&h=300&imagetools';
 import AdvancedMantisBladesLegendaryPlus from '#/images/implants/AdvancedMantisBladesLegendaryPlus.webp?w=300&h=300&imagetools';
 import AdvancedMicroGeneratorLegendaryPlus from '#/images/implants/AdvancedMicroGeneratorLegendaryPlus.webp?w=300&h=300&imagetools';
-import AdvancedNanoWiresLegendaryPlus from '#/images/implants/AdvancedNanoWiresLegendaryPlus.webp?w=300&h=300&imagetools';
 import AdvancedNeoFiberLegendaryPlus from '#/images/implants/AdvancedNeoFiberLegendaryPlus.webp?w=300&h=300&imagetools';
 import AdvancedOilDispenserLegendaryPlus from '#/images/implants/AdvancedOilDispenserLegendaryPlus.webp?w=300&h=300&imagetools';
 import AdvancedPainDistributorLegendaryPlus from '#/images/implants/AdvancedPainDistributorLegendaryPlus.webp?w=300&h=300&imagetools';
 import AdvancedPainReductorLegendaryPlus from '#/images/implants/AdvancedPainReductorLegendaryPlus.webp?w=300&h=300&imagetools';
 import AdvancedPowerGripLegendaryPlus from '#/images/implants/AdvancedPowerGripLegendaryPlus.webp?w=300&h=300&imagetools';
-import AdvancedProjectileLauncherLegendaryPlus from '#/images/implants/AdvancedProjectileLauncherLegendaryPlus.webp?w=300&h=300&imagetools';
 import AdvancedProximityReducerLegendaryPlus from '#/images/implants/AdvancedProximityReducerLegendaryPlus.webp?w=300&h=300&imagetools';
 import AdvancedRapidMuscleNurishLegendaryPlus from '#/images/implants/AdvancedRapidMuscleNurishLegendaryPlus.webp?w=300&h=300&imagetools';
 import AdvancedReinforcedMusclesLegendaryPlus from '#/images/implants/AdvancedReinforcedMusclesLegendaryPlus.webp?w=300&h=300&imagetools';
@@ -112,7 +110,6 @@ import Preset_Kolac_Tiny_Mike from '#/images/weapons/Preset_Kolac_Tiny_Mike.webp
 import Preset_Lexington_Toygun from '#/images/weapons/Preset_Lexington_Toygun.webp?w=300&h=150&imagetools';
 import Preset_MA70_Default from '#/images/weapons/Preset_MA70_Default.webp?w=300&h=150&imagetools';
 import Preset_Masamune_Rogue from '#/images/weapons/Preset_Masamune_Rogue.webp?w=300&h=150&imagetools';
-import Preset_Neurotoxin_Knife_Iconic from '#/images/weapons/Preset_Neurotoxin_Knife_Iconic.webp?w=300&h=150&imagetools';
 import Preset_Nue_Maiko from '#/images/weapons/Preset_Nue_Maiko.webp?w=300&h=150&imagetools';
 import Preset_Overture_Cassidy from '#/images/weapons/Preset_Overture_Cassidy.webp?w=300&h=150&imagetools';
 import Preset_Saratoga_Raffen from '#/images/weapons/Preset_Saratoga_Raffen.webp?w=300&h=150&imagetools';
@@ -120,7 +117,6 @@ import Preset_Senkoh_Default from '#/images/weapons/Preset_Senkoh_Default.webp?w
 import Preset_Silverhand_3516 from '#/images/weapons/Preset_Silverhand_3516.webp?w=300&h=150&imagetools';
 import Preset_Tactician_Dino from '#/images/weapons/Preset_Tactician_Dino.webp?w=300&h=150&imagetools';
 import Preset_Yukimura_Default from '#/images/weapons/Preset_Yukimura_Default.webp?w=300&h=150&imagetools';
-import w_melee_boss_hammer from '#/images/weapons/w_melee_boss_hammer.webp?w=300&h=150&imagetools';
 import { AbilityOverlay } from '@/components/ability-overlay';
 import { type ClientInputs, clientQuery } from '@/rpc';
 import {
@@ -204,11 +200,11 @@ const DATA: Record<ItemCategory, Item[]> = {
       name: 'Bloody Maria',
       image: Preset_Tactician_Dino,
     },
-    {
-      key: 'Preset_Neurotoxin_Knife_Iconic',
-      name: 'Blue Fang',
-      image: Preset_Neurotoxin_Knife_Iconic,
-    },
+    // {
+    //   key: 'Preset_Neurotoxin_Knife_Iconic',
+    //   name: 'Blue Fang',
+    //   image: Preset_Neurotoxin_Knife_Iconic,
+    // },
     {
       key: 'Preset_Katana_GoG',
       name: 'Black Unicorn',
@@ -239,11 +235,11 @@ const DATA: Record<ItemCategory, Item[]> = {
       name: 'Yinglong',
       image: Preset_Dian_Yinglong,
     },
-    {
-      key: 'w_melee_boss_hammer',
-      name: "Sasquatch's Hammer",
-      image: w_melee_boss_hammer,
-    },
+    // {
+    //   key: 'w_melee_boss_hammer',
+    //   name: "Sasquatch's Hammer",
+    //   image: w_melee_boss_hammer,
+    // },
     {
       key: 'Preset_Dildo_Stout',
       name: 'Sir John Phallustiff',
@@ -343,16 +339,16 @@ const DATA: Record<ItemCategory, Item[]> = {
       name: 'Mantis Blades',
       image: AdvancedMantisBladesLegendaryPlus,
     },
-    {
-      key: 'AdvancedNanoWiresLegendaryPlus',
-      name: 'Monowire',
-      image: AdvancedNanoWiresLegendaryPlus,
-    },
-    {
-      key: 'AdvancedProjectileLauncherLegendaryPlus',
-      name: 'Projectile Launch System',
-      image: AdvancedProjectileLauncherLegendaryPlus,
-    },
+    // {
+    //   key: 'AdvancedNanoWiresLegendaryPlus',
+    //   name: 'Monowire',
+    //   image: AdvancedNanoWiresLegendaryPlus,
+    // },
+    // {
+    //   key: 'AdvancedProjectileLauncherLegendaryPlus',
+    //   name: 'Projectile Launch System',
+    //   image: AdvancedProjectileLauncherLegendaryPlus,
+    // },
     {
       key: 'AdvancedKiroshiOpticsBareLegendaryPlus',
       name: 'Basic Kiroshi Optics',
