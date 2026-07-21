@@ -7,6 +7,7 @@ WORKDIR /app
 
 COPY . .
 
+ENV CI=true
 RUN pnpm i --frozen-lockfile --ignore-scripts
 RUN pnpm -r build
 

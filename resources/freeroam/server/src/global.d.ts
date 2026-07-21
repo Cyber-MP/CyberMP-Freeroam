@@ -13,6 +13,9 @@ declare global {
   namespace NodeJS {
     interface ProcessEnv {
       ADMIN_PASSWORD: string;
+      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: string;
+      OTEL_EXPORTER_OTLP_LOGS_ENDPOINT: string;
+      OTEL_EXPORTER_OTLP_HEADERS: string;
     }
   }
 }

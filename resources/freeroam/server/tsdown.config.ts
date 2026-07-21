@@ -26,7 +26,7 @@ export default defineConfig({
       process.env.NODE_ENV !== 'development' ? 'production' : 'development',
   },
   deps: {
-    alwaysBundle: [/.*/s],
+    alwaysBundle: (id) => !id.startsWith('@opentelemetry/'),
   },
   clean: false,
   outputOptions: {

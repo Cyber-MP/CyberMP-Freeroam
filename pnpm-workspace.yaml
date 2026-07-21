@@ -5,5 +5,6 @@ allowBuilds:
   '@swc/core': true
   esbuild: true
   msw: true
+  protobufjs: true
   sharp: true
   simple-git-hooks: true

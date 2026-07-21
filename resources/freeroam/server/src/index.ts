@@ -1,4 +1,5 @@
 /** biome-ignore-all assist/source/organizeImports: yep */
+import './instrumentation';
 import { RpcError } from '@cybermp/rpc-server';
 import { eagerRegistry } from '@freeroam/inversify';
 import { container } from './container';
