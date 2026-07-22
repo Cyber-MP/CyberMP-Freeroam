@@ -8,7 +8,7 @@ import { useHotkeys } from 'react-hotkeys-hook';
 import { Brand } from '@/components/hud/brand';
 import { Chat } from '@/components/hud/chat';
 import { Hints } from '@/components/hud/hints';
-import { KillFeed } from '@/components/hud/kill-feed';
+import { KillFeed } from '@/components/hud/killfeed';
 import { LobbyMatch } from '@/components/hud/lobby-match';
 import { VehicleNitro } from '@/components/hud/vehicle-nitro';
 import { hudState } from '@/store/hud';

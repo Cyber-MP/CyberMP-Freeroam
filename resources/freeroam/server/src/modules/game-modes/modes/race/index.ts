@@ -1,3 +1,4 @@
+import type { AbilityBuilder } from '@casl/ability';
 import type { MpPlayer, MpVehicle, Vector3 } from '@cybermp/server-types';
 import { GameModeName } from '@freeroam/shared/game-modes';
 import {
@@ -22,6 +23,7 @@ import z from 'zod';
 import { mp } from '../../../../mp';
 import { client } from '../../../../rpc';
 import { browser } from '../../../../rpc/browser';
+import type { Ability } from '../../../ability/ability.factory';
 import type { Match } from '../../../matchmaking/match';
 import {
   VEHICLES_DATA,
@@ -417,6 +419,10 @@ export class Race extends BaseGameMode<
     return this.JOIN_OPTIONS_SCHEMA.extend({
       vehicle: z.enum(vehicles.map((o) => o.name)),
     });
+  }
+
+  abilityFactory(builder: AbilityBuilder<Ability>): void {
+    builder.can('use', 'VehicleNitro');
   }
 
   init(match: Match<this>): void {
