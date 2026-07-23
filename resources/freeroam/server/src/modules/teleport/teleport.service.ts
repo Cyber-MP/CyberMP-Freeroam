@@ -1,6 +1,7 @@
 import { RpcError } from '@cybermp/rpc-server';
 import type { MpPlayer, Vector3 } from '@cybermp/server-types';
 import { inject, injectable } from 'inversify';
+import { shuffle } from 'radash';
 import { mp } from '../../mp';
 import { client } from '../../rpc';
 import { AbilityService } from '../ability/ability.service';
@@ -57,25 +58,37 @@ export class TeleportService {
     );
   }
 
-  public teleportAll(playerTo: MpPlayer, x?: number, y?: number, z?: number) {
+  public teleportAll(
+    initiator: MpPlayer,
+    x?: number,
+    y?: number,
+    z?: number,
+    count?: number,
+  ) {
     const positionTo = [
-      x ?? playerTo.position[0],
-      y ?? playerTo.position[1],
-      z ?? playerTo.position[2],
+      x ?? initiator.position[0],
+      y ?? initiator.position[1],
+      z ?? initiator.position[2],
     ] as Vector3;
 
-    for (const player of mp.players.toArray()) {
-      if (player.id === playerTo.id) {
-        continue;
+    const arr = mp.players.toArray().filter((p) => {
+      if (p.id === initiator.id) {
+        return false;
       }
 
-      const ability = this.abilityService.create(player);
+      const ability = this.abilityService.create(p);
 
       if (ability.cannot('use', 'Teleport')) {
-        continue;
+        return false;
       }
 
-      player.dimension = playerTo.dimension;
+      return true;
+    });
+
+    const players = count ? shuffle(arr).slice(0, count) : arr;
+
+    for (const player of players) {
+      player.dimension = initiator.dimension;
       client.game.teleport.trigger(player, positionTo);
     }
   }
