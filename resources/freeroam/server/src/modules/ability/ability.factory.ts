@@ -5,6 +5,7 @@ import {
   type MongoAbility,
 } from '@casl/ability';
 import type { MpPlayer } from '@cybermp/server-types';
+import { MatchStatus } from '@freeroam/shared/matchmaking';
 import type { ResolutionContext } from 'inversify';
 import { AdminService } from '../admin/admin.service';
 import { MatchRepository } from '../matchmaking/match.repository';
@@ -66,7 +67,7 @@ export const playerAbilityFactory = (
 
     const match = matchRepo.getByMemberId(player.id);
 
-    if (!match) {
+    if (match?.status !== MatchStatus.ACTIVE) {
       can('update', 'PlayerAppearance');
       can('use', 'ItemsSpawner');
       can('use', 'VehicleSpawner');
