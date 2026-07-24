@@ -1,12 +1,11 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { IoSkull } from 'react-icons/io5';
 import { useGlitch } from 'react-powerglitch';
-import { useSnapshot } from 'valtio'; // Replaces MobX observer
-import { killFeedState } from '@/store/kill-feed';
+import { useSnapshot } from 'valtio';
+import { killFeedState } from '@/store/killfeed';
 
 export const KillFeed = () => {
-  const { killFeed, firePlayers } = useSnapshot(killFeedState);
-  // const { username } = settingsStore;
+  const { killFeed } = useSnapshot(killFeedState);
   const glitch = useGlitch({
     playMode: 'always',
     glitchTimeSpan: {
@@ -32,7 +31,7 @@ export const KillFeed = () => {
             >
               {o.killerName && (
                 <span
-                  ref={firePlayers.has(o.killerName) ? glitch.ref : undefined}
+                  ref={o.isKillerOnFire ? glitch.ref : undefined}
                   className={`px-2 py-1 rounded font-semibold text-base transition-colors duration-300 ${'text-[#ff1744]'}`}
                 >
                   {o.killerName}

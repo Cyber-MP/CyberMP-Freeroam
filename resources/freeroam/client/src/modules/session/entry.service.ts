@@ -61,6 +61,9 @@ export class EntryService {
     mp.game.onceGameLoaded(() => {
       this.onceGameLoaded().catch(this.logger.error);
     });
+    mp.events.onCef('domReady', () => {
+      browser.hud.setGlobalPath.trigger('/entry');
+    });
     mp.game.onGameLoaded(() => {
       this.applyDefaultGarbage();
     });

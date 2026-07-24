@@ -7,7 +7,7 @@ import {
 import type { MpPlayer } from '@cybermp/server-types';
 import type { ResolutionContext } from 'inversify';
 import { AdminService } from '../admin/admin.service';
-import { MatchmakingService } from '../matchmaking/matchmaking.service';
+import { MatchRepository } from '../matchmaking/match.repository';
 
 export const AbilityActions = ['create', 'update', 'use'] as const;
 
@@ -56,14 +56,17 @@ export const playerAbilityFactory = (
   context: ResolutionContext,
 ): PlayerAbilityFactory => {
   return (player) => {
-    const matchmakingService = context.get(MatchmakingService);
+    const matchRepo = context.get(MatchRepository);
     const adminService = context.get(AdminService);
 
-    const { can, build } = new AbilityBuilder<Ability>(createMongoAbility);
+    const abilityBuilder = new AbilityBuilder<Ability>(createMongoAbility);
+    const { can, build } = abilityBuilder;
 
     const isAdmin = adminService.isAdmin(player);
 
-    if (!matchmakingService.isOnActiveMatch(player)) {
+    const match = matchRepo.getByMemberId(player.id);
+
+    if (!match) {
       can('update', 'PlayerAppearance');
       can('use', 'ItemsSpawner');
       can('use', 'VehicleSpawner');
@@ -83,6 +86,8 @@ export const playerAbilityFactory = (
         can('use', 'TeleportAll');
         can('update', 'VehicleNitro');
       }
+    } else {
+      match.mode.abilityFactory(abilityBuilder);
     }
 
     if (isAdmin) {

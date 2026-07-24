@@ -3,6 +3,7 @@ import {
   RiGamepadLine,
   RiMap2Line,
   RiSwordLine,
+  RiUserLine,
 } from '@remixicon/react';
 import {
   createFileRoute,
@@ -43,6 +44,11 @@ const data: NavbarData[] = [
     name: 'Vehicles',
     icon: <RiCarLine />,
     to: '/hud/menu',
+  },
+  {
+    name: 'Players',
+    icon: <RiUserLine />,
+    to: '/hud/menu/players',
   },
   {
     name: 'Items',

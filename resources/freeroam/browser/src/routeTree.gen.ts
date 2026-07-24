@@ -16,6 +16,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as HudMenuRouteRouteImport } from './routes/hud.menu/route'
 import { Route as HudMenuIndexRouteImport } from './routes/hud.menu/index'
 import { Route as HudMenuWorldRouteImport } from './routes/hud.menu/world'
+import { Route as HudMenuPlayersRouteImport } from './routes/hud.menu/players'
 import { Route as HudMenuItemsRouteImport } from './routes/hud.menu/items'
 import { Route as HudMenuMatchmakingIndexRouteImport } from './routes/hud.menu/matchmaking/index'
 import { Route as HudGameModesSumoIndexRouteImport } from './routes/hud.game-modes/sumo/index'
@@ -58,6 +59,11 @@ const HudMenuIndexRoute = HudMenuIndexRouteImport.update({
 const HudMenuWorldRoute = HudMenuWorldRouteImport.update({
   id: '/world',
   path: '/world',
+  getParentRoute: () => HudMenuRouteRoute,
+} as any)
+const HudMenuPlayersRoute = HudMenuPlayersRouteImport.update({
+  id: '/players',
+  path: '/players',
   getParentRoute: () => HudMenuRouteRoute,
 } as any)
 const HudMenuItemsRoute = HudMenuItemsRouteImport.update({
@@ -110,6 +116,7 @@ export interface FileRoutesByFullPath {
   '/hud': typeof HudRouteWithChildren
   '/hud/menu': typeof HudMenuRouteRouteWithChildren
   '/hud/menu/items': typeof HudMenuItemsRoute
+  '/hud/menu/players': typeof HudMenuPlayersRoute
   '/hud/menu/world': typeof HudMenuWorldRoute
   '/hud/menu/': typeof HudMenuIndexRoute
   '/hud/game-modes/race/results': typeof HudGameModesRaceResultsRoute
@@ -126,6 +133,7 @@ export interface FileRoutesByTo {
   '/entry': typeof EntryRoute
   '/hud': typeof HudRouteWithChildren
   '/hud/menu/items': typeof HudMenuItemsRoute
+  '/hud/menu/players': typeof HudMenuPlayersRoute
   '/hud/menu/world': typeof HudMenuWorldRoute
   '/hud/menu': typeof HudMenuIndexRoute
   '/hud/game-modes/race/results': typeof HudGameModesRaceResultsRoute
@@ -144,6 +152,7 @@ export interface FileRoutesById {
   '/hud': typeof HudRouteWithChildren
   '/hud/menu': typeof HudMenuRouteRouteWithChildren
   '/hud/menu/items': typeof HudMenuItemsRoute
+  '/hud/menu/players': typeof HudMenuPlayersRoute
   '/hud/menu/world': typeof HudMenuWorldRoute
   '/hud/menu/': typeof HudMenuIndexRoute
   '/hud/game-modes/race/results': typeof HudGameModesRaceResultsRoute
@@ -163,6 +172,7 @@ export interface FileRouteTypes {
     | '/hud'
     | '/hud/menu'
     | '/hud/menu/items'
+    | '/hud/menu/players'
     | '/hud/menu/world'
     | '/hud/menu/'
     | '/hud/game-modes/race/results'
@@ -179,6 +189,7 @@ export interface FileRouteTypes {
     | '/entry'
     | '/hud'
     | '/hud/menu/items'
+    | '/hud/menu/players'
     | '/hud/menu/world'
     | '/hud/menu'
     | '/hud/game-modes/race/results'
@@ -196,6 +207,7 @@ export interface FileRouteTypes {
     | '/hud'
     | '/hud/menu'
     | '/hud/menu/items'
+    | '/hud/menu/players'
     | '/hud/menu/world'
     | '/hud/menu/'
     | '/hud/game-modes/race/results'
@@ -265,6 +277,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HudMenuWorldRouteImport
       parentRoute: typeof HudMenuRouteRoute
     }
+    '/hud/menu/players': {
+      id: '/hud/menu/players'
+      path: '/players'
+      fullPath: '/hud/menu/players'
+      preLoaderRoute: typeof HudMenuPlayersRouteImport
+      parentRoute: typeof HudMenuRouteRoute
+    }
     '/hud/menu/items': {
       id: '/hud/menu/items'
       path: '/items'
@@ -326,6 +345,7 @@ declare module '@tanstack/react-router' {
 
 interface HudMenuRouteRouteChildren {
   HudMenuItemsRoute: typeof HudMenuItemsRoute
+  HudMenuPlayersRoute: typeof HudMenuPlayersRoute
   HudMenuWorldRoute: typeof HudMenuWorldRoute
   HudMenuIndexRoute: typeof HudMenuIndexRoute
   HudMenuMatchmakingCreateRoute: typeof HudMenuMatchmakingCreateRoute
@@ -334,6 +354,7 @@ interface HudMenuRouteRouteChildren {
 
 const HudMenuRouteRouteChildren: HudMenuRouteRouteChildren = {
   HudMenuItemsRoute: HudMenuItemsRoute,
+  HudMenuPlayersRoute: HudMenuPlayersRoute,
   HudMenuWorldRoute: HudMenuWorldRoute,
   HudMenuIndexRoute: HudMenuIndexRoute,
   HudMenuMatchmakingCreateRoute: HudMenuMatchmakingCreateRoute,

@@ -19,8 +19,9 @@ export class TeleportCommands {
     x?: number,
     y?: number,
     z?: number,
+    count?: number
   ) {
-    this.teleportService.teleportAll(player, x, y, z);
+    this.teleportService.teleportAll(player, x, y, z, count);
   }
 
   @postConstruct()
@@ -32,6 +33,10 @@ export class TeleportCommands {
         z.coerce.number().meta({ title: 'x', optional: true }).optional(),
         z.coerce.number().meta({ title: 'y', optional: true }).optional(),
         z.coerce.number().meta({ title: 'z', optional: true }).optional(),
+        z.coerce
+          .number()
+          .meta({ title: 'count', optional: true })
+          .optional(),
       ]),
       can: ['use', 'TeleportAll'],
       handler: this.adminTeleportAll.bind(this),

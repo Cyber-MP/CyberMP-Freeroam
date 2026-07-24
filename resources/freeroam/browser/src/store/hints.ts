@@ -6,6 +6,7 @@ export const hintsState = proxy<Record<string, string>>({
   F2: 'Menu',
   F6: 'Show/Hide HUD',
   T: 'Chat',
+  '`': 'Cursor toggle',
 });
 
 export const addHints = (obj: Record<string, string>) => {
