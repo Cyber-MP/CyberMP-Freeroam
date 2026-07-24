@@ -1,4 +1,5 @@
 import { procedure } from '@cybermp/rpc-router/server';
+import { retry } from 'radash';
 import { proxy, type Snapshot, subscribe } from 'valtio';
 import z from 'zod';
 import type { JSONSchema } from 'zod/v4/core';
@@ -47,13 +48,20 @@ subscribe(chatState.messages, () => {
 });
 
 const fetchServerCommands = async () => {
-  const commands = await server.chat.getCommandsMeta.call();
+  const commands = await retry(
+    { times: 5, delay: 100 },
+    server.chat.getCommandsMeta.call,
+  );
 
   chatState.serverCommands = commands;
 };
 
 const fetchClientCommands = async () => {
-  const commands = await client.chat.getCommandsMeta.call();
+  const commands = await retry(
+    { times: 5, delay: 100 },
+    client.chat.getCommandsMeta.call,
+  );
+
   chatState.clientCommands = commands;
 };
 
