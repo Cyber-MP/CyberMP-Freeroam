@@ -106,11 +106,13 @@ export class Sumo extends BaseGameMode<'sumo'> {
   }
 
   async prepare(data: SumoPrepareDTO) {
+    this.teleportService.teleport(...data.startPoint);
+
+    await this.loadingScreenService.waitForLoadingScreenToHide();
+
     this.spawnService.spawn({
       position: data.startPoint,
     });
-
-    await this.loadingScreenService.waitForLoadingScreenToHide();
 
     browser.hud.setGlobalPath.trigger('/hud/game-modes/sumo/');
     browser.navigate.trigger('/hud/game-modes/sumo/');

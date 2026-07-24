@@ -1,3 +1,4 @@
+import type { ServerVector4 } from '@cybermp/client-types';
 import { EInputAction, EInputKey } from '@cybermp/client-types/enums';
 import type {
   entEntity,
@@ -226,11 +227,18 @@ export class Race extends BaseGameMode<'race'> {
   }
 
   async prepare(data: RacePrepareDTO) {
-    this.spawnService.spawn({
-      position: [...data.startPoint.position, data.startPoint.yaw ?? 0],
-    });
+    const targetPosition: ServerVector4 = [
+      ...data.startPoint.position,
+      data.startPoint.yaw ?? 0,
+    ];
+
+    this.teleportService.teleport(...targetPosition);
 
     await this.loadingScreenService.waitForLoadingScreenToHide();
+
+    this.spawnService.spawn({
+      position: targetPosition,
+    });
 
     browser.hud.setGlobalPath.trigger('/hud/game-modes/race/');
     browser.navigate.trigger('/hud/game-modes/race/');
