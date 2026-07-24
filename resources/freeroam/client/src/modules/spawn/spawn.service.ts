@@ -1,4 +1,4 @@
-import type { ServerVector3, ServerVector4 } from '@cybermp/client-types';
+import type { ServerVector4 } from '@cybermp/client-types';
 import type { Vector4 } from '@cybermp/client-types/game';
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
@@ -16,8 +16,9 @@ type SpawnOptions = {
 @eager()
 @injectable()
 export class SpawnService {
-  private readonly BASE_SPAWN_POSITION: ServerVector3 = [
-    -1425.36669921875, -65.88517761230469, 30.32978057861328,
+  private readonly BASE_SPAWN_POSITION: ServerVector4 = [
+    -1430.9176025390625, 1262.34130859375, 23.070526123046875,
+    -165.20005798339844,
   ];
 
   private readonly SPAWN_RADIUS = 5.0;
@@ -31,12 +32,12 @@ export class SpawnService {
   }
 
   getSpawnPosition(): ServerVector4 {
-    const [x, y, z] = this.BASE_SPAWN_POSITION;
+    const [x, y, z, w] = this.BASE_SPAWN_POSITION;
 
     const randomX = x + (Math.random() * 2 - 1) * this.SPAWN_RADIUS;
     const randomY = y + (Math.random() * 2 - 1) * this.SPAWN_RADIUS;
 
-    return [randomX, randomY, z, 1];
+    return [randomX, randomY, z, w];
   }
 
   spawn({ position, health = this.health.getDefaultHealth() }: SpawnOptions) {

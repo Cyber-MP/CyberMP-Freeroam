@@ -29,11 +29,13 @@ const ENTRY_STATUS_EFFECTS = [
 @injectable()
 export class EntryService {
   private readonly CAMERA_POSITION: ServerVector3 = [
-    -1422.9359, -78.98804, 19.200073,
+    -1417.2535, 1247.6887, 34.843918,
   ];
   private readonly CAMERA_ORIENTATION: [number, number, number, number] = [
-    0, 0, 0.033262607, 0.99944663,
+    0, 0, -0.98321944, 0.18242696,
   ];
+  private readonly LOCAL_CAMERA_ORIENTATION: [number, number, number, number] =
+    [-0.072726674, 0.26657978, -0.9271797, 0.25295055];
 
   private cameraEntity: entEntity | null = null;
   private isEntered = false;
@@ -111,6 +113,7 @@ export class EntryService {
   private async onceGameLoaded() {
     this.hud.hide();
     this.menusService.closeAllMenus();
+
     // this.cefService.setLoadingRedirect('/entry');
     browser.hud.setGlobalPath.trigger('/entry');
 
@@ -152,6 +155,10 @@ export class EntryService {
       if (!component) {
         throw new Error('Camera component not found on entity');
       }
+
+      component.SetLocalOrientation(
+        createQuaternion(...this.LOCAL_CAMERA_ORIENTATION),
+      );
 
       component.Activate(0, false);
     } catch (err) {
