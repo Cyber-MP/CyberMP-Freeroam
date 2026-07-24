@@ -3,7 +3,7 @@
 tcp_host = "0.0.0.0:2077"
 udp_host = "0.0.0.0:2077"
 
-max_players = 30
+max_players = 250
 
 disable_VoIP_server = false
 
@@ -11,7 +11,9 @@ resources = ["hotreload", "freeroam"]
 
 ep2_dlc_enabled = false
 
-cef_debug = true
+cef_debug = false
+
+connection_host_addr = "freeroam.cyber.mp:2077"
 
 [core]
 nametags = true

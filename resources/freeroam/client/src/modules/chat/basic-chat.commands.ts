@@ -10,6 +10,7 @@ import { GAppearanceMenuService } from '../game/appearance-menu.service';
 import { GHudService } from '../game/hud.service';
 import { GPlayerService } from '../game/player.service';
 import { GStatusEffectsService } from '../game/status-effects/status-effects.service';
+import { GTeleportService } from '../game/teleport/teleport.service';
 import { ChatService } from './chat.service';
 
 @eager()
@@ -20,6 +21,7 @@ export class BasicChatCommands {
     @inject(GStatusEffectsService) private statusEffects: GStatusEffectsService,
     @inject(GPlayerService) private playerService: GPlayerService,
     @inject(GHudService) private hudService: GHudService,
+    @inject(GTeleportService) private teleportService: GTeleportService,
     @inject(GAppearanceMenuService)
     private appearanceMenuService: GAppearanceMenuService,
   ) {}
@@ -157,7 +159,22 @@ export class BasicChatCommands {
       name: 'appearance',
       can: ['update', 'PlayerAppearance'],
       description: 'Opens appearance menu',
-      handler: () => this.appearanceMenuService.open(),
+      handler: async () => {
+        try {
+          await this.appearanceMenuService.open();
+        } catch {
+          await this.teleportService.teleportAsync(
+            -1382.1414794921875,
+            1276.2388916015625,
+            123.16490173339844,
+            84.79995727539062,
+          );
+
+          this.chatService.sendMessage(
+            "Oops! Some of our shit broke, appearance command don't work if u reconnected, or its just our shit code",
+          );
+        }
+      },
     });
 
     this.chatService.addCommand({

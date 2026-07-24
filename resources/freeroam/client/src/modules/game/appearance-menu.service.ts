@@ -7,7 +7,7 @@ import { mp } from '../../mp';
 @injectable()
 export class GAppearanceMenuService {
   private inGameMenu!: gameuiInGameMenuGameController;
-  private awaitMenu = false;
+  private pendingRequests: Array<() => void> = [];
 
   @postConstruct()
   private init() {
@@ -24,17 +24,27 @@ export class GAppearanceMenuService {
         'MenuScenario_PauseMenu',
         'OnEnterScenario',
         (self) => {
-          if (this.awaitMenu) {
+          const resolve = this.pendingRequests.shift();
+          if (resolve) {
             self.SwitchToScenario('MenuScenario_CharacterCustomizationMirror');
-            this.awaitMenu = false;
+            resolve();
           }
         },
       );
     });
   }
 
-  open() {
-    this.inGameMenu.SpawnMenuInstanceEvent('OnOpenPauseMenu');
-    this.awaitMenu = true;
+  open(): Promise<void> {
+    const signal = AbortSignal.timeout(1_000);
+
+    return new Promise<void>((resolve, reject) => {
+      signal.addEventListener('abort', () => {
+        this.pendingRequests.splice(this.pendingRequests.indexOf(resolve), 1);
+        reject();
+      });
+
+      this.pendingRequests.push(resolve);
+      this.inGameMenu.SpawnMenuInstanceEvent('OnOpenPauseMenu');
+    });
   }
 }
