@@ -6,7 +6,7 @@ import { mp } from '../../mp';
 @eager()
 @injectable()
 export class GAppearanceMenuService {
-  private inGameMenu!: gameuiInGameMenuGameController;
+  private inGameMenu?: gameuiInGameMenuGameController;
   private pendingRequests: Array<() => void> = [];
 
   @postConstruct()
@@ -44,7 +44,7 @@ export class GAppearanceMenuService {
       });
 
       this.pendingRequests.push(resolve);
-      this.inGameMenu.SpawnMenuInstanceEvent('OnOpenPauseMenu');
+      this.inGameMenu?.SpawnMenuInstanceEvent('OnOpenPauseMenu');
     });
   }
 }
