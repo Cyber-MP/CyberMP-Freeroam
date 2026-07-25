@@ -13,7 +13,7 @@ ep2_dlc_enabled = false
 
 cef_debug = false
 
-connection_host_addr = "freeroam.cyber.mp:2077"
+connection_host_addr = "88.99.97.201:2077"
 
 [core]
 nametags = true
