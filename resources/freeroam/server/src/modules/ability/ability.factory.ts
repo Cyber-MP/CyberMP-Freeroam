@@ -32,6 +32,7 @@ export type AbilitySubjects =
   | 'ItemsSpawner'
   | 'PlayerAppearance'
   | 'HealthControl'
+  | 'GodMode'
   | 'OpenDoorCommand'
   | 'FixWeaponsCommand'
   | 'LevelUpCommand'
@@ -86,6 +87,7 @@ export const playerAbilityFactory = (
         can('use', 'VehicleBoost');
         can('use', 'TeleportAll');
         can('update', 'VehicleNitro');
+        can('use', 'GodMode');
       }
     } else {
       match.mode.abilityFactory(abilityBuilder);

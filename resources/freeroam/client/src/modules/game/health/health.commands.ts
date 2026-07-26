@@ -42,7 +42,7 @@ export class GHealthCommands {
     this.chatService.addCommand({
       name: 'god',
       description: "Toggle's god mod",
-      can: ['use', 'HealthControl'],
+      can: ['use', 'GodMode'],
       handler: this.god.bind(this),
     });
     this.chatService.addCommand({
