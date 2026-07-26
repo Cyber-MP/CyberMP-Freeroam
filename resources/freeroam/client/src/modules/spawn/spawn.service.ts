@@ -2,6 +2,7 @@ import type { ServerVector4 } from '@cybermp/client-types';
 import type { Vector4 } from '@cybermp/client-types/game';
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
+import { draw } from 'radash';
 import { createVector4 } from '../../lib/vectors';
 import { mp } from '../../mp';
 import { GHealthService } from '../game/health/health.service';
@@ -16,10 +17,22 @@ type SpawnOptions = {
 @eager()
 @injectable()
 export class SpawnService {
-  private readonly BASE_SPAWN_POSITION: ServerVector4 = [
-    -1430.9176025390625, 1262.34130859375, 23.070526123046875,
-    -165.20005798339844,
+  private readonly BASE_SPAWN_POSITIONS: ServerVector4[] = [
+    [
+      -2231.1533203125, -2142.377197265625, 11.64801025390625,
+      -136.20004272460938,
+    ],
+    [
+      -1430.9176025390625, 1262.34130859375, 23.070526123046875,
+      -165.20005798339844,
+    ],
+    [
+      -1599.843017578125, 296.3954772949219, 8.223716735839844,
+      -83.39997100830078,
+    ],
   ];
+
+  private baseSpawnPosition: ServerVector4;
 
   private readonly SPAWN_RADIUS = 5.0;
 
@@ -29,10 +42,12 @@ export class SpawnService {
     @inject(LoggerService) private loggerService: LoggerService,
   ) {
     this.loggerService.setContext('SpawnService');
+
+    this.baseSpawnPosition = draw(this.BASE_SPAWN_POSITIONS) as ServerVector4;
   }
 
   getSpawnPosition(): ServerVector4 {
-    const [x, y, z, w] = this.BASE_SPAWN_POSITION;
+    const [x, y, z, w] = this.baseSpawnPosition;
 
     const randomX = x + (Math.random() * 2 - 1) * this.SPAWN_RADIUS;
     const randomY = y + (Math.random() * 2 - 1) * this.SPAWN_RADIUS;
