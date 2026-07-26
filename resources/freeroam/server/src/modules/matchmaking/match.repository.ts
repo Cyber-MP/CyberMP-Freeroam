@@ -1,16 +1,23 @@
-import { injectable } from 'inversify';
+import { inject, injectable } from 'inversify';
 import { random } from 'radash';
+import { LoggerService } from '../logger/logger.service';
 import type { Match } from './match';
 
 @injectable()
 export class MatchRepository {
   private matches = new Map<string, Match>();
 
+  constructor(@inject(LoggerService) private loggerService: LoggerService) {}
+
   save(match: Match) {
     this.matches.set(match.id, match);
   }
 
   delete(match: Match) {
+    this.loggerService.debug(
+      `Deleting match ${match.mode.name}:${match.id} with status of ${match.status}`,
+    );
+
     this.matches.delete(match.id);
   }
 
