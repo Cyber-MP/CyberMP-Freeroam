@@ -2,6 +2,7 @@ import type { ServerVector3 } from '@cybermp/client-types';
 import type { entEntity } from '@cybermp/client-types/game';
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
+import { retry } from 'radash';
 import { createQuaternion } from '../../lib/vectors';
 import { mp } from '../../mp';
 import { browser } from '../../rpc/browser';
@@ -16,17 +17,17 @@ import { GPlayerService } from '../game/player.service';
 import { GStatusEffectsService } from '../game/status-effects/status-effects.service';
 import { LoggerService } from '../logger/logger.service';
 
+const ENTRY_STATUS_EFFECTS = [
+  'BaseStatusEffect.Invulnerable',
+  'GameplayRestriction.NoZooming',
+  'GameplayRestriction.NoMovement',
+  'GameplayRestriction.NoWeapons',
+  'GameplayRestriction.NoCombat',
+] as const;
+
 @eager()
 @injectable()
 export class EntryService {
-  private readonly ENTRY_STATUS_EFFECTS = [
-    'BaseStatusEffect.Invulnerable',
-    'GameplayRestriction.NoZooming',
-    'GameplayRestriction.NoMovement',
-    'GameplayRestriction.NoWeapons',
-    'GameplayRestriction.NoCombat',
-  ];
-
   private readonly CAMERA_POSITION: ServerVector3 = [
     -1417.2535, 1247.6887, 34.843918,
   ];
@@ -63,12 +64,7 @@ export class EntryService {
       this.onceGameLoaded().catch(this.logger.error);
     });
     mp.events.onCef('domReady', () => {
-      if (this.isEntered) {
-        return;
-      }
-
       browser.hud.setGlobalPath.trigger('/entry');
-      browser.navigate.trigger('/entry');
     });
     mp.game.onGameLoaded(() => {
       this.applyDefaultGarbage();
@@ -87,14 +83,15 @@ export class EntryService {
     // this.playerService.invisible(false);
     this.hud.show();
 
-    // if (this.cameraEntity) {
-    //   this.cameraService.destroy(this.cameraEntity);
-    //   this.cameraEntity = null;
-    // }
+    if (this.cameraEntity) {
+      this.cameraService.destroy(this.cameraEntity);
+      this.cameraEntity = null;
+    }
 
     this.keyboardService.unsubscribe(this.onKeyPressed);
 
     browser.hud.setGlobalPath.trigger('/hud');
+    // this.cefService.setLoadingRedirect('/hud');
     browser.navigate.trigger('/hud');
   }
 
@@ -124,15 +121,12 @@ export class EntryService {
 
     await this.loadingScreen.waitForLoadingScreenToHide(200, 1000);
 
-    // retry({ times: 5, delay: 500 }, this.initCamera.bind(this));
+    retry({ times: 5, delay: 500 }, this.initCamera.bind(this));
 
-    browser.navigate.trigger('/entry');
-    mp.events.onCef('domReady', () => {
-      if (this.isEntered) {
-        return;
-      }
+    // Todo: remove this with cefReady event
+    setTimeout(() => {
       browser.navigate.trigger('/entry');
-    });
+    }, 100);
 
     this.keyboardService.subscribe(this.onKeyPressed);
 
@@ -177,7 +171,7 @@ export class EntryService {
   };
 
   private toggleEntryRestrictions(active: boolean) {
-    this.ENTRY_STATUS_EFFECTS.forEach((effect) => {
+    ENTRY_STATUS_EFFECTS.forEach((effect) => {
       if (active) {
         this.statusEffects.add(effect);
       } else {
