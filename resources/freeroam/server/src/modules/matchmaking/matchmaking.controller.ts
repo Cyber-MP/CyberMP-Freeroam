@@ -39,8 +39,8 @@ export class MatchmakingController {
     private matchOwnerMiddleware: MatchMiddleware,
   ) {}
 
-  private create(context: RpcServerContext<ContractInputs['create']>) {
-    const newMatch = this.matchmakingService.createMatch(
+  private async create(context: RpcServerContext<ContractInputs['create']>) {
+    const newMatch = await this.matchmakingService.createMatch(
       context.player.id,
       context.data,
     );
@@ -56,23 +56,21 @@ export class MatchmakingController {
     return this.matchmakingService.joinMatch(context.player.id, context.data);
   }
 
-  private leave(context: RpcServerContext) {
-    this.matchmakingService.leaveMatch(context.player.id);
+  private async leave(context: RpcServerContext) {
+    await this.matchmakingService.leaveMatch(context.player.id);
   }
 
-  private start(context: RpcMatchContext) {
-    context.match.start();
+  private async start(context: RpcMatchContext) {
+    await context.match.start();
   }
 
-  private onPlayerDisconnected(playerId: number) {
-    this.matchmakingService.leaveMatch(playerId);
+  private async onPlayerDisconnected(playerId: number) {
+    await this.matchmakingService.leaveMatch(playerId);
   }
 
   @postConstruct()
   private init() {
-    const contract = matchmakingContract;
-
-    r.implement(contract, {
+    r.implement(matchmakingContract, {
       create: this.create.bind(this),
       getAll: this.getAll.bind(this),
       join: this.join.bind(this),

@@ -118,7 +118,7 @@ export class Match<TGameMode extends BaseGameMode = BaseGameMode> {
 
     const joinOptions = this.mode.JOIN_OPTIONS_SCHEMA.safeParse(options);
     if (!joinOptions.success) {
-      return true;
+      return false;
     }
 
     this.members.set(
@@ -219,24 +219,27 @@ export class Match<TGameMode extends BaseGameMode = BaseGameMode> {
     const [err] = await tryit(() => this.mode.end())();
     if (err) {
       this.loggerService.warn(
-        'Error happen during game mode end',
+        'Error happened during game mode end',
         err,
         err.message,
       );
     }
 
-    for (const playerId of this.members.keys()) {
+    const playerIds = Array.from(this.members.keys());
+
+    for (const playerId of playerIds) {
       client.gameModes.end.trigger(playerId);
-
-      this.abilityService.sync(mp.players.at(playerId));
     }
-
-    this.hooks?.onEnd?.();
 
     this.members.clear();
 
-    for (const playerId of this.members.keys()) {
-      this.abilityService.sync(mp.players.at(playerId));
+    this.hooks?.onEnd?.();
+
+    for (const playerId of playerIds) {
+      const player = mp.players.at(playerId);
+      if (player) {
+        this.abilityService.sync(player);
+      }
     }
   }
 }

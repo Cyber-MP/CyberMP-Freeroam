@@ -47,7 +47,7 @@ export class MatchmakingService {
     return match.status === MatchStatus.ACTIVE;
   }
 
-  createMatch(ownerId: number, dto: z.infer<typeof zCreateMatchDTO>) {
+  async createMatch(ownerId: number, dto: z.infer<typeof zCreateMatchDTO>) {
     const mode = this.gameModeFactory(dto.name);
 
     if (!mode.CREATE_OPTIONS_SCHEMA.safeParse(dto.createOptions).success) {
@@ -82,7 +82,7 @@ export class MatchmakingService {
       },
     );
 
-    this.leaveMatch(ownerId);
+    await this.leaveMatch(ownerId);
 
     this.matchRepository.save(match);
 
@@ -91,23 +91,23 @@ export class MatchmakingService {
     return match;
   }
 
-  joinMatch(playerId: number, dto: z.infer<typeof zJoinMatchDTO>) {
+  async joinMatch(playerId: number, dto: z.infer<typeof zJoinMatchDTO>) {
     const match = this.matchRepository.findById(dto.id);
     if (!match) {
       return false;
     }
 
-    this.leaveMatch(playerId);
+    await this.leaveMatch(playerId);
 
     return match.join(playerId, dto.options as JoinMatchOptions);
   }
 
-  leaveMatch(playerId: number) {
+  async leaveMatch(playerId: number) {
     const match = this.matchRepository.getByMemberId(playerId);
     if (!match) {
       return;
     }
 
-    match.leave(playerId);
+    await match.leave(playerId);
   }
 }
