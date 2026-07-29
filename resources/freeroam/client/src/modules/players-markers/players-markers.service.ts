@@ -10,6 +10,7 @@ import type {
 } from '@cybermp/client-types/game';
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct, preDestroy } from 'inversify';
+import { sleep } from 'radash';
 import { mp } from '../../mp';
 import { GEntityService } from '../game/entity.service';
 
@@ -55,7 +56,7 @@ export class PlayersMarkersService {
 
     for (const playerId of this.mappins.keys()) {
       if (!activeThisFrame.has(playerId)) {
-        this.destroyMappin(playerId);
+        void this.destroyMappin(playerId);
       }
     }
   }
@@ -64,7 +65,7 @@ export class PlayersMarkersService {
     const roleMappinData = new mp.game.GameplayRoleMappinData();
     roleMappinData.isQuest = true;
     roleMappinData.visibleThroughWalls = false;
-    roleMappinData.range = 50.0;
+    roleMappinData.range = 100.0;
     roleMappinData.gameplayRole = EGameplayRole.NPC;
     roleMappinData.textureID = 'MappinIcons.NPCMappin';
     roleMappinData.showOnMiniMap = true;
@@ -89,15 +90,25 @@ export class PlayersMarkersService {
     this.system.SetMappinPosition(mappinId, position);
   }
 
-  private destroyMappin(playerId: number) {
+  private async destroyMappin(playerId: number) {
     const mappinId = this.mappins.get(playerId);
     if (!mappinId) {
       return;
     }
 
+    await this.forceDestroyEnt(mappinId);
+
     this.system.UnregisterMappin(mappinId);
 
     this.mappins.delete(playerId);
+  }
+
+  private async forceDestroyEnt(id: gameNewMappinID) {
+    while (this.system.GetMappin(id)) {
+      this.system.UnregisterMappin(id);
+
+      await sleep(100);
+    }
   }
 
   @preDestroy()
