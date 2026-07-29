@@ -16,7 +16,7 @@ export const PvpWeapons = {
   'Items.Preset_Masamune_Rogue': 'Prejudice',
   'Items.Legendary_Ajax_Moron': 'Moron Labe',
   'Items.Preset_Dian_Yinglong': 'Yinglong',
-  'Items.w_melee_boss_hammer': "Sasquatch's Hammer",
+  // 'Items.w_melee_boss_hammer': "Sasquatch's Hammer",
   'Items.Preset_Dildo_Stout': 'Sir John Phallustiff',
   'Items.Preset_MA70_Default': 'MA70 HB',
   'Items.Preset_Kolac_Tiny_Mike': 'Hypercritical',

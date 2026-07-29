@@ -12,7 +12,7 @@ export const ITEM_SPAWNER_KEYS = [
   'Preset_Katana_Cocktail',
   'Preset_Carnage_Edgerunners',
   'Preset_Dian_Yinglong',
-  'w_melee_boss_hammer',
+  // 'w_melee_boss_hammer',
   'GrenadeOzobsNose',
   'Preset_Dildo_Stout',
   'Preset_Nue_Maiko',
