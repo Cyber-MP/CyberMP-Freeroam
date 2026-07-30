@@ -1,8 +1,4 @@
-import {
-  type GameHash,
-  type MpPlayer,
-  VehicleSeat,
-} from '@cybermp/server-types';
+import type { GameHash, MpPlayer } from '@cybermp/server-types';
 import { inject, injectable } from 'inversify';
 import { mp } from '../../mp';
 import { client } from '../../rpc';
@@ -36,10 +32,6 @@ export class VehiclesSpawnerService {
   clearAllVehicles() {
     for (const vehicles of this.playersVehiclesMap.values()) {
       for (const vehicleId of vehicles.values()) {
-        if (mp.vehicles.at(vehicleId).getPlayerInSeat(VehicleSeat.Driver)) {
-          continue;
-        }
-
         mp.vehicles.destroy(vehicleId);
 
         vehicles.delete(vehicleId);
@@ -47,10 +39,6 @@ export class VehiclesSpawnerService {
     }
 
     mp.vehicles.toArray().forEach((vehicle) => {
-      if (vehicle.getPlayerInSeat(VehicleSeat.Driver)) {
-        return;
-      }
-
       vehicle.destroy();
     });
   }
