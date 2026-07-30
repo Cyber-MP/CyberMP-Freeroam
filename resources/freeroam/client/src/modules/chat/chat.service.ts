@@ -45,7 +45,9 @@ export class ChatService {
 
     const resultArgs = command.args.safeParse(args);
     if (!resultArgs.success) {
-      this.sendMessage('Arguments validation failed');
+      this.sendMessage(
+        `Invalid command arguments: ${resultArgs.error.issues[0].message}`,
+      );
       return;
     }
 

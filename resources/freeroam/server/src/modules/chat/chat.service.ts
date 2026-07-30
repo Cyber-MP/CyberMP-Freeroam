@@ -3,6 +3,7 @@ import type { MpPlayer } from '@cybermp/server-types';
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
 import z from 'zod';
+import { mp } from '../../mp';
 import { browser } from '../../rpc/browser';
 import type {
   AbilityAction,
@@ -25,10 +26,25 @@ export type ServerCommand<Args extends z.ZodTuple> = ChatCommand<Args> & {
   handler(player: MpPlayer, ...args: z.infer<Args>): void;
 };
 
+export const zCoercePlayerId = z.coerce
+  .number()
+  .meta({ title: 'player-id' })
+  .transform((p, ctx) => {
+    const candidate = mp.players.at(p);
+
+    if (!candidate) {
+      ctx.addIssue({ code: 'custom', message: 'Player not found' });
+
+      return z.NEVER;
+    }
+
+    return candidate;
+  });
+
 @eager()
 @injectable()
 export class ChatService {
-  private registry = new Map<string, ServerCommand<any>>();
+  private registry = new Map<string, ServerCommand<z.ZodTuple>>();
 
   constructor(
     @inject(LoggerService) private logger: LoggerService,
@@ -56,7 +72,10 @@ export class ChatService {
 
     const resultArgs = command.args.safeParse(args);
     if (!resultArgs.success) {
-      this.sendMessage(player, 'Arguments validation failed');
+      this.sendMessage(
+        player,
+        `Invalid command arguments: ${resultArgs.error.issues[0].message}`,
+      );
       return;
     }
 
