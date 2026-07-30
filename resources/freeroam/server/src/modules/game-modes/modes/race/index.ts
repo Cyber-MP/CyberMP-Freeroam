@@ -287,7 +287,7 @@ class RanksTracker {
     this.lastRanks = ranks;
 
     for (const playerId of this.racers.keys()) {
-      client.gameModes.race.updateRanks.trigger(playerId, ranks);
+      client.gameModes.race.updateRanks.trigger(playerId, ranks.slice(0, 5));
     }
   }
 
