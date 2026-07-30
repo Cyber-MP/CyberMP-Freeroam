@@ -397,7 +397,7 @@ export class Race extends BaseGameMode<
   private releaseTimestamp: number | null = 0;
 
   private readonly COUNTDOWN_TIME = ms('5s');
-  private readonly FORCE_FINISH_TIME = ms('5m');
+  private readonly FORCE_FINISH_TIME = ms('1m');
 
   private finishTimeout: ReturnType<typeof setTimeout> | null = null;
 

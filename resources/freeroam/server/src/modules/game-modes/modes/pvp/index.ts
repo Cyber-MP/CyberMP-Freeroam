@@ -127,7 +127,7 @@ export class Pvp extends BaseGameMode<
   private drawTimeout: ReturnType<typeof setTimeout> | null = null;
 
   private readonly COUNTDOWN_TIME = ms('5s');
-  private readonly DRAW_TIME = ms('10m');
+  private readonly DRAW_TIME = ms('1m');
 
   @inject(PolygonsService)
   private polygonsService!: PolygonsService;
