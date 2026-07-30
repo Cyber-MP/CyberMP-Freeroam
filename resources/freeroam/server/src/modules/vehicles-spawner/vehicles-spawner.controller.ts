@@ -1,9 +1,15 @@
+import type { InferRouterContext } from '@cybermp/rpc-router/server';
 import { RpcApplyType, type RpcServerContext } from '@cybermp/rpc-server';
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
 import z from 'zod';
 import { mp } from '../../mp';
 import { r } from '../../rpc';
+import {
+  type CheckForAbilityMiddleware,
+  CheckForAbilityMiddlewareSymbol,
+  type RpcAbilityContext,
+} from '../ability/middlewares/ability.middleware';
 import {
   type VehicleCategory,
   type VehicleModel,
@@ -26,6 +32,7 @@ export const vehiclesSpawnerContract = {
     .input(zVehicleData.shape.category)
     .output(z.array(zVehicleData))
     .build(),
+  delete: r.contract.context<RpcAbilityContext>().input(z.number()),
 };
 
 @eager()
@@ -36,6 +43,8 @@ export class VehiclesSpawnerController {
     private vehiclesSpawnerService: VehiclesSpawnerService,
     @inject(VehiclesRepository)
     private vehiclesRepository: VehiclesRepository,
+    @inject(CheckForAbilityMiddlewareSymbol)
+    private checkForAbilityMiddleware: CheckForAbilityMiddleware,
   ) {}
 
   private spawnVehicleFromList(context: RpcServerContext<VehicleModel>) {
@@ -53,12 +62,25 @@ export class VehiclesSpawnerController {
     return this.vehiclesRepository.getByCategory(context.data);
   }
 
+  private delete(
+    context: InferRouterContext<
+      typeof vehiclesSpawnerContract.delete,
+      RpcAbilityContext
+    >,
+  ) {
+    return this.vehiclesSpawnerService.deleteVehicle(context.data);
+  }
+
   @postConstruct()
   private init() {
     r.implement(vehiclesSpawnerContract, {
       spawnVehicleFromList: this.spawnVehicleFromList.bind(this),
       getAll: this.getAll.bind(this),
       getByCategory: this.getVehicleByCategory.bind(this),
+      delete: vehiclesSpawnerContract.delete.implement(
+        this.checkForAbilityMiddleware('use', 'ClearAllVehicles'),
+        this.delete.bind(this),
+      ),
     });
 
     mp.events.on('playerDisconnected', (playerId) => {

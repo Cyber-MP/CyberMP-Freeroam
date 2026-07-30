@@ -5,6 +5,7 @@ import { inject, injectable, postConstruct } from 'inversify';
 import { retry } from 'radash';
 import z from 'zod';
 import { mp } from '../../mp';
+import { server } from '../../rpc';
 import { browser } from '../../rpc/browser';
 import { GAppearanceMenuService } from '../game/appearance-menu.service';
 import { GHudService } from '../game/hud.service';
@@ -147,6 +148,34 @@ export class BasicChatCommands {
     this.chatService.sendMessage('This is not a door');
   }
 
+  private adminDeleteVehicle() {
+    const targetingSystem = mp.game.ScriptGameInstance.GetTargetingSystem();
+
+    const lookAtObject = targetingSystem.GetLookAtObject(
+      mp.game.GetPlayerObject(),
+    );
+
+    if (!lookAtObject) {
+      this.chatService.sendMessage('This is not a game object');
+      return;
+    }
+
+    if (!lookAtObject.IsA('VehicleObject')) {
+      this.chatService.sendMessage('This is not a vehicle');
+      return;
+    }
+
+    const networkId = mp.network.getVehicleId(lookAtObject.GetEntityID().hash);
+    if (!networkId) {
+      this.chatService.sendMessage(
+        'Cant convert game id to network id for some reason',
+      );
+      return;
+    }
+
+    server.vehiclesSpawner.delete.trigger(networkId);
+  }
+
   @postConstruct()
   private init() {
     this.chatService.addCommand({
@@ -248,6 +277,13 @@ export class BasicChatCommands {
       description: 'Changes your gender',
       can: ['update', 'PlayerAppearance'],
       handler: this.changeGender.bind(this),
+    });
+
+    this.chatService.addCommand({
+      name: 'admin-delveh',
+      description: 'Look at vehicle and delete it',
+      can: ['use', 'ClearAllVehicles'],
+      handler: this.adminDeleteVehicle.bind(this),
     });
 
     this.chatService.addCommand({

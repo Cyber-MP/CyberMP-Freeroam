@@ -16,6 +16,10 @@ export class VehiclesSpawnerService {
     @inject(VehiclesRepository) private vehiclesRepository: VehiclesRepository,
   ) {}
 
+  deleteVehicle(vehicleId: number) {
+    mp.vehicles.destroy(vehicleId);
+  }
+
   clearPlayerVehicles(playerId: number) {
     const vehicles = this.playersVehiclesMap.get(playerId);
     if (!vehicles || !vehicles.size) {
