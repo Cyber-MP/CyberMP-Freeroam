@@ -2,11 +2,13 @@ import { eager } from '@freeroam/inversify';
 // import { PvpMapName } from '@freeroam/shared/game-modes/pvp';
 // import { RaceMapName } from '@freeroam/shared/game-modes/race';
 // import { SumoMapName } from '@freeroam/shared/game-modes/sumo';
-import { injectable, postConstruct } from 'inversify';
+import { inject, injectable, postConstruct } from 'inversify';
+import z from 'zod';
 // import { draw } from 'radash';
 // import z from 'zod';
 // import { mp } from '../../mp';
-// import { ChatCommandFlag, ChatService } from '../chat/chat.service';
+import { ChatService, zCoercePlayerId } from '../chat/chat.service';
+import { MatchmakingService } from './matchmaking.service';
 // import { PvpWeapons } from '../game-modes/modes/pvp/data';
 // import { VEHICLES_DATA } from '../vehicles-spawner/vehicles.repository';
 // import { MatchmakingService } from './matchmaking.service';
@@ -14,14 +16,23 @@ import { injectable, postConstruct } from 'inversify';
 @eager()
 @injectable()
 export class MatchmakingCommands {
-  // @inject(ChatService)
-  // private chatService!: ChatService;
+  @inject(ChatService)
+  private chatService!: ChatService;
 
-  // @inject(MatchmakingService)
-  // private matchmakingService!: MatchmakingService;
+  @inject(MatchmakingService)
+  private matchmakingService!: MatchmakingService;
 
   @postConstruct()
   private init() {
+    this.chatService.addCommand({
+      name: 'mkick',
+      can: ['use', 'KickPlayers'],
+      args: z.tuple([zCoercePlayerId]),
+      handler: (_player, target) => {
+        this.matchmakingService.leaveMatch(target.id);
+      },
+    });
+
     // this.chatService.addCommand({
     //   name: 'admin-global-match',
     //   flags: ChatCommandFlag.Admin | ChatCommandFlag.DisableInGameMode,
