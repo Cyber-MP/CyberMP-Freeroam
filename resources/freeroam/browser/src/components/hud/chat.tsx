@@ -186,15 +186,19 @@ const suggestCommands = (commands: Snapshot<ChatCommand[]>, query: string) => {
 const ChatInput = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [input, setInput] = useState('');
+
   const inputHistoryRef = useRef<string[]>([]);
   const inputHistoryIndexRef = useRef<number | null>(null);
+  const draftInputRef = useRef<string>('');
 
   const { visibility, clientCommands, serverCommands } = useSnapshot(chatState);
   const ability = useAbility();
 
-  const commands = [...serverCommands, ...clientCommands].filter((command) =>
-    command.can ? ability.can(...command.can) : true,
-  );
+  const commands = useMemo(() => {
+    return [...serverCommands, ...clientCommands].filter((command) =>
+      command.can ? ability.can(...command.can) : true,
+    );
+  }, [serverCommands, clientCommands, ability]);
 
   const isCommand = useMemo(() => input.startsWith('/'), [input]);
 
@@ -218,12 +222,14 @@ const ChatInput = () => {
       inputRef.current?.blur();
       setInput('');
       inputHistoryIndexRef.current = null;
+      draftInputRef.current = '';
     }
   }, [isActive]);
 
   const onInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setInput(e.target.value);
     inputHistoryIndexRef.current = null;
+    draftInputRef.current = e.target.value;
   };
 
   const onSubmit = (e?: any) => {
@@ -233,6 +239,7 @@ const ChatInput = () => {
     if (!inputTrimmed) {
       setInput('');
       inputHistoryIndexRef.current = null;
+      draftInputRef.current = '';
       setChatVisibility(ChatVisibility.INACTIVE);
       return;
     }
@@ -244,47 +251,61 @@ const ChatInput = () => {
       postChatMessage(inputTrimmed);
     }
 
-    inputHistoryRef.current.push(inputTrimmed);
+    // Deduplicate consecutive identical entries in history
+    if (
+      inputHistoryRef.current[inputHistoryRef.current.length - 1] !==
+      inputTrimmed
+    ) {
+      inputHistoryRef.current.push(inputTrimmed);
+    }
+
     inputHistoryIndexRef.current = null;
+    draftInputRef.current = '';
     setInput('');
     setChatVisibility(ChatVisibility.INACTIVE);
   };
 
+  // Up Arrow: Navigate backwards into history
   useHotkeys(
     'up',
     (e) => {
       e.preventDefault();
-      if (!inputHistoryRef.current.length) {
-        return;
+      const history = inputHistoryRef.current;
+      if (history.length === 0) return;
+
+      if (inputHistoryIndexRef.current === null) {
+        // Save current typing draft before starting history navigation
+        draftInputRef.current = input;
+        const lastIndex = history.length - 1;
+        inputHistoryIndexRef.current = lastIndex;
+        setInput(history[lastIndex]);
+      } else {
+        const nextIndex = Math.max(0, inputHistoryIndexRef.current - 1);
+        inputHistoryIndexRef.current = nextIndex;
+        setInput(history[nextIndex]);
       }
-
-      const newIndex =
-        inputHistoryIndexRef.current === null
-          ? inputHistoryRef.current.length - 1
-          : Math.max(0, inputHistoryIndexRef.current - 1);
-
-      inputHistoryIndexRef.current = newIndex;
-      setInput(inputHistoryRef.current[newIndex]);
     },
     { enableOnFormTags: true, scopes: 'chat', enabled: isActive && !isCommand },
-    [isActive, isCommand],
+    [isActive, isCommand, input],
   );
 
+  // Down Arrow: Navigate forward into history or restore draft
   useHotkeys(
     'down',
     (e) => {
       e.preventDefault();
-      if (inputHistoryIndexRef.current === null) {
-        return;
-      }
+      const history = inputHistoryRef.current;
+      if (inputHistoryIndexRef.current === null) return;
 
       const nextIndex = inputHistoryIndexRef.current + 1;
-      if (nextIndex >= inputHistoryRef.current.length) {
+
+      if (nextIndex >= history.length) {
+        // Returned to bottom: restore unsaved draft
         inputHistoryIndexRef.current = null;
-        setInput('');
+        setInput(draftInputRef.current);
       } else {
         inputHistoryIndexRef.current = nextIndex;
-        setInput(inputHistoryRef.current[nextIndex]);
+        setInput(history[nextIndex]);
       }
     },
     { enableOnFormTags: true, scopes: 'chat', enabled: isActive && !isCommand },
