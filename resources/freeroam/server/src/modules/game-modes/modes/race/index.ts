@@ -422,7 +422,9 @@ export class Race extends BaseGameMode<
   }
 
   abilityFactory(builder: AbilityBuilder<Ability>): void {
-    builder.can('use', 'VehicleNitro');
+    if (this.match.options.nitro) {
+      builder.can('use', 'VehicleNitro');
+    }
   }
 
   init(match: Match<this>): void {
