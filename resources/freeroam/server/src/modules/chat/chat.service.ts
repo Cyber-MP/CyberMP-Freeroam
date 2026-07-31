@@ -46,11 +46,36 @@ export const zCoercePlayerId = z.coerce
 export class ChatService {
   private registry = new Map<string, ServerCommand<z.ZodTuple>>();
 
+  private readonly GLOBAL_ROOM = '_GLOBAL_';
+
+  private playerRooms = new Map<number, string>();
+
   constructor(
     @inject(LoggerService) private logger: LoggerService,
     @inject(AbilityService) private abilityService: AbilityService,
   ) {
     this.logger.setContext('ChatService');
+  }
+
+  joinRoom(player: number | MpPlayer, roomId: string) {
+    const id = typeof player === 'number' ? player : player.id;
+    this.playerRooms.set(id, roomId);
+    this.sendMessage(player, `You joined chat room ${roomId}`);
+  }
+
+  leaveRoom(player: number | MpPlayer) {
+    const id = typeof player === 'number' ? player : player.id;
+    if (!this.playerRooms.has(id)) {
+      return;
+    }
+
+    this.playerRooms.delete(id);
+    this.sendMessage(player, `You leaved chat room`);
+  }
+
+  getRoom(player: number | MpPlayer): string {
+    const id = typeof player === 'number' ? player : player.id;
+    return this.playerRooms.get(id) ?? this.GLOBAL_ROOM;
   }
 
   executeCommand(player: MpPlayer, { name, args }: ExecuteCommandDTO) {
@@ -97,8 +122,19 @@ export class ChatService {
       );
       return;
     }
-    console.log(`[Chat] ${player.nickname} (${player.id}): ${content}`);
-    browser.chat.newMessage.trigger(-1, newMessage.data);
+
+    const senderRoom = this.getRoom(player);
+    this.logger.info(
+      `[${senderRoom}] ${player.nickname} (${player.id}): ${content}`,
+    );
+
+    const recipients = mp.players
+      .toArray()
+      .filter((o) => this.getRoom(o) === senderRoom);
+
+    for (const recipient of recipients) {
+      browser.chat.newMessage.trigger(recipient, newMessage.data);
+    }
   }
 
   sendMessage(
@@ -133,6 +169,10 @@ export class ChatService {
       handler: (player) => {
         this.sendMessage(player, `${player.ping}ms`);
       },
+    });
+
+    mp.events.on('playerDisconnected', (playerId) => {
+      this.playerRooms.delete(playerId);
     });
   }
 }

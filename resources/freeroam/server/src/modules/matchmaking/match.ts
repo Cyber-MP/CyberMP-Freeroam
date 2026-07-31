@@ -11,6 +11,7 @@ import type z from 'zod';
 import { mp } from '../../mp';
 import { client } from '../../rpc';
 import { AbilityService } from '../ability/ability.service';
+import { ChatService } from '../chat/chat.service';
 import type { BaseGameMode } from '../game-modes/game-mode';
 import { LoggerService } from '../logger/logger.service';
 
@@ -46,6 +47,9 @@ export class Match<TGameMode extends BaseGameMode = BaseGameMode> {
 
   @inject(new LazyServiceIdentifier(() => AbilityService))
   private abilityService!: AbilityService;
+
+  @inject(ChatService)
+  private chatService!: ChatService;
 
   _init(
     {
@@ -174,6 +178,8 @@ export class Match<TGameMode extends BaseGameMode = BaseGameMode> {
     }
 
     this.abilityService.sync(mp.players.at(playerId));
+
+    this.chatService.leaveRoom(playerId);
   }
 
   async start() {
@@ -195,6 +201,8 @@ export class Match<TGameMode extends BaseGameMode = BaseGameMode> {
       client.gameModes.start.trigger(playerId, this.toDTO());
 
       this.abilityService.sync(mp.players.at(playerId));
+
+      this.chatService.joinRoom(playerId, `${this.mode.name}_${this.id}`);
     }
 
     const [err] = await tryit(() => this.mode.start())();
@@ -239,6 +247,7 @@ export class Match<TGameMode extends BaseGameMode = BaseGameMode> {
       const player = mp.players.at(playerId);
       if (player) {
         this.abilityService.sync(player);
+        this.chatService.leaveRoom(playerId);
       }
     }
   }

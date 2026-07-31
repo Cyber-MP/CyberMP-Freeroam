@@ -8,6 +8,7 @@ import { inject, injectable } from 'inversify';
 import type z from 'zod';
 import { mp } from '../../mp';
 import { browser } from '../../rpc/browser';
+import { ChatService } from '../chat/chat.service';
 import {
   type GameModeFactory,
   GameModeFactorySymbol,
@@ -21,6 +22,7 @@ import { MatchRepository } from './match.repository';
 export class MatchmakingService {
   constructor(
     @inject(MatchRepository) private matchRepository: MatchRepository,
+    @inject(ChatService) private chatService: ChatService,
     @inject(GameModeFactorySymbol)
     private gameModeFactory: GameModeFactory,
     @inject(MatchFactorySymbol)
@@ -87,6 +89,11 @@ export class MatchmakingService {
     this.matchRepository.save(match);
 
     this.broadcastMatches();
+
+    this.chatService.sendMessage(
+      -1,
+      `${mp.players.at(ownerId).nickname} created ${mode.name} match`,
+    );
 
     return match;
   }
