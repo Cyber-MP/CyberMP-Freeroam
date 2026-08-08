@@ -5,15 +5,13 @@ udp_host = "0.0.0.0:2077"
 
 max_players = 35
 
-disable_VoIP_server = false
+disable_voice = false
 
 resources = ["hotreload", "freeroam"]
 
 ep2_dlc_enabled = false
 
 cef_debug = false
-
-connection_host_addr = "http://88.99.97.201:2077"
 
 [core]
 nametags = true
