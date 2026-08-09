@@ -3,7 +3,7 @@
 tcp_host = "0.0.0.0:2077"
 udp_host = "0.0.0.0:2077"
 
-max_players = 35
+max_players = 2500
 
 disable_voice = false
 
