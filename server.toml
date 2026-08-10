@@ -1,7 +1,7 @@
 #:schema https://schemas.cyber.mp/server/schema.json
 
 tcp_host = "0.0.0.0:2077"
-#udp_host = "0.0.0.0:2077"
+udp_host = "0.0.0.0:2077"
 
 max_players = 2500
 
