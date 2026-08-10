@@ -51,7 +51,7 @@ export class AdminController {
     if (this.adminService.isAdmin(candidate)) {
       return this.chatService.sendMessage(
         initiator,
-        "U Can't kick other admins",
+        "U Can't ban other admins",
       );
     }
 
