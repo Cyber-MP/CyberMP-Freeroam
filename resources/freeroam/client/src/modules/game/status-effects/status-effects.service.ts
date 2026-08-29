@@ -13,7 +13,7 @@ export class GStatusEffectsService {
   ];
 
   private effectsSystem!: gameStatusEffectSystem;
-  private permanentEffects: string[] = ['GameplayRestriction.InfiniteAmmo'];
+  private permanentEffects = new Set(['GameplayRestriction.InfiniteAmmo']);
   private permanentInterval: ReturnType<typeof setTimeout> | null = null;
 
   @postConstruct()
@@ -41,16 +41,16 @@ export class GStatusEffectsService {
   }
 
   /**
-   * like `add` but applies every cycle
+   * like `add` but applies every 10s
    */
   addPermanent(effect: string) {
-    if (this.permanentEffects.includes(effect)) {
+    if (this.permanentEffects.has(effect)) {
       return;
     }
 
     this.add(effect);
 
-    this.permanentEffects.push(effect);
+    this.permanentEffects.add(effect);
   }
 
   has(effect: string) {
@@ -62,10 +62,8 @@ export class GStatusEffectsService {
   remove(effect: string) {
     const player = mp.game.GetPlayerObject();
 
-    if (this.permanentEffects.includes(effect)) {
-      this.permanentEffects = this.permanentEffects.filter(
-        (permanentEffect) => permanentEffect !== effect,
-      );
+    if (this.permanentEffects.has(effect)) {
+      this.permanentEffects.delete(effect);
     }
 
     if (this.has(effect)) {
@@ -75,7 +73,7 @@ export class GStatusEffectsService {
 
   private mountPermanentInterval() {
     this.permanentInterval = setInterval(() => {
-      for (const effect of this.permanentEffects) {
+      for (const effect of this.permanentEffects.values()) {
         this.add(effect);
       }
     }, ms('10s'));

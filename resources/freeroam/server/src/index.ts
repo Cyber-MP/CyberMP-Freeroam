@@ -21,6 +21,7 @@ import { router } from './rpc/router';
 import { AbilityModule } from './modules/ability/ability.module';
 import { config as configEnv } from 'dotenv';
 import { PlayerListModule } from './modules/player-list/player-list.module';
+import { GreenZonesModule } from './modules/greenzones/greenzones.module';
 
 configEnv({ quiet: true });
 
@@ -38,6 +39,7 @@ const modules = [
   AdminModule,
   AbilityModule,
   PlayerListModule,
+  GreenZonesModule,
 ];
 
 const coopWhen = async () => {

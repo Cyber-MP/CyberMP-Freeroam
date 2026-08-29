@@ -41,9 +41,9 @@ export class PolygonsService {
         const contained = polygon.isContaining(entity);
 
         if (contained && !colliding) {
-          polygon.removeFromContains(entity);
+          polygon._removeFromContains(entity);
         } else if (!contained && colliding) {
-          polygon.addToContains(entity);
+          polygon._addToContains(entity);
         }
       }
     }

@@ -12,7 +12,7 @@ export type PolygonOptions = {
   visible?: boolean;
 };
 
-const DEBUG_OBJECT_HASH = 7454566152498118096n;
+const DEBUG_OBJECT_HASH = 7454566152498118096n; // radio
 
 type OnEntityEnterPolygon = (entity: MpAnyEntity) => void;
 type onEntityLeavePolygon = (entity: MpAnyEntity) => void;
@@ -90,13 +90,13 @@ export class Polygon {
     return [...this._contains.values()];
   }
 
-  addToContains(entity: MpAnyEntity) {
+  _addToContains(entity: MpAnyEntity) {
     this._contains.set(entity.id, entity);
 
     this.entityEnterObserver.notify(entity);
   }
 
-  removeFromContains(entity: MpAnyEntity) {
+  _removeFromContains(entity: MpAnyEntity) {
     const id = typeof entity === 'object' ? entity.id : entity;
 
     if (this._contains.has(id)) {
