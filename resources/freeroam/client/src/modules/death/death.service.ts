@@ -86,7 +86,7 @@ export class DeathService {
       browser.navigate.trigger('/hud');
     }
   }
-
+  // Need to fix somehow
   async stand() {
     const player = mp.game.GetPlayer();
 
