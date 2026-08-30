@@ -55,9 +55,7 @@ function RouteComponent() {
             reshape the world in real-time
           </span>{' '}
           with other players, or press{' '}
-          <span className="text-white font-medium">
-            F2 &rarr; Matchmaking
-          </span>{' '}
+          <span className="text-white font-medium">F2 &rarr; Matchmaking</span>{' '}
           to host and join custom races, PvP battles, and game modes.
         </p>
 

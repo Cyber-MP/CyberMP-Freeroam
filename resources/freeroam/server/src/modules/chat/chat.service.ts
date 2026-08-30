@@ -26,20 +26,20 @@ export type ServerCommand<Args extends z.ZodTuple> = ChatCommand<Args> & {
   handler(player: MpPlayer, ...args: z.infer<Args>): void;
 };
 
-export const zCoercePlayerId = z.coerce
-  .number()
-  .meta({ title: 'player-id' })
-  .transform((p, ctx) => {
-    const candidate = mp.players.at(p);
+// export const zCoercePlayerId = z.coerce
+//   .number()
+//   .transform((p, ctx) => {
+//     const candidate = mp.players.at(p);
 
-    if (!candidate) {
-      ctx.addIssue({ code: 'custom', message: 'Player not found' });
+//     if (!candidate) {
+//       ctx.addIssue({ code: 'custom', message: 'Player not found' });
 
-      return z.NEVER;
-    }
+//       return z.NEVER;
+//     }
 
-    return candidate;
-  });
+//     return candidate;
+//   })
+//   .meta({ title: 'player-id' })
 
 @eager()
 @injectable()

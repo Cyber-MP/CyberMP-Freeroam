@@ -29,7 +29,9 @@ export class CefController {
     }
   }
 
-  private setForceFocus(context: RpcClientContext<ContractInputs['setForceFocus']>) {
+  private setForceFocus(
+    context: RpcClientContext<ContractInputs['setForceFocus']>,
+  ) {
     const { data } = context;
 
     this.cefService.setForceFocus(data);

@@ -7,7 +7,7 @@ import z from 'zod';
 // import { draw } from 'radash';
 // import z from 'zod';
 // import { mp } from '../../mp';
-import { ChatService, zCoercePlayerId } from '../chat/chat.service';
+import { ChatService } from '../chat/chat.service';
 import { MatchmakingService } from './matchmaking.service';
 // import { PvpWeapons } from '../game-modes/modes/pvp/data';
 // import { VEHICLES_DATA } from '../vehicles-spawner/vehicles.repository';
@@ -26,10 +26,11 @@ export class MatchmakingCommands {
   private init() {
     this.chatService.addCommand({
       name: 'mkick',
+      description: 'Kick player in match',
       can: ['use', 'KickPlayers'],
-      args: z.tuple([zCoercePlayerId]),
-      handler: (_player, target) => {
-        this.matchmakingService.leaveMatch(target.id);
+      args: z.tuple([z.coerce.number().meta({ title: 'player-id' })]),
+      handler: (_player, targetId) => {
+        this.matchmakingService.leaveMatch(targetId);
       },
     });
 
