@@ -14,7 +14,7 @@ import { GTeleportService } from '../game/teleport/teleport.service';
 @injectable()
 export class NoclipService {
   private active = false;
-  private yawDelta = 0; // Накопленное изменение поворота
+  private yawDelta = 0;
 
   private settings = {
     speed: 2,
