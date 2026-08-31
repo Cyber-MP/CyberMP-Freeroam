@@ -38,6 +38,7 @@ export type AbilitySubjects =
   | 'LevelUpCommand'
   | 'KickPlayers'
   | 'BanPlayers'
+  | 'Dimension'
   | 'all';
 
 export type Ability = MongoAbility<[AbilityAction, AbilitySubjects]>;
@@ -81,6 +82,7 @@ export const playerAbilityFactory = (
       can('use', 'Spawn');
       can('use', 'VehicleNitro');
       can('use', 'Spectate');
+      can('use', 'Dimension');
 
       if (isAdmin) {
         can('use', 'Noclip');
