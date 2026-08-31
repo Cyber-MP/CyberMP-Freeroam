@@ -160,7 +160,7 @@ export class BasicChatCommands {
       return;
     }
 
-    if (!lookAtObject.IsA('VehicleObject')) {
+    if (!lookAtObject.IsA('vehicleBaseObject')) {
       this.chatService.sendMessage('This is not a vehicle');
       return;
     }
