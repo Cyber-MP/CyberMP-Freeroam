@@ -1,7 +1,7 @@
   export const SPAWN_RADIUS = 5.0;
 
-  export const GREEN_ZONE_SIZE = 30.0;
-  export const GREEN_ZONE_HEIGHT = 15.0;
+  export const GREEN_ZONE_SIZE = 100;
+  export const GREEN_ZONE_HEIGHT = 15;
 
   export const BASE_SPAWN_POSITIONS = [
     [-2231.1533203125, -2142.377197265625, 11.64801025390625, -136.20004272460938],
