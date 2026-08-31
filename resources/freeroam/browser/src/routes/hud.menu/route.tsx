@@ -1,6 +1,7 @@
 import {
   RiCarLine,
   RiGamepadLine,
+  RiInformationLine,
   RiMap2Line,
   RiSwordLine,
   RiUserLine,
@@ -64,6 +65,11 @@ const data: NavbarData[] = [
     name: 'Matchmaking',
     icon: <RiGamepadLine />,
     to: '/hud/menu/matchmaking',
+  },
+  {
+    name: 'Info',
+    icon: <RiInformationLine />,
+    to: '/hud/menu/info',
   },
 ];
 
