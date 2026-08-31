@@ -10,6 +10,7 @@ export class VehiclesSpawnerService {
   private playersVehiclesMap = new Map<number, Set<number>>();
 
   private readonly DEFAULT_VEHICLE_HEALTH = 2000;
+  private readonly MAX_VEHICLES_FOR_PLAYER = 3;
 
   constructor(
     @inject(AbilityService) private abilityService: AbilityService,
@@ -86,7 +87,13 @@ export class VehiclesSpawnerService {
     health?: number;
   }) {
     if (player.vehicle) {
+      const oldVehicleId = player.vehicle.id;
       player.vehicle.destroy();
+
+      const existingVehicles = this.playersVehiclesMap.get(player.id);
+      if (existingVehicles) {
+        existingVehicles.delete(oldVehicleId);
+      }
     }
 
     const newVehicle = mp.vehicles.create({
@@ -98,8 +105,20 @@ export class VehiclesSpawnerService {
       health,
     });
 
-    if (this.playersVehiclesMap.has(player.id)) {
-      this.playersVehiclesMap.get(player.id)?.add(newVehicle.id);
+    const candidateVehicles = this.playersVehiclesMap.get(player.id);
+
+    if (candidateVehicles) {
+      // Using a while loop just in case the size somehow exceeded the limit
+      while (candidateVehicles.size >= this.MAX_VEHICLES_FOR_PLAYER) {
+        const oldestVehicleId = candidateVehicles.values().next().value;
+
+        if (oldestVehicleId !== undefined) {
+          this.deleteVehicle(oldestVehicleId);
+          candidateVehicles.delete(oldestVehicleId);
+        }
+      }
+
+      candidateVehicles.add(newVehicle.id);
     } else {
       this.playersVehiclesMap.set(player.id, new Set([newVehicle.id]));
     }
