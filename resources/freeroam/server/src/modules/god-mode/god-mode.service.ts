@@ -2,6 +2,7 @@ import type { DamageEventData, MpPlayer } from '@cybermp/server-types';
 import { eager } from '@freeroam/inversify';
 import { injectable, postConstruct } from 'inversify';
 import { mp } from '../../mp';
+import { client } from '../../rpc';
 
 @eager()
 @injectable()
@@ -10,10 +11,14 @@ export class GodModeService {
 
   addGodMode(player: MpPlayer | number) {
     this.godPlayers.add(typeof player === 'object' ? player.id : player);
+
+    client.game.health.god.trigger(player, true);
   }
 
   removeGodMode(player: MpPlayer | number) {
     this.godPlayers.delete(typeof player === 'object' ? player.id : player);
+
+    client.game.health.god.trigger(player, false);
   }
 
   hasGodMode(player: MpPlayer) {
