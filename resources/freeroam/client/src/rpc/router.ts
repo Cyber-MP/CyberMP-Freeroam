@@ -8,7 +8,6 @@ import { statusEffectsContract } from '../modules/game/status-effects/status-eff
 import { teleportContract } from '../modules/game/teleport/teleport.controller';
 import { vehiclesContract } from '../modules/game/vehicles/vehicles.controller';
 import { gameModesContract } from '../modules/game-modes/game-modes.controller';
-import { greenZonesContract } from '../modules/greenzones/greenzones.controller';
 import { itemSpawnerContract } from '../modules/item-spawner/item-spawner.controller';
 import { sessionContract } from '../modules/session/session.controller';
 import { spawnContract } from '../modules/spawn/spawn.controller';
@@ -40,7 +39,6 @@ export const router = {
   chat: chatContract,
   itemSpawner: itemSpawnerContract,
   ability: abilityContract,
-  greenZones: greenZonesContract,
 };
 
 export type ClientRouter = typeof router;

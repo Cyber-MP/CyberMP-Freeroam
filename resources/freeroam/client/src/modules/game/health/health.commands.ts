@@ -15,17 +15,17 @@ export class GHealthCommands {
     this.healthService.setCurrent(0);
   }
 
-  private god() {
-    const state = this.healthService.isGod();
+  // private god() {
+  //   const state = this.healthService.isGod();
 
-    this.healthService.god(!state);
+  //   this.healthService.god(!state);
 
-    if (this.healthService.isGod()) {
-      this.chatService.sendMessage('God mode enabled');
-    } else {
-      this.chatService.sendMessage('God mode disabled');
-    }
-  }
+  //   if (this.healthService.isGod()) {
+  //     this.chatService.sendMessage('God mode enabled');
+  //   } else {
+  //     this.chatService.sendMessage('God mode disabled');
+  //   }
+  // }
 
   private heal() {
     this.healthService.heal();
@@ -39,12 +39,12 @@ export class GHealthCommands {
       can: ['use', 'HealthControl'],
       handler: this.killme.bind(this),
     });
-    this.chatService.addCommand({
-      name: 'god',
-      description: "Toggle's god mod",
-      can: ['use', 'GodMode'],
-      handler: this.god.bind(this),
-    });
+    // this.chatService.addCommand({
+    //   name: 'god',
+    //   description: "Toggle's god mod",
+    //   can: ['use', 'GodMode'],
+    //   handler: this.god.bind(this),
+    // });
     this.chatService.addCommand({
       name: 'heal',
       description: 'Heals you...',

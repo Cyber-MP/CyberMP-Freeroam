@@ -107,7 +107,7 @@ export class PlayersMarkersService {
     while (this.system.GetMappin(id)) {
       this.system.UnregisterMappin(id);
 
-      await sleep(100);
+      await sleep(50);
     }
   }
 

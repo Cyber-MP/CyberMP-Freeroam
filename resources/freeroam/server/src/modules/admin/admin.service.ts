@@ -33,7 +33,10 @@ export class AdminService {
     }
 
     if (password !== this.ADMIN_PASSWORD) {
-      this.chatService.sendMessage(player, 'Invalid password... LOL');
+      this.chatService.sendMessage(
+        player,
+        'Invalid password... LOL (dont laugh)',
+      );
       return;
     }
 

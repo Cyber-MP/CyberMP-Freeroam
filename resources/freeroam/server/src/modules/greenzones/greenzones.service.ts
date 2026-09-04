@@ -9,6 +9,7 @@ import { inject, injectable, postConstruct } from 'inversify';
 import { Observer } from '../../lib/observer';
 import { mp } from '../../mp';
 import { client } from '../../rpc';
+import { ChatService } from '../chat/chat.service';
 import type { Polygon, PolygonOptions } from '../polygons/polygon';
 import { PolygonsService } from '../polygons/polygons.service';
 
@@ -26,6 +27,7 @@ export class GreenZone {
 
   constructor(
     @inject(PolygonsService) private polygonsService: PolygonsService,
+    @inject(ChatService) private chatService: ChatService,
   ) {}
 
   _init(opts: PolygonOptions, enabled = true) {
@@ -40,13 +42,31 @@ export class GreenZone {
   private notifyEnter(player: MpPlayer) {
     this.playerEnterObserver.notify(player);
 
-    client.greenZones.enter.trigger(player);
+    client.game.statusEffects.add.trigger(
+      player,
+      'GameplayRestriction.NoCombat',
+    );
+    client.game.statusEffects.add.trigger(
+      player,
+      'GameplayRestriction.NoWeapons',
+    );
+
+    this.chatService.sendMessage(player, 'You entered green zone');
   }
 
   private notifyLeave(player: MpPlayer) {
     this.playerLeaveObserver.notify(player);
 
-    client.greenZones.leave.trigger(player);
+    client.game.statusEffects.remove.trigger(
+      player,
+      'GameplayRestriction.NoCombat',
+    );
+    client.game.statusEffects.remove.trigger(
+      player,
+      'GameplayRestriction.NoWeapons',
+    );
+
+    this.chatService.sendMessage(player, 'You leaved green zone');
   }
 
   private onPolygonEnter = (entity: MpAnyEntity) => {
