@@ -226,11 +226,11 @@ importers:
         specifier: ^7.0.0
         version: 7.0.0
       '@cybermp/rpc-client':
-        specifier: 0.2.0
-        version: 0.2.0(@cybermp/client-types@2.3.3)(@opentelemetry/api@1.9.1)
+        specifier: 0.2.1
+        version: 0.2.1(@cybermp/client-types@2.3.5)(@opentelemetry/api@1.9.1)
       '@cybermp/rpc-router':
-        specifier: 0.2.0
-        version: 0.2.0(@opentelemetry/api@1.9.1)
+        specifier: 0.2.1
+        version: 0.2.1(@opentelemetry/api@1.9.1)
       '@freeroam/inversify':
         specifier: workspace:*
         version: link:../../../libs/inversify
@@ -257,8 +257,8 @@ importers:
         version: 4.3.6
     devDependencies:
       '@cybermp/client-types':
-        specifier: ^2.3.3
-        version: 2.3.3
+        specifier: ^2.3.5
+        version: 2.3.5
       '@types/ms':
         specifier: ^2.1.0
         version: 2.1.0
@@ -637,18 +637,29 @@ packages:
   '@cybermp/client-types@2.3.3':
     resolution: {integrity: sha512-X3K8fNStCLaMs9GQM3nPoNNHiJ4FblBr0LxfXv5sJwsBMwAxJBjnHEoPqwtKMr/53A5iRlAeBQeK7uXbuZV8rw==}
 
+  '@cybermp/client-types@2.3.5':
+    resolution: {integrity: sha512-WqpETecL9Hv4ASz/nyHcwGVZLYC3Lyh32ALBGUuO7xYjeb6v4OEwUdCod1zf8FhP710FutlkukbncM0+Qdqy4A==}
+
   '@cybermp/rpc-browser@0.2.0':
     resolution: {integrity: sha512-WHrDW4OqbkNah3V+ejnnYrsziaHA8d+MtQ+yiOi3W20ZPHqv+15CBKOlFB0ULv33YvgRbHJW9lRJxn5ze0u/xQ==}
     peerDependencies:
       '@cybermp/browser-types': ^2.0.0
 
-  '@cybermp/rpc-client@0.2.0':
-    resolution: {integrity: sha512-ugb26hOpqaIInjA0xxX2j8L3OK+l5dgQp16i1VYoVeAovTyyIvDIUVKg1fol6ARkeDeWzcGM1Lw4XxnH6SsT6Q==}
+  '@cybermp/rpc-client@0.2.1':
+    resolution: {integrity: sha512-vRs5thhAoWMJzShlZ3XpZJHX8MPw680IhQSBMLVq5s03N6Nufkjmk3pjZtq07WqLJZJxhcCxt5SnB51WQKMvsw==}
     peerDependencies:
-      '@cybermp/client-types': ^2.3.3
+      '@cybermp/client-types': ^2.3.5
 
   '@cybermp/rpc-core@0.2.0':
     resolution: {integrity: sha512-34Dr2UY6dOkSA7+P88jvVdGz12YPNSsjpGsrwIuqQcOmNtvvjHNPdT8uljeNRGjYsxoR+3vFccrmoOW8m/rteA==}
+    peerDependencies:
+      '@opentelemetry/api': '>=1.9.0'
+    peerDependenciesMeta:
+      '@opentelemetry/api':
+        optional: true
+
+  '@cybermp/rpc-core@0.2.1':
+    resolution: {integrity: sha512-xe3JdzvTiO0yUVuocsvzqp+dfaPdjlA/wQAaMkt84AEMWL08cRe7lap+BBpdDKxX/xrI9pGKcDd6qgCLZDCXaA==}
     peerDependencies:
       '@opentelemetry/api': '>=1.9.0'
     peerDependenciesMeta:
@@ -672,6 +683,9 @@ packages:
 
   '@cybermp/rpc-router@0.2.0':
     resolution: {integrity: sha512-bt3tbPPxudFePikARXRaKKwTcslzA4Fxi/MO1w4Ssun5R3O3PfXMGRTrTaQbhdrV2bHc0itDnUE2Oq1LT4q2Dg==}
+
+  '@cybermp/rpc-router@0.2.1':
+    resolution: {integrity: sha512-7TmCOntcqqi2QpwkC0HG3rCdrDasUaj8AjXzWFNdh7siqSkMxfvUdqVZM3hqqTDt/S7G/qbkT3HiK5LbjxLoTw==}
 
   '@cybermp/rpc-server@0.2.0':
     resolution: {integrity: sha512-kEMt63u1SasgMo/vSac9YpaO/k4Yu7UQVsMb5AKWqFrH1tJljT3m+scJmZlPwLc+ccOfeOPRrnlEpTVV25ZukA==}
@@ -5064,6 +5078,8 @@ snapshots:
 
   '@cybermp/client-types@2.3.3': {}
 
+  '@cybermp/client-types@2.3.5': {}
+
   '@cybermp/rpc-browser@0.2.0(@cybermp/browser-types@2.0.0)(@opentelemetry/api@1.9.1)':
     dependencies:
       '@cybermp/browser-types': 2.0.0
@@ -5071,14 +5087,18 @@ snapshots:
     transitivePeerDependencies:
       - '@opentelemetry/api'
 
-  '@cybermp/rpc-client@0.2.0(@cybermp/client-types@2.3.3)(@opentelemetry/api@1.9.1)':
+  '@cybermp/rpc-client@0.2.1(@cybermp/client-types@2.3.5)(@opentelemetry/api@1.9.1)':
     dependencies:
-      '@cybermp/client-types': 2.3.3
-      '@cybermp/rpc-core': 0.2.0(@opentelemetry/api@1.9.1)
+      '@cybermp/client-types': 2.3.5
+      '@cybermp/rpc-core': 0.2.1(@opentelemetry/api@1.9.1)
     transitivePeerDependencies:
       - '@opentelemetry/api'
 
   '@cybermp/rpc-core@0.2.0(@opentelemetry/api@1.9.1)':
+    optionalDependencies:
+      '@opentelemetry/api': 1.9.1
+
+  '@cybermp/rpc-core@0.2.1(@opentelemetry/api@1.9.1)':
     optionalDependencies:
       '@opentelemetry/api': 1.9.1
 
@@ -5098,6 +5118,13 @@ snapshots:
   '@cybermp/rpc-router@0.2.0(@opentelemetry/api@1.9.1)':
     dependencies:
       '@cybermp/rpc-core': 0.2.0(@opentelemetry/api@1.9.1)
+      radash: 12.1.1
+    transitivePeerDependencies:
+      - '@opentelemetry/api'
+
+  '@cybermp/rpc-router@0.2.1(@opentelemetry/api@1.9.1)':
+    dependencies:
+      '@cybermp/rpc-core': 0.2.1(@opentelemetry/api@1.9.1)
       radash: 12.1.1
     transitivePeerDependencies:
       - '@opentelemetry/api'

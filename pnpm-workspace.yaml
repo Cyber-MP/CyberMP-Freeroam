@@ -7,3 +7,8 @@ allowBuilds:
   msw: true
   sharp: true
   simple-git-hooks: true
+minimumReleaseAgeExclude:
+  - '@cybermp/client-types@2.3.5'
+  - '@cybermp/rpc-client@0.2.1'
+  - '@cybermp/rpc-core@0.2.1'
+  - '@cybermp/rpc-router@0.2.1'
