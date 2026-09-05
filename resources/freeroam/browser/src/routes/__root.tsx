@@ -4,6 +4,7 @@ import { createRootRoute, Outlet } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 import { useMemo } from 'react';
 import { LoadingOverlay } from '@/components/loading-overlay';
+import { Sybau } from '@/components/sybau';
 import { Toaster } from '@/components/ui/sonner';
 import { useAbilityRules } from '@/hooks/use-ability-rules';
 import { IS_MP_MOCKED } from '@/mp';
@@ -17,6 +18,7 @@ const RootLayout = () => {
     <AbilityProvider value={ability}>
       <Outlet />
       <Toaster expand={true} />
+      <Sybau />
       <LoadingOverlay />
       {IS_MP_MOCKED && <TanStackRouterDevtools position="top-left" />}
     </AbilityProvider>

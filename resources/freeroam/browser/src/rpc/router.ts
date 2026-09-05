@@ -3,6 +3,7 @@ import { type } from '@cybermp/rpc-router/server';
 import z from 'zod';
 import { setBodyVisibility, toggleBodyVisibility } from '../body';
 import { vehicleNitroContract } from '../components/hud/vehicle-nitro/contract';
+import { sybauContract } from '../components/sybau/contract';
 import { abilityContract } from '../hooks/use-ability-rules';
 import { matchmakingContract } from '../hooks/use-matches';
 import { keysContract } from '../keys';
@@ -71,6 +72,7 @@ export const rpcRouter = {
   toast: toastContract,
   vehicleNitro: vehicleNitroContract,
   ability: abilityContract,
+  sybau: sybauContract,
 };
 
 export type BrowserRouter = typeof rpcRouter;
