@@ -28,7 +28,7 @@ export class GodModeCommands {
   private init() {
     this.chatService.addCommand({
       name: 'god',
-      description: 'Enabled/disabled god mode',
+      description: 'Enables/disables god mode',
       can: ['use', 'GodMode'],
       handler: this.god,
     });

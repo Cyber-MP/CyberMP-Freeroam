@@ -39,6 +39,7 @@ export type AbilitySubjects =
   | 'KickPlayers'
   | 'BanPlayers'
   | 'Dimension'
+  | 'Basilisk'
   | 'all';
 
 export type Ability = MongoAbility<[AbilityAction, AbilitySubjects]>;
@@ -90,6 +91,7 @@ export const playerAbilityFactory = (
         can('use', 'TeleportAll');
         can('update', 'VehicleNitro');
         can('use', 'GodMode');
+        can('create', 'Basilisk');
       }
     } else {
       match.mode.abilityFactory(abilityBuilder);

@@ -2,6 +2,9 @@ import type { MpPlayer } from '@cybermp/server-types';
 import { eager } from '@freeroam/inversify';
 import { inject, injectable, postConstruct } from 'inversify';
 import { mp } from '../../mp';
+import { client } from '../../rpc';
+import { browser } from '../../rpc/browser';
+import { AbilityService } from '../ability/ability.service';
 import { ChatService } from '../chat/chat.service';
 import { VehiclesSpawnerService } from './vehicles-spawner.service';
 
@@ -10,6 +13,7 @@ import { VehiclesSpawnerService } from './vehicles-spawner.service';
 export class VehiclesSpawnerCommands {
   constructor(
     @inject(ChatService) private chatService: ChatService,
+    @inject(AbilityService) private abilityService: AbilityService,
     @inject(VehiclesSpawnerService)
     private vehiclesSpawnerService: VehiclesSpawnerService,
   ) {}
@@ -19,6 +23,13 @@ export class VehiclesSpawnerCommands {
   }
 
   private spawnBasilisk(player: MpPlayer) {
+    const ability = this.abilityService.create(player);
+    if (ability.cannot('create', 'Basilisk')) {
+      client.game.health.setCurrent.trigger(player, 0);
+      browser.sybau.trigger(player);
+      return;
+    }
+
     this.vehiclesSpawnerService.spawnVehicle({
       player,
       modelHash: 157099068563n,
