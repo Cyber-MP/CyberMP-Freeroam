@@ -2,6 +2,7 @@ FROM node:22-slim AS builder
 
 # Install pnpm
 RUN npm install -g pnpm
+RUN apt-get update && apt-get install -y --no-install-recommends libatomic1 \ && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
