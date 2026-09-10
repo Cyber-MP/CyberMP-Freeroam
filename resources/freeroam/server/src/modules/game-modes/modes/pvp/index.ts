@@ -10,6 +10,7 @@ import {
   type PvpStartPoint,
 } from '@freeroam/shared/game-modes/pvp';
 import {
+  MatchStatus,
   zCreateMatchOptions,
   zJoinMatchOptions,
 } from '@freeroam/shared/matchmaking';
@@ -311,7 +312,9 @@ export class Pvp extends BaseGameMode<
 
     this.fighters.delete(playerId);
 
-    this.checkSurvivors();
+    if (this.match.status === MatchStatus.ACTIVE) {
+      this.checkSurvivors();
+    }
   }
 
   onPlayerJoin() {}

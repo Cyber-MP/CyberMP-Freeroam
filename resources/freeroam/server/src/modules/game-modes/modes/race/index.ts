@@ -12,6 +12,7 @@ import {
   zRaceRacerDTO,
 } from '@freeroam/shared/game-modes/race';
 import {
+  MatchStatus,
   zCreateMatchOptions,
   zJoinMatchOptions,
 } from '@freeroam/shared/matchmaking';
@@ -606,6 +607,10 @@ export class Race extends BaseGameMode<
     racer?.reset();
 
     this.racers.delete(playerId);
+
+    if (this.match.status !== MatchStatus.ACTIVE) {
+      return;
+    }
 
     const activeRacers = [...this.racers.values()].filter((r) => !r.finished);
 
