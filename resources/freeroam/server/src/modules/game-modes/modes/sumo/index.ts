@@ -11,6 +11,7 @@ import {
   type SumoStartPoint,
 } from '@freeroam/shared/game-modes/sumo';
 import {
+  MatchStatus,
   zCreateMatchOptions,
   zJoinMatchOptions,
 } from '@freeroam/shared/matchmaking';
@@ -355,7 +356,9 @@ export class Sumo extends BaseGameMode<
     racer?.reset();
     this.racers.delete(playerId);
 
-    this.checkSurvivors();
+    if (this.match.status === MatchStatus.ACTIVE) {
+      this.checkSurvivors();
+    }
   }
 
   onPlayerJoin() {}
