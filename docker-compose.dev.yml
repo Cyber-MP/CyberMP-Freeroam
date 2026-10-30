@@ -2,6 +2,10 @@ services:
   server:
     container_name: cybermp-freeroam-dev
     image: ghcr.io/cyber-mp/server:latest
+    # The upstream server runtime ships as linux/amd64 only. Pinning the platform
+    # lets it run on Apple Silicon (arm64) Macs via Rosetta emulation, and is a
+    # no-op on amd64 hosts (Intel Macs / Linux). See "Running on macOS" in README.
+    platform: linux/amd64
     stdin_open: true
     tty: true
     environment:

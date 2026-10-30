@@ -53,6 +53,41 @@ Depending on your host operating system, run one of the following commands:
   pnpm run dev:linux
   ```
 
+> **macOS:** there is no native macOS build of the CyberMP server runtime — run it via
+> Docker instead (see [Running on macOS](#-running-on-macos) below).
+
+---
+
+## 🍎 Running on macOS
+
+The CyberMP server runtime is distributed for **Windows and Linux only**, so on macOS the
+server runs inside the **Linux Docker image** rather than as a native binary. The gamemode
+code itself is fully cross-platform.
+
+**Prerequisites (in addition to the ones above):**
+- **Docker Desktop** running.
+- **Rosetta enabled** in Docker Desktop (*Settings → General → "Use Rosetta for x86/amd64
+  emulation on Apple Silicon"*). The server image is `linux/amd64`; the dev compose file
+  pins `platform: linux/amd64` so it runs under Rosetta on Apple Silicon Macs.
+- **Access to the private server image.** Authenticate first so Docker can pull it:
+  ```bash
+  docker login ghcr.io
+  ```
+  (Image access is granted to testers — see https://cyber.mp/download.)
+
+**Run it** using two terminal windows, same as the native flow:
+
+```bash
+# Terminal 1: build & watch the @freeroam/* resources
+pnpm run dev:build
+
+# Terminal 2: launch the server in Docker
+pnpm run dev:mac
+```
+
+The server listens on **port 2077** (TCP + UDP); clients connect to `<your-ip>:2077`.
+`pnpm run dev:mac` is an alias for `pnpm run dev:docker` and works on any Docker host.
+
 ---
 
 ## 🐳 Running with Docker
@@ -67,6 +102,9 @@ Alternatively, you can run the entire stack within isolated Docker containers:
   ```bash
   pnpm run docker
   ```
+
+> The production/base compose files read an `.env` file. Make sure it exists first
+> (`cp .env.example .env`) before running `pnpm run docker`.
 
 ---
 
