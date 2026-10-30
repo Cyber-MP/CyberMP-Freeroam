@@ -86,7 +86,8 @@ pnpm run dev:mac
 ```
 
 The server listens on **port 2077** (TCP + UDP); clients connect to `<your-ip>:2077`.
-`pnpm run dev:mac` is an alias for `pnpm run dev:docker` and works on any Docker host.
+`pnpm run dev:mac` runs `scripts/dev-mac.sh`, which preflight-checks the Docker daemon,
+`ghcr.io` login, and Rosetta before starting the dev compose stack — then launches it.
 
 ---
 
