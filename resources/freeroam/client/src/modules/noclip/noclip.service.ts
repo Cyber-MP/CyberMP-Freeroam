@@ -33,7 +33,10 @@ export class NoclipService {
     'GameplayRestriction.NoMovement',
   ] as const;
 
+  private readonly MAX_TICK_DELTA = 0.25;
+
   private tickId: number | null = null;
+  private lastTickAt = 0;
   private readonly activeKeys = new Set<EInputKey>();
 
   constructor(
@@ -45,10 +48,13 @@ export class NoclipService {
 
   @postConstruct()
   private init() {
-    mp.game.observeBefore(
+    mp.game.observeBeforeRaw(
       'PlayerPuppet',
       'OnAction',
       (_, action: gameinputScriptListenerAction) => {
+        if (!this.active) {
+          return;
+        }
         const actionName = mp.game.NameToString(
           mp.game.gameinputScriptListenerAction.GetName(action),
         );
@@ -64,9 +70,9 @@ export class NoclipService {
             '/controls/fppcameramouse',
             'FPP_MouseX',
           ) as ConfigVarInt;
-          const sens = Number(sensVar?.GetValue?.() ?? 1) / 2.9;
+          const sens = Number(sensVar.GetValue()) / 2.9;
 
-          this.yawDelta = -(x / 35) * sens;
+          this.yawDelta += -(x / 35) * sens;
         }
       },
     );
@@ -89,6 +95,8 @@ export class NoclipService {
       return;
     }
 
+    const yawDelta = this.consumeYawDelta();
+
     const player = mp.game.GetPlayer();
     if (!player) {
       return;
@@ -98,7 +106,9 @@ export class NoclipService {
       return;
     }
 
-    const dt = 0.025;
+    const now = Date.now();
+    const dt = Math.min((now - this.lastTickAt) / 1000, this.MAX_TICK_DELTA);
+    this.lastTickAt = now;
     const speed = this.settings.speed * dt * 15;
     const pos = player.GetWorldPosition();
     const currentYaw = player.GetWorldYaw();
@@ -123,12 +133,19 @@ export class NoclipService {
     pos.y += (forwardVec.y * forward + rightVec.y * right) * speed;
     pos.z += (forwardVec.z * forward + rightVec.z * right + up * 0.7) * speed;
 
-    this.teleportService.teleport(pos.x, pos.y, pos.z, currentYaw);
+    this.teleportService.move(pos, currentYaw + yawDelta);
   };
+
+  private consumeYawDelta() {
+    const delta = this.yawDelta;
+    this.yawDelta = 0;
+    return delta;
+  }
 
   activate() {
     if (this.active) return;
     this.active = true;
+    this.lastTickAt = Date.now();
     this.keyboard.subscribe(this.onKeyPress);
     this.applyStatusEffects(true);
     this.tickId = mp.setTick(this.onTick);

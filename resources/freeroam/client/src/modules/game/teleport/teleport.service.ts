@@ -39,15 +39,14 @@ export class GTeleportService {
     this.menusService.closeAllMenus();
     this.vehiclesService.requestLeaveVehicle();
 
-    const teleportFacility =
-      mp.game.ScriptGameInstance.GetTeleportationFacility();
+    this.move(position, position.w);
+  }
 
-    const playerObj = mp.game.GetPlayerObject();
-
-    teleportFacility.Teleport(
-      playerObj,
+  move(position: Vector4, yaw: number) {
+    mp.game.ScriptGameInstance.GetTeleportationFacility().Teleport(
+      mp.game.GetPlayerObject(),
       position,
-      createEulerAngles(0, 0, position.w),
+      createEulerAngles(0, 0, yaw),
     );
   }
 
