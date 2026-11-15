@@ -1,8 +1,8 @@
-import * as CyberEnums from '@cybermp/client-types/enums';
-import type { gameStatsObjectID } from '@cybermp/client-types/game';
-import { inject, injectable } from 'inversify';
-import { mp } from '../../../mp';
-import { GStatusEffectsService } from '../status-effects/status-effects.service';
+import * as CyberEnums from "@cybermp/client-types/enums";
+import type { gameStatsObjectID } from "@cybermp/client-types/game";
+import { inject, injectable } from "inversify";
+import { mp } from "../../../mp";
+import { GStatusEffectsService } from "../status-effects/status-effects.service";
 
 @injectable()
 export class GHealthService {
@@ -25,10 +25,10 @@ export class GHealthService {
   god(value: boolean) {
     if (value) {
       this.set(99999999);
-      this.statusEffectsService.add('BaseStatusEffect.Invulnerable');
+      this.statusEffectsService.add("BaseStatusEffect.Invulnerable");
     } else {
       this.set(this.DEFAULT_HEALTH);
-      this.statusEffectsService.remove('BaseStatusEffect.Invulnerable');
+      this.statusEffectsService.remove("BaseStatusEffect.Invulnerable");
     }
 
     this.godMode = value;
@@ -44,12 +44,12 @@ export class GHealthService {
 
     const statePoolSystem = mp.game.ScriptGameInstance.GetStatPoolsSystem();
 
-    statePoolSystem.RequestSettingStatPoolValueIgnoreChangeMode(
+    statePoolSystem.RequestSettingStatPoolValue(
       playerGameId,
       CyberEnums.gamedataStatPoolType.Health,
       value,
       new mp.game.gameObject(),
-      false,
+      true,
     );
   }
 
@@ -57,7 +57,9 @@ export class GHealthService {
     const player = mp.game.GetPlayer();
     const playerGameId = player.GetEntityID() as unknown as gameStatsObjectID;
 
-    mp.game.ScriptGameInstance.GetStatsSystem().RemoveAllModifiers(
+    const statsSystem = mp.game.ScriptGameInstance.GetStatsSystem();
+
+    statsSystem.RemoveAllModifiers(
       playerGameId,
       CyberEnums.gamedataStatType.Health,
       true,
@@ -68,14 +70,11 @@ export class GHealthService {
     newStats.modifierType = CyberEnums.gameStatModifierType.Additive;
     newStats.value = value;
 
-    mp.game.ScriptGameInstance.GetStatsSystem().AddModifier(
-      playerGameId,
-      newStats,
-    );
+    statsSystem.AddModifier(playerGameId, newStats);
 
     const statePoolSystem = mp.game.ScriptGameInstance.GetStatPoolsSystem();
 
-    statePoolSystem.RequestSettingStatPoolValueIgnoreChangeMode(
+    statePoolSystem.RequestSettingStatPoolValue(
       playerGameId,
       CyberEnums.gamedataStatPoolType.Health,
       value,
