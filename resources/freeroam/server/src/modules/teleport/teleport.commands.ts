@@ -1,10 +1,10 @@
-import type { MpPlayer } from '@cybermp/server-types';
-import { eager } from '@freeroam/inversify';
-import { inject, injectable, postConstruct } from 'inversify';
-import z from 'zod';
-import { mp } from '../../mp';
-import { ChatService } from '../chat/chat.service';
-import { TeleportService } from './teleport.service';
+import type { MpPlayer } from "@cybermp/server-types";
+import { eager } from "@freeroam/inversify";
+import { inject, injectable, postConstruct } from "inversify";
+import z from "zod";
+import { mp } from "../../mp";
+import { ChatService } from "../chat/chat.service";
+import { TeleportService } from "./teleport.service";
 
 @eager()
 @injectable()
@@ -27,24 +27,28 @@ export class TeleportCommands {
   @postConstruct()
   private init() {
     this.chatService.addCommand({
-      name: 'admin-tpall',
-      description: 'Teleports all players to admin, or to a specified position',
+      name: "admin-tpall",
+      description: "Teleports all players to admin, or to a specified position",
       args: z.tuple([
-        z.coerce.number().meta({ title: 'x', optional: true }).optional(),
-        z.coerce.number().meta({ title: 'y', optional: true }).optional(),
-        z.coerce.number().meta({ title: 'z', optional: true }).optional(),
-        z.coerce.number().meta({ title: 'count', optional: true }).optional(),
+        z.coerce.number().meta({ title: "x", optional: true }).optional(),
+        z.coerce.number().meta({ title: "y", optional: true }).optional(),
+        z.coerce.number().meta({ title: "z", optional: true }).optional(),
+        z.coerce.number().meta({ title: "count", optional: true }).optional(),
       ]),
-      can: ['use', 'TeleportAll'],
+      can: ["use", "TeleportAll"],
       handler: this.adminTeleportAll.bind(this),
     });
 
-    mp.commands.add('server_pos', (player) => {
-      console.log('Player requested server pos', player.position);
+    mp.commands.add("server_pos", (player) => {
+      if (!player) {
+        return;
+      }
+
+      console.log("Player requested server pos", player.position);
 
       this.chatService.sendMessage(
         player.id,
-        `Your server pos is - ${player.position.join(' ')}`,
+        `Your server pos is - ${player.position.join(" ")}`,
       );
     });
   }

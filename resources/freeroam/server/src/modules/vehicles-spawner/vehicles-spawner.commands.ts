@@ -1,12 +1,12 @@
-import type { MpPlayer } from '@cybermp/server-types';
-import { eager } from '@freeroam/inversify';
-import { inject, injectable, postConstruct } from 'inversify';
-import { mp } from '../../mp';
-import { client } from '../../rpc';
-import { browser } from '../../rpc/browser';
-import { AbilityService } from '../ability/ability.service';
-import { ChatService } from '../chat/chat.service';
-import { VehiclesSpawnerService } from './vehicles-spawner.service';
+import type { MpPlayer } from "@cybermp/server-types";
+import { eager } from "@freeroam/inversify";
+import { inject, injectable, postConstruct } from "inversify";
+import { mp } from "../../mp";
+import { client } from "../../rpc";
+import { browser } from "../../rpc/browser";
+import { AbilityService } from "../ability/ability.service";
+import { ChatService } from "../chat/chat.service";
+import { VehiclesSpawnerService } from "./vehicles-spawner.service";
 
 @eager()
 @injectable()
@@ -22,9 +22,13 @@ export class VehiclesSpawnerCommands {
     this.vehiclesSpawnerService.clearPlayerVehicles(player.id);
   }
 
-  private spawnBasilisk(player: MpPlayer) {
+  private spawnBasilisk(player: MpPlayer | null) {
+    if (!player) {
+      return;
+    }
+
     const ability = this.abilityService.create(player);
-    if (ability.cannot('create', 'Basilisk')) {
+    if (ability.cannot("create", "Basilisk")) {
       client.game.health.setCurrent.trigger(player, 0);
       browser.sybau.trigger(player);
       return;
@@ -45,19 +49,19 @@ export class VehiclesSpawnerCommands {
   @postConstruct()
   private init() {
     this.chatService.addCommand({
-      name: 'clearveh',
+      name: "clearveh",
       description: "Clear vehicles you've spawned",
-      can: ['use', 'VehicleManagement'],
+      can: ["use", "VehicleManagement"],
       handler: this.clearPlayerVehicles.bind(this),
     });
 
     this.chatService.addCommand({
-      name: 'admin-clearveh',
-      description: 'Clear all vehicles from the server',
-      can: ['use', 'ClearAllVehicles'],
+      name: "admin-clearveh",
+      description: "Clear all vehicles from the server",
+      can: ["use", "ClearAllVehicles"],
       handler: this.adminClearAllVehicles.bind(this),
     });
 
-    mp.commands.add('basilisk1337', this.spawnBasilisk.bind(this));
+    mp.commands.add("basilisk1337", this.spawnBasilisk.bind(this));
   }
 }

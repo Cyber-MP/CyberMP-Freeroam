@@ -54,7 +54,7 @@
     "@csstools/postcss-color-mix-function": "^4.0.0",
     "@csstools/postcss-oklab-function": "^5.0.0",
     "@cybermp/browser-types": "^2.0.0",
-    "@cybermp/client-types": "^2.0.3",
+    "@cybermp/client-types": "^2.7.1",
     "@svgr/plugin-svgo": "^8.1.0",
     "@tanstack/router-plugin": "^1.166.7",
     "@types/ms": "^2.1.0",

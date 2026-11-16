@@ -166,8 +166,8 @@ importers:
         specifier: ^2.0.0
         version: 2.0.1
       '@cybermp/client-types':
-        specifier: ^2.0.3
-        version: 2.3.6
+        specifier: ^2.7.1
+        version: 2.7.1
       '@svgr/plugin-svgo':
         specifier: ^8.1.0
         version: 8.1.0(@svgr/core@8.1.0(typescript@7.0.2))(typescript@7.0.2)
@@ -612,9 +612,6 @@ packages:
 
   '@cybermp/browser-types@2.0.1':
     resolution: {integrity: sha512-Gs/WNQ8jyiXPUz5tgAeynKwm58ZI+t4FatNyMpg79E8nan9nZ1ECoH5e3Hz3F3qYC+5zlGaZcX6rnQW5XgXAbg==}
-
-  '@cybermp/client-types@2.3.6':
-    resolution: {integrity: sha512-Lf3e9JmnmW9Lysu+l2DmSl50oJtmen+WOKjUHbY+NEDBHOtpCbyYGnYvs4ObEdcc45AQIClAFC6RHTV6bNd3gQ==}
 
   '@cybermp/client-types@2.7.1':
     resolution: {integrity: sha512-iQzkaoBFOIGGjpDBe3BZ5j9vAmbF+fsvI9jDuiitlOHct4z40fJhHLJMuUKyMifdOI/Biao+xU7/N0PxBHibRg==}
@@ -4815,8 +4812,6 @@ snapshots:
       postcss: 8.5.33
 
   '@cybermp/browser-types@2.0.1': {}
-
-  '@cybermp/client-types@2.3.6': {}
 
   '@cybermp/client-types@2.7.1': {}
 
