@@ -12,3 +12,4 @@ minimumReleaseAgeExclude:
   - '@cybermp/rpc-client@0.2.1'
   - '@cybermp/rpc-core@0.2.1'
   - '@cybermp/rpc-router@0.2.1'
+  - '@cybermp/client-types@2.7.1'
